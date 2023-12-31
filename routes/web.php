@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CustomerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,12 +15,29 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', function () {return view('test');});
+
+/* Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard'); */
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::resource('customers', CustomerController::class)->names([
+        'index' => 'customers.index',
+        'create' => 'customers.create',
+        'store' => 'customers.store',
+        'show' => 'customers.show',
+        'edit' => 'customers.edit',
+        'update' => 'customers.update',
+        'destroy' => 'customers.destroy',
+    ]);
 });
 
-
-use App\Http\Controllers\CustomerController;
+require __DIR__.'/auth.php';
 
 /* // Rutas para listar todos los clientes
 Route::get('/customers', [CustomerController::class, 'index']);
@@ -36,13 +55,4 @@ Route::put('/customers/{customer}', [CustomerController::class, 'update']);
 Route::delete('/customers/{customer}', [CustomerController::class, 'destroy']); */
 
 //Route::resource('customers', CustomerController::class);
-
-Route::resource('customers', CustomerController::class)->names([
-    'index' => 'customers.index',
-    'create' => 'customers.create',
-    'store' => 'customers.store',
-    'show' => 'customers.show',
-    'edit' => 'customers.edit',
-    'update' => 'customers.update',
-    'destroy' => 'customers.destroy',
-]);
+// crear guards

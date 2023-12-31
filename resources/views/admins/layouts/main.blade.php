@@ -13,8 +13,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-    <title>GYMPE</title>
-
+    <title>{{ config('app.name', 'NombreSistema') }}</title>
     <meta name="description" content="" />
 
     <!-- Favicon -->
@@ -23,13 +22,12 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&ampdisplay=swap"
-      rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&ampdisplay=swap" rel="stylesheet" />
 
+    <!-- Icons -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/tabler-icons.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/fontawesome.css') }}" />
-    <!-- <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/flag-icons.css') }}" /> -->
+    <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/flag-icons.css') }}" />
 
     <!-- Core CSS -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/core.css') }}" class="template-customizer-core-css" />
@@ -86,7 +84,7 @@
                     fill="#7367F0" />
                 </svg>
               </span>
-              <span class="app-brand-text demo menu-text fw-bold">GYMPE</span>
+              <span class="app-brand-text demo menu-text fw-bold">{{ config('app.name', 'NombreSistema') }}</span>
             </a>
 
             <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
@@ -159,10 +157,13 @@
               </a>
             </li>
             <li class="menu-item bd-danger">
-              <a href="{{ route('customers.index') }}" class="menu-link bg-danger">
-                <i class="fa fa-right-from-bracket me-1"></i>
-                <div data-i18n="Page 2" class="text-white">Cerrar sesión</div>
-              </a>
+                <a href="javascript:void(0)" class="menu-link bg-danger" onclick="$('#logout').submit();">
+                    <i class="fa fa-right-from-bracket me-1"></i>
+                    <div data-i18n="Page 2" class="text-white">Cerrar sesión</div>
+                </a>
+                <form method="POST" action="{{ route('logout') }}" id="logout">
+                    @csrf
+                </form>
             </li>
           </ul>
         </aside>

@@ -1,5 +1,5 @@
 <!-- resources/views/customers/index.blade.php -->
-@extends('layouts/main')
+@extends('admins/layouts/main')
 
 @section('title', 'Listado de Clientes')
 
