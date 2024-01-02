@@ -17,7 +17,11 @@ class CustomerFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'number_document' => $this->faker->randomNumber(8),
+            'last_name' => $this->faker->lastName,
+            'first_name' => $this->faker->firstName,
+            'birth_date' => $this->faker->date,
+            'status' => $this->faker->randomElement(['active', 'inactive'])
         ];
     }
 }

@@ -17,25 +17,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {return view('test');});
 
-/* Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard'); */
+Route::middleware(['auth', 'verified'])->group(function () {
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    $rutaDefecto = __DIR__.'/entidades';
 
-    Route::resource('customers', CustomerController::class)->names([
-        'index' => 'customers.index',
-        'create' => 'customers.create',
-        'store' => 'customers.store',
-        'show' => 'customers.show',
-        'edit' => 'customers.edit',
-        'update' => 'customers.update',
-        'destroy' => 'customers.destroy',
-    ]);
+    Route::prefix('/customers')->group($rutaDefecto.'/customers.php');
+
 });
+
 
 require __DIR__.'/auth.php';
 
