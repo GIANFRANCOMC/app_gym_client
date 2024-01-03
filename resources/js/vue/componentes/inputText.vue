@@ -1,77 +1,105 @@
 <template>
-    <template v-if="withDiv">
-        <div :class="classDivFormControl">
-            <slot></slot>
-            <label :class="classTitulo">{{ titulo }} {{ required ? "(*):" : ":" }}</label>
+    <template v-if="showDiv">
+        <div :class="[divSizeClass]">
+            <slot name="default"></slot>
+            <label :class="[...titleClass]">{{ title }} {{ required ? requiredLabel+":" : ":" }}</label>
             <input
                 type="text"
-                :class="['form-control rounded-0', addClass]"
-                :placeholder="placeholder"
                 :value="modelValue"
                 @input="emitValue($event.target.value)"
+                :class="['form-control', ...addClass]"
+                :placeholder="placeholder"
+                @keyup.enter="handleEnterKey"
                 :disabled="disabled"/>
-            <small class="text-danger">
-                {{ mostrarError }}
-            </small>
+            <template v-if="showTextBottom">
+                <small v-if="textBottomType === 'first'" :class="[...textBottomClass]" v-text="textBottom"></small>
+            </template>
         </div>
     </template>
     <template v-else>
+        <slot name="default"></slot>
         <input
             type="text"
-            :class="['form-control rounded-0', addClass]"
-            :placeholder="placeholder"
             :value="modelValue"
-            @input="emitValue($event.target.value)"/>
-        <small v-if="withError" class="text-danger">
-            {{ mostrarError }}
-        </small>
+            @input="emitValue($event.target.value)"
+            :class="['form-control', ...addClass]"
+            :placeholder="placeholder"
+            @keyup.enter="handleEnterKey"
+            :disabled="disabled"/>
+        <template v-if="showTextBottom">
+            <small v-if="textBottomType === 'first'" :class="[...textBottomClass]" v-text="textBottom"></small>
+        </template>
     </template>
 </template>
 
 <script>
 export default {
     name: "inputText",
+    emits: ["enterKeyPressed", "update:modelValue"],
     props: {
         modelValue: {
             type: [String, Number],
             default: ""
         },
-        withDiv: {
+        // Title
+        showDiv: {
             type: Boolean,
             required: false,
-            default: true,
+            default: false,
         },
-        withError: {
-            type: Boolean,
-            required: false,
-            default: true,
-        },
-        titulo: {
+        title: {
             type: String,
             required: false,
             default: ""
         },
-        classTitulo: {
-            type: String,
+        titleClass: {
+            type: Array,
             required: false,
-            default: ""
+            default: []
         },
+        // Aspect
         required: {
             type: Boolean,
             required: false,
             default: false,
         },
-        addClass:{
+        requiredLabel: {
             type: String,
             required: false,
-            default: ""
+            default: "(*)",
+        },
+        addClass:{
+            type: Array,
+            required: false,
+            default: []
         },
         placeholder: {
             type: String,
             required: false,
             default: "",
         },
-        errors: {
+        disabled: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        // Text Bottom
+        showTextBottom: {
+            type: Boolean,
+            required: false,
+            default: false,
+        },
+        textBottomType: {
+            type: String,
+            required: false,
+            default: "first",
+        },
+        textBottomClass: {
+            type: Array,
+            required: false,
+            default: ["text-danger"]
+        },
+        textBottomInfo: {
             type: Array,
             required: false,
             default: [],
@@ -95,20 +123,15 @@ export default {
             type: String,
             required: false,
             default: "6"
-        },
-        disabled: {
-            type: Boolean,
-            required: false,
-            default: false
         }
     },
     computed: {
-        mostrarError() {
+        textBottom() {
 
-            return this.errors.length > 0 ? this.errors[0] : "";
+            return this.textBottomInfo.length > 0 ? this.textBottomInfo[0] : "";
 
         },
-        classDivFormControl() {
+        divSizeClass() {
 
             return `form-group col-xl-${this.xl} col-lg-${this.lg} col-md-${this.md} col-sm-${this.sm}`;
 
@@ -117,7 +140,12 @@ export default {
     methods: {
         emitValue(value) {
 
-            this.$emit('update:modelValue', value);
+            this.$emit("update:modelValue", value);
+
+        },
+        handleEnterKey() {
+
+            this.$emit("enterKeyPressed");
 
         }
     }

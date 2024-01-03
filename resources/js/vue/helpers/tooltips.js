@@ -1,22 +1,22 @@
-function verTooltips(tiempo = 0){
+function initTooltips(tiempo = 0){
 
     if(tiempo > 0){
 
         setTimeout(() => {
 
-            $('[data-toggle="tooltip"]').tooltip();
+            $('[data-bs-toggle="tooltip"]').tooltip();
 
         }, tiempo);
 
     }else{
 
-        $('[data-toggle="tooltip"]').tooltip();
+        $('[data-bs-toggle="tooltip"]').tooltip();
 
     }
 
 }
 
-function ocultarTooltips(tiempo = 0){
+function hideTooltips(tiempo = 0){
 
     if(tiempo > 0){
 
@@ -34,4 +34,4 @@ function ocultarTooltips(tiempo = 0){
 
 }
 
-export { verTooltips, ocultarTooltips };
+export { initTooltips, hideTooltips };

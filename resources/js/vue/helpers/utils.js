@@ -1,5 +1,5 @@
-import { requestRoute, alumnoRutaFotoDefault } from "./constants.js";
-import { mostrarCargando, ocultarSwal, successSwal, errorSwal } from "./sweetalert2.js";
+import { requestRoute } from "./constants.js";
+import { showLoading, hideSwal, successSwal, errorSwal } from "./sweetalert2.js";
 
 import axios from "axios";
 
@@ -269,38 +269,6 @@ function parsePadStart(string, {length = 2, valuePad = "0"}) {
 
 }
 
-function generarFichaMatricula(matriculaId, visualizarCargando = true) {
-
-    if(visualizarCargando) mostrarCargando("Generando ficha de matrícula.");
-    window.open(`${requestRoute}/matricula/generarFichaMatricula/${matriculaId}`, "_blank");
-    if(visualizarCargando) ocultarSwal();
-
-}
-
-function generarNominaMatricula(id, visualizarCargando = true) {
-
-    if(visualizarCargando) mostrarCargando("Generando nómina de matrícula.");
-    window.open(`${requestRoute}/matricula/generarNominaMatricula/${id}`, "_blank");
-    if(visualizarCargando) ocultarSwal();
-
-}
-
-function generarActaEvaluacionIntegral(id, visualizarCargando = true) {
-
-    if(visualizarCargando) mostrarCargando("Generando acta de evaluación integral.");
-    window.open(`${requestRoute}/matricula/generarActaEvaluacionIntegral/${id}`, "_blank");
-    if(visualizarCargando) ocultarSwal();
-
-}
-
-function generarRegistroAuxiliarEvaluacion(id, visualizarCargando = true) {
-
-    if(visualizarCargando) mostrarCargando("Generando registro auxiliar de evaluación.");
-    window.open(`${requestRoute}/matricula/generarRegistroAuxiliarEvaluacion/${id}`, "_blank");
-    if(visualizarCargando) ocultarSwal();
-
-}
-
 function validateVariable(valor, isStringNull = false) {
 
     let variableValor = null;
@@ -389,7 +357,7 @@ async function finalizarModulo(id, estado = "finalizado") {
 
     return new Promise(resolve => {
 
-        mostrarCargando("Finalizando módulo.");
+        showLoading("Finalizando módulo.");
 
         let requestUrl  = `${requestRoute}/aperturaModuloCurso/finalizarModulo/${id}`,
             requestData = {};
@@ -472,7 +440,7 @@ async function finalizarCurso(id, estado = "finalizado") {
 
     return new Promise(resolve => {
 
-        mostrarCargando("Finalizando curso.");
+        showLoading("Finalizando curso.");
 
         let requestUrl  = `${requestRoute}/aperturaModuloCursoDetalle/finalizarCurso/${id}`,
             requestData = {};
@@ -529,6 +497,6 @@ function setFotoDefault(registro, modo = "alumno") {
 export { headerFormData, borrarSessionStorage, uuidv4, encontarArrayObjectParametro, convertirObjectoAFormData,
          defaultDescripcionResponse, descargarFile, procesarErroresFilasMultiples, obtenerValueSelect, obtenerArrayValueSelect, obtenerMapValueSelect,
          convertirDateBackToFront, convertirDateTimeBackToFront, nombresCompleto,
-         simularClickTabPanel, parsePadStart, generarFichaMatricula, generarNominaMatricula, generarActaEvaluacionIntegral, generarRegistroAuxiliarEvaluacion,
+         simularClickTabPanel, parsePadStart,
          validateVariable, obtenerNombreModulo, obtenerEstadoLegible, obtenerInformacionMatriculas, finalizarCurso, finalizarModulo,
          setFotoDefault };

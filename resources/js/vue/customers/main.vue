@@ -1,12 +1,16 @@
 <template>
     <div class="d-flex flex-row mb-4">
         <div class="align-self-start">
-            <p class="fw-bold">
+            <div class="fw-bold">
                 <i class="fa fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Búsqueda por: Número de documento, Nombres, Apellidos." role="button"></i>
                 <span class="ms-1">Buscar:</span>
-            </p>
+            </div>
             <div class="input-group">
-                <input type="text" class="form-control" placeholder="Ingrese la búsqueda" v-model="filters.general" v-on:keyup.enter="list()">
+                <inputText
+                    v-model="filters.general"
+                    @enter-key-pressed="list()"
+                    placeholder="Ingrese la búsqueda">
+                </inputText>
                 <button class="btn btn-primary waves-effect" type="button" @click="list()">
                     <i class="fa fa-search"></i>
                 </button>
@@ -34,17 +38,17 @@
                 </thead>
                 <tbody class="table-border-bottom-0">
                     <tr v-for="record in records.data" :key="record.id" class="align-middle">
-                        <td class="text-center">{{ record.number_document }}</td>
-                        <td class="text-center">{{ record.last_name }}</td>
-                        <td class="text-center">{{ record.first_name }}</td>
+                        <td class="text-center" v-text="record.number_document"></td>
+                        <td class="text-center" v-text="record.last_name"></td>
+                        <td class="text-center" v-text="record.first_name"></td>
                         <td class="text-center">
-                            <span>{{ record.formatted_birth_date }}</span>
+                            <span v-text="record.formatted_birth_date"></span>
                         </td>
                         <td class="text-start">
                             <span class="badge rounded-pill bg-label-info">{{ record.age }} años</span>
                         </td>
                         <td class="text-center">
-                            <span :class="['badge', { 'bg-label-primary': record.status === 'active', 'bg-label-danger': record.status === 'inactive' }]">{{ record.status }}</span>
+                            <span :class="['badge', 'text-capitalize', { 'bg-label-primary': record.status === 'active', 'bg-label-danger': record.status === 'inactive' }]" v-text="record.formatted_status"></span>
                         </td>
                         <td class="text-center">
                             <button type="button" class="btn btn-sm rounded-pill btn-warning waves-effect waves-light">
@@ -76,21 +80,21 @@
 
 <script>
 import { requestRoute } from "../helpers/constants.js";
-/* import { mostrarCargando, ocultarSwal } from "../helpers/sweetalert2.js"; */
-/* import { verTooltips, ocultarTooltips } from "../helpers/tooltip.js";
-import { borrarSessionStorage, setFotoDefault } from "../helpers/utils.js"; */
+import { showLoading, hideSwal } from "../helpers/sweetalert2.js";
+import { initTooltips, hideTooltips } from "../helpers/tooltips.js";
+import {  } from "../helpers/utils.js";
 
 import axios from "axios";
-/* import inputText from "../componentes/inputText.vue"; */
+import inputText from "../componentes/inputText.vue";
 
 export default {
     components: {
-        /* inputText */
+        inputText
     },
     mounted: async function () {
 
         await this.list();
-       /*verTooltips();*/
+        initTooltips();
 
     },
     data() {
@@ -108,7 +112,7 @@ export default {
 
             return new Promise(resolve => {
 
-                /* mostrarCargando("Cargando listado."); */
+                showLoading("Cargando listado.");
 
                 let params = {};
                 params.general = this.filters.general;
@@ -128,8 +132,8 @@ export default {
                 })
                 .finally(function () {
 
-                    /* ocultarSwal(); */
-                    /* verTooltips(); */
+                    hideSwal();
+                    initTooltips();
                     resolve(true);
 
                 });

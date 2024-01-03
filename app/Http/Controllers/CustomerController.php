@@ -22,7 +22,8 @@ class CustomerController extends Controller
 
                        $filter = "%".trim($request->general)."%";
 
-                        $query->where("last_name", "like", $filter)
+                        $query->where("number_document", "like", $filter)
+                              ->orwhere("last_name", "like", $filter)
                               ->orWhere("first_name", "like", $filter);
 
                     })

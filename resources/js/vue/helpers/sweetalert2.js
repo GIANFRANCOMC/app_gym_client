@@ -1,15 +1,15 @@
-function mostrarCargando(titulo = "") {
+function showLoading(titulo = "") {
 
     Swal.fire({
         html: `<h5>${titulo} Este proceso puede tomar algunos momentos, por favor espere.</h5>
-               <img src='../../../../public/img/spin.gif' width='80'>`,
+               <img src='../../../../public/assets/img/utils/spin.gif' width='80'>`,
         allowOutsideClick: false,
         showConfirmButton: false
     });
 
 }
 
-function ocultarSwal(){
+function hideSwal() {
 
 	Swal.close();
 
@@ -27,10 +27,10 @@ function errorSwal({titulo = "Error", descripcion = ""}){
 
 }
 
-function mensajeEliminar(mensaje){
+function mensajeEliminar(mensaje) {
 
     return `Al realizar esta acción se eliminará ${mensaje}. No podrá revertir la acción.`;
 
 }
 
-export { mostrarCargando, ocultarSwal, successSwal, errorSwal, mensajeEliminar };
+export { showLoading, hideSwal, successSwal, errorSwal, mensajeEliminar };

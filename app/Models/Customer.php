@@ -14,7 +14,7 @@ class Customer extends Model
     protected $primaryKey          = 'id';
     public $incrementing           = true;
     public $timestamps             = true;
-    protected $appends             = ['formatted_birth_date', 'age'];
+    protected $appends             = ['formatted_birth_date', 'formatted_status', 'age'];
     public static $snakeAttributes = false;
 
     protected $fillable = ['number_document', 'last_name', 'first_name', 'birth_date', 'status'];
@@ -32,6 +32,24 @@ class Customer extends Model
 
         // If 'birth_date' is null, return null
         return null;
+    }
+
+    public function getFormattedStatusAttribute()
+    {
+        // You can customize the formatting based on your needs
+        switch($this->attributes['status']) {
+            case 'active':
+                return 'activo';
+                break;
+
+            case 'inactive':
+                return 'inactivo';
+                break;
+
+            default:
+                return $this->attributes['status'];
+                break;
+        }
     }
 
     // Accessor method to calculate age based on birth_date
