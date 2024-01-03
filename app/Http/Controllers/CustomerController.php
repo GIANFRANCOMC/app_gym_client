@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CustomerController extends Controller
 {
@@ -56,7 +57,22 @@ class CustomerController extends Controller
      */
     public function store(StoreCustomerRequest $request)
     {
-        //
+
+        $customer = new Customer();
+
+        DB::transaction(function() use($request, $customer) {
+
+            $customer->number_document = $request->number_document;
+            $customer->last_name       = $request->last_name;
+            $customer->first_name      = $request->first_name;
+            $customer->birth_date      = $request->birth_date;
+            $customer->status          = $request->status;
+            $customer->save();
+
+        });
+
+        return response()->json(["message" => "Cliente creado correctamente", "customer" => $customer], 200);
+
     }
 
     /**

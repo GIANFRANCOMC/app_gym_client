@@ -2,7 +2,12 @@
     <template v-if="showDiv">
         <div :class="[divSizeClass]">
             <slot name="default"></slot>
-            <label :class="[...titleClass]">{{ title }} {{ required ? requiredLabel+":" : ":" }}</label>
+            <label :class="[...titleClass]">
+                {{ title }}
+            </label>
+            <label v-if="required" :class="[...requiredClass]">
+                {{ requiredLabel }}
+            </label>
             <input
                 type="text"
                 :value="modelValue"
@@ -55,7 +60,7 @@ export default {
         titleClass: {
             type: Array,
             required: false,
-            default: []
+            default: ["form-label"]
         },
         // Aspect
         required: {
@@ -66,7 +71,12 @@ export default {
         requiredLabel: {
             type: String,
             required: false,
-            default: "(*)",
+            default: "*",
+        },
+        requiredClass: {
+            type: Array,
+            required: false,
+            default: ["text-danger", "ms-1"]
         },
         addClass:{
             type: Array,
@@ -107,22 +117,22 @@ export default {
         xl: {
             type: String,
             required: false,
-            default: "4"
+            default: "12"
         },
         lg: {
             type: String,
             required: false,
-            default: "6"
+            default: "12"
         },
         md: {
             type: String,
             required: false,
-            default: "6"
+            default: "12"
         },
         sm: {
             type: String,
             required: false,
-            default: "6"
+            default: "12"
         }
     },
     computed: {

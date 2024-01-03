@@ -1,6 +1,6 @@
-@extends('admins/layouts/main')
+@extends("admins/layouts/main")
 
-@section('breadcrumbRoute')
+@section("breadcrumbRoute")
 <h4 class="py-2 mb-4">
     <span class="text-muted fw-light">
         <i class="fa fa-home fa-2xs"></i> /
@@ -11,7 +11,7 @@
 </h4>
 @endsection
 
-@section('content')
+@section("content")
     <div id="app"></div>
-    @vite('resources/js/vue/customers/main.js')
+    @vite('resources/js/vue/admins/customers/main.js')
 @endsection

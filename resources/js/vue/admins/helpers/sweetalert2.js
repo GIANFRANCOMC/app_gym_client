@@ -1,7 +1,19 @@
-function showLoading(titulo = "") {
+function showLoading({type = null, title = ""}) {
+
+    let message = "";
+
+    switch(type) {
+        case "list":
+            message = "Cargando listado.";
+            break;
+
+        case "saveForm":
+            message = "Guardando formulario.";
+            break;
+    }
 
     Swal.fire({
-        html: `<h5>${titulo} Este proceso puede tomar algunos momentos, por favor espere.</h5>
+        html: `<h5>${message} Este proceso puede tomar algunos segundos, por favor espere.</h5>
                <img src='../../../../public/assets/img/utils/spin.gif' width='80'>`,
         allowOutsideClick: false,
         showConfirmButton: false
@@ -21,9 +33,9 @@ function successSwal({titulo = "Se efectuó correctamente", descripcion = ""}){
 
 }
 
-function errorSwal({titulo = "Error", descripcion = ""}){
+function errorSwal({type = null, title = ""}){
 
-    Swal.fire(titulo, descripcion, "error");
+    Swal.fire(title, type.toString(), "error");
 
 }
 
