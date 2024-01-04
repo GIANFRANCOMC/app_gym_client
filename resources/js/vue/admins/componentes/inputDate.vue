@@ -4,46 +4,36 @@
             <slot name="default"></slot>
             <label :class="[...titleClass]" v-text="title"></label>
             <label v-if="required" :class="[...requiredClass]" v-text="requiredLabel"></label>
-            <div class="input-group">
-                <slot name="inputGroupPrepend"></slot>
-                <input
-                    type="text"
-                    :value="modelValue"
-                    @input="emitValue($event.target.value)"
-                    :class="[...addClass]"
-                    :placeholder="placeholder"
-                    :disabled="disabled"
-                    @keyup.enter="handleEnterKey"/>
-                <slot name="inputGroupAppend"></slot>
-            </div>
-            <div v-if="showTextBottom">
+            <input
+                type="date"
+                :value="modelValue"
+                @input="emitValue($event.target.value)"
+                :class="[...addClass]"
+                :disabled="disabled"
+                @keyup.enter="handleEnterKey"/>
+            <template v-if="showTextBottom">
                 <small v-if="textBottomType === 'first'" :class="[...textBottomClass]" v-text="textBottom"></small>
-            </div>
+            </template>
         </div>
     </template>
     <template v-else>
         <slot name="default"></slot>
-        <div class="input-group">
-            <slot name="inputGroupPrepend"></slot>
-            <input
-                type="text"
-                :value="modelValue"
-                @input="emitValue($event.target.value)"
-                :class="[...addClass]"
-                :placeholder="placeholder"
-                :disabled="disabled"
-                @keyup.enter="handleEnterKey"/>
-            <slot name="inputGroupAppend"></slot>
-        </div>
-        <div v-if="showTextBottom">
+        <input
+            type="date"
+            :value="modelValue"
+            @input="emitValue($event.target.value)"
+            :class="[...addClass]"
+            :disabled="disabled"
+            @keyup.enter="handleEnterKey"/>
+        <template v-if="showTextBottom">
             <small v-if="textBottomType === 'first'" :class="[...textBottomClass]" v-text="textBottom"></small>
-        </div>
+        </template>
     </template>
 </template>
 
 <script>
 export default {
-    name: "inputText",
+    name: "inputDate",
     emits: ["enterKeyPressed", "update:modelValue"],
     props: {
         modelValue: {
@@ -86,11 +76,6 @@ export default {
             type: Array,
             required: false,
             default: ["form-control"]
-        },
-        placeholder: {
-            type: String,
-            required: false,
-            default: "",
         },
         disabled: {
             type: Boolean,

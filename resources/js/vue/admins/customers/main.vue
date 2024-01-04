@@ -1,20 +1,22 @@
 <template>
     <div class="d-flex flex-row mb-4">
         <div class="align-self-start">
-            <div class="fw-bold">
-                <i class="fa fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Búsqueda por: Número de documento, Nombres, Apellidos." role="button"></i>
-                <span class="ms-1">Buscar:</span>
-            </div>
-            <div class="input-group">
-                <inputText
-                    v-model="lists.customers.filters.general"
-                    @enter-key-pressed="listCustomers()"
-                    placeholder="Ingrese la búsqueda">
-                </inputText>
-                <button class="btn btn-primary waves-effect" type="button" @click="listCustomers()">
-                    <i class="fa fa-search"></i>
-                </button>
-            </div>
+            <inputText
+                v-model="lists.customers.filters.general"
+                :showDiv="true"
+                title="Buscar"
+                :titleClass="['fw-bold', 'colon-at-end', 'ms-1']"
+                placeholder="Ingrese la búsqueda"
+                @enter-key-pressed="listCustomers({})">
+                <template v-slot:default>
+                    <i class="fa fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Búsqueda por: Número de documento, Apellidos, Nombres." role="button"></i>
+                </template>
+                <template v-slot:inputGroupAppend>
+                    <button class="btn btn-primary waves-effect" type="button" @click="listCustomers({})">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </template>
+            </inputText>
         </div>
         <div class="align-self-end ms-3">
             <button class="btn btn-primary" data-bs-toggle="modal" :data-bs-target="`#${forms.customers.add.modals.default}`">
@@ -39,8 +41,8 @@
                 <tbody class="table-border-bottom-0">
                     <tr v-for="record in lists.customers.records.data" :key="record.id" class="align-middle">
                         <td class="text-center" v-text="record.number_document"></td>
-                        <td class="text-center" v-text="record.first_name"></td>
                         <td class="text-center" v-text="record.last_name"></td>
+                        <td class="text-center" v-text="record.first_name"></td>
                         <td class="text-center">
                             <span v-text="record.formatted_birth_date"></span>
                         </td>
@@ -69,7 +71,7 @@
                 <ul class="pagination">
                     <template v-for="link in lists.customers.records.links">
                         <li :class="['page-item', link.active ? 'active' : (link.url ? '' : 'disabled')]">
-                            <a class="page-link waves-effect me-1" href="javascript:void(0);" @click="listCustomers(link.url)" v-html="link.label"></a>
+                            <a class="page-link waves-effect me-1" href="javascript:void(0);" @click="listCustomers({url: link.url})" v-html="link.label"></a>
                         </li>
                     </template>
                 </ul>
@@ -82,7 +84,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalCenterTitle">Agregar cliente</h5>
+                    <h5 class="modal-title">Agregar cliente</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -95,6 +97,11 @@
                                 :required="true"
                                 :showTextBottom="true"
                                 :textBottomInfo="forms.customers.add.errors?.number_document">
+                                <template v-slot:inputGroupAppend>
+                                    <button class="btn btn-primary waves-effect" type="button" @click="consultNumberDocument({functionName: 'createCustomer', number_document: forms.customers.add.data.number_document, type: 'dni'})">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </template>
                             </inputText>
                         </div>
                     </div>
@@ -122,31 +129,30 @@
                     </div>
                     <div class="row g-2 mb-3">
                         <div class="col">
-                            <inputText
+                            <inputDate
                                 v-model="forms.customers.add.data.birth_date"
                                 :showDiv="true"
                                 title="Fecha de nacimiento"
                                 :required="true"
                                 :showTextBottom="true"
                                 :textBottomInfo="forms.customers.add.errors?.birth_date">
-                            </inputText>
+                            </inputDate>
                         </div>
                         <div class="col">
-                            <inputText
+                            <inputSelect
                                 v-model="forms.customers.add.data.status"
+                                :options="forms.customers.add.options.status"
                                 :showDiv="true"
                                 title="Estado"
                                 :required="true"
                                 :showTextBottom="true"
                                 :textBottomInfo="forms.customers.add.errors?.status">
-                            </inputText>
+                            </inputSelect>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">
-                        Cerrar
-                    </button>
+                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Cerrar</button>
                     <button type="button" class="btn btn-primary" @click="createCustomer()">
                         <i class="fa fa-save"></i>
                         <span class="ms-1">Guardar</span>
@@ -162,18 +168,20 @@
 import { requestRoute } from "../helpers/constants.js";
 import { showLoading, hideSwal, successSwal, errorSwal } from "../helpers/sweetalert2.js";
 import { initTooltips, hideTooltips } from "../helpers/tooltips.js";
-import {  } from "../helpers/utils.js";
+import { consultNumberDocument } from "../helpers/main.js";
 
 import axios from "axios";
+import inputDate from "../componentes/inputDate.vue";
 import inputText from "../componentes/inputText.vue";
+import inputSelect from "../componentes/inputSelect.vue";
 
 export default {
     components: {
-        inputText
+        inputDate, inputText, inputSelect
     },
     mounted: async function () {
 
-        await this.listCustomers();
+        await this.listCustomers({});
         initTooltips();
 
     },
@@ -202,6 +210,12 @@ export default {
                             birth_date: "",
                             status: ""
                         },
+                        options: {
+                            status: [
+                                {code: "active", label: "Activo"},
+                                {code: "inactive", label: "Inactivo"}
+                            ]
+                        },
                         errors: {
 
                         }
@@ -211,7 +225,7 @@ export default {
         };
     },
     methods: {
-        async listCustomers(url) {
+        async listCustomers({url = null}) {
 
             return new Promise(resolve => {
 
@@ -278,11 +292,11 @@ export default {
 
                 switch(error.response.status) {
                     case 422:
-                        this.setErrors({functionName, errors: error.response.data.errors});
+                        this.setFormErrors({functionName, errors: error.response.data.errors});
                         break;
                 }
 
-                //errorSwal({type: error.response.status, title: "Error xd"});
+                // errorSwal({type: error.response.status, title: "Error xd"});
                 hideSwal();
 
             })
@@ -293,7 +307,7 @@ export default {
             });
 
         },
-        // Utilities
+        // Forms
         clearForm({functionName}) {
 
             switch(functionName) {
@@ -311,17 +325,17 @@ export default {
 
             switch(functionName) {
                 case "createCustomer":
-                    let propiedadesErrors = Object.keys(this.forms.customers.add.errors);
+                    let errorsKeys = Object.keys(this.forms.customers.add.errors);
 
-                    for(const error of propiedadesErrors) {
+                    for(const errorKey of errorsKeys) {
 
-                        this.forms.customers.add.errors[error] = [];
+                        this.forms.customers.add.errors[errorKey] = [];
                     }
                     break;
             }
 
         },
-        setErrors({functionName, errors}) {
+        setFormErrors({functionName, errors = []}) {
 
             switch(functionName) {
                 case "createCustomer":
@@ -330,6 +344,32 @@ export default {
                     this.forms.customers.add.errors.first_name      = errors.first_name ?? [];
                     this.forms.customers.add.errors.birth_date      = errors.birth_date ?? [];
                     this.forms.customers.add.errors.status          = errors.status ?? [];
+                    break;
+            }
+
+        },
+        // Utils
+        async consultNumberDocument({functionName, number_document, type}) {
+
+            switch(functionName) {
+                case "createCustomer":
+                    showLoading({type: "externalConsult"});
+
+                    let consult = await consultNumberDocument({number_document, type});
+
+                    if(consult.bool) {
+
+                        this.forms.customers.add.data.number_document = consult.data?.number_document;
+                        this.forms.customers.add.data.last_name       = consult.data?.last_name;
+                        this.forms.customers.add.data.first_name      = consult.data?.first_name;
+
+                    }else {
+
+                        //
+
+                    }
+
+                    hideSwal();
                     break;
             }
 

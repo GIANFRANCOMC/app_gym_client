@@ -4,51 +4,66 @@
             <slot name="default"></slot>
             <label :class="[...titleClass]" v-text="title"></label>
             <label v-if="required" :class="[...requiredClass]" v-text="requiredLabel"></label>
-            <div class="input-group">
-                <slot name="inputGroupPrepend"></slot>
-                <input
-                    type="text"
-                    :value="modelValue"
-                    @input="emitValue($event.target.value)"
-                    :class="[...addClass]"
-                    :placeholder="placeholder"
-                    :disabled="disabled"
-                    @keyup.enter="handleEnterKey"/>
-                <slot name="inputGroupAppend"></slot>
-            </div>
-            <div v-if="showTextBottom">
+            <select
+                :value="modelValue"
+                @input="emitValue($event.target.value)"
+                :class="[...addClass]"
+                :disabled="disabled"
+                @change="handleChange">
+                <option v-if="withDefaultOption" :value="defaultOptionValue" v-text="defaultOptionLabel"></option>
+                <option v-for="(option, index) in options" :value="option.code" v-text="option.label"></option>
+            </select>
+            <template v-if="showTextBottom">
                 <small v-if="textBottomType === 'first'" :class="[...textBottomClass]" v-text="textBottom"></small>
-            </div>
+            </template>
         </div>
     </template>
     <template v-else>
         <slot name="default"></slot>
-        <div class="input-group">
-            <slot name="inputGroupPrepend"></slot>
-            <input
-                type="text"
-                :value="modelValue"
-                @input="emitValue($event.target.value)"
-                :class="[...addClass]"
-                :placeholder="placeholder"
-                :disabled="disabled"
-                @keyup.enter="handleEnterKey"/>
-            <slot name="inputGroupAppend"></slot>
-        </div>
-        <div v-if="showTextBottom">
+        <select
+            :value="modelValue"
+            @input="emitValue($event.target.value)"
+            :class="[...addClass]"
+            :disabled="disabled"
+            @change="handleChange">
+            <option v-if="withDefaultOption" :value="defaultOptionValue" v-text="defaultOptionLabel"></option>
+            <option v-for="(option, index) in options" :value="option.code" v-text="option.label"></option>
+        </select>
+        <template v-if="showTextBottom">
             <small v-if="textBottomType === 'first'" :class="[...textBottomClass]" v-text="textBottom"></small>
-        </div>
+        </template>
     </template>
 </template>
 
 <script>
 export default {
-    name: "inputText",
-    emits: ["enterKeyPressed", "update:modelValue"],
+    name: "inputSelect",
+    emits: ["changeEvent", "update:modelValue"],
     props: {
         modelValue: {
             type: [String, Number],
             default: ""
+        },
+        // Options
+        withDefaultOption:{
+            type: Boolean,
+            required: false,
+            default: true
+        },
+        defaultOptionLabel: {
+            type: String,
+            required: false,
+            default: "Seleccione"
+        },
+        defaultOptionValue: {
+            type: String,
+            required: false,
+            default: ""
+        },
+        options: {
+            type: Array,
+            required: false,
+            default: []
         },
         // Title
         showDiv: {
@@ -85,12 +100,7 @@ export default {
         addClass:{
             type: Array,
             required: false,
-            default: ["form-control"]
-        },
-        placeholder: {
-            type: String,
-            required: false,
-            default: "",
+            default: ["form-select"]
         },
         disabled: {
             type: Boolean,
@@ -158,9 +168,9 @@ export default {
             this.$emit("update:modelValue", value);
 
         },
-        handleEnterKey() {
+        handleChange() {
 
-            this.$emit("enterKeyPressed");
+            this.$emit("changeEvent");
 
         }
     }

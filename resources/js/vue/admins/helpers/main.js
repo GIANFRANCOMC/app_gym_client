@@ -54,24 +54,6 @@ function convertirObjectoAFormData(object) {
 
 }
 
-function defaultDescripcionResponse(code) {
-
-    let respuesta = "";
-
-    switch(code) {
-        case 422:
-            respuesta = "Completar correctamente el formulario";
-            break;
-
-        case 404:
-            respuesta = "No encontrado";
-            break;
-    }
-
-    return respuesta;
-
-}
-
 function descargarFile(url, nombreDocumentoDescargar = "") {
 
     let a  = document.createElement('a');
@@ -235,24 +217,6 @@ function convertirDateTimeBackToFront(value, {separador = "-", separadorRespuest
 
 }
 
-function nombresCompleto(entidad){
-
-    let respuesta = "";
-
-    try {
-
-        respuesta = (Object.keys(entidad)).length > 0 ? `${entidad.apellidoPaterno} ${entidad.apellidoMaterno} ${entidad.nombre}` : "";
-
-    }catch(error) {
-
-        respuesta = "Error";
-
-    }
-
-    return respuesta;
-
-}
-
 function simularClickTabPanel(id) {
 
     $(`.nav-tabs a[href="#${id}"]`).tab('show');
@@ -284,26 +248,6 @@ function validateVariable(valor, isStringNull = false) {
     }
 
     return variableValor != "" && variableValor != null && variableValor != undefined;
-
-}
-
-function obtenerNombreModulo(modulo) {
-
-    let respuesta = "";
-
-    try {
-
-        if((Object.keys(modulo)).length > 0) {
-
-            respuesta = ((modulo.secuenciaInterna) ? `${modulo.parseSecuenciaInterna} - ${modulo.nombre}` : `${modulo.nombre}`);
-
-        }
-
-    }catch(e) {
-
-    }
-
-    return respuesta;
 
 }
 
@@ -343,28 +287,51 @@ function obtenerEstadoLegible(estado, tipo = "default") {
 
 }
 
-function obtenerInformacionMatriculas(matriculas) {
+function consultNumberDocument({number_document, type}) {
 
-    let informacionActivos    = (matriculas).filter((e) => e.estado == "activo"),
-        informacionRetirados  = (matriculas).filter((e) => e.estado == "inactivo"),
-        informacionEliminados = (matriculas).filter((e) => e.estado == "eliminado");
+    let responseData = {};
+    responseData.bool = false;
+    responseData.data = {};
 
-    return { "activo": informacionActivos, "retirado": informacionRetirados, "eliminado": informacionEliminados };
+    return new Promise(resolve => {
 
-};
+        let requestUrl    = `${requestRoute}/helpers/consultNumberDocument`,
+            requestConfig = {};
 
-function setFotoDefault(registro, modo = "alumno") {
+        requestConfig.params = {};
+        requestConfig.params.number_document = number_document;
+        requestConfig.params.type            = type;
 
-    let rutaFotoDefault = (modo === "alumno" ? alumnoRutaFotoDefault : alumnoRutaFotoDefault),
-        respuesta = rutaFotoDefault;
+        axios
+        .get(requestUrl, requestConfig)
+        .then((response) => {
 
-    if(registro?.rutaFoto) {
+            switch(response.status) {
+                case 200:
+                    if(response.data.success) {
 
-        respuesta = registro.rutaFoto;
+                        let data = response.data.data;
 
-    }
+                        responseData.bool = true;
+                        responseData.data = {number_document: `${data?.numero}`, last_name: `${data?.apellido_paterno} ${data?.apellido_materno}`, first_name: `${data?.nombres}`};
 
-    return respuesta;
+                    }
+                    break;
+            }
+
+        })
+        .catch((error) => {
+
+            //
+
+        })
+        .finally(() => {
+
+            resolve(responseData);
+
+        });
+
+    });
 
 }
 
@@ -373,5 +340,5 @@ export { headerFormData, borrarSessionStorage, uuidv4, encontarArrayObjectParame
          defaultDescripcionResponse, descargarFile, procesarErroresFilasMultiples, obtenerValueSelect, obtenerArrayValueSelect, obtenerMapValueSelect,
          convertirDateBackToFront, convertirDateTimeBackToFront, nombresCompleto,
          simularClickTabPanel, parsePadStart,
-         validateVariable, obtenerNombreModulo, obtenerEstadoLegible, obtenerInformacionMatriculas,
-         setFotoDefault };
+         validateVariable, obtenerEstadoLegible,
+         consultNumberDocument };

@@ -3,6 +3,10 @@ function showLoading({type = null, title = ""}) {
     let message = "";
 
     switch(type) {
+        case "externalConsult":
+            message = "Consultando.";
+            break;
+
         case "list":
             message = "Cargando listado.";
             break;

@@ -41,6 +41,11 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/toastr/toastr.css') }}" />
 
     <!-- Page CSS -->
+    <style>
+        .colon-at-end::after {
+            content: ":";
+        }
+    </style>
 
     <!-- Helpers -->
     <script src="{{ asset('assets/vendor/js/helpers.js') }}"></script>
