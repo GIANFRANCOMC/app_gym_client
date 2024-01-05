@@ -4,6 +4,26 @@
             <slot name="default"></slot>
             <label :class="[...titleClass]" v-text="title"></label>
             <label v-if="required" :class="[...requiredClass]" v-text="requiredLabel"></label>
+            <div class="input-group">
+                <slot name="inputGroupPrepend"></slot>
+                <input
+                    type="date"
+                    :value="modelValue"
+                    @input="emitValue($event.target.value)"
+                    :class="[...addClass]"
+                    :disabled="disabled"
+                    @keyup.enter="handleEnterKey"/>
+                <slot name="inputGroupAppend"></slot>
+            </div>
+            <div v-if="showTextBottom">
+                <small v-if="textBottomType === 'first'" :class="[...textBottomClass]" v-text="textBottom"></small>
+            </div>
+        </div>
+    </template>
+    <template v-else>
+        <slot name="default"></slot>
+        <div class="input-group">
+            <slot name="inputGroupPrepend"></slot>
             <input
                 type="date"
                 :value="modelValue"
@@ -11,23 +31,11 @@
                 :class="[...addClass]"
                 :disabled="disabled"
                 @keyup.enter="handleEnterKey"/>
-            <template v-if="showTextBottom">
-                <small v-if="textBottomType === 'first'" :class="[...textBottomClass]" v-text="textBottom"></small>
-            </template>
+            <slot name="inputGroupAppend"></slot>
         </div>
-    </template>
-    <template v-else>
-        <slot name="default"></slot>
-        <input
-            type="date"
-            :value="modelValue"
-            @input="emitValue($event.target.value)"
-            :class="[...addClass]"
-            :disabled="disabled"
-            @keyup.enter="handleEnterKey"/>
-        <template v-if="showTextBottom">
+        <div v-if="showTextBottom">
             <small v-if="textBottomType === 'first'" :class="[...textBottomClass]" v-text="textBottom"></small>
-        </template>
+        </div>
     </template>
 </template>
 
@@ -44,7 +52,7 @@ export default {
         showDiv: {
             type: Boolean,
             required: false,
-            default: false,
+            default: false
         },
         title: {
             type: String,
@@ -60,12 +68,12 @@ export default {
         required: {
             type: Boolean,
             required: false,
-            default: false,
+            default: false
         },
         requiredLabel: {
             type: String,
             required: false,
-            default: "*",
+            default: "*"
         },
         requiredClass: {
             type: Array,
@@ -86,12 +94,12 @@ export default {
         showTextBottom: {
             type: Boolean,
             required: false,
-            default: false,
+            default: false
         },
         textBottomType: {
             type: String,
             required: false,
-            default: "first",
+            default: "first"
         },
         textBottomClass: {
             type: Array,
@@ -101,7 +109,7 @@ export default {
         textBottomInfo: {
             type: Array,
             required: false,
-            default: [],
+            default: []
         },
         // Sizes
         xl: {

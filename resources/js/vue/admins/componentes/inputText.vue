@@ -54,7 +54,7 @@ export default {
         showDiv: {
             type: Boolean,
             required: false,
-            default: false,
+            default: false
         },
         title: {
             type: String,
@@ -70,12 +70,12 @@ export default {
         required: {
             type: Boolean,
             required: false,
-            default: false,
+            default: false
         },
         requiredLabel: {
             type: String,
             required: false,
-            default: "*",
+            default: "*"
         },
         requiredClass: {
             type: Array,
@@ -90,7 +90,7 @@ export default {
         placeholder: {
             type: String,
             required: false,
-            default: "",
+            default: ""
         },
         disabled: {
             type: Boolean,
@@ -101,12 +101,12 @@ export default {
         showTextBottom: {
             type: Boolean,
             required: false,
-            default: false,
+            default: false
         },
         textBottomType: {
             type: String,
             required: false,
-            default: "first",
+            default: "first"
         },
         textBottomClass: {
             type: Array,
@@ -116,7 +116,7 @@ export default {
         textBottomInfo: {
             type: Array,
             required: false,
-            default: [],
+            default: []
         },
         // Sizes
         xl: {

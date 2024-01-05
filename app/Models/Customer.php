@@ -17,7 +17,7 @@ class Customer extends Model
     protected $appends             = ['formatted_birth_date', 'formatted_status', 'age'];
     public static $snakeAttributes = false;
 
-    protected $fillable = ['number_document', 'last_name', 'first_name', 'birth_date', 'status'];
+    protected $fillable = ['type_document', 'number_document', 'last_name', 'first_name', 'birth_date', 'status'];
 
     // Accessor method to format birth_date
     public function getFormattedBirthDateAttribute()

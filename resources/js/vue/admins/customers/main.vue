@@ -30,6 +30,7 @@
             <table class="table table-hover">
                 <thead class="table-light">
                     <tr class="text-nowrap">
+                        <th class="align-middle text-center fw-bold col-1">Tipo de<br/>documento</th>
                         <th class="align-middle text-center fw-bold col-1">Número de<br/>documento</th>
                         <th class="align-middle text-center fw-bold col-2">Apellidos</th>
                         <th class="align-middle text-center fw-bold col-2">Nombres</th>
@@ -40,6 +41,7 @@
                 </thead>
                 <tbody class="table-border-bottom-0">
                     <tr v-for="record in lists.customers.records.data" :key="record.id" class="align-middle">
+                        <td class="text-center" v-text="record.type_document"></td>
                         <td class="text-center" v-text="record.number_document"></td>
                         <td class="text-center" v-text="record.last_name"></td>
                         <td class="text-center" v-text="record.first_name"></td>
@@ -88,7 +90,18 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row mb-3">
+                    <div class="row g-2 mb-3">
+                        <div class="col">
+                            <inputSelect
+                                v-model="forms.customers.add.data.type_document"
+                                :options="forms.customers.add.options.type_document"
+                                :showDiv="true"
+                                title="Tipo de documento"
+                                :required="true"
+                                :showTextBottom="true"
+                                :textBottomInfo="forms.customers.add.errors?.type_document">
+                            </inputSelect>
+                        </div>
                         <div class="col">
                             <inputText
                                 v-model="forms.customers.add.data.number_document"
@@ -98,7 +111,10 @@
                                 :showTextBottom="true"
                                 :textBottomInfo="forms.customers.add.errors?.number_document">
                                 <template v-slot:inputGroupAppend>
-                                    <button class="btn btn-primary waves-effect" type="button" @click="consultNumberDocument({functionName: 'createCustomer', number_document: forms.customers.add.data.number_document, type: 'dni'})">
+                                    <button class="btn btn-primary waves-effect"
+                                            type="button"
+                                            :disabled="!validateVariable({value: forms.customers.add.data.type_document}) || !validateVariable({value: forms.customers.add.data.number_document})"
+                                            @click="consultNumberDocument({functionName: 'createCustomer', numberDocument: forms.customers.add.data.number_document, type: 'dni'})">
                                         <i class="fa fa-search"></i>
                                     </button>
                                 </template>
@@ -166,9 +182,9 @@
 
 <script>
 import { requestRoute } from "../helpers/constants.js";
-import { showLoading, hideSwal, successSwal, errorSwal } from "../helpers/sweetalert2.js";
+import { showLoading, hideSwal, toastrAlert } from "../helpers/alerts.js";
 import { initTooltips, hideTooltips } from "../helpers/tooltips.js";
-import { consultNumberDocument } from "../helpers/main.js";
+import { validateVariable, consultNumberDocument } from "../helpers/main.js";
 
 import axios from "axios";
 import inputDate from "../componentes/inputDate.vue";
@@ -183,7 +199,6 @@ export default {
 
         await this.listCustomers({});
         initTooltips();
-
     },
     data() {
         return {
@@ -204,6 +219,7 @@ export default {
                             default: "addCustomerModal"
                         },
                         data: {
+                            type_document: "",
                             number_document: "",
                             last_name: "",
                             first_name: "",
@@ -211,14 +227,15 @@ export default {
                             status: ""
                         },
                         options: {
+                            type_document: [
+                                {code: "dni", label: "DNI"}
+                            ],
                             status: [
                                 {code: "active", label: "Activo"},
                                 {code: "inactive", label: "Inactivo"}
                             ]
                         },
-                        errors: {
-
-                        }
+                        errors: {}
                     }
                 }
             }
@@ -246,13 +263,14 @@ export default {
                 })
                 .catch((error) => {
 
-                    //
+                    toastrAlert({subtitle: error, type: "error"});
 
                 })
                 .finally(function () {
 
                     hideSwal();
                     initTooltips();
+
                     resolve(true);
 
                 });
@@ -270,6 +288,7 @@ export default {
             let requestUrl  = `${requestRoute}/customers`,
                 requestData = {};
 
+            requestData.type_document   = this.forms.customers.add.data.type_document;
             requestData.number_document = this.forms.customers.add.data.number_document;
             requestData.last_name       = this.forms.customers.add.data.last_name;
             requestData.first_name      = this.forms.customers.add.data.first_name;
@@ -280,11 +299,11 @@ export default {
             .post(requestUrl, requestData)
             .then((response) => {
 
-                if(response.status === 200) {
-
-                    this.clearForm({functionName});
-                    successSwal({});
-
+                switch(response.status) {
+                    case 200:
+                        this.clearForm({functionName});
+                        toastrAlert({subtitle: response.data.message, type: "success"});
+                        break;
                 }
 
             })
@@ -293,16 +312,14 @@ export default {
                 switch(error.response.status) {
                     case 422:
                         this.setFormErrors({functionName, errors: error.response.data.errors});
+                        toastrAlert({code: 422, type: "error"});
                         break;
                 }
-
-                // errorSwal({type: error.response.status, title: "Error xd"});
-                hideSwal();
 
             })
             .finally(() => {
 
-                //
+                hideSwal();
 
             });
 
@@ -312,6 +329,7 @@ export default {
 
             switch(functionName) {
                 case "createCustomer":
+                    this.forms.customers.add.data.type_document   = "";
                     this.forms.customers.add.data.number_document = "";
                     this.forms.customers.add.data.last_name       = "";
                     this.forms.customers.add.data.first_name      = "";
@@ -339,6 +357,7 @@ export default {
 
             switch(functionName) {
                 case "createCustomer":
+                    this.forms.customers.add.errors.type_document   = errors.type_document ?? [];
                     this.forms.customers.add.errors.number_document = errors.number_document ?? [];
                     this.forms.customers.add.errors.last_name       = errors.last_name ?? [];
                     this.forms.customers.add.errors.first_name      = errors.first_name ?? [];
@@ -348,24 +367,25 @@ export default {
             }
 
         },
+        validateVariable({value}) {
+
+            return validateVariable({value});
+
+        },
         // Utils
-        async consultNumberDocument({functionName, number_document, type}) {
+        async consultNumberDocument({functionName, numberDocument, type}) {
 
             switch(functionName) {
                 case "createCustomer":
                     showLoading({type: "externalConsult"});
 
-                    let consult = await consultNumberDocument({number_document, type});
+                    let consult = await consultNumberDocument({numberDocument, type});
 
                     if(consult.bool) {
 
                         this.forms.customers.add.data.number_document = consult.data?.number_document;
                         this.forms.customers.add.data.last_name       = consult.data?.last_name;
                         this.forms.customers.add.data.first_name      = consult.data?.first_name;
-
-                    }else {
-
-                        //
 
                     }
 

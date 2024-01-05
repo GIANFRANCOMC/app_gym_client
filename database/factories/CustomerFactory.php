@@ -17,6 +17,7 @@ class CustomerFactory extends Factory
     public function definition(): array
     {
         return [
+            'type_document' => $this->faker->randomElement(['dni']),
             'number_document' => $this->faker->randomNumber(8),
             'last_name' => $this->faker->lastName,
             'first_name' => $this->faker->firstName,

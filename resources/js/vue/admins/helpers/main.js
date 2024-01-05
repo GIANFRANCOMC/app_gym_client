@@ -1,5 +1,5 @@
 import { requestRoute } from "./constants.js";
-import { showLoading, hideSwal, successSwal, errorSwal } from "./sweetalert2.js";
+import { toastrAlert } from "./alerts.js";
 
 import axios from "axios";
 
@@ -233,65 +233,18 @@ function parsePadStart(string, {length = 2, valuePad = "0"}) {
 
 }
 
-function validateVariable(valor, isStringNull = false) {
+function validateVariable({value}) {
 
-    let variableValor = null;
-
-    if(isStringNull) {
-
-        variableValor = (valor == "null") ? null : valor;
-
-    }else {
-
-        variableValor = valor;
-
-    }
-
-    return variableValor != "" && variableValor != null && variableValor != undefined;
+    return value != "" && value != null && value != undefined;
 
 }
 
-function obtenerEstadoLegible(estado, tipo = "default") {
-
-    let respuesta = "";
-
-    try {
-
-        switch(estado) {
-            case "activo":
-                respuesta = "Activo";
-                break;
-
-            case "inactivo":
-                respuesta = (tipo == "matricula") ? "Retirado" : "Inactivo";
-                break;
-
-            case "eliminado":
-                respuesta = "Eliminado";
-                break;
-
-            case "finalizado":
-                respuesta = "Finalizado";
-                break;
-
-            default:
-                respuesta = "No encontrado";
-                break;
-        }
-
-    }catch(e) {
-
-    }
-
-    return respuesta;
-
-}
-
-function consultNumberDocument({number_document, type}) {
+function consultNumberDocument({numberDocument, type, withAlert = true}) {
 
     let responseData = {};
-    responseData.bool = false;
-    responseData.data = {};
+    responseData.bool    = false;
+    responseData.message = "";
+    responseData.data    = {};
 
     return new Promise(resolve => {
 
@@ -299,7 +252,7 @@ function consultNumberDocument({number_document, type}) {
             requestConfig = {};
 
         requestConfig.params = {};
-        requestConfig.params.number_document = number_document;
+        requestConfig.params.number_document = numberDocument;
         requestConfig.params.type            = type;
 
         axios
@@ -312,8 +265,14 @@ function consultNumberDocument({number_document, type}) {
 
                         let data = response.data.data;
 
-                        responseData.bool = true;
-                        responseData.data = {number_document: `${data?.numero}`, last_name: `${data?.apellido_paterno} ${data?.apellido_materno}`, first_name: `${data?.nombres}`};
+                        responseData.bool    = true;
+                        responseData.message = "La información que buscabas ha sido encontrada.";
+                        responseData.data    = {number_document: `${data?.numero}`, last_name: `${data?.apellido_paterno} ${data?.apellido_materno}`, first_name: `${data?.nombres}`};
+
+                    }else {
+
+                        responseData.bool    = false;
+                        responseData.message = response.data.message;
 
                     }
                     break;
@@ -322,10 +281,13 @@ function consultNumberDocument({number_document, type}) {
         })
         .catch((error) => {
 
-            //
+            responseData.bool    = false;
+            responseData.message = error;
 
         })
-        .finally(() => {
+        .finally(async() => {
+
+            if(withAlert) await (responseData.bool ? toastrAlert({subtitle: responseData.message, type: "success"}) : toastrAlert({subtitle: responseData.message, type: "warning"}));
 
             resolve(responseData);
 
@@ -337,8 +299,6 @@ function consultNumberDocument({number_document, type}) {
 
 
 export { headerFormData, borrarSessionStorage, uuidv4, encontarArrayObjectParametro, convertirObjectoAFormData,
-         defaultDescripcionResponse, descargarFile, procesarErroresFilasMultiples, obtenerValueSelect, obtenerArrayValueSelect, obtenerMapValueSelect,
-         convertirDateBackToFront, convertirDateTimeBackToFront, nombresCompleto,
-         simularClickTabPanel, parsePadStart,
-         validateVariable, obtenerEstadoLegible,
-         consultNumberDocument };
+         descargarFile, procesarErroresFilasMultiples, obtenerValueSelect, obtenerArrayValueSelect, obtenerMapValueSelect,
+         convertirDateBackToFront, convertirDateTimeBackToFront,
+         simularClickTabPanel, parsePadStart, consultNumberDocument, validateVariable };
