@@ -111,7 +111,7 @@
                 </a>
             </li>
             <li class="menu-item disabled">
-                <a href="{{ route('customers.index') }}" class="menu-link">
+                <a href="#" class="menu-link">
                   <i class="fa fa-cart-shopping me-1"></i>
                   <div data-i18n="Page 1">Ventas</div>
                 </a>
@@ -123,46 +123,46 @@
                 </a>
             </li>
             <li class="menu-item disabled">
-                <a href="{{ route('customers.index') }}" class="menu-link">
+                <a href="#" class="menu-link">
                   <i class="fa fa-shoe-prints me-1"></i>
                   <div data-i18n="Page 2">Seguimiento al cliente</div>
                 </a>
               </li>
             <li class="menu-item disabled">
-                <a href="{{ route('customers.index') }}" class="menu-link">
+                <a href="#" class="menu-link">
                     <i class="fa fa-address-card me-1"></i>
                     <div data-i18n="Page 1">Membresías</div>
                 </a>
             </li>
             <li class="menu-item">
-              <a href="{{ route('productServices.index') }}" class="menu-link">
-                <i class="fa fa-bottle-water me-1"></i>
-                <div data-i18n="Page 1">Productos - Servicios</div>
-              </a>
+                <a href="{{ route('productServices.index') }}" class="menu-link">
+                    <i class="fa fa-bottle-water me-1"></i>
+                    <div data-i18n="Page 1">Productos - Servicios</div>
+                </a>
             </li>
             <li class="menu-item">
-              <a href="{{ route('admins.index') }}" class="menu-link">
-                <i class="fa fa-users me-1"></i>
-                <div data-i18n="Page 1">Colaboradores</div>
-              </a>
+                <a href="{{ route('admins.index') }}" class="menu-link">
+                    <i class="fa fa-users me-1"></i>
+                    <div data-i18n="Page 1">Colaboradores</div>
+                </a>
             </li>
             <li class="menu-item disabled">
-              <a href="{{ route('customers.index') }}" class="menu-link">
-                <i class="fa fa-warehouse me-1"></i>
-                <div data-i18n="Page 1">Sucursales</div>
-              </a>
+                <a href="#" class="menu-link">
+                    <i class="fa fa-warehouse me-1"></i>
+                    <div data-i18n="Page 1">Sucursales</div>
+                </a>
             </li>
             <li class="menu-item disabled">
-              <a href="{{ route('customers.index') }}" class="menu-link">
-                <i class="fa fa-gear me-1"></i>
-                <div data-i18n="Page 2">Configuración</div>
-              </a>
+                <a href="#" class="menu-link">
+                    <i class="fa fa-gear me-1"></i>
+                    <div data-i18n="Page 2">Configuración</div>
+                </a>
             </li>
             <li class="menu-item disabled">
-              <a href="{{ route('customers.index') }}" class="menu-link">
-                <i class="fa fa-print me-1"></i>
-                <div data-i18n="Page 2">Reportes</div>
-              </a>
+                <a href="#" class="menu-link">
+                    <i class="fa fa-print me-1"></i>
+                    <div data-i18n="Page 2">Reportes</div>
+                </a>
             </li>
             <li class="menu-item bd-danger">
                 <a href="javascript:void(0)" class="menu-link bg-danger" onclick="$('#logout').submit();">

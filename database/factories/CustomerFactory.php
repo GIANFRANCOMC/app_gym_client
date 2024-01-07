@@ -23,6 +23,7 @@ class CustomerFactory extends Factory
             'first_name' => $this->faker->firstName,
             'birth_date' => $this->faker->date,
             'gender' => $this->faker->randomElement(['male', 'female', 'other']),
+            'phone' => $this->faker->phoneNumber,
             'status' => $this->faker->randomElement(['active', 'inactive'])
         ];
     }

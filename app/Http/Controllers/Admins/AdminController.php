@@ -6,6 +6,7 @@ use App\Helpers\Utilities;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Http\Requests\Admins\Admins\{StoreAdminRequest, UpdateAdminRequest};
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -69,8 +70,16 @@ class AdminController extends Controller {
             $admin->first_name      = $request->first_name;
             $admin->birth_date      = $request->birth_date;
             $admin->gender          = $request->gender;
+            $admin->phone           = $request->phone;
             $admin->status          = $request->status;
             $admin->save();
+
+            $user = new User();
+            $user->admin_id = $admin->id;
+            $user->name     = $admin->last_name." ".$admin->first_name;
+            $user->email    = $request->email;
+            $user->password = $request->password;
+            $user->save();
 
         });
 

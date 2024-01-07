@@ -108,7 +108,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title text-uppercase">AGREGAR CLIENTE</h5>
+                    <h5 class="modal-title text-uppercase">AGREGAR COLABORADOR</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -232,6 +232,19 @@
                         </inputSelect>
                     </div>
                     <div class="row g-2 mb-3">
+                        <inputText
+                            v-model="forms.admins.add.data.phone"
+                            :showDiv="true"
+                            title="Celular"
+                            :required="true"
+                            :maxlength="80"
+                            :showTextBottom="true"
+                            :textBottomInfo="forms.admins.add.errors?.phone"
+                            :xl="6"
+                            :lg="6"
+                            :md="12"
+                            :sm="12">
+                        </inputText>
                         <inputSelect
                             v-model="forms.admins.add.data.status"
                             :options="forms.admins.add.options.status"
@@ -306,6 +319,7 @@ export default {
                             password: "",
                             birth_date: "",
                             gender: "",
+                            phone: "",
                             status: ""
                         },
                         options: {
@@ -382,8 +396,11 @@ export default {
             requestData.number_document = this.forms.admins.add.data.number_document;
             requestData.last_name       = this.forms.admins.add.data.last_name;
             requestData.first_name      = this.forms.admins.add.data.first_name;
+            requestData.email           = this.forms.admins.add.data.email;
+            requestData.password        = this.forms.admins.add.data.password;
             requestData.birth_date      = this.forms.admins.add.data.birth_date;
             requestData.gender          = this.forms.admins.add.data.gender;
+            requestData.phone           = this.forms.admins.add.data.phone;
             requestData.status          = this.forms.admins.add.data.status;
 
             axios
@@ -424,8 +441,11 @@ export default {
                     this.forms.admins.add.data.number_document = "";
                     this.forms.admins.add.data.last_name       = "";
                     this.forms.admins.add.data.first_name      = "";
+                    this.forms.admins.add.data.email           = "";
+                    this.forms.admins.add.data.password        = "";
                     this.forms.admins.add.data.birth_date      = "";
                     this.forms.admins.add.data.gender          = "";
+                    this.forms.admins.add.data.phone           = "";
                     this.forms.admins.add.data.status          = "";
                     break;
             }
@@ -453,8 +473,11 @@ export default {
                     this.forms.admins.add.errors.number_document = errors.number_document ?? [];
                     this.forms.admins.add.errors.last_name       = errors.last_name ?? [];
                     this.forms.admins.add.errors.first_name      = errors.first_name ?? [];
+                    this.forms.admins.add.errors.email           = errors.email ?? [];
+                    this.forms.admins.add.errors.password        = errors.password ?? [];
                     this.forms.admins.add.errors.birth_date      = errors.birth_date ?? [];
                     this.forms.admins.add.errors.gender          = errors.gender ?? [];
+                    this.forms.admins.add.errors.phone           = errors.phone ?? [];
                     this.forms.admins.add.errors.status          = errors.status ?? [];
                     break;
             }

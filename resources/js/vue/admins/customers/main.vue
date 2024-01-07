@@ -204,6 +204,19 @@
                         </inputSelect>
                     </div>
                     <div class="row g-2 mb-3">
+                        <inputText
+                            v-model="forms.customers.add.data.phone"
+                            :showDiv="true"
+                            title="Celular"
+                            :required="true"
+                            :maxlength="80"
+                            :showTextBottom="true"
+                            :textBottomInfo="forms.customers.add.errors?.phone"
+                            :xl="6"
+                            :lg="6"
+                            :md="12"
+                            :sm="12">
+                        </inputText>
                         <inputSelect
                             v-model="forms.customers.add.data.status"
                             :options="forms.customers.add.options.status"
@@ -276,6 +289,7 @@ export default {
                             first_name: "",
                             birth_date: "",
                             gender: "",
+                            phone: "",
                             status: ""
                         },
                         options: {
@@ -354,6 +368,7 @@ export default {
             requestData.first_name      = this.forms.customers.add.data.first_name;
             requestData.birth_date      = this.forms.customers.add.data.birth_date;
             requestData.gender          = this.forms.customers.add.data.gender;
+            requestData.phone           = this.forms.customers.add.data.phone;
             requestData.status          = this.forms.customers.add.data.status;
 
             axios
@@ -396,6 +411,7 @@ export default {
                     this.forms.customers.add.data.first_name      = "";
                     this.forms.customers.add.data.birth_date      = "";
                     this.forms.customers.add.data.gender          = "";
+                    this.forms.customers.add.data.phone           = "";
                     this.forms.customers.add.data.status          = "";
                     break;
             }
@@ -425,6 +441,7 @@ export default {
                     this.forms.customers.add.errors.first_name      = errors.first_name ?? [];
                     this.forms.customers.add.errors.birth_date      = errors.birth_date ?? [];
                     this.forms.customers.add.errors.gender          = errors.gender ?? [];
+                    this.forms.customers.add.errors.phone           = errors.phone ?? [];
                     this.forms.customers.add.errors.status          = errors.status ?? [];
                     break;
             }
