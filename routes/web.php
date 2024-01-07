@@ -21,8 +21,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     $rutaDefecto = __DIR__.'/entities/Admins';
 
+    Route::prefix('/admins')->group($rutaDefecto.'/Admin.php');
     Route::prefix('/customers')->group($rutaDefecto.'/Customer.php');
     Route::prefix('/helpers')->group($rutaDefecto.'/Helper.php');
+    Route::prefix('/home')->group($rutaDefecto.'/Home.php');
+    Route::prefix('/productServices')->group($rutaDefecto.'/ProductService.php');
 
 });
 

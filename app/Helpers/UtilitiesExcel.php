@@ -6,7 +6,7 @@ use Exception;
 /* use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\{Alignment, NumberFormat, Fill};
  */
-class Utilities {
+class UtilitiesExcel {
 
     public static function columnasExcel() {
 

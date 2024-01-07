@@ -105,12 +105,12 @@
 
           <ul class="menu-inner py-1">
             <li class="menu-item">
-                <a href="{{ route('customers.index') }}" class="menu-link">
+                <a href="{{ route('home.index') }}" class="menu-link">
                   <i class="fa fa-home me-1"></i>
                   <div data-i18n="Page 1">Inicio</div>
                 </a>
             </li>
-            <li class="menu-item">
+            <li class="menu-item disabled">
                 <a href="{{ route('customers.index') }}" class="menu-link">
                   <i class="fa fa-cart-shopping me-1"></i>
                   <div data-i18n="Page 1">Ventas</div>
@@ -122,43 +122,43 @@
                     <div data-i18n="Page 1">Clientes</div>
                 </a>
             </li>
-            <li class="menu-item">
+            <li class="menu-item disabled">
                 <a href="{{ route('customers.index') }}" class="menu-link">
                   <i class="fa fa-shoe-prints me-1"></i>
                   <div data-i18n="Page 2">Seguimiento al cliente</div>
                 </a>
               </li>
-            <li class="menu-item">
+            <li class="menu-item disabled">
                 <a href="{{ route('customers.index') }}" class="menu-link">
                     <i class="fa fa-address-card me-1"></i>
                     <div data-i18n="Page 1">Membresías</div>
                 </a>
             </li>
             <li class="menu-item">
-              <a href="{{ route('customers.index') }}" class="menu-link">
+              <a href="{{ route('productServices.index') }}" class="menu-link">
                 <i class="fa fa-bottle-water me-1"></i>
-                <div data-i18n="Page 1">Productos</div>
+                <div data-i18n="Page 1">Productos - Servicios</div>
               </a>
             </li>
             <li class="menu-item">
-              <a href="{{ route('customers.index') }}" class="menu-link">
+              <a href="{{ route('admins.index') }}" class="menu-link">
                 <i class="fa fa-users me-1"></i>
                 <div data-i18n="Page 1">Colaboradores</div>
               </a>
             </li>
-            <li class="menu-item">
+            <li class="menu-item disabled">
               <a href="{{ route('customers.index') }}" class="menu-link">
                 <i class="fa fa-warehouse me-1"></i>
                 <div data-i18n="Page 1">Sucursales</div>
               </a>
             </li>
-            <li class="menu-item">
+            <li class="menu-item disabled">
               <a href="{{ route('customers.index') }}" class="menu-link">
                 <i class="fa fa-gear me-1"></i>
                 <div data-i18n="Page 2">Configuración</div>
               </a>
             </li>
-            <li class="menu-item">
+            <li class="menu-item disabled">
               <a href="{{ route('customers.index') }}" class="menu-link">
                 <i class="fa fa-print me-1"></i>
                 <div data-i18n="Page 2">Reportes</div>
@@ -234,7 +234,7 @@
                             </div>
                           </div>
                           <div class="flex-grow-1">
-                            <span class="fw-medium d-block">Gianfranco</span>
+                            <span class="fw-medium d-block">{{ Auth::user()->admin->last_name }} {{ Auth::user()->admin->first_name }}</span>
                             <small class="text-muted">Administrador</small>
                           </div>
                         </div>

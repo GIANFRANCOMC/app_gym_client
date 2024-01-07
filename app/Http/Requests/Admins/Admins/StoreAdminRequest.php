@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Admins\Customers;
+namespace App\Http\Requests\Admins\Admins;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreCustomerRequest extends FormRequest
+class StoreAdminRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +22,7 @@ class StoreCustomerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'number_document' => 'required|string|min:2|max:30|unique:customers,number_document',
+            'number_document' => 'required|string|min:2|max:30|unique:admins,number_document',
             'last_name'       => 'required|string|min:2|max:65',
             'first_name'      => 'required|string|min:2|max:85',
             'birth_date'      => 'required|date',

@@ -3,4 +3,6 @@
 use App\Http\Controllers\Admins\{HelperController};
 use Illuminate\Support\Facades\Route;
 
-Route::get('/consultNumberDocument',      [HelperController::class, 'consultNumberDocument'])->name('helpers.consultNumberDocument');
+$entity = "helpers";
+
+Route::get('/consultNumberDocument', [HelperController::class, 'consultNumberDocument'])->name("$entity.consultNumberDocument");

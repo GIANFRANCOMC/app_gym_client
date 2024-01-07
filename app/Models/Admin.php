@@ -6,11 +6,11 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Customer extends Model {
+class Admin extends Model {
 
     use HasFactory;
 
-    protected $table               = 'customers';
+    protected $table               = 'admins';
     protected $primaryKey          = 'id';
     public $incrementing           = true;
     public $timestamps             = true;
