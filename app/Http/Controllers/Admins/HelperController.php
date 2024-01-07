@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admins;
 
 use App\Helpers\Utilities;
+use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class HelperController extends Controller
-{
+class HelperController extends Controller {
+
     /**
-     * Store a newly created resource in storage.
+     * Consult.
      */
-    public function consultNumberDocument(Request $request)
-    {
+    public function consultNumberDocument(Request $request) {
 
         $params = json_encode([$request->type => $request->number_document]);
         $curl = curl_init();
@@ -27,7 +27,7 @@ class HelperController extends Controller
             CURLOPT_HTTPHEADER => [
                 'Accept: application/json',
                 'Content-Type: application/json',
-                'Authorization: Bearer e3f658506679cc15e793f898cc3c1bb4a48a636306fc99c84a2630c830c7cdf9'
+                'Authorization: Bearer cf12112a823387c0e11e207ab5614d801ae40407c795e4aa6d6e1969e7c81a96'
             ],
         ));
 

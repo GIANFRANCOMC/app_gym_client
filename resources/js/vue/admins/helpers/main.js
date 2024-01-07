@@ -251,9 +251,11 @@ function consultNumberDocument({numberDocument, type, withAlert = true}) {
         let requestUrl    = `${requestRoute}/helpers/consultNumberDocument`,
             requestConfig = {};
 
-        requestConfig.params = {};
-        requestConfig.params.number_document = numberDocument;
-        requestConfig.params.type            = type;
+        let params = {};
+        params.number_document = numberDocument;
+        params.type            = type;
+
+        requestConfig.params = params;
 
         axios
         .get(requestUrl, requestConfig)
@@ -285,9 +287,9 @@ function consultNumberDocument({numberDocument, type, withAlert = true}) {
             responseData.message = error;
 
         })
-        .finally(async() => {
+        .finally(() => {
 
-            if(withAlert) await (responseData.bool ? toastrAlert({subtitle: responseData.message, type: "success"}) : toastrAlert({subtitle: responseData.message, type: "warning"}));
+            if(withAlert) responseData.bool ? toastrAlert({subtitle: responseData.message, type: "success"}) : toastrAlert({subtitle: responseData.message, type: "warning"});
 
             resolve(responseData);
 

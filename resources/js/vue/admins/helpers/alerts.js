@@ -77,7 +77,7 @@ function toastrAlert({title = null, subtitle = null, code = null, type = "succes
 
         switch(type) {
             case "error":
-                if(!code) {
+                if(code) {
 
                     switch(code) {
                         case 422:

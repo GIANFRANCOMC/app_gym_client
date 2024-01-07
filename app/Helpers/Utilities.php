@@ -43,32 +43,6 @@ class Utilities {
 
     }
 
-    // Auth
-    public static function obtenerTipoUsuarioLogueado() {
-
-        $respuesta = Str::upper(Auth::user()->type);
-        return $respuesta;
-
-    }
-
-    public static function usuarioLogueadoEs($tipo = "docente") {
-
-        $respuesta = false;
-
-        if($tipo === "docente") {
-
-            $respuesta = self::obtenerTipoUsuarioLogueado() === "DOCENTE";
-
-        }else if($tipo === "administrador") {
-
-            $respuesta = self::obtenerTipoUsuarioLogueado() === "ADMINISTRADOR";
-
-        }
-
-        return $respuesta;
-
-    }
-
     // Fechas, Date, Hour
     public static function convertirDateBackToFront($value, $separador = "-", $separadorRespuesta = "-") {
 
@@ -142,22 +116,6 @@ class Utilities {
         }
 
         return $respuesta;
-
-    }
-
-    public static function obtenerDiasPlazo() {
-
-        return 5;
-
-    }
-
-    public static function obtenerInformacionPlazo($aperturaModuloCursoDetalle) {
-
-        $informacionSumaPlazoFechaFin = self::sumarDiasAFecha($aperturaModuloCursoDetalle->fechaFin, self::obtenerDiasPlazo());
-
-        return ["sumaPlazoFechaFin"      => $informacionSumaPlazoFechaFin,
-                "permisoPlazoDiasEditar" => $informacionSumaPlazoFechaFin["string"] >= now()->toDateString(),
-                "permisoEstado"          => !($aperturaModuloCursoDetalle->estado === "finalizado")];
 
     }
 

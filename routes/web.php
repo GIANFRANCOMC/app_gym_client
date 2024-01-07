@@ -19,10 +19,10 @@ Route::get('/', function () {return view('test');});
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    $rutaDefecto = __DIR__.'/entidades';
+    $rutaDefecto = __DIR__.'/entities/Admins';
 
-    Route::prefix('/customers')->group($rutaDefecto.'/customers.php');
-    Route::prefix('/helpers')->group($rutaDefecto.'/helpers.php');
+    Route::prefix('/customers')->group($rutaDefecto.'/Customer.php');
+    Route::prefix('/helpers')->group($rutaDefecto.'/Helper.php');
 
 });
 

@@ -113,22 +113,22 @@ export default {
         },
         // Sizes
         xl: {
-            type: String,
+            type: [String, Number],
             required: false,
             default: "12"
         },
         lg: {
-            type: String,
+            type: [String, Number],
             required: false,
             default: "12"
         },
         md: {
-            type: String,
+            type: [String, Number],
             required: false,
             default: "12"
         },
         sm: {
-            type: String,
+            type: [String, Number],
             required: false,
             default: "12"
         }

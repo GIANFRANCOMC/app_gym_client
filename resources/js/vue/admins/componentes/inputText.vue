@@ -13,6 +13,7 @@
                     :class="[...addClass]"
                     :placeholder="placeholder"
                     :disabled="disabled"
+                    :maxlength="maxlength"
                     @keyup.enter="handleEnterKey"/>
                 <slot name="inputGroupAppend"></slot>
             </div>
@@ -32,6 +33,7 @@
                 :class="[...addClass]"
                 :placeholder="placeholder"
                 :disabled="disabled"
+                :maxlength="maxlength"
                 @keyup.enter="handleEnterKey"/>
             <slot name="inputGroupAppend"></slot>
         </div>
@@ -42,6 +44,8 @@
 </template>
 
 <script>
+import { requestRoute, generalConfiguration } from "../helpers/constants.js";
+
 export default {
     name: "inputText",
     emits: ["enterKeyPressed", "update:modelValue"],
@@ -97,6 +101,11 @@ export default {
             required: false,
             default: false
         },
+        maxlength: {
+            type: [String, Number],
+            required: false,
+            default: generalConfiguration.forms.inputs.maxlength
+        },
         // Text Bottom
         showTextBottom: {
             type: Boolean,
@@ -120,22 +129,22 @@ export default {
         },
         // Sizes
         xl: {
-            type: String,
+            type: [String, Number],
             required: false,
             default: "12"
         },
         lg: {
-            type: String,
+            type: [String, Number],
             required: false,
             default: "12"
         },
         md: {
-            type: String,
+            type: [String, Number],
             required: false,
             default: "12"
         },
         sm: {
-            type: String,
+            type: [String, Number],
             required: false,
             default: "12"
         }

@@ -288,7 +288,6 @@
           <div class="content-wrapper">
             <!-- Content -->
             <div class="container-xxl flex-grow-1 container-p-y">
-                @yield('breadcrumbRoute')
                 @yield('content')
             </div>
             <!-- / Content -->
