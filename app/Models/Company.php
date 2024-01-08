@@ -13,10 +13,42 @@ class Company extends Model {
     protected $primaryKey          = 'id';
     public $incrementing           = true;
     public $timestamps             = true;
-    protected $appends             = ['formatted_status'];
+    protected $appends             = ['formatted_type_document', 'formatted_status'];
     public static $snakeAttributes = false;
 
-    protected $fillable = ['name', 'address', 'status'];
+    protected $fillable = ['type_document', 'number_document', 'legal_name', 'commercial_name', 'logo', 'status'];
+
+    public function getFormattedTypeDocumentAttribute() {
+
+        if($this->type_document) {
+
+            $formattedTypeDocument = '';
+
+            switch($this->type_document) {
+                case 'dni':
+                    $formattedTypeDocument = 'dni';
+                    break;
+
+                case 'ruc':
+                    $formattedTypeDocument = 'ruc';
+                    break;
+
+                case 'none':
+                    $formattedTypeDocument = 'ninguno';
+                    break;
+
+                default:
+                    $formattedTypeDocument = $this->type_document;
+                    break;
+            }
+
+            return $formattedTypeDocument;
+
+        }
+
+        return null;
+
+    }
 
     public function getFormattedStatusAttribute() {
 

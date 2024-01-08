@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Admins;
 
-use App\Http\Controllers\Controller;
-use App\Models\Company;
-use App\Http\Requests\Admins\Companies\{StoreCompanyRequest, UpdateCompanyRequest};
+use App\Models\BranchUser;
+use App\Http\Requests\Admins\BranchUsers\{StoreBranchUserRequest, UpdateBranchUserRequest};
 
-class CompanyController extends Controller
+class BranchUserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +26,7 @@ class CompanyController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCompanyRequest $request)
+    public function store(StoreBranchUserRequest $request)
     {
         //
     }
@@ -35,7 +34,7 @@ class CompanyController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Company $company)
+    public function show(BranchUser $branchUser)
     {
         //
     }
@@ -43,7 +42,7 @@ class CompanyController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Company $company)
+    public function edit(BranchUser $branchUser)
     {
         //
     }
@@ -51,7 +50,7 @@ class CompanyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCompanyRequest $request, Company $company)
+    public function update(UpdateBranchUserRequest $request, BranchUser $branchUser)
     {
         //
     }
@@ -59,7 +58,7 @@ class CompanyController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Company $company)
+    public function destroy(BranchUser $branchUser)
     {
         //
     }

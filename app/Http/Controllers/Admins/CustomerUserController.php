@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admins;
 
 use App\Http\Controllers\Controller;
-use App\Models\Company;
-use App\Http\Requests\Admins\Companies\{StoreCompanyRequest, UpdateCompanyRequest};
+use App\Models\CustomerUser;
+use App\Http\Requests\Admins\CustomerUsers\{StoreCustomerUserRequest, UpdateCustomerUserRequest};
 
-class CompanyController extends Controller
+class CustomerUserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +27,7 @@ class CompanyController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCompanyRequest $request)
+    public function store(StoreCustomerUserRequest $request)
     {
         //
     }
@@ -35,7 +35,7 @@ class CompanyController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Company $company)
+    public function show(CustomerUser $customerUser)
     {
         //
     }
@@ -43,7 +43,7 @@ class CompanyController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Company $company)
+    public function edit(CustomerUser $customerUser)
     {
         //
     }
@@ -51,7 +51,7 @@ class CompanyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCompanyRequest $request, Company $company)
+    public function update(UpdateCustomerUserRequest $request, CustomerUser $customerUser)
     {
         //
     }
@@ -59,7 +59,7 @@ class CompanyController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Company $company)
+    public function destroy(CustomerUser $customerUser)
     {
         //
     }

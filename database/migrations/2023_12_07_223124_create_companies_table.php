@@ -13,8 +13,11 @@ return new class extends Migration
     {
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('address')->nullable();
+            $table->enum('type_document', ['dni', 'ruc', 'none'])->default('none');
+            $table->string('number_document');
+            $table->string('legal_name')->nullable();
+            $table->string('commercial_name')->nullable();
+            $table->string('logo')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
         });

@@ -11,16 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('customers', function (Blueprint $table) {
+        Schema::create('customer_users', function (Blueprint $table) {
             $table->id();
-            $table->enum('type_document', ['dni']);
-            $table->string('number_document');
-            $table->string('last_name');
-            $table->string('first_name');
-            $table->date('birth_date')->nullable();
-            $table->enum('gender', ['male', 'female', 'other'])->nullable();
-            $table->string('phone')->nullable();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->rememberToken();
             $table->foreignId('company_id')->constrained('companies');
+            $table->foreignId('customer_id')->constrained('customers');
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
         });
@@ -31,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('customers');
+        Schema::dropIfExists('customer_users');
     }
 };

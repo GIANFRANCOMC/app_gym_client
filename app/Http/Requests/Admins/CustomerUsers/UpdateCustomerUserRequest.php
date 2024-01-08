@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Admins\Branches;
+namespace App\Http\Requests\Admins\CustomerUsers;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateBranchRequest extends FormRequest
+class UpdateCustomerUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
