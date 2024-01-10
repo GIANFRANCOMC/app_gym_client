@@ -16,7 +16,7 @@ return new class extends Migration
             $table->enum('type_document', ['dni', 'ruc', 'none'])->default('none');
             $table->string('number_document');
             $table->string('legal_name')->nullable();
-            $table->string('commercial_name')->nullable();
+            $table->string('commercial_name');
             $table->string('logo')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();

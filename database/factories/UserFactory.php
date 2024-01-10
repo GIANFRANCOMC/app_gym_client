@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Admin;
+use App\Models\Company;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -24,12 +26,18 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'admin_id' => '1',
             'name' => fake()->name(),
-            'email' => 'admin@gmail.com', //'email' => fake()->unique()->safeEmail(),
+            'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'company_id' => function () {
+                return Company::inRandomOrder()->first()->id;
+            },
+            'admin_id' => function () {
+                return Admin::inRandomOrder()->first()->id;
+            },
+            'status' => $this->faker->randomElement(['active', 'inactive'])
         ];
     }
 

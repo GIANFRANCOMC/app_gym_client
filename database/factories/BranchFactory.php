@@ -21,8 +21,9 @@ class BranchFactory extends Factory
             'name' => $this->faker->company,
             'location' => $this->faker->address,
             'company_id' => function () {
-                return Company::factory()->create()->id;
+                return Company::inRandomOrder()->first()->id;
             },
+            'status' => $this->faker->randomElement(['active', 'inactive'])
         ];
     }
 }

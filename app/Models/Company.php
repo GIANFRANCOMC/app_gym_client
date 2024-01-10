@@ -68,4 +68,40 @@ class Company extends Model {
 
     }
 
+    public function admins() {
+
+        return $this->hasMany(Admin::class);
+
+    }
+
+    public function branches() {
+
+        return $this->hasMany(Branch::class);
+
+    }
+
+    public function customers() {
+
+        return $this->hasMany(Customer::class);
+
+    }
+
+    public function customerUsers() {
+
+        return $this->hasMany(Customer::class);
+
+    }
+
+    public function productServices() {
+
+        return $this->hasMany(ProductService::class);
+
+    }
+
+    public function users() {
+
+        return $this->hasMany(User::class);
+
+    }
+
 }

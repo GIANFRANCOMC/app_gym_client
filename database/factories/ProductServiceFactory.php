@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Company;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,6 +21,9 @@ class ProductServiceFactory extends Factory
             'name' => $this->faker->word,
             'description' => $this->faker->sentence,
             'price' => $this->faker->randomFloat(2, 10, 100),
+            'company_id' => function () {
+                return Company::inRandomOrder()->first()->id;
+            },
             'status' => $this->faker->randomElement(['active', 'inactive'])
         ];
     }

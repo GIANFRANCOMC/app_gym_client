@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Company;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -24,6 +25,9 @@ class CustomerFactory extends Factory
             'birth_date' => $this->faker->date,
             'gender' => $this->faker->randomElement(['male', 'female', 'other']),
             'phone' => $this->faker->phoneNumber,
+            'company_id' => function () {
+                return Company::inRandomOrder()->first()->id;
+            },
             'status' => $this->faker->randomElement(['active', 'inactive'])
         ];
     }
