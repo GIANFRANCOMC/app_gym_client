@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Helpers\Utilities;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\Company;
@@ -18,9 +19,27 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
-        $companies = Company::orderBy('commercial_name')->get();
+        $company_id   = env('COMPANY_ID', null);
+        $company_info = null;
+        $companies    = [];
 
-        return view('auth.login', ["companies" => $companies]);
+        if(Utilities::validateVariable($company_id)) {
+
+            $company_info = Company::where('id', $company_id)
+                                   ->first();
+
+            $companies = $company_info ? [$company_info] : [];
+
+        }
+
+        if(count($companies) === 0 || !Utilities::validateVariable($company_id)) {
+
+            $companies = Company::orderBy('commercial_name')
+                                ->get();
+
+        }
+
+        return view('auth.login', ["companies" => $companies, "company_info" => $company_info]);
     }
 
     /**
