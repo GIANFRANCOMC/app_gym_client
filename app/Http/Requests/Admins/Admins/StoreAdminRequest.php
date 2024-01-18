@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Admins\Admins;
 
+use App\Rules\{UniqueAdminNumberDocumentForCompany, UniqueUserEmailForCompany};
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreAdminRequest extends FormRequest
 {
@@ -21,11 +23,13 @@ class StoreAdminRequest extends FormRequest
      */
     public function rules(): array
     {
+        $userAuth = Auth::user();
+
         return [
-            'number_document' => 'required|string|min:2|max:30|unique:admins,number_document',
+            'number_document' => ['required', 'string', 'min:2', 'max:30', new UniqueAdminNumberDocumentForCompany($userAuth->company_id)],
             'last_name'       => 'required|string|min:2|max:65',
             'first_name'      => 'required|string|min:2|max:85',
-            'email'           => 'required|string',
+            'email'           => ['required', 'string', 'email', new UniqueUserEmailForCompany($userAuth->company_id)],
             'password'        => 'required|string',
             'birth_date'      => 'required|date',
             'gender'          => 'required|string',

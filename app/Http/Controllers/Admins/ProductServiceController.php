@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Admins;
 
 use App\Helpers\Utilities;
 use App\Http\Controllers\Controller;
-use App\Models\ProductService;
-use App\Http\Requests\Admins\ProductServices\{StoreProductServiceRequest, UpdateProductServiceRequest};
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\{Auth, DB};
+
+use App\Http\Requests\Admins\ProductServices\{StoreProductServiceRequest, UpdateProductServiceRequest};
+use App\Models\{ProductService};
 
 class ProductServiceController extends Controller {
 
@@ -19,6 +20,8 @@ class ProductServiceController extends Controller {
      */
     public function list(Request $request) {
 
+        $userAuth = Auth::user();
+
         $list = ProductService::when(Utilities::validateVariable($request->general), function($query) use ($request) {
 
                        $filter = "%".trim($request->general)."%";
@@ -27,6 +30,7 @@ class ProductServiceController extends Controller {
                               ->orwhere("description", "like", $filter);
 
                     })
+                    ->where("company_id", $userAuth->company_id)
                     ->orderBy("name", "ASC")
                     ->orderBy("description", "ASC")
                     ->paginate(10);
@@ -62,9 +66,12 @@ class ProductServiceController extends Controller {
 
         DB::transaction(function() use($request, $productService) {
 
+            $userAuth = Auth::user();
+
             $productService->name        = $request->name;
             $productService->description = $request->description;
             $productService->price       = $request->price;
+            $productService->company_id  = $userAuth->company_id;
             $productService->status      = $request->status;
             $productService->save();
 

@@ -12,6 +12,7 @@ use App\Models\CustomerUser;
 use App\Models\ProductService;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,14 +21,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Company::factory(5)->create()->each(function($company) {
 
-            $admins = Admin::factory(2)->create(['company_id' => $company->id]);
+        Company::factory(1)->create(["commercial_name" => "SUPLOS", 'status' => 'active']);
+        Company::factory(1)->create(["commercial_name" => "INTEL", 'status' => 'active']);
+        Company::factory(1)->create(["commercial_name" => "DEVC TECNOLOGIAS", 'status' => 'active']);
+
+        (Company::all())->each(function($company) {
+
+            $admins = Admin::factory(2)->create(['company_id' => $company->id, 'status' => 'active']);
             $customers = Customer::factory(2)->create(['company_id' => $company->id]);
 
             $admins->each(function($admin) use($company) {
 
-                User::factory(1)->create(['company_id' => $company->id, 'admin_id' => $admin->id]);
+                User::factory(1)->create(['email' => Str::lower(str_replace(" ", "_", $admin->first_name))."@".Str::lower(str_replace(" ", "_", $company->commercial_name)).".com", 'company_id' => $company->id, 'admin_id' => $admin->id, 'status' => 'active']);
 
             });
 

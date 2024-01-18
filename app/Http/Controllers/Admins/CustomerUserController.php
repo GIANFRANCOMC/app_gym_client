@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers\Admins;
 
+use App\Helpers\Utilities;
 use App\Http\Controllers\Controller;
-use App\Models\CustomerUser;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\{Auth, DB};
+
 use App\Http\Requests\Admins\CustomerUsers\{StoreCustomerUserRequest, UpdateCustomerUserRequest};
+use App\Models\{CustomerUser};
 
 class CustomerUserController extends Controller
 {

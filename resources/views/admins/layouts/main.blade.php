@@ -236,12 +236,12 @@
                                     </div>
                                     <div class="flex-grow-1">
                                     <span class="fw-medium d-block">{{ Auth::user()->admin->last_name }} {{ Auth::user()->admin->first_name }}</span>
-                                    <small class="text-muted">Administrador</small>
+                                    <small class="text-muted">{{ Auth::user()->company->commercial_name }}</small>
                                     </div>
                                 </div>
                                 </a>
                             </li>
-                            <li>
+                            {{-- <li>
                                 <div class="dropdown-divider"></div>
                             </li>
                             <li>
@@ -266,12 +266,12 @@
                                     >
                                 </span>
                                 </a>
-                            </li>
+                            </li> --}}
                             <li>
                                 <div class="dropdown-divider"></div>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="javascript:void(0)" onclick="$('#logout').submit();">
                                 <i class="ti ti-logout me-2 ti-sm"></i>
                                 <span class="align-middle">Cerrar sesión</span>
                                 </a>

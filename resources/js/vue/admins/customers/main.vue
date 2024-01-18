@@ -9,6 +9,7 @@
         </span>
     </h4>
 
+    <!-- Content -->
     <div class="d-flex flex-row mb-4">
         <div class="align-self-start">
             <inputText
@@ -53,13 +54,11 @@
                 <tbody class="table-border-bottom-0">
                     <template v-if="lists.customers.records.data && lists.customers.records.data.length > 0">
                         <tr v-for="record in lists.customers.records.data" :key="record.id" class="align-middle">
-                            <td class="text-center" v-text="record.formatted_type_document"></td>
+                            <td class="text-center text-uppercase" v-text="record.formatted_type_document"></td>
                             <td class="text-center" v-text="record.number_document"></td>
                             <td class="text-center" v-text="record.last_name"></td>
                             <td class="text-center" v-text="record.first_name"></td>
-                            <td class="text-center">
-                                <span v-text="record.formatted_birth_date"></span>
-                            </td>
+                            <td class="text-center" v-text="record.formatted_birth_date"></td>
                             <td class="text-start">
                                 <span class="badge rounded-pill bg-label-info">{{ record.age }} años</span>
                             </td>
@@ -68,14 +67,11 @@
                                 <span v-text="record.formatted_gender" class="text-capitalize ms-1"></span>
                             </td>
                             <td class="text-center">
-                                <span :class="['badge', 'text-capitalize', { 'bg-label-primary': record.status === 'active', 'bg-label-danger': record.status === 'inactive' }]" v-text="record.formatted_status"></span>
+                                <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
                             <!-- <td class="text-center">
                                 <button type="button" class="btn btn-sm rounded-pill btn-warning waves-effect waves-light">
                                     <i class="fa fa-pencil"></i>
-                                </button>
-                                <button type="button" class="btn btn-sm rounded-pill btn-danger waves-effect waves-light ms-1">
-                                    <i class="fa fa-trash"></i>
                                 </button>
                             </td> -->
                         </tr>
@@ -170,6 +166,34 @@
                             :maxlength="80"
                             :showTextBottom="true"
                             :textBottomInfo="forms.customers.add.errors?.first_name"
+                            :xl="6"
+                            :lg="6"
+                            :md="12"
+                            :sm="12">
+                        </inputText>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <inputText
+                            v-model="forms.customers.add.data.email"
+                            :showDiv="true"
+                            title="Correo electrónico"
+                            :required="true"
+                            :maxlength="60"
+                            :showTextBottom="true"
+                            :textBottomInfo="forms.customers.add.errors?.email"
+                            :xl="6"
+                            :lg="6"
+                            :md="12"
+                            :sm="12">
+                        </inputText>
+                        <inputText
+                            v-model="forms.customers.add.data.password"
+                            :showDiv="true"
+                            title="Contraseña"
+                            :required="true"
+                            :maxlength="80"
+                            :showTextBottom="true"
+                            :textBottomInfo="forms.customers.add.errors?.password"
                             :xl="6"
                             :lg="6"
                             :md="12"
@@ -287,6 +311,8 @@ export default {
                             number_document: "",
                             last_name: "",
                             first_name: "",
+                            email: "",
+                            password: "",
                             birth_date: "",
                             gender: "",
                             phone: "",
@@ -366,6 +392,8 @@ export default {
             requestData.number_document = this.forms.customers.add.data.number_document;
             requestData.last_name       = this.forms.customers.add.data.last_name;
             requestData.first_name      = this.forms.customers.add.data.first_name;
+            requestData.email           = this.forms.customers.add.data.email;
+            requestData.password        = this.forms.customers.add.data.password;
             requestData.birth_date      = this.forms.customers.add.data.birth_date;
             requestData.gender          = this.forms.customers.add.data.gender;
             requestData.phone           = this.forms.customers.add.data.phone;
@@ -409,6 +437,8 @@ export default {
                     this.forms.customers.add.data.number_document = "";
                     this.forms.customers.add.data.last_name       = "";
                     this.forms.customers.add.data.first_name      = "";
+                    this.forms.customers.add.data.email           = "";
+                    this.forms.customers.add.data.password        = "";
                     this.forms.customers.add.data.birth_date      = "";
                     this.forms.customers.add.data.gender          = "";
                     this.forms.customers.add.data.phone           = "";
@@ -439,6 +469,8 @@ export default {
                     this.forms.customers.add.errors.number_document = errors.number_document ?? [];
                     this.forms.customers.add.errors.last_name       = errors.last_name ?? [];
                     this.forms.customers.add.errors.first_name      = errors.first_name ?? [];
+                    this.forms.customers.add.errors.email           = errors.email ?? [];
+                    this.forms.customers.add.errors.password        = errors.password ?? [];
                     this.forms.customers.add.errors.birth_date      = errors.birth_date ?? [];
                     this.forms.customers.add.errors.gender          = errors.gender ?? [];
                     this.forms.customers.add.errors.phone           = errors.phone ?? [];

@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Admins;
 
 use App\Helpers\Utilities;
 use App\Http\Controllers\Controller;
-use App\Models\Customer;
-use App\Http\Requests\Admins\Customers\{StoreCustomerRequest, UpdateCustomerRequest};
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\{Auth, DB};
+
+use App\Http\Requests\Admins\Customers\{StoreCustomerRequest, UpdateCustomerRequest};
+use App\Models\{Customer, CustomerUser};
 
 class CustomerController extends Controller {
 
@@ -19,6 +20,8 @@ class CustomerController extends Controller {
      */
     public function list(Request $request) {
 
+        $userAuth = Auth::user();
+
         $list = Customer::when(Utilities::validateVariable($request->general), function($query) use ($request) {
 
                        $filter = "%".trim($request->general)."%";
@@ -28,8 +31,10 @@ class CustomerController extends Controller {
                               ->orWhere("first_name", "like", $filter);
 
                     })
+                    ->where("company_id", $userAuth->company_id)
                     ->orderBy("last_name", "ASC")
                     ->orderBy("first_name", "ASC")
+                    ->with(["customerUser"])
                     ->paginate(10);
 
         return $list;
@@ -63,6 +68,8 @@ class CustomerController extends Controller {
 
         DB::transaction(function() use($request, $customer) {
 
+            $userAuth = Auth::user();
+
             $customer->type_document   = $request->type_document;
             $customer->number_document = $request->number_document;
             $customer->last_name       = $request->last_name;
@@ -70,8 +77,18 @@ class CustomerController extends Controller {
             $customer->birth_date      = $request->birth_date;
             $customer->gender          = $request->gender;
             $customer->phone           = $request->phone;
+            $customer->company_id      = $userAuth->company_id;
             $customer->status          = $request->status;
             $customer->save();
+
+            $customerUser = new CustomerUser();
+            $customerUser->name        = $customer->last_name." ".$customer->first_name;
+            $customerUser->email       = $request->email;
+            $customerUser->password    = $request->password;
+            $customerUser->company_id  = $customer->company_id;
+            $customerUser->customer_id = $customer->id;
+            $customerUser->status      = "active";
+            $customerUser->save();
 
         });
 

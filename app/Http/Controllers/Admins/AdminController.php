@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Admins;
 
 use App\Helpers\Utilities;
 use App\Http\Controllers\Controller;
-use App\Models\Admin;
-use App\Http\Requests\Admins\Admins\{StoreAdminRequest, UpdateAdminRequest};
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\{Auth, DB};
+
+use App\Http\Requests\Admins\Admins\{StoreAdminRequest, UpdateAdminRequest};
+use App\Models\{Admin, User};
 
 class AdminController extends Controller {
 
@@ -20,6 +20,8 @@ class AdminController extends Controller {
      */
     public function list(Request $request) {
 
+        $userAuth = Auth::user();
+
         $list = Admin::when(Utilities::validateVariable($request->general), function($query) use ($request) {
 
                        $filter = "%".trim($request->general)."%";
@@ -29,8 +31,10 @@ class AdminController extends Controller {
                               ->orWhere("first_name", "like", $filter);
 
                     })
+                    ->where("company_id", $userAuth->company_id)
                     ->orderBy("last_name", "ASC")
                     ->orderBy("first_name", "ASC")
+                    ->with(["user"])
                     ->paginate(10);
 
         return $list;
@@ -64,6 +68,8 @@ class AdminController extends Controller {
 
         DB::transaction(function() use($request, $admin) {
 
+            $userAuth = Auth::user();
+
             $admin->type_document   = $request->type_document;
             $admin->number_document = $request->number_document;
             $admin->last_name       = $request->last_name;
@@ -71,14 +77,17 @@ class AdminController extends Controller {
             $admin->birth_date      = $request->birth_date;
             $admin->gender          = $request->gender;
             $admin->phone           = $request->phone;
+            $admin->company_id      = $userAuth->company_id;
             $admin->status          = $request->status;
             $admin->save();
 
             $user = new User();
-            $user->admin_id = $admin->id;
-            $user->name     = $admin->last_name." ".$admin->first_name;
-            $user->email    = $request->email;
-            $user->password = $request->password;
+            $user->name       = $admin->last_name." ".$admin->first_name;
+            $user->email      = $request->email;
+            $user->password   = $request->password;
+            $user->company_id = $admin->company_id;
+            $user->admin_id   = $admin->id;
+            $user->status     = "active";
             $user->save();
 
         });

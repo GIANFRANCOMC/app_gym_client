@@ -9,6 +9,7 @@
         </span>
     </h4>
 
+    <!-- Content -->
     <div class="d-flex flex-row mb-4">
         <div class="align-self-start">
             <inputText
@@ -44,6 +45,7 @@
                         <th class="align-middle text-center fw-bold col-1">NÚMERO DE<br/>DOCUMENTO</th>
                         <th class="align-middle text-center fw-bold col-2">APELLIDOS</th>
                         <th class="align-middle text-center fw-bold col-2">NOMBRES</th>
+                        <th class="align-middle text-center fw-bold col-1">CORREO<br/>ELECTRÓNICO</th>
                         <th class="align-middle text-center fw-bold col-1" colspan="2">FECHA DE NACIMIENTO</th>
                         <th class="align-middle text-center fw-bold col-1">GÉNERO</th>
                         <th class="align-middle text-center fw-bold col-1">ESTADO</th>
@@ -53,13 +55,12 @@
                 <tbody class="table-border-bottom-0">
                     <template v-if="lists.admins.records.data && lists.admins.records.data.length > 0">
                         <tr v-for="record in lists.admins.records.data" :key="record.id" class="align-middle">
-                            <td class="text-center" v-text="record.formatted_type_document"></td>
+                            <td class="text-center text-uppercase" v-text="record.formatted_type_document"></td>
                             <td class="text-center" v-text="record.number_document"></td>
                             <td class="text-center" v-text="record.last_name"></td>
                             <td class="text-center" v-text="record.first_name"></td>
-                            <td class="text-center">
-                                <span v-text="record.formatted_birth_date"></span>
-                            </td>
+                            <td class="text-center" v-text="record?.user?.email"></td>
+                            <td class="text-center" v-text="record.formatted_birth_date"></td>
                             <td class="text-start">
                                 <span class="badge rounded-pill bg-label-info">{{ record.age }} años</span>
                             </td>
@@ -68,14 +69,11 @@
                                 <span v-text="record.formatted_gender" class="text-capitalize ms-1"></span>
                             </td>
                             <td class="text-center">
-                                <span :class="['badge', 'text-capitalize', { 'bg-label-primary': record.status === 'active', 'bg-label-danger': record.status === 'inactive' }]" v-text="record.formatted_status"></span>
+                                <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
                             <!-- <td class="text-center">
                                 <button type="button" class="btn btn-sm rounded-pill btn-warning waves-effect waves-light">
                                     <i class="fa fa-pencil"></i>
-                                </button>
-                                <button type="button" class="btn btn-sm rounded-pill btn-danger waves-effect waves-light ms-1">
-                                    <i class="fa fa-trash"></i>
                                 </button>
                             </td> -->
                         </tr>

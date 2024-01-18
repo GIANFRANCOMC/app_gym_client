@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers\Admins;
 
+use App\Helpers\Utilities;
 use App\Http\Controllers\Controller;
-use App\Models\Company;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\{Auth, DB};
+
 use App\Http\Requests\Admins\Companies\{StoreCompanyRequest, UpdateCompanyRequest};
+use App\Models\{Company};
 
 class CompanyController extends Controller
 {

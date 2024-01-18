@@ -25,6 +25,8 @@ class StoreCustomerRequest extends FormRequest
             'number_document' => 'required|string|min:2|max:30|unique:customers,number_document',
             'last_name'       => 'required|string|min:2|max:65',
             'first_name'      => 'required|string|min:2|max:85',
+            'email'           => 'required|string|unique:customers,email',
+            'password'        => 'required|string',
             'birth_date'      => 'required|date',
             'gender'          => 'required|string',
             'phone'           => 'required|string',
