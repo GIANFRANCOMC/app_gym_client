@@ -5,16 +5,14 @@
             <label for="email" class="form-label">Correo electrónico</label>
             <input type="text" class="form-control" id="email" name="email" placeholder="Ingrese correo electrónico" :value="old('email')" required autofocus autocomplete="username"/>
             @if ($errors->get('email'))
-                <ul>
-                    @foreach ((array) $errors->get('email') as $message)
-                        <li>{{ $message }}</li>
-                    @endforeach
-                </ul>
+                @foreach ((array) $errors->get('email') as $message)
+                    <small class="text-danger">{{ $message }}</small>
+                @endforeach
             @endif
         </div>
-        <div>
-            <div class="d-flex justify-content-between mt-3">
-                <label for="email" class="form-label">Contraseña</label>
+        <div class="mt-3">
+            <div class="d-flex justify-content-between">
+                <label for="password" class="form-label">Contraseña</label>
                     @if (Route::has('password.request'))
                         {{-- <a href="{{ route('password.request') }}">
                             <small>¿Has olvidado tu contraseña?</small>
@@ -24,13 +22,25 @@
             <div>
                 <input type="password" class="form-control" id="password" name="password" placeholder="Ingrese contraseña" required autocomplete="current-password"/>
                 @if ($errors->get('password'))
-                    <ul>
-                        @foreach ((array) $errors->get('password') as $message)
-                            <li>{{ $message }}</li>
-                        @endforeach
-                    </ul>
+                    @foreach ((array) $errors->get('password') as $message)
+                        <small class="text-danger">{{ $message }}</small>
+                    @endforeach
                 @endif
             </div>
+        </div>
+        <div class="mt-3">
+            <label for="company_id" class="form-label">Empresa</label>
+            <select class="form-select" id="company_id" name="company_id" :value="old('company_id')" required>
+                <option value="">Seleccione</option>
+                @foreach ($companies as $company)
+                    <option value="{{ $company->id }}">{{ $company->commercial_name }}</option>
+                @endforeach
+            </select>
+            @if ($errors->get('company_id'))
+                @foreach ((array) $errors->get('company_id') as $message)
+                    <small class="text-danger">{{ $message }}</small>
+                @endforeach
+            @endif
         </div>
         <!-- Remember Me -->
         {{-- <div class="block mt-4">

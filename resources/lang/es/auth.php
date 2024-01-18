@@ -16,5 +16,5 @@ return [
     'failed' => 'Estas credenciales no coinciden con nuestros registros.',
     'password' => 'The provided password is incorrect.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
-
+    'company_id' => 'Empresa no se encuentra activa.'
 ];

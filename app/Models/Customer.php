@@ -117,4 +117,10 @@ class Customer extends Model {
 
     }
 
+    public function customerUser() {
+
+        return $this->hasOne(CustomerUser::class);
+
+    }
+
 }

@@ -8,7 +8,9 @@ use App\Models\Admin;
 use App\Models\Branch;
 use App\Models\Company;
 use App\Models\Customer;
+use App\Models\CustomerUser;
 use App\Models\ProductService;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -18,38 +20,22 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        /* \App\Models\Company::factory(5)->create()->each(function ($company) {
-            $company->admins()->saveMany(\App\Models\Admin::factory(5)->make());
-            $company->customers()->saveMany(\App\Models\Customer::factory(5)->make());
+        Company::factory(5)->create()->each(function($company) {
 
-            $company->branches()->saveMany(\App\Models\Branch::factory(5)->make());
-            $company->productServices()->saveMany(\App\Models\ProductService::factory(5)->make());
-        }); */
+            $admins = Admin::factory(2)->create(['company_id' => $company->id]);
+            $customers = Customer::factory(2)->create(['company_id' => $company->id]);
 
-         // Check if there are existing companies
-         $existingCompanies = Company::count();
+            $admins->each(function($admin) use($company) {
 
-         if ($existingCompanies === 0) {
-             // Create companies if none exist
-             Company::factory(5)->create();
-         }
+                User::factory(1)->create(['company_id' => $company->id, 'admin_id' => $admin->id]);
 
-        // Use the existing companies to create branches
-        Company::all()->each(function ($company) {
-            $company->admins()->saveMany(Admin::factory(5)->make());
-            $company->customers()->saveMany(Customer::factory(5)->make());
+            });
 
-            $company->branches()->saveMany(Branch::factory(5)->make());
-            $company->productServices()->saveMany(ProductService::factory(5)->make());
+            $customers->each(function($customer) use($company) {
+
+                CustomerUser::factory(1)->create(['company_id' => $company->id, 'customer_id' => $customer->id]);
+
+            });
         });
-
-        /*
-        \App\Models\User::factory(1)->create();
-         */
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
     }
 }

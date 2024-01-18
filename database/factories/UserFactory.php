@@ -32,10 +32,10 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
             'company_id' => function () {
-                return Company::inRandomOrder()->first()->id;
+                return Company::factory()->create()->id;
             },
             'admin_id' => function () {
-                return Admin::inRandomOrder()->first()->id;
+                return Admin::factory()->create()->id;
             },
             'status' => $this->faker->randomElement(['active', 'inactive'])
         ];

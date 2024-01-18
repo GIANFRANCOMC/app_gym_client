@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Company;
 use App\Models\Customer;
+use App\Models\Company;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -32,10 +32,10 @@ class CustomerUserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
             'company_id' => function () {
-                return Company::inRandomOrder()->first()->id;
+                return Company::factory()->create()->id;
             },
             'customer_id' => function () {
-                return Customer::inRandomOrder()->first()->id;
+                return Customer::factory()->create()->id;
             },
             'status' => $this->faker->randomElement(['active', 'inactive'])
         ];

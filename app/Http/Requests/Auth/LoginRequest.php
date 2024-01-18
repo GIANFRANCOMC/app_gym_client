@@ -29,6 +29,14 @@ class LoginRequest extends FormRequest
         return [
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
+            'company_id' => ['required', 'string', 'exists:companies,id'],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'company_id.exists' => 'No existe.',
         ];
     }
 
@@ -41,8 +49,44 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        $credentials = $this->only('email', 'password') + ['company_id' => $this->input('company_id')];
+
+        // Attempt to authenticate the user
+        if (! Auth::attempt($credentials, $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => trans('auth.failed'),
+            ]);
+        }
+
+        // Check if the company is active
+       $company = Auth::user()->company;
+
+        if (!$company || $company->status !== 'active') {
+            Auth::logout();
+
+            throw ValidationException::withMessages([
+                'company_id' => trans('auth.company_id'),
+            ]);
+        }
+
+        // Check if the admin is active
+        $admin = Auth::user()->admin;
+
+        if (!$admin || $admin->status !== 'active') {
+            Auth::logout();
+
+            throw ValidationException::withMessages([
+                'email' => trans('auth.failed'),
+            ]);
+        }
+
+        // Check if the user is active
+        $user = Auth::user();
+
+        if ($user->status !== 'active') {
+            Auth::logout();
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
