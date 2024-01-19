@@ -22,9 +22,9 @@ class CustomerController extends Controller {
 
         $userAuth = Auth::user();
 
-        $list = Customer::when(Utilities::validateVariable($request->general), function($query) use ($request) {
+        $list = Customer::when(Utilities::validateVariable($request->general), function($query) use($request) {
 
-                       $filter = "%".trim($request->general)."%";
+                        $filter = "%".trim($request->general)."%";
 
                         $query->where("number_document", "like", $filter)
                               ->orwhere("last_name", "like", $filter)
@@ -84,7 +84,7 @@ class CustomerController extends Controller {
             $customerUser = new CustomerUser();
             $customerUser->name        = $customer->last_name." ".$customer->first_name;
             $customerUser->email       = $request->email;
-            $customerUser->password    = $request->password;
+            $customerUser->password    = $request->number_document; //$request->password;
             $customerUser->company_id  = $customer->company_id;
             $customerUser->customer_id = $customer->id;
             $customerUser->status      = "active";

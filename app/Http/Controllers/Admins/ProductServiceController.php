@@ -22,9 +22,9 @@ class ProductServiceController extends Controller {
 
         $userAuth = Auth::user();
 
-        $list = ProductService::when(Utilities::validateVariable($request->general), function($query) use ($request) {
+        $list = ProductService::when(Utilities::validateVariable($request->general), function($query) use($request) {
 
-                       $filter = "%".trim($request->general)."%";
+                        $filter = "%".trim($request->general)."%";
 
                         $query->where("name", "like", $filter)
                               ->orwhere("description", "like", $filter);

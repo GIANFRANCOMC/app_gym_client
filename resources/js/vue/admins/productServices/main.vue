@@ -9,6 +9,7 @@
         </span>
     </h4>
 
+    <!-- Content -->
     <div class="d-flex flex-row mb-4">
         <div class="align-self-start">
             <inputText
@@ -54,14 +55,11 @@
                             <td class="text-center" v-text="record.description"></td>
                             <td class="text-center" v-text="record.price"></td>
                             <td class="text-center">
-                                <span :class="['badge', 'text-capitalize', { 'bg-label-primary': record.status === 'active', 'bg-label-danger': record.status === 'inactive' }]" v-text="record.formatted_status"></span>
+                                <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
                             <!-- <td class="text-center">
                                 <button type="button" class="btn btn-sm rounded-pill btn-warning waves-effect waves-light">
                                     <i class="fa fa-pencil"></i>
-                                </button>
-                                <button type="button" class="btn btn-sm rounded-pill btn-danger waves-effect waves-light ms-1">
-                                    <i class="fa fa-trash"></i>
                                 </button>
                             </td> -->
                         </tr>
@@ -127,19 +125,18 @@
                         </inputText>
                     </div>
                     <div class="row g-2 mb-3">
-                        <inputText
+                        <inputNumber
                             v-model="forms.productServices.add.data.price"
                             :showDiv="true"
                             title="Precio"
                             :required="true"
-                            :maxlength="80"
                             :showTextBottom="true"
                             :textBottomInfo="forms.productServices.add.errors?.price"
                             :xl="6"
                             :lg="6"
                             :md="12"
                             :sm="12">
-                        </inputText>
+                        </inputNumber>
                         <inputSelect
                             v-model="forms.productServices.add.data.status"
                             :options="forms.productServices.add.options.status"
@@ -177,13 +174,15 @@ import axios from "axios";
 import inputDate from "../componentes/inputDate.vue";
 import inputText from "../componentes/inputText.vue";
 import inputSelect from "../componentes/inputSelect.vue";
+import inputNumber from "../componentes/inputNumber.vue";
 
 export default {
     components: {
-        inputDate, inputText, inputSelect
+        inputDate, inputText, inputSelect, inputNumber
     },
     mounted: async function () {
 
+        document.getElementById("menu-item-product-services").classList.add("active");
         await this.listProductServices({});
         initTooltips();
     },

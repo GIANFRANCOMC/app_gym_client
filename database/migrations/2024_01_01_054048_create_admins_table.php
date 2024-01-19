@@ -23,6 +23,8 @@ return new class extends Migration
             $table->foreignId('company_id')->constrained('companies');
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
+
+            $table->unique(['number_document', 'company_id']);
         });
     }
 

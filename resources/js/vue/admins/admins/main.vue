@@ -257,6 +257,21 @@
                             :sm="12">
                         </inputSelect>
                     </div>
+                    <div class="row g-2 mb-3">
+                        <inputSelect
+                            v-model="forms.admins.add.data.branches"
+                            :options="forms.admins.add.options.branches"
+                            :showDiv="true"
+                            title="Sucursal"
+                            :required="true"
+                            :showTextBottom="true"
+                            :textBottomInfo="forms.admins.add.errors?.branches"
+                            :xl="12"
+                            :lg="12"
+                            :md="12"
+                            :sm="12">
+                        </inputSelect>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -287,6 +302,8 @@ export default {
     },
     mounted: async function () {
 
+        document.getElementById("menu-item-admins").classList.add("active");
+        await this.initParams({});
         await this.listAdmins({});
         initTooltips();
     },
@@ -318,7 +335,8 @@ export default {
                             birth_date: "",
                             gender: "",
                             phone: "",
-                            status: ""
+                            status: "",
+                            branches: []
                         },
                         options: {
                             type_document: [
@@ -332,7 +350,8 @@ export default {
                             status: [
                                 {code: "active", label: "Activo"},
                                 {code: "inactive", label: "Inactivo"}
-                            ]
+                            ],
+                            branches: []
                         },
                         errors: {}
                     }
@@ -342,6 +361,40 @@ export default {
         };
     },
     methods: {
+        async initParams({}) {
+
+            return new Promise(resolve => {
+
+                let requestUrl    = `${requestRoute}/admins/initParams`,
+                    requestConfig = {};
+
+                let params = {};
+
+                requestConfig.params = params;
+
+                axios
+                .get(requestUrl, requestConfig)
+                .then((response) => {
+
+                    let branches = response.data.branches;
+
+                    this.forms.admins.add.options.branches = branches.map(e => ({code: e.id, label: e.name}));
+
+                })
+                .catch((error) => {
+
+                    toastrAlert({subtitle: error, type: "error"});
+
+                })
+                .finally(() => {
+
+                    resolve(true);
+
+                });
+
+            });
+
+        },
         async listAdmins({url = null}) {
 
             return new Promise(resolve => {
@@ -458,6 +511,7 @@ export default {
                     for(const errorKey of errorsKeys) {
 
                         this.forms.admins.add.errors[errorKey] = [];
+
                     }
                     break;
             }

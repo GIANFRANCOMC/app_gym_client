@@ -45,6 +45,7 @@
                         <th class="align-middle text-center fw-bold col-1">NÚMERO DE<br/>DOCUMENTO</th>
                         <th class="align-middle text-center fw-bold col-2">APELLIDOS</th>
                         <th class="align-middle text-center fw-bold col-2">NOMBRES</th>
+                        <th class="align-middle text-center fw-bold col-1">CORREO<br/>ELECTRÓNICO</th>
                         <th class="align-middle text-center fw-bold col-1" colspan="2">FECHA DE NACIMIENTO</th>
                         <th class="align-middle text-center fw-bold col-1">GÉNERO</th>
                         <th class="align-middle text-center fw-bold col-1">ESTADO</th>
@@ -58,6 +59,7 @@
                             <td class="text-center" v-text="record.number_document"></td>
                             <td class="text-center" v-text="record.last_name"></td>
                             <td class="text-center" v-text="record.first_name"></td>
+                            <td class="text-center" v-text="record?.customerUser?.email"></td>
                             <td class="text-center" v-text="record.formatted_birth_date"></td>
                             <td class="text-start">
                                 <span class="badge rounded-pill bg-label-info">{{ record.age }} años</span>
@@ -181,14 +183,15 @@
                             :maxlength="60"
                             :showTextBottom="true"
                             :textBottomInfo="forms.customers.add.errors?.email"
-                            :xl="6"
-                            :lg="6"
+                            :xl="12"
+                            :lg="12"
                             :md="12"
                             :sm="12">
                         </inputText>
                         <inputText
                             v-model="forms.customers.add.data.password"
                             :showDiv="true"
+                            :divClass="['d-none']"
                             title="Contraseña"
                             :required="true"
                             :maxlength="80"
@@ -285,6 +288,7 @@ export default {
     },
     mounted: async function () {
 
+        document.getElementById("menu-item-customers").classList.add("active");
         await this.listCustomers({});
         initTooltips();
     },
@@ -456,6 +460,7 @@ export default {
                     for(const errorKey of errorsKeys) {
 
                         this.forms.customers.add.errors[errorKey] = [];
+
                     }
                     break;
             }

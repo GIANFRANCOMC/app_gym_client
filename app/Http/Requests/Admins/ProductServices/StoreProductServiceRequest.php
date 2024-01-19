@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Admins\ProductServices;
 
+use App\Rules\UniqueProductServiceNameForCompany;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreProductServiceRequest extends FormRequest
 {
@@ -21,10 +23,12 @@ class StoreProductServiceRequest extends FormRequest
      */
     public function rules(): array
     {
+        $userAuth = Auth::user();
+
         return [
-            'name'        => 'required|string|min:2|max:65',
+            'name'        => ['required', 'string', 'min:2', 'max:65', new UniqueProductServiceNameForCompany($userAuth->company_id)],
             'description' => 'required|string|min:2|max:85',
-            'price'       => 'required|string',
+            'price'       => 'required|numeric|min:0.1|max:999999999.99|decimal:0,2',
             'status'      => 'required|string'
         ];
     }

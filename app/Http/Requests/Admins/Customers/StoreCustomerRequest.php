@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Admins\Customers;
 
+use App\Rules\{UniqueCustomerNumberDocumentForCompany, UniqueCustomerUserEmailForCompany};
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreCustomerRequest extends FormRequest
 {
@@ -21,12 +23,14 @@ class StoreCustomerRequest extends FormRequest
      */
     public function rules(): array
     {
+        $userAuth = Auth::user();
+
         return [
-            'number_document' => 'required|string|min:2|max:30|unique:customers,number_document',
+            'number_document' => ['required', 'string', 'min:2', 'max:30', new UniqueCustomerNumberDocumentForCompany($userAuth->company_id)],
             'last_name'       => 'required|string|min:2|max:65',
             'first_name'      => 'required|string|min:2|max:85',
-            'email'           => 'required|string|unique:customers,email',
-            'password'        => 'required|string',
+            'email'           => ['required', 'string', 'email', new UniqueCustomerUserEmailForCompany($userAuth->company_id)],
+            //'password'        => 'required|string',
             'birth_date'      => 'required|date',
             'gender'          => 'required|string',
             'phone'           => 'required|string',

@@ -1,6 +1,6 @@
 <template>
     <template v-if="showDiv">
-        <div :class="[divSizeClass]">
+        <div :class="[divSizeClass, ...divClass]">
             <slot name="default"></slot>
             <label :class="[...titleClass]" v-text="title"></label>
             <label v-if="required" :class="[...requiredClass]" v-text="requiredLabel"></label>
@@ -53,6 +53,11 @@ export default {
             type: Boolean,
             required: false,
             default: false
+        },
+        divClass: {
+            type: Array,
+            required: false,
+            default: []
         },
         title: {
             type: String,

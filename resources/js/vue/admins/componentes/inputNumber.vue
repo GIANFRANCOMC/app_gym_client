@@ -6,15 +6,14 @@
             <label v-if="required" :class="[...requiredClass]" v-text="requiredLabel"></label>
             <div class="input-group">
                 <slot name="inputGroupPrepend"></slot>
-                <select
+                <input
+                    type="number"
                     :value="modelValue"
                     @input="emitValue($event.target.value)"
                     :class="[...addClass]"
+                    :placeholder="placeholder"
                     :disabled="disabled"
-                    @change="handleChange">
-                    <option v-if="withDefaultOption" :value="defaultOptionValue" v-text="defaultOptionLabel"></option>
-                    <option v-for="(option, index) in options" :value="option.code" v-text="option.label"></option>
-                </select>
+                    @keyup.enter="handleEnterKey"/>
                 <slot name="inputGroupAppend"></slot>
             </div>
             <div v-if="showTextBottom">
@@ -26,15 +25,14 @@
         <slot name="default"></slot>
         <div class="input-group">
             <slot name="inputGroupPrepend"></slot>
-            <select
+            <input
+                type="number"
                 :value="modelValue"
                 @input="emitValue($event.target.value)"
                 :class="[...addClass]"
+                :placeholder="placeholder"
                 :disabled="disabled"
-                @change="handleChange">
-                <option v-if="withDefaultOption" :value="defaultOptionValue" v-text="defaultOptionLabel"></option>
-                <option v-for="(option, index) in options" :value="option.code" v-text="option.label"></option>
-            </select>
+                @keyup.enter="handleEnterKey"/>
             <slot name="inputGroupAppend"></slot>
         </div>
         <div v-if="showTextBottom">
@@ -44,34 +42,15 @@
 </template>
 
 <script>
+import { requestRoute, generalConfiguration } from "../helpers/constants.js";
+
 export default {
-    name: "inputSelect",
-    emits: ["changeEvent", "update:modelValue"],
+    name: "inputNumber",
+    emits: ["enterKeyPressed", "update:modelValue"],
     props: {
         modelValue: {
             type: [String, Number],
             default: ""
-        },
-        // Options
-        withDefaultOption:{
-            type: Boolean,
-            required: false,
-            default: true
-        },
-        defaultOptionLabel: {
-            type: String,
-            required: false,
-            default: "Seleccione"
-        },
-        defaultOptionValue: {
-            type: String,
-            required: false,
-            default: ""
-        },
-        options: {
-            type: Array,
-            required: false,
-            default: []
         },
         // Title
         showDiv: {
@@ -113,7 +92,12 @@ export default {
         addClass:{
             type: Array,
             required: false,
-            default: ["form-select"]
+            default: ["form-control"]
+        },
+        placeholder: {
+            type: String,
+            required: false,
+            default: ""
         },
         disabled: {
             type: Boolean,
@@ -181,9 +165,9 @@ export default {
             this.$emit("update:modelValue", value);
 
         },
-        handleChange() {
+        handleEnterKey() {
 
-            this.$emit("changeEvent");
+            this.$emit("enterKeyPressed");
 
         }
     }

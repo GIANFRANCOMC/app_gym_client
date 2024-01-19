@@ -117,7 +117,7 @@
                             <div data-i18n="Page 1">Ventas</div>
                         </a>
                     </li>
-                    <li class="menu-item active">
+                    <li class="menu-item" id="menu-item-customers">
                         <a href="{{ route('customers.index') }}" class="menu-link">
                             <i class="fa fa-user me-1"></i>
                             <div data-i18n="Page 1">Clientes</div>
@@ -135,20 +135,20 @@
                             <div data-i18n="Page 1">Membresías</div>
                         </a>
                     </li>
-                    <li class="menu-item">
+                    <li class="menu-item" id="menu-item-product-services">
                         <a href="{{ route('productServices.index') }}" class="menu-link">
                             <i class="fa fa-bottle-water me-1"></i>
                             <div data-i18n="Page 1">Productos - Servicios</div>
                         </a>
                     </li>
-                    <li class="menu-item">
+                    <li class="menu-item" id="menu-item-admins">
                         <a href="{{ route('admins.index') }}" class="menu-link">
                             <i class="fa fa-users me-1"></i>
                             <div data-i18n="Page 1">Colaboradores</div>
                         </a>
                     </li>
-                    <li class="menu-item disabled">
-                        <a href="#" class="menu-link">
+                    <li class="menu-item" id="menu-item-branches">
+                        <a href="{{ route('branches.index') }}" class="menu-link">
                             <i class="fa fa-warehouse me-1"></i>
                             <div data-i18n="Page 1">Sucursales</div>
                         </a>

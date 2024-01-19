@@ -1388,6 +1388,7 @@ export default {
                     for(const errorKey of errorsKeys) {
 
                         this.forms.customers.add.errors[errorKey] = [];
+
                     }
                     break;
             }

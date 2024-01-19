@@ -8,9 +8,34 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
 
 use App\Http\Requests\Admins\Admins\{StoreAdminRequest, UpdateAdminRequest};
-use App\Models\{Admin, User};
+use App\Models\{Admin, Branch, User};
+use stdClass;
 
 class AdminController extends Controller {
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param  \App\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function initParams(Request $request) {
+
+        $userAuth = Auth::user();
+
+        $initParams = new stdClass();
+
+        $branches = Branch::where("company_id", $userAuth->company_id)
+                          ->where("status", "active")
+                          ->orderBy("name", "ASC")
+                          ->orderBy("location", "ASC")
+                          ->get();
+
+        $initParams->branches = $branches;
+
+        return $initParams;
+
+    }
 
     /**
      * Display a listing of the resource.
@@ -22,9 +47,9 @@ class AdminController extends Controller {
 
         $userAuth = Auth::user();
 
-        $list = Admin::when(Utilities::validateVariable($request->general), function($query) use ($request) {
+        $list = Admin::when(Utilities::validateVariable($request->general), function($query) use($request) {
 
-                       $filter = "%".trim($request->general)."%";
+                        $filter = "%".trim($request->general)."%";
 
                         $query->where("number_document", "like", $filter)
                               ->orwhere("last_name", "like", $filter)

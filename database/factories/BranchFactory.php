@@ -6,9 +6,9 @@ use App\Models\Company;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ProductService>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Branch>
  */
-class ProductServiceFactory extends Factory
+class BranchFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,11 +18,10 @@ class ProductServiceFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->word,
-            'description' => $this->faker->sentence,
-            'price' => $this->faker->randomFloat(2, 10, 100),
+            'name' => $this->faker->company,
+            'location' => $this->faker->address,
             'company_id' => function () {
-                return Company::inRandomOrder()->first()->id;
+                return Company::factory()->create()->id;
             },
             'status' => $this->faker->randomElement(['active', 'inactive'])
         ];
