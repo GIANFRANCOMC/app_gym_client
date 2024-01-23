@@ -30,7 +30,6 @@ class DatabaseSeeder extends Seeder
 
             $admins = Admin::factory(2)->create(['company_id' => $company->id, 'status' => 'active']);
             $customers = Customer::factory(2)->create(['company_id' => $company->id]);
-            $productServices = ProductService::factory(4)->create(['company_id' => $company->id]);
             $branches = Branch::factory(2)->create(['company_id' => $company->id, 'status' => 'active']);
 
             $admins->each(function($admin) use($company) {
@@ -44,6 +43,8 @@ class DatabaseSeeder extends Seeder
                 CustomerUser::factory(1)->create(['company_id' => $company->id, 'customer_id' => $customer->id]);
 
             });
+
+            $productServices = ProductService::factory(1)->create(['company_id' => $company->id]);
 
         });
 
