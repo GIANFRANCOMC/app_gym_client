@@ -1,0 +1,17 @@
+{
+  "resources/css/app.css": {
+    "file": "assets/app-CdUY33fo.css",
+    "isEntry": true,
+    "src": "resources/css/app.css"
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-nGfMv9XH.js",
+    "isEntry": true,
+    "src": "resources/js/app.js"
+  },
+  "resources/js/vue/customers/main.js": {
+    "file": "assets/main-w40geAFS.js",
+    "isEntry": true,
+    "src": "resources/js/vue/customers/main.js"
+  }
+}
