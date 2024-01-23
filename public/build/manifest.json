@@ -1,17 +1,79 @@
 {
+  "_axios-OMshwncm.js": {
+    "file": "assets/axios-OMshwncm.js"
+  },
+  "_inputSelect-iyL7CFYm.js": {
+    "file": "assets/inputSelect-iyL7CFYm.js",
+    "imports": [
+      "_axios-OMshwncm.js"
+    ]
+  },
+  "_inputSelect2-lGZPlumr.js": {
+    "file": "assets/inputSelect2-lGZPlumr.js",
+    "imports": [
+      "_inputSelect-iyL7CFYm.js"
+    ]
+  },
   "resources/css/app.css": {
     "file": "assets/app-CdUY33fo.css",
     "isEntry": true,
     "src": "resources/css/app.css"
   },
   "resources/js/app.js": {
-    "file": "assets/app-nGfMv9XH.js",
+    "file": "assets/app-jYmw_4FC.js",
+    "imports": [
+      "_axios-OMshwncm.js"
+    ],
     "isEntry": true,
     "src": "resources/js/app.js"
   },
-  "resources/js/vue/customers/main.js": {
-    "file": "assets/main-w40geAFS.js",
+  "resources/js/vue/admins/admins/main.js": {
+    "file": "assets/main-hQu3Xq1m.js",
+    "imports": [
+      "_inputSelect-iyL7CFYm.js",
+      "_axios-OMshwncm.js",
+      "_inputSelect2-lGZPlumr.js"
+    ],
     "isEntry": true,
-    "src": "resources/js/vue/customers/main.js"
+    "src": "resources/js/vue/admins/admins/main.js"
+  },
+  "resources/js/vue/admins/branches/main.js": {
+    "file": "assets/main-2RxaWItD.js",
+    "imports": [
+      "_inputSelect-iyL7CFYm.js",
+      "_axios-OMshwncm.js",
+      "_inputSelect2-lGZPlumr.js"
+    ],
+    "isEntry": true,
+    "src": "resources/js/vue/admins/branches/main.js"
+  },
+  "resources/js/vue/admins/customers/main.js": {
+    "file": "assets/main-ugmHdSc7.js",
+    "imports": [
+      "_inputSelect-iyL7CFYm.js",
+      "_axios-OMshwncm.js",
+      "_inputSelect2-lGZPlumr.js"
+    ],
+    "isEntry": true,
+    "src": "resources/js/vue/admins/customers/main.js"
+  },
+  "resources/js/vue/admins/home/main.js": {
+    "file": "assets/main-TGKEmP7p.js",
+    "imports": [
+      "_inputSelect-iyL7CFYm.js",
+      "_axios-OMshwncm.js"
+    ],
+    "isEntry": true,
+    "src": "resources/js/vue/admins/home/main.js"
+  },
+  "resources/js/vue/admins/productServices/main.js": {
+    "file": "assets/main-z2MAXy5u.js",
+    "imports": [
+      "_inputSelect-iyL7CFYm.js",
+      "_axios-OMshwncm.js",
+      "_inputSelect2-lGZPlumr.js"
+    ],
+    "isEntry": true,
+    "src": "resources/js/vue/admins/productServices/main.js"
   }
 }
