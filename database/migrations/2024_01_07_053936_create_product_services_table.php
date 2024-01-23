@@ -19,6 +19,8 @@ return new class extends Migration
             $table->foreignId('company_id')->constrained('companies');
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
+
+            $table->unique(['name', 'company_id']);
         });
     }
 

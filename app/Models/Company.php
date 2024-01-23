@@ -88,7 +88,7 @@ class Company extends Model {
 
     public function customerUsers() {
 
-        return $this->hasMany(Customer::class);
+        return $this->hasMany(CustomerUser::class);
 
     }
 

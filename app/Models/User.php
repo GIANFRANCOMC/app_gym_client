@@ -71,15 +71,15 @@ class User extends Authenticatable {
 
     }
 
-    public function company() {
+    public function admin() {
 
-        return $this->belongsTo(Company::class, 'company_id', 'id');
+        return $this->belongsTo(Admin::class);
 
     }
 
-    public function admin() {
+    public function company() {
 
-        return $this->belongsTo(Admin::class, 'admin_id', 'id');
+        return $this->belongsTo(Company::class);
 
     }
 
