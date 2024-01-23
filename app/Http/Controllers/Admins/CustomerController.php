@@ -6,11 +6,28 @@ use App\Helpers\Utilities;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
+use stdClass;
 
 use App\Http\Requests\Admins\Customers\{StoreCustomerRequest, UpdateCustomerRequest};
 use App\Models\{Customer, CustomerUser};
 
 class CustomerController extends Controller {
+
+    /**
+     * Display init params.
+     *
+     * @param  \App\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function initParams(Request $request) {
+
+        $userAuth = Auth::user();
+
+        $initParams = new stdClass();
+
+        return $initParams;
+
+    }
 
     /**
      * Display a listing of the resource.
@@ -84,7 +101,7 @@ class CustomerController extends Controller {
             $customerUser = new CustomerUser();
             $customerUser->name        = $customer->last_name." ".$customer->first_name;
             $customerUser->email       = $request->email;
-            $customerUser->password    = $request->number_document; //$request->password;
+            $customerUser->password    = $request->number_document; // $request->password;
             $customerUser->company_id  = $customer->company_id;
             $customerUser->customer_id = $customer->id;
             $customerUser->status      = "active";

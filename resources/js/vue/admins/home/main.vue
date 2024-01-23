@@ -1228,6 +1228,7 @@ export default {
 
         await this.listCustomers({});
         initTooltips();
+
     },
     data() {
         return {

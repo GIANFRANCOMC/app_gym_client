@@ -168,23 +168,29 @@
 import { requestRoute, generalConfiguration } from "../helpers/constants.js";
 import { showLoading, hideSwal, toastrAlert } from "../helpers/alerts.js";
 import { initTooltips, hideTooltips } from "../helpers/tooltips.js";
-import { validateVariable } from "../helpers/main.js";
+import { validateVariable, consultNumberDocument } from "../helpers/main.js";
 
 import axios from "axios";
 import inputDate from "../componentes/inputDate.vue";
 import inputText from "../componentes/inputText.vue";
 import inputSelect from "../componentes/inputSelect.vue";
+import inputSelect2 from "../componentes/inputSelect2.vue";
 import inputNumber from "../componentes/inputNumber.vue";
 
 export default {
     components: {
-        inputDate, inputText, inputSelect, inputNumber
+        inputDate, inputText, inputSelect, inputSelect2, inputNumber
     },
     mounted: async function () {
 
         document.getElementById("menu-item-product-services").classList.add("active");
+
+        await this.initParams({});
+        await this.initOthers({});
+
         await this.listProductServices({});
         initTooltips();
+
     },
     data() {
         return {
@@ -204,6 +210,7 @@ export default {
                         modals: {
                             default: "addProductServiceModal"
                         },
+                        select2: {},
                         data: {
                             name: "",
                             description: "",
@@ -224,7 +231,25 @@ export default {
         };
     },
     methods: {
-        async listProductServices({url = null}) {
+        initParams({}) {
+
+            return new Promise(resolve => {
+
+                resolve(true);
+
+            });
+
+        },
+        initOthers({}) {
+
+            return new Promise(resolve => {
+
+                resolve(true);
+
+            });
+
+        },
+        listProductServices({url = null}) {
 
             return new Promise(resolve => {
 
@@ -294,7 +319,7 @@ export default {
                 switch(error.response.status) {
                     case 422:
                         this.setFormErrors({functionName, errors: error.response.data.errors});
-                        toastrAlert({code: 422, type: "error"});
+                        toastrAlert({code: error.response.status, type: "error"});
                         break;
                 }
 
@@ -328,6 +353,7 @@ export default {
                     for(const errorKey of errorsKeys) {
 
                         this.forms.productServices.add.errors[errorKey] = [];
+
                     }
                     break;
             }

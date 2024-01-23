@@ -6,11 +6,28 @@ use App\Helpers\Utilities;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
+use stdClass;
 
 use App\Http\Requests\Admins\ProductServices\{StoreProductServiceRequest, UpdateProductServiceRequest};
 use App\Models\{ProductService};
 
 class ProductServiceController extends Controller {
+
+    /**
+     * Display init params.
+     *
+     * @param  \App\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function initParams(Request $request) {
+
+        $userAuth = Auth::user();
+
+        $initParams = new stdClass();
+
+        return $initParams;
+
+    }
 
     /**
      * Display a listing of the resource.

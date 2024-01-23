@@ -258,8 +258,8 @@
                         </inputSelect>
                     </div>
                     <div class="row g-2 mb-3">
-                        <inputSelect
-                            v-model="forms.admins.add.data.branches"
+                        <inputSelect2
+                            :id="`${forms.admins.add.select2.branches}`"
                             :options="forms.admins.add.options.branches"
                             :showDiv="true"
                             title="Sucursal"
@@ -270,7 +270,7 @@
                             :lg="12"
                             :md="12"
                             :sm="12">
-                        </inputSelect>
+                        </inputSelect2>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -295,17 +295,22 @@ import axios from "axios";
 import inputDate from "../componentes/inputDate.vue";
 import inputText from "../componentes/inputText.vue";
 import inputSelect from "../componentes/inputSelect.vue";
+import inputSelect2 from "../componentes/inputSelect2.vue";
 
 export default {
     components: {
-        inputDate, inputText, inputSelect
+        inputDate, inputText, inputSelect, inputSelect2
     },
-    mounted: async function () {
+    mounted: async function() {
 
         document.getElementById("menu-item-admins").classList.add("active");
+
         await this.initParams({});
+        await this.initOthers({});
+
         await this.listAdmins({});
         initTooltips();
+
     },
     data() {
         return {
@@ -324,6 +329,9 @@ export default {
                     add: {
                         modals: {
                             default: "addAdminModal"
+                        },
+                        select2: {
+                            branches: "branchesSelect2"
                         },
                         data: {
                             type_document: "",
@@ -361,7 +369,7 @@ export default {
         };
     },
     methods: {
-        async initParams({}) {
+        initParams({}) {
 
             return new Promise(resolve => {
 
@@ -395,7 +403,32 @@ export default {
             });
 
         },
-        async listAdmins({url = null}) {
+        initOthers({}) {
+
+            return new Promise(resolve => {
+
+                let el = this;
+
+                $(`#${el.forms.admins.add.select2.branches}`).on("select2:select", function(e) {
+
+                    let data = e.params.data;
+                    if(((el.forms.admins.add.data.branches).filter(e => e.toString() == (data.id).toString())).length === 0) (el.forms.admins.add.data.branches).push(data.id);
+
+                });
+
+                $(`#${el.forms.admins.add.select2.branches}`).on("select2:unselect", function(e) {
+
+                    let data = e.params.data;
+                    el.forms.admins.add.data.branches = (el.forms.admins.add.data.branches).filter(e => e.toString() !== (data.id).toString());
+
+                });
+
+                resolve(true);
+
+            });
+
+        },
+        listAdmins({url = null}) {
 
             return new Promise(resolve => {
 
@@ -453,6 +486,7 @@ export default {
             requestData.gender          = this.forms.admins.add.data.gender;
             requestData.phone           = this.forms.admins.add.data.phone;
             requestData.status          = this.forms.admins.add.data.status;
+            requestData.branches        = this.forms.admins.add.data.branches;
 
             axios
             .post(requestUrl, requestData)
@@ -471,7 +505,7 @@ export default {
                 switch(error.response.status) {
                     case 422:
                         this.setFormErrors({functionName, errors: error.response.data.errors});
-                        toastrAlert({code: 422, type: "error"});
+                        toastrAlert({code: error.response.status, type: "error"});
                         break;
                 }
 
@@ -498,6 +532,8 @@ export default {
                     this.forms.admins.add.data.gender          = "";
                     this.forms.admins.add.data.phone           = "";
                     this.forms.admins.add.data.status          = "";
+                    this.forms.admins.add.data.branches        = [];
+                    $(`#${this.forms.admins.add.select2.branches}`).val(null).trigger("change");
                     break;
             }
 
@@ -531,6 +567,7 @@ export default {
                     this.forms.admins.add.errors.gender          = errors.gender ?? [];
                     this.forms.admins.add.errors.phone           = errors.phone ?? [];
                     this.forms.admins.add.errors.status          = errors.status ?? [];
+                    this.forms.admins.add.errors.branches        = errors.branches ?? [];
                     break;
             }
 

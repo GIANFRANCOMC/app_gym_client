@@ -26,6 +26,7 @@ class StoreCustomerRequest extends FormRequest
         $userAuth = Auth::user();
 
         return [
+            'type_document'   => 'required|string',
             'number_document' => ['required', 'string', 'min:2', 'max:30', new UniqueCustomerNumberDocumentForCompany($userAuth->company_id)],
             'last_name'       => 'required|string|min:2|max:65',
             'first_name'      => 'required|string|min:2|max:85',

@@ -111,7 +111,7 @@
                         <inputText
                             v-model="forms.branches.add.data.location"
                             :showDiv="true"
-                            title="Descripción"
+                            title="Ubicación"
                             :required="true"
                             :maxlength="80"
                             :showTextBottom="true"
@@ -154,22 +154,28 @@
 import { requestRoute, generalConfiguration } from "../helpers/constants.js";
 import { showLoading, hideSwal, toastrAlert } from "../helpers/alerts.js";
 import { initTooltips, hideTooltips } from "../helpers/tooltips.js";
-import { validateVariable } from "../helpers/main.js";
+import { validateVariable, consultNumberDocument } from "../helpers/main.js";
 
 import axios from "axios";
 import inputDate from "../componentes/inputDate.vue";
 import inputText from "../componentes/inputText.vue";
 import inputSelect from "../componentes/inputSelect.vue";
+import inputSelect2 from "../componentes/inputSelect2.vue";
 
 export default {
     components: {
-        inputDate, inputText, inputSelect
+        inputDate, inputText, inputSelect, inputSelect2
     },
     mounted: async function () {
 
         document.getElementById("menu-item-branches").classList.add("active");
+
+        await this.initParams({});
+        await this.initOthers({});
+
         await this.listBranches({});
         initTooltips();
+
     },
     data() {
         return {
@@ -189,6 +195,7 @@ export default {
                         modals: {
                             default: "addBranchModal"
                         },
+                        select2: {},
                         data: {
                             name: "",
                             location: "",
@@ -208,7 +215,25 @@ export default {
         };
     },
     methods: {
-        async listBranches({url = null}) {
+        initParams({}) {
+
+            return new Promise(resolve => {
+
+                resolve(true);
+
+            });
+
+        },
+        initOthers({}) {
+
+            return new Promise(resolve => {
+
+                resolve(true);
+
+            });
+
+        },
+        listBranches({url = null}) {
 
             return new Promise(resolve => {
 
@@ -277,7 +302,7 @@ export default {
                 switch(error.response.status) {
                     case 422:
                         this.setFormErrors({functionName, errors: error.response.data.errors});
-                        toastrAlert({code: 422, type: "error"});
+                        toastrAlert({code: error.response.status, type: "error"});
                         break;
                 }
 

@@ -281,16 +281,22 @@ import axios from "axios";
 import inputDate from "../componentes/inputDate.vue";
 import inputText from "../componentes/inputText.vue";
 import inputSelect from "../componentes/inputSelect.vue";
+import inputSelect2 from "../componentes/inputSelect2.vue";
 
 export default {
     components: {
-        inputDate, inputText, inputSelect
+        inputDate, inputText, inputSelect, inputSelect2
     },
     mounted: async function () {
 
         document.getElementById("menu-item-customers").classList.add("active");
+
+        await this.initParams({});
+        await this.initOthers({});
+
         await this.listCustomers({});
         initTooltips();
+
     },
     data() {
         return {
@@ -310,6 +316,7 @@ export default {
                         modals: {
                             default: "addCustomerModal"
                         },
+                        select2: {},
                         data: {
                             type_document: "",
                             number_document: "",
@@ -344,7 +351,25 @@ export default {
         };
     },
     methods: {
-        async listCustomers({url = null}) {
+        initParams({}) {
+
+            return new Promise(resolve => {
+
+                resolve(true);
+
+            });
+
+        },
+        initOthers({}) {
+
+            return new Promise(resolve => {
+
+                resolve(true);
+
+            });
+
+        },
+        listCustomers({url = null}) {
 
             return new Promise(resolve => {
 
@@ -420,7 +445,7 @@ export default {
                 switch(error.response.status) {
                     case 422:
                         this.setFormErrors({functionName, errors: error.response.data.errors});
-                        toastrAlert({code: 422, type: "error"});
+                        toastrAlert({code: error.response.status, type: "error"});
                         break;
                 }
 

@@ -6,15 +6,15 @@ use App\Helpers\Utilities;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
+use stdClass;
 
 use App\Http\Requests\Admins\Admins\{StoreAdminRequest, UpdateAdminRequest};
-use App\Models\{Admin, Branch, User};
-use stdClass;
+use App\Models\{Admin, Branch, BranchUser, User};
 
 class AdminController extends Controller {
 
     /**
-     * Display a listing of the resource.
+     * Display init params.
      *
      * @param  \App\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -59,7 +59,7 @@ class AdminController extends Controller {
                     ->where("company_id", $userAuth->company_id)
                     ->orderBy("last_name", "ASC")
                     ->orderBy("first_name", "ASC")
-                    ->with(["user"])
+                    ->with(["user.branchUsers"])
                     ->paginate(10);
 
         return $list;
@@ -114,6 +114,31 @@ class AdminController extends Controller {
             $user->admin_id   = $admin->id;
             $user->status     = "active";
             $user->save();
+
+            if(Utilities::validateVariable($request->branches) && count($request->branches) > 0) {
+
+                $branchesId = array_values(array_unique($request->branches));
+
+                foreach($branchesId as $branchId) {
+
+                    $branch = Branch::where("id", $branchId)
+                                    ->where("company_id", $userAuth->company_id)
+                                    ->where("status", "active")
+                                    ->first();
+
+                    if(Utilities::validateVariable($branch)) {
+
+                        $branchUser = new BranchUser();
+                        $branchUser->branch_id = $branch->id;
+                        $branchUser->user_id   = $user->id;
+                        $branchUser->status    = "active";
+                        $branchUser->save();
+
+                    }
+
+                }
+
+            }
 
         });
 

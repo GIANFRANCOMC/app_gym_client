@@ -41,6 +41,9 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/toastr/toastr.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/animate-css/animate.css') }}" />
 
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/select2/select2.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/bootstrap-select/bootstrap-select.css') }}" />
+
     <!-- Page CSS -->
     <style>
         .colon-at-end::after {
@@ -342,6 +345,9 @@
         <script src="{{ asset('assets/vendor/libs/hammer/hammer.js') }}"></script>
         <script src="{{ asset('assets/vendor/js/menu.js') }}"></script>
         <!-- endbuild -->
+
+        <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
+        <script src="{{ asset('assets/vendor/libs/bootstrap-select/bootstrap-select.js') }}"></script>
 
         <!-- Vendors JS -->
         <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
