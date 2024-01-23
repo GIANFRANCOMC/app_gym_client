@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CustomerController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +32,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 });
 
+Route::get('/migrate-seed', function () {
+
+    // Ejecutar migraciones y seeders
+    Artisan::call('migrate --seed');
+
+    // Devuelve la salida del comando Artisan
+    return Artisan::output();
+
+});
 
 require __DIR__.'/auth.php';
 
