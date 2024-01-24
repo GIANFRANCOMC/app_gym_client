@@ -9,6 +9,7 @@ use App\Models\Branch;
 use App\Models\Company;
 use App\Models\Customer;
 use App\Models\CustomerUser;
+use App\Models\Membership;
 use App\Models\ProductService;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -45,6 +46,7 @@ class DatabaseSeeder extends Seeder
             });
 
             $productServices = ProductService::factory(1)->create(['company_id' => $company->id]);
+            $memberships = Membership::factory(4)->create(['company_id' => $company->id]);
 
         });
 

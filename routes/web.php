@@ -28,6 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('/customers')->group($rutaDefecto.'/Customer.php');
     Route::prefix('/helpers')->group($rutaDefecto.'/Helper.php');
     Route::prefix('/home')->group($rutaDefecto.'/Home.php');
+    Route::prefix('/memberships')->group($rutaDefecto.'/Membership.php');
     Route::prefix('/productServices')->group($rutaDefecto.'/ProductService.php');
 
 });

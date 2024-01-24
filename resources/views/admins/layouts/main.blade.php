@@ -132,8 +132,8 @@
                             <div data-i18n="Page 2">Seguimiento al cliente</div>
                         </a>
                         </li>
-                    <li class="menu-item disabled">
-                        <a href="#" class="menu-link">
+                    <li class="menu-item" id="menu-item-memberships">
+                        <a href="{{ route('memberships.index') }}" class="menu-link">
                             <i class="fa fa-address-card me-1"></i>
                             <div data-i18n="Page 1">Membresías</div>
                         </a>

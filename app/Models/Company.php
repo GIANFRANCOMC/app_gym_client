@@ -92,6 +92,12 @@ class Company extends Model {
 
     }
 
+    public function memberships() {
+
+        return $this->hasMany(Membership::class);
+
+    }
+
     public function productServices() {
 
         return $this->hasMany(ProductService::class);
