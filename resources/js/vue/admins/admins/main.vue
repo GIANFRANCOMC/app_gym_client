@@ -261,6 +261,7 @@
                         <inputSelect2
                             :id="`${forms.admins.add.select2.branches}`"
                             :options="forms.admins.add.options.branches"
+                            :multiple="true"
                             :showDiv="true"
                             title="Sucursal"
                             :required="true"

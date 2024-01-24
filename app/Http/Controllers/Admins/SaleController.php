@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\Admins\Sales\{StoreSaleRequest, UpdateSaleRequest};
-use App\Models\{Sale};
+use App\Models\{Branch, Customer, Membership, ProductService, Sale};
 
 class SaleController extends Controller {
 
@@ -24,6 +24,40 @@ class SaleController extends Controller {
         $userAuth = Auth::user();
 
         $initParams = new stdClass();
+
+        $branches = Branch::where("company_id", $userAuth->company_id)
+                          ->where("status", "active")
+                          ->orderBy("name", "ASC")
+                          ->orderBy("location", "ASC")
+                          ->get();
+
+        $customers = Customer::where("company_id", $userAuth->company_id)
+                             ->where("status", "active")
+                             ->orderBy("last_name", "ASC")
+                             ->orderBy("first_name", "ASC")
+                             ->get();
+
+        $memberships = Membership::where("company_id", $userAuth->company_id)
+                                 ->where("status", "active")
+                                 ->orderBy("name", "ASC")
+                                 ->orderBy("description", "ASC")
+                                 ->get();
+
+        $productServices = ProductService::where("company_id", $userAuth->company_id)
+                                         ->where("status", "active")
+                                         ->orderBy("name", "ASC")
+                                         ->orderBy("description", "ASC")
+                                         ->get();
+
+        $detailTypes = [];
+        array_push($detailTypes, ["code" => "memberships", "label" => "Membresias"]);
+        array_push($detailTypes, ["code" => "productServices", "label" => "Producto - Servicios"]);
+
+        $initParams->branches        = $branches;
+        $initParams->customers       = $customers;
+        $initParams->memberships     = $memberships;
+        $initParams->productServices = $productServices;
+        $initParams->detailTypes     = $detailTypes;
 
         return $initParams;
 

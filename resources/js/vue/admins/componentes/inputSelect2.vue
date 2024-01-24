@@ -11,8 +11,8 @@
                     :class="[...addClass]"
                     :disabled="disabled"
                     @change="handleChange"
-                    multiple>
-                    <option v-for="(option, index) in options" :value="option.code" v-text="option.label"></option>
+                    :multiple="multiple">
+                    <option v-for="(option, index) in options" :value="option.code" v-text="option.label" :extras="option?.extras"></option>
                 </select>
                 <slot name="inputGroupAppend"></slot>
             </div>
@@ -30,7 +30,7 @@
                 :class="[...addClass]"
                 :disabled="disabled"
                 @change="handleChange"
-                multiple>
+                :multiple="multiple">
                 <option v-for="(option, index) in options" :value="option.code" v-text="option.label"></option>
             </select>
             <slot name="inputGroupAppend"></slot>
@@ -55,6 +55,11 @@ export default {
             type: Array,
             required: false,
             default: []
+        },
+        multiple: {
+            type: Boolean,
+            required: false,
+            default: false
         },
         // Title
         showDiv: {

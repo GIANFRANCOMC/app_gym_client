@@ -299,8 +299,14 @@ function consultNumberDocument({numberDocument, type, withAlert = true}) {
 
 }
 
+function getPersonInfo({person}) {
+
+    return `${person.number_document} - ${person.last_name} ${person.first_name}`;
+
+}
+
 
 export { headerFormData, borrarSessionStorage, uuidv4, encontarArrayObjectParametro, convertirObjectoAFormData,
          descargarFile, procesarErroresFilasMultiples, obtenerValueSelect, obtenerArrayValueSelect, obtenerMapValueSelect,
          convertirDateBackToFront, convertirDateTimeBackToFront,
-         simularClickTabPanel, parsePadStart, consultNumberDocument, validateVariable };
+         simularClickTabPanel, parsePadStart, consultNumberDocument, validateVariable, getPersonInfo };
