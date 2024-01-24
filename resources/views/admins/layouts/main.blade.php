@@ -108,75 +108,89 @@
                     <div class="menu-inner-shadow"></div>
 
                     <ul class="menu-inner py-1">
-                    <li class="menu-item">
-                        <a href="{{ route('home.index') }}" class="menu-link">
-                            <i class="fa fa-home me-1"></i>
-                            <div data-i18n="Page 1">Inicio</div>
-                        </a>
-                    </li>
-                    <li class="menu-item disabled">
-                        <a href="#" class="menu-link">
-                            <i class="fa fa-cart-shopping me-1"></i>
-                            <div data-i18n="Page 1">Ventas</div>
-                        </a>
-                    </li>
-                    <li class="menu-item" id="menu-item-customers">
-                        <a href="{{ route('customers.index') }}" class="menu-link">
-                            <i class="fa fa-user me-1"></i>
-                            <div data-i18n="Page 1">Clientes</div>
-                        </a>
-                    </li>
-                    <li class="menu-item disabled">
-                        <a href="#" class="menu-link">
-                            <i class="fa fa-shoe-prints me-1"></i>
-                            <div data-i18n="Page 2">Seguimiento al cliente</div>
-                        </a>
+
+                         <!-- Layouts -->
+                        <li class="menu-item">
+                            <a href="{{ route('home.index') }}" class="menu-link">
+                                <i class="fa fa-home me-1"></i>
+                                <div data-i18n="Page 1">Inicio</div>
+                            </a>
                         </li>
-                    <li class="menu-item" id="menu-item-memberships">
-                        <a href="{{ route('memberships.index') }}" class="menu-link">
-                            <i class="fa fa-address-card me-1"></i>
-                            <div data-i18n="Page 1">Membresías</div>
-                        </a>
-                    </li>
-                    <li class="menu-item" id="menu-item-product-services">
-                        <a href="{{ route('productServices.index') }}" class="menu-link">
-                            <i class="fa fa-bottle-water me-1"></i>
-                            <div data-i18n="Page 1">Productos - Servicios</div>
-                        </a>
-                    </li>
-                    <li class="menu-item" id="menu-item-admins">
-                        <a href="{{ route('admins.index') }}" class="menu-link">
-                            <i class="fa fa-users me-1"></i>
-                            <div data-i18n="Page 1">Colaboradores</div>
-                        </a>
-                    </li>
-                    <li class="menu-item" id="menu-item-branches">
-                        <a href="{{ route('branches.index') }}" class="menu-link">
-                            <i class="fa fa-warehouse me-1"></i>
-                            <div data-i18n="Page 1">Sucursales</div>
-                        </a>
-                    </li>
-                    <li class="menu-item disabled">
-                        <a href="#" class="menu-link">
-                            <i class="fa fa-gear me-1"></i>
-                            <div data-i18n="Page 2">Configuración</div>
-                        </a>
-                    </li>
-                    <li class="menu-item disabled">
-                        <a href="#" class="menu-link">
-                            <i class="fa fa-print me-1"></i>
-                            <div data-i18n="Page 2">Reportes</div>
-                        </a>
-                    </li>
-                    <li class="menu-item bd-danger">
-                        <a href="javascript:void(0)" class="menu-link bg-danger" onclick="$('#logout').submit();">
-                            <i class="fa fa-right-from-bracket me-1"></i>
-                            <div data-i18n="Page 2" class="text-white">Cerrar sesión</div>
-                        </a>
-                        <form method="POST" action="{{ route('logout') }}" id="logout">
-                            @csrf
-                        </form>
-                    </li>
+                        <li class="menu-item" id="menu-item-sales">
+                            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                                <i class="fa fa-cart-shopping me-1"></i>
+                                <div data-i18n="Layouts">Ventas</div>
+                            </a>
+                            <ul class="menu-sub">
+                                <li class="menu-item">
+                                    <a href="{{ route('sales.index') }}" class="menu-link">
+                                        <div data-i18n="Collapsed menu">Listado</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item">
+                                    <a href="{{ route('sales.create') }}" class="menu-link">
+                                        <div data-i18n="Collapsed menu">Nuevo</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="menu-item" id="menu-item-customers">
+                            <a href="{{ route('customers.index') }}" class="menu-link">
+                                <i class="fa fa-user me-1"></i>
+                                <div data-i18n="Page 1">Clientes</div>
+                            </a>
+                        </li>
+                        <li class="menu-item disabled">
+                            <a href="#" class="menu-link">
+                                <i class="fa fa-shoe-prints me-1"></i>
+                                <div data-i18n="Page 2">Seguimiento al cliente</div>
+                            </a>
+                            </li>
+                        <li class="menu-item" id="menu-item-memberships">
+                            <a href="{{ route('memberships.index') }}" class="menu-link">
+                                <i class="fa fa-address-card me-1"></i>
+                                <div data-i18n="Page 1">Membresías</div>
+                            </a>
+                        </li>
+                        <li class="menu-item" id="menu-item-product-services">
+                            <a href="{{ route('productServices.index') }}" class="menu-link">
+                                <i class="fa fa-bottle-water me-1"></i>
+                                <div data-i18n="Page 1">Productos - Servicios</div>
+                            </a>
+                        </li>
+                        <li class="menu-item" id="menu-item-admins">
+                            <a href="{{ route('admins.index') }}" class="menu-link">
+                                <i class="fa fa-users me-1"></i>
+                                <div data-i18n="Page 1">Colaboradores</div>
+                            </a>
+                        </li>
+                        <li class="menu-item" id="menu-item-branches">
+                            <a href="{{ route('branches.index') }}" class="menu-link">
+                                <i class="fa fa-warehouse me-1"></i>
+                                <div data-i18n="Page 1">Sucursales</div>
+                            </a>
+                        </li>
+                        <li class="menu-item disabled">
+                            <a href="#" class="menu-link">
+                                <i class="fa fa-gear me-1"></i>
+                                <div data-i18n="Page 2">Configuración</div>
+                            </a>
+                        </li>
+                        <li class="menu-item disabled">
+                            <a href="#" class="menu-link">
+                                <i class="fa fa-print me-1"></i>
+                                <div data-i18n="Page 2">Reportes</div>
+                            </a>
+                        </li>
+                        <li class="menu-item bd-danger">
+                            <a href="javascript:void(0)" class="menu-link bg-danger" onclick="$('#logout').submit();">
+                                <i class="fa fa-right-from-bracket me-1"></i>
+                                <div data-i18n="Page 2" class="text-white">Cerrar sesión</div>
+                            </a>
+                            <form method="POST" action="{{ route('logout') }}" id="logout">
+                                @csrf
+                            </form>
+                        </li>
                     </ul>
                 </aside>
                 <!-- / Menu -->

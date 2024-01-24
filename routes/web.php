@@ -30,6 +30,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('/home')->group($rutaDefecto.'/Home.php');
     Route::prefix('/memberships')->group($rutaDefecto.'/Membership.php');
     Route::prefix('/productServices')->group($rutaDefecto.'/ProductService.php');
+    Route::prefix('/sales')->group($rutaDefecto.'/Sale.php');
+    Route::prefix('/saleDetails')->group($rutaDefecto.'/SaleDetail.php');
 
 });
 
