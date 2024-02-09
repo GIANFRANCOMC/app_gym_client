@@ -305,8 +305,29 @@ function getPersonInfo({person}) {
 
 }
 
+function getCurrentDate() {
+
+    // Obtener la fecha actual
+    const currentDate = new Date();
+
+    // Obtener el año actual
+    const currentYear = currentDate.getFullYear();
+
+    // Obtener el mes actual (agregando un cero adelante si es necesario)
+    const currentMonth = ('0' + (currentDate.getMonth() + 1)).slice(-2);
+
+    // Obtener el día del mes actual (agregando un cero adelante si es necesario)
+    const currentDay = ('0' + currentDate.getDate()).slice(-2);
+
+    // Construir la fecha en formato "YYYY-MM-DD"
+    const formattedDate = `${currentYear}-${currentMonth}-${currentDay}`;
+
+    return formattedDate;
+
+}
+
 
 export { headerFormData, borrarSessionStorage, uuidv4, encontarArrayObjectParametro, convertirObjectoAFormData,
          descargarFile, procesarErroresFilasMultiples, obtenerValueSelect, obtenerArrayValueSelect, obtenerMapValueSelect,
          convertirDateBackToFront, convertirDateTimeBackToFront,
-         simularClickTabPanel, parsePadStart, consultNumberDocument, validateVariable, getPersonInfo };
+         simularClickTabPanel, parsePadStart, consultNumberDocument, validateVariable, getPersonInfo, getCurrentDate };

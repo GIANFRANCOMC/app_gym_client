@@ -50,14 +50,19 @@ class SaleController extends Controller {
                                          ->get();
 
         $detailTypes = [];
-        array_push($detailTypes, ["code" => "memberships", "label" => "Membresias"]);
-        array_push($detailTypes, ["code" => "productServices", "label" => "Producto - Servicios"]);
+        array_push($detailTypes, ["code" => "memberships", "label" => "Membresías"]);
+        array_push($detailTypes, ["code" => "productServices", "label" => "Productos - Servicios"]);
+
+        $status = [];
+        array_push($status, ["code" => "active", "label" => "Activo"]);
+        array_push($status, ["code" => "inactive", "label" => "Inactivo"]);
 
         $initParams->branches        = $branches;
         $initParams->customers       = $customers;
         $initParams->memberships     = $memberships;
         $initParams->productServices = $productServices;
         $initParams->detailTypes     = $detailTypes;
+        $initParams->status          = $status;
 
         return $initParams;
 

@@ -12,6 +12,7 @@
                     :disabled="disabled"
                     @change="handleChange"
                     :multiple="multiple">
+                    <option value="">Seleccione</option>
                     <option v-for="(option, index) in options" :value="option.code" v-text="option.label" :extras="option?.extras"></option>
                 </select>
                 <slot name="inputGroupAppend"></slot>
@@ -167,11 +168,30 @@ export default {
 
         let $this = $(`#${this.id}`);
 
-        $this.wrap('<div class="position-relative w-100"></div>').select2({
-            placeholder: 'Seleccione',
+        $this
+        .wrap(`<div class="position-relative w-100"></div>`)
+        .select2({
+            placeholder: `Seleccione`,
             dropdownParent: $this.parent()
         });
 
+    },
+    watch: {
+        options: function(newValue, oldValue) {
+
+            let $this = $(`#${this.id}`);
+
+            $this.val("");
+            $this.select2("destroy");
+
+            $this
+            .wrap(`<div class="position-relative w-100"></div>`)
+            .select2({
+                placeholder: `Seleccione`,
+                dropdownParent: $this.parent()
+            });
+
+        }
     },
     methods: {
         //

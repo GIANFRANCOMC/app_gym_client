@@ -1,7 +1,7 @@
 <template>
     <div class="row invoice-add">
         <!-- Invoice Add-->
-        <div class="col-lg-10 col-12 mb-lg-0 mb-4">
+        <div class="col-lg-9 col-12 mb-lg-0 mb-4">
             <div class="card invoice-preview-card">
                 <div class="card-body">
                     <div class="row">
@@ -12,13 +12,13 @@
                             :required="true"
                             :showTextBottom="true"
                             :textBottomInfo="forms.sales.add.errors?.sale_date"
-                            :xl="2"
-                            :lg="2"
+                            :xl="3"
+                            :lg="3"
                             :md="12"
                             :sm="12">
                         </inputDate>
                         <inputSelect2
-                            :id="`${forms.sales.add.select2.branch_id}`"
+                            :id="forms.sales.add.select2.branches"
                             :options="forms.sales.add.options.branches"
                             :showDiv="true"
                             title="Sucursal"
@@ -31,15 +31,15 @@
                             :sm="12">
                         </inputSelect2>
                         <inputSelect2
-                            :id="`${forms.sales.add.select2.customer_id}`"
+                            :id="forms.sales.add.select2.customers"
                             :options="forms.sales.add.options.customers"
                             :showDiv="true"
                             title="Cliente"
                             :required="true"
                             :showTextBottom="true"
                             :textBottomInfo="forms.sales.add.errors?.customer_id"
-                            :xl="6"
-                            :lg="6"
+                            :xl="5"
+                            :lg="5"
                             :md="12"
                             :sm="12">
                         </inputSelect2>
@@ -49,6 +49,7 @@
                         <table class="table table-hover">
                             <thead class="table-light">
                                 <tr class="text-uppercase">
+                                    <th class="align-middle text-center fw-bold col-1">TIPO</th>
                                     <th class="align-middle text-center fw-bold col-1">PRODUCTO</th>
                                     <th class="align-middle text-center fw-bold col-1">CANTIDAD</th>
                                     <th class="align-middle text-center fw-bold col-1">PRECIO UNITARIO</th>
@@ -58,44 +59,11 @@
                             <tbody class="table-border-bottom-0">
                                 <template v-if="forms.sales.add.data.details && forms.sales.add.data.details.length > 0">
                                     <tr v-for="(record, key, index) in forms.sales.add.data.details" :key="record.id" class="align-middle">
-                                        <!-- <td>
-                                            <inputSelect2
-                                                :id="`${forms.sales.add.select2.customers}`"
-                                                :options="forms.sales.add.options.customers"
-                                                :showTextBottom="true"
-                                                :textBottomInfo="forms.sales.add.errors?.customers">
-                                            </inputSelect2>
-                                        </td>
-                                        <td>
-                                            <inputText
-                                                v-model="forms.sales.add.data.phone"
-                                                :showDiv="false"
-                                                :maxlength="80"
-                                                :showTextBottom="true"
-                                                :textBottomInfo="forms.sales.add.errors?.phone">
-                                                <template v-slot:inputGroupAppend>
-                                                    <button class="btn btn-primary waves-effect" type="button">
-                                                        UND
-                                                    </button>
-                                                </template>
-                                            </inputText>
-                                        </td>
-                                        <td>
-                                            <inputText
-                                                v-model="forms.sales.add.data.phone"
-                                                :maxlength="80"
-                                                :showTextBottom="true"
-                                                :textBottomInfo="forms.sales.add.errors?.phone">
-                                            </inputText>
-                                        </td>
-                                        <td>
-                                            <inputText
-                                                v-model="forms.sales.add.data.phone"
-                                                :maxlength="80"
-                                                :showTextBottom="true"
-                                                :textBottomInfo="forms.sales.add.errors?.phone">
-                                            </inputText>
-                                        </td> -->
+                                        <td class="text-center" v-text="record?.detailType?.text"></td>
+                                        <td class="text-center" v-text="record?.item?.text"></td>
+                                        <td class="text-center" v-text="record?.quantity"></td>
+                                        <td class="text-center" v-text="record?.price"></td>
+                                        <td class="text-center" v-text="record?.total"></td>
                                     </tr>
                                 </template>
                                 <template v-else>
@@ -106,66 +74,23 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="row mt-3">
-                        <button class="btn btn-primary waves-effect" data-bs-toggle="modal" :data-bs-target="`#${forms.sales.add.modals.default}`">
-                            <i class="fa fa-plus"></i> Agregar producto
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Invoice Actions -->
-        <div class="col-lg-2 col-12 invoice-actions">
+        <div class="col-lg-3 col-12 invoice-actions">
             <div class="card mb-4">
                 <div class="card-body">
-                    <button class="btn btn-primary d-grid w-100 mb-2 waves-effect waves-light" data-bs-toggle="offcanvas" data-bs-target="#sendInvoiceOffcanvas">
-                    <span class="d-flex align-items-center justify-content-center text-nowrap"><i class="ti ti-send ti-xs me-2"></i>Send Invoice</span>
+                    <button class="btn btn-primary w-100 mb-2 waves-effect waves-light" data-bs-toggle="modal" :data-bs-target="`#${forms.sales.add.modals.default}`">
+                        <span class="d-flex align-items-center justify-content-center text-nowrap">
+                            <i class="fa fa-plus me-2"></i> Agregar ítem
+                        </span>
                     </button>
-                    <a href="./app-invoice-preview.html" class="btn btn-label-secondary d-grid w-100 mb-2 waves-effect">Preview</a>
-                    <button type="button" class="btn btn-label-secondary d-grid w-100 waves-effect">Save</button>
-                </div>
-            </div>
-            <div>
-                <p class="mb-2">Accept payments via</p>
-                <select class="form-select mb-4">
-                    <option value="Bank Account">Bank Account</option>
-                    <option value="Paypal">Paypal</option>
-                    <option value="Card">Credit/Debit Card</option>
-                    <option value="UPI Transfer">UPI Transfer</option>
-                </select>
-                <div class="d-flex justify-content-between mb-2">
-                    <label for="payment-terms" class="mb-0">Payment Terms</label>
-                    <label class="switch switch-primary me-0">
-                    <input type="checkbox" class="switch-input" id="payment-terms" checked="">
-                    <span class="switch-toggle-slider">
-                    <span class="switch-on"></span>
-                    <span class="switch-off"></span>
-                    </span>
-                    <span class="switch-label"></span>
-                    </label>
-                </div>
-                <div class="d-flex justify-content-between mb-2">
-                    <label for="client-notes" class="mb-0">Client Notes</label>
-                    <label class="switch switch-primary me-0">
-                    <input type="checkbox" class="switch-input" id="client-notes">
-                    <span class="switch-toggle-slider">
-                    <span class="switch-on"></span>
-                    <span class="switch-off"></span>
-                    </span>
-                    <span class="switch-label"></span>
-                    </label>
-                </div>
-                <div class="d-flex justify-content-between">
-                    <label for="payment-stub" class="mb-0">Payment Stub</label>
-                    <label class="switch switch-primary me-0">
-                    <input type="checkbox" class="switch-input" id="payment-stub">
-                    <span class="switch-toggle-slider">
-                    <span class="switch-on"></span>
-                    <span class="switch-off"></span>
-                    </span>
-                    <span class="switch-label"></span>
-                    </label>
+                    <button type="button" class="btn btn-success w-100 mb-2 waves-effect waves-light" @click="createSale()">
+                        <i class="fa fa-save me-2"></i>
+                        <span class="ms-1">Generar venta</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -175,13 +100,13 @@
             <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title text-uppercase">AGREGAR DETALLE</h5>
+                        <h5 class="modal-title text-uppercase">AGREGAR ÍTEM</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="row g-2 mb-3">
                             <inputSelect2
-                                :id="`${forms.sales.add.select2.detailTypes}`"
+                                :id="forms.sales.add.select2.detailTypes"
                                 :options="forms.sales.add.options.detailTypes"
                                 :showDiv="true"
                                 title="Tipo"
@@ -193,23 +118,25 @@
                                 :md="12"
                                 :sm="12">
                             </inputSelect2>
+                        </div>
+                        <div class="row g-2 mb-3" v-show="validateVariable({value: forms.sales.add.data.detail.detailType?.id})">
                             <inputSelect2
-                                :id="`${forms.sales.add.select2.items}`"
-                                :options="forms.sales.add.options.productServices"
+                                :id="forms.sales.add.select2.items"
+                                :options="forms.sales.add.options.items"
                                 :showDiv="true"
-                                title="Producto - Servicio"
+                                :title="forms.sales.add.data.detail.detailType?.text"
                                 :required="true"
                                 :showTextBottom="true"
-                                :textBottomInfo="forms.sales.add.errors?.productServices"
-                                :xl="8"
-                                :lg="8"
+                                :textBottomInfo="forms.sales.add.errors?.items"
+                                :xl="12"
+                                :lg="12"
                                 :md="12"
                                 :sm="12">
                             </inputSelect2>
                         </div>
-                        <div class="row g-2 mb-3">
+                        <div class="row g-2 mb-3" v-show="validateVariable({value: forms.sales.add.data.detail.item?.id})">
                             <inputNumber
-                                v-model="forms.sales.add.data.quantity"
+                                v-model="forms.sales.add.data.detail.quantity"
                                 :showDiv="true"
                                 title="Cantidad"
                                 :required="true"
@@ -221,7 +148,7 @@
                                 :sm="12">
                             </inputNumber>
                             <inputNumber
-                                v-model="forms.sales.add.data.price"
+                                v-model="forms.sales.add.data.detail.price"
                                 :showDiv="true"
                                 title="Precio unitario"
                                 :required="true"
@@ -233,7 +160,7 @@
                                 :sm="12">
                             </inputNumber>
                             <inputNumber
-                                v-model="forms.sales.add.data.total"
+                                v-model="forms.sales.add.data.detail.total"
                                 :showDiv="true"
                                 title="Total"
                                 :required="true"
@@ -248,9 +175,9 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        <button type="button" class="btn btn-primary" @click="createAdmin()">
-                            <i class="fa fa-save"></i>
-                            <span class="ms-1">Guardar</span>
+                        <button type="button" class="btn btn-primary" @click="addItemSale()">
+                            <i class="fa fa-plus"></i>
+                            <span class="ms-1">Agregar</span>
                         </button>
                     </div>
                 </div>
@@ -264,7 +191,7 @@
 import { requestRoute, generalConfiguration } from "../helpers/constants.js";
 import { showLoading, hideSwal, toastrAlert } from "../helpers/alerts.js";
 import { initTooltips, hideTooltips } from "../helpers/tooltips.js";
-import { validateVariable, consultNumberDocument, getPersonInfo } from "../helpers/main.js";
+import { validateVariable, consultNumberDocument, getPersonInfo, uuidv4, getCurrentDate } from "../helpers/main.js";
 
 import axios from "axios";
 import inputDate from "../componentes/inputDate.vue";
@@ -279,13 +206,15 @@ export default {
     },
     mounted: async function () {
 
-        document.getElementById("menu-item-sales").classList.add("active");
-        document.getElementById("menu-item-sales").classList.add("open");
+        let menuId = "menu-item-sales";
+
+        document.getElementById(menuId).classList.add("active");
+        document.getElementById(menuId).classList.add("open");
 
         await this.initParams({});
         await this.initOthers({});
 
-        await this.listSales({});
+        // await this.listSales({});
         initTooltips();
 
     },
@@ -308,22 +237,22 @@ export default {
                             default: "addSaleDetailModal"
                         },
                         select2: {
-                            branch_id: 'branchSelect2',
-                            customer_id: 'customerSelect2',
-                            detailTypes: 'detailTypesSelect2',
-                            items: 'itemsSelect2',
+                            branches:    "branchSelect2",
+                            customers:   "customerSelect2",
+                            detailTypes: "detailTypesSelect2",
+                            items:       "itemsSelect2",
                         },
                         data: {
                             sale_date: "",
-                            branch_id: "",
-                            customer_id: "",
+                            branch: {},
+                            customer: {},
                             details: [],
                             detail: {
                                 detailType: {},
                                 item: {},
-                                quantity: "",
-                                price: "",
-                                total: ""
+                                quantity: 0,
+                                price: 0,
+                                total: 0
                             }
                         },
                         options: {
@@ -332,10 +261,8 @@ export default {
                             memberships: [],
                             productServices: [],
                             detailTypes: [],
-                            status: [
-                                {code: "active", label: "Activo"},
-                                {code: "inactive", label: "Inactivo"}
-                            ]
+                            items: [],
+                            status: []
                         },
                         errors: {}
                     }
@@ -364,13 +291,15 @@ export default {
                         customers       = response.data.customers,
                         memberships     = response.data.memberships,
                         productServices = response.data.productServices,
-                        detailTypes     = response.data.detailTypes;
+                        detailTypes     = response.data.detailTypes,
+                        status          = response.data.status;
 
                     this.forms.sales.add.options.branches        = branches.map(e => ({code: e.id, label: e.name}));
                     this.forms.sales.add.options.customers       = customers.map(e => ({code: e.id, label: getPersonInfo({person: e})}));
-                    this.forms.sales.add.options.memberships     = memberships.map(e => ({code: e.id, label: e.name}));
+                    this.forms.sales.add.options.memberships     = memberships.map(e => ({code: e.id, label: e.name, extras: JSON.stringify(e)}));
                     this.forms.sales.add.options.productServices = productServices.map(e => ({code: e.id, label: e.name, extras: JSON.stringify(e)}));
                     this.forms.sales.add.options.detailTypes     = detailTypes.map(e => ({code: e.code, label: e.label}));
+                    this.forms.sales.add.options.status          = status.map(e => ({code: e.code, label: e.label}));
 
                 })
                 .catch((error) => {
@@ -393,16 +322,84 @@ export default {
 
                 let el = this;
 
+                el.forms.sales.add.data.sale_date = getCurrentDate();
+
+                $(`#${el.forms.sales.add.select2.branches}`).on("select2:select", function(e) {
+
+                    let data = e.params.data;
+
+                    el.forms.sales.add.data.branch = {id: data?.id, text: data?.text};
+
+                });
+
+                $(`#${el.forms.sales.add.select2.customers}`).on("select2:select", function(e) {
+
+                    let data = e.params.data;
+
+                    el.forms.sales.add.data.customer = {id: data?.id, text: data?.text};
+
+                });
+
+                $(`#${el.forms.sales.add.select2.detailTypes}`).on("select2:select", function(e) {
+
+                    let data = e.params.data;
+
+                    el.forms.sales.add.data.detail.detailType = {id: data?.id, text: data?.text};
+                    el.forms.sales.add.options.items          = el.forms.sales.add.options[data?.id];
+
+                    el.forms.sales.add.data.detail.item     = {};
+                    el.forms.sales.add.data.detail.quantity = 0;
+                    el.forms.sales.add.data.detail.price    = 0;
+                    el.forms.sales.add.data.detail.total    = 0;
+
+                });
+
+                $(`#${el.forms.sales.add.select2.detailTypes}`).on("select2:select", function(e) {
+
+                    let data = e.params.data;
+
+                    el.forms.sales.add.data.detail.detailType = {id: data?.id, text: data?.text};
+                    el.forms.sales.add.options.items          = el.forms.sales.add.options[data?.id];
+
+                    el.forms.sales.add.data.detail.item     = {};
+                    el.forms.sales.add.data.detail.quantity = 0;
+                    el.forms.sales.add.data.detail.price    = 0;
+                    el.forms.sales.add.data.detail.total    = 0;
+
+                });
+
                 $(`#${el.forms.sales.add.select2.items}`).on("select2:select", function(e) {
 
                     let data = e.params.data;
-                    console.log(data);
+
+                    el.forms.sales.add.data.detail.item = {id: data?.id, text: data?.text};
+
+                    try {
+
+                        let extrasDOM  = data.element.getAttribute("extras"),
+                            extrasJSON = JSON.parse(extrasDOM);
+
+                        el.forms.sales.add.data.detail.quantity = 1;
+                        el.forms.sales.add.data.detail.price    = extrasJSON?.price ?? 0;
+                        el.forms.sales.add.data.detail.total    = (el.forms.sales.add.data.detail.quantity * el.forms.sales.add.data.detail.price);
+
+                    }catch(e) {
+
+                        toastrAlert({subtitle: e, type: "error"});
+
+                    }
 
                 });
 
                 resolve(true);
 
             });
+
+        },
+        addItemSale() {
+
+            (this.forms.sales.add.data.details).push({id: uuidv4(), ...this.forms.sales.add.data.detail});
+            toastrAlert({type: "success"});
 
         },
         listSales({url = null}) {
@@ -448,15 +445,15 @@ export default {
             let functionName = "createSale";
 
             showLoading({type: "saveForm"});
-            this.clearFormErrors({functionName});
+            //this.clearFormErrors({functionName});
 
             let requestUrl  = `${requestRoute}/sales`,
                 requestData = {};
 
-            requestData.name        = this.forms.sales.add.data.name;
-            requestData.description = this.forms.sales.add.data.description;
-            requestData.price       = this.forms.sales.add.data.price;
-            requestData.status      = this.forms.sales.add.data.status;
+            requestData.sale_date   = this.forms.sales.add.data.sale_date;
+            requestData.branch_id   = this.forms.sales.add.data.branch?.id;
+            requestData.customer_id = this.forms.sales.add.data.customer?.id;
+            requestData.details     = this.forms.sales.add.data.details;
 
             axios
             .post(requestUrl, requestData)
@@ -473,6 +470,10 @@ export default {
             .catch((error) => {
 
                 switch(error.response.status) {
+                    case 403:
+                        toastrAlert({code: error.response.status, type: "error"});
+                        break;
+
                     case 422:
                         this.setFormErrors({functionName, errors: error.response.data.errors});
                         toastrAlert({code: error.response.status, type: "error"});
