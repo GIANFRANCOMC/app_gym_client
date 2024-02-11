@@ -8,6 +8,7 @@
                         <inputDate
                             v-model="forms.sales.add.data.sale_date"
                             :showDiv="true"
+                            :divClass="['mt-2']"
                             title="Fecha de venta"
                             :required="true"
                             :showTextBottom="true"
@@ -21,6 +22,7 @@
                             :id="forms.sales.add.select2.branches"
                             :options="forms.sales.add.options.branches"
                             :showDiv="true"
+                            :divClass="['mt-2']"
                             title="Sucursal"
                             :required="true"
                             :showTextBottom="true"
@@ -34,6 +36,7 @@
                             :id="forms.sales.add.select2.customers"
                             :options="forms.sales.add.options.customers"
                             :showDiv="true"
+                            :divClass="['mt-2']"
                             title="Cliente"
                             :required="true"
                             :showTextBottom="true"
@@ -44,26 +47,42 @@
                             :sm="12">
                         </inputSelect2>
                     </div>
-                    <hr>
-                    <div class="table-responsive text-nowrap">
+                    <div class="table-responsive text-nowrap mt-4">
                         <table class="table table-hover">
                             <thead class="table-light">
                                 <tr class="text-uppercase">
-                                    <th class="align-middle text-center fw-bold col-1">TIPO</th>
-                                    <th class="align-middle text-center fw-bold col-1">PRODUCTO</th>
+                                    <th class="align-middle text-center fw-bold col-1">DESCRIPCIÓN</th>
                                     <th class="align-middle text-center fw-bold col-1">CANTIDAD</th>
                                     <th class="align-middle text-center fw-bold col-1">PRECIO UNITARIO</th>
                                     <th class="align-middle text-center fw-bold col-1">TOTAL</th>
+                                    <th class="align-middle text-center fw-bold col-1"></th>
                                 </tr>
                             </thead>
                             <tbody class="table-border-bottom-0">
                                 <template v-if="forms.sales.add.data.details && forms.sales.add.data.details.length > 0">
                                     <tr v-for="(record, key, index) in forms.sales.add.data.details" :key="record.id" class="align-middle">
-                                        <td class="text-center" v-text="record?.detailType?.text"></td>
-                                        <td class="text-center" v-text="record?.item?.text"></td>
+                                        <td>
+                                            <label class="fw-bold" v-text="record?.item?.text"></label>
+                                            <div v-if="false">
+                                                <small class="fst-italic text-muted">Tipo:</small>
+                                                <small class="ms-1" v-text="record?.detailType?.text"></small>
+                                            </div>
+                                            <div v-if="['memberships'].includes(record?.detailType?.id)">
+                                                <small class="fst-italic text-muted">Beneficiario:</small>
+                                                <small class="ms-1" v-text="record?.beneficiary?.text"></small>
+                                            </div>
+                                        </td>
                                         <td class="text-center" v-text="record?.quantity"></td>
                                         <td class="text-center" v-text="record?.price"></td>
                                         <td class="text-center" v-text="record?.total"></td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-xs btn-warning waves-effect waves-light">
+                                                <i class="fa fa-pencil"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-xs btn-danger ms-2 waves-effect waves-light">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </td>
                                     </tr>
                                 </template>
                                 <template v-else>
@@ -83,13 +102,12 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <button class="btn btn-primary w-100 mb-2 waves-effect waves-light" data-bs-toggle="modal" :data-bs-target="`#${forms.sales.add.modals.default}`">
-                        <span class="d-flex align-items-center justify-content-center text-nowrap">
-                            <i class="fa fa-plus me-2"></i> Agregar ítem
-                        </span>
+                        <i class="fa fa-plus"></i>
+                        <span class="ms-2">Agregar ítem</span>
                     </button>
-                    <button type="button" class="btn btn-success w-100 mb-2 waves-effect waves-light" @click="createSale()">
-                        <i class="fa fa-save me-2"></i>
-                        <span class="ms-1">Generar venta</span>
+                    <button class="btn btn-success w-100 mb-2 waves-effect waves-light" @click="createSale()">
+                        <i class="fa fa-save"></i>
+                        <span class="ms-2">Generar venta</span>
                     </button>
                 </div>
             </div>
@@ -118,9 +136,8 @@
                                 :md="12"
                                 :sm="12">
                             </inputSelect2>
-                        </div>
-                        <div class="row g-2 mb-3" v-show="validateVariable({value: forms.sales.add.data.detail.detailType?.id})">
                             <inputSelect2
+                                v-show="validateVariable({value: forms.sales.add.data.detail.detailType?.id})"
                                 :id="forms.sales.add.select2.items"
                                 :options="forms.sales.add.options.items"
                                 :showDiv="true"
@@ -128,8 +145,8 @@
                                 :required="true"
                                 :showTextBottom="true"
                                 :textBottomInfo="forms.sales.add.errors?.items"
-                                :xl="12"
-                                :lg="12"
+                                :xl="8"
+                                :lg="8"
                                 :md="12"
                                 :sm="12">
                             </inputSelect2>
@@ -172,13 +189,30 @@
                                 :sm="12">
                             </inputNumber>
                         </div>
+                        <div class="row g-2 mb-3" v-show="validateVariable({value: forms.sales.add.data.detail.item?.id}) && ['memberships'].includes(forms.sales.add.data.detail.detailType?.id)">
+                            <inputSelect2
+                                :id="forms.sales.add.select2.beneficiaries"
+                                :options="forms.sales.add.options.beneficiaries"
+                                :showDiv="true"
+                                title="Beneficiario"
+                                :required="true"
+                                :showTextBottom="true"
+                                :textBottomInfo="forms.sales.add.errors?.beneficiaries"
+                                :xl="12"
+                                :lg="12"
+                                :md="12"
+                                :sm="12">
+                            </inputSelect2>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        <button type="button" class="btn btn-primary" @click="addItemSale()">
-                            <i class="fa fa-plus"></i>
-                            <span class="ms-1">Agregar</span>
-                        </button>
+                        <template v-if="validateVariable({value: forms.sales.add.data.detail.item?.id})">
+                            <button type="button" class="btn btn-primary" @click="addItemSale()">
+                                <i class="fa fa-plus"></i>
+                                <span class="ms-1">Agregar</span>
+                            </button>
+                        </template>
                     </div>
                 </div>
             </div>
@@ -214,22 +248,12 @@ export default {
         await this.initParams({});
         await this.initOthers({});
 
-        // await this.listSales({});
         initTooltips();
 
     },
     data() {
         return {
-            lists: {
-                sales: {
-                    filters: {
-                        general: "",
-                    },
-                    records: {
-                        total: 0
-                    }
-                }
-            },
+            lists: {},
             forms: {
                 sales: {
                     add: {
@@ -237,10 +261,11 @@ export default {
                             default: "addSaleDetailModal"
                         },
                         select2: {
-                            branches:    "branchSelect2",
-                            customers:   "customerSelect2",
-                            detailTypes: "detailTypesSelect2",
-                            items:       "itemsSelect2",
+                            branches:      "branchSelect2",
+                            customers:     "customerSelect2",
+                            beneficiaries: "beneficiarySelect2",
+                            detailTypes:   "detailTypesSelect2",
+                            items:         "itemsSelect2",
                         },
                         data: {
                             sale_date: "",
@@ -252,12 +277,14 @@ export default {
                                 item: {},
                                 quantity: 0,
                                 price: 0,
-                                total: 0
+                                total: 0,
+                                beneficiary: {}
                             }
                         },
                         options: {
                             branches: [],
                             customers: [],
+                            beneficiaries: [],
                             memberships: [],
                             productServices: [],
                             detailTypes: [],
@@ -300,6 +327,7 @@ export default {
                     this.forms.sales.add.options.productServices = productServices.map(e => ({code: e.id, label: e.name, extras: JSON.stringify(e)}));
                     this.forms.sales.add.options.detailTypes     = detailTypes.map(e => ({code: e.code, label: e.label}));
                     this.forms.sales.add.options.status          = status.map(e => ({code: e.code, label: e.label}));
+                    this.forms.sales.add.options.beneficiaries   = this.forms.sales.add.options.customers;
 
                 })
                 .catch((error) => {
@@ -340,17 +368,11 @@ export default {
 
                 });
 
-                $(`#${el.forms.sales.add.select2.detailTypes}`).on("select2:select", function(e) {
+                $(`#${el.forms.sales.add.select2.beneficiaries}`).on("select2:select", function(e) {
 
                     let data = e.params.data;
 
-                    el.forms.sales.add.data.detail.detailType = {id: data?.id, text: data?.text};
-                    el.forms.sales.add.options.items          = el.forms.sales.add.options[data?.id];
-
-                    el.forms.sales.add.data.detail.item     = {};
-                    el.forms.sales.add.data.detail.quantity = 0;
-                    el.forms.sales.add.data.detail.price    = 0;
-                    el.forms.sales.add.data.detail.total    = 0;
+                    el.forms.sales.add.data.detail.beneficiary = {id: data?.id, text: data?.text};
 
                 });
 
@@ -359,12 +381,15 @@ export default {
                     let data = e.params.data;
 
                     el.forms.sales.add.data.detail.detailType = {id: data?.id, text: data?.text};
-                    el.forms.sales.add.options.items          = el.forms.sales.add.options[data?.id];
+                    el.forms.sales.add.data.detail.item        = {};
+                    el.forms.sales.add.data.detail.quantity    = 0;
+                    el.forms.sales.add.data.detail.price       = 0;
+                    el.forms.sales.add.data.detail.total       = 0;
+                    el.forms.sales.add.data.detail.beneficiary = {};
 
-                    el.forms.sales.add.data.detail.item     = {};
-                    el.forms.sales.add.data.detail.quantity = 0;
-                    el.forms.sales.add.data.detail.price    = 0;
-                    el.forms.sales.add.data.detail.total    = 0;
+                    el.forms.sales.add.options.items = el.forms.sales.add.options[data?.id];
+
+                    $(`#${el.forms.sales.add.select2.beneficiaries}`).val("").trigger("change");
 
                 });
 
@@ -400,44 +425,6 @@ export default {
 
             (this.forms.sales.add.data.details).push({id: uuidv4(), ...this.forms.sales.add.data.detail});
             toastrAlert({type: "success"});
-
-        },
-        listSales({url = null}) {
-
-            return new Promise(resolve => {
-
-                showLoading({type: "list"});
-
-                let requestUrl    = url || `${requestRoute}/sales/list`,
-                    requestConfig = {};
-
-                let params = {};
-                params.general = this.lists.sales.filters.general;
-
-                requestConfig.params = params;
-
-                axios
-                .get(requestUrl, requestConfig)
-                .then((response) => {
-
-                    this.lists.sales.records = response.data;
-
-                })
-                .catch((error) => {
-
-                    toastrAlert({subtitle: error, type: "error"});
-
-                })
-                .finally(() => {
-
-                    hideSwal();
-                    initTooltips();
-
-                    resolve(true);
-
-                });
-
-            });
 
         },
         createSale() {
