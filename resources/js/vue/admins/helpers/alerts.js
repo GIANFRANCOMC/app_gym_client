@@ -106,7 +106,7 @@ function toastrAlert({title = null, subtitle = null, code = null, type = "succes
             progressBar: true,
             positionClass: "toast-top-right",
             showMethod: "slideDown",
-            timeOut: 3000
+            timeOut: 2000
         };
 
     }
