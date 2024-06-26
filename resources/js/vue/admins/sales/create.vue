@@ -87,7 +87,7 @@
                                 </template>
                                 <template v-else>
                                     <tr>
-                                        <td class="text-center" colspan="99" v-text="generalConfiguration.messages.withoutResults"></td>
+                                        <td class="text-center" colspan="99" v-text="generalConfig.messages.withoutResults"></td>
                                     </tr>
                                 </template>
                             </tbody>
@@ -225,17 +225,15 @@
 </template>
 
 <script>
-import { requestRoute, generalConfiguration } from "../helpers/constants.js";
-import { showLoading, hideSwal, toastrAlert } from "../helpers/alerts.js";
-import { initTooltips, hideTooltips } from "../helpers/tooltips.js";
-import { validateVariable, consultNumberDocument, getPersonInfo, uuidv4, getCurrentDate } from "../helpers/main.js";
-
 import axios from "axios";
-import inputDate from "../componentes/inputDate.vue";
+import * as Constants from "../helpers/constants.js";
+import * as Alerts from "../helpers/alerts.js";
+import * as Utils from "../helpers/utils.js";
+
 import inputText from "../componentes/inputText.vue";
 import inputSelect from "../componentes/inputSelect.vue";
 import inputSelect2 from "../componentes/inputSelect2.vue";
-import inputNumber from "../componentes/inputNumber.vue";
+import inputDate from "../componentes/inputDate.vue";
 
 export default {
     components: {
@@ -251,7 +249,7 @@ export default {
         await this.initParams({});
         await this.initOthers({});
 
-        initTooltips();
+        tooltips();
 
     },
     data() {
@@ -301,7 +299,7 @@ export default {
                     }
                 }
             },
-            generalConfiguration: generalConfiguration
+            generalConfig: generalConfig
         };
     },
     methods: {
@@ -338,7 +336,7 @@ export default {
                 })
                 .catch((error) => {
 
-                    toastrAlert({subtitle: error, type: "error"});
+                    toastrs({subtitle: error, type: "error"});
 
                 })
                 .finally(() => {
@@ -415,7 +413,7 @@ export default {
 
                     }catch(e) {
 
-                        toastrAlert({subtitle: e, type: "error"});
+                        toastrs({subtitle: e, type: "error"});
 
                     }
 
@@ -509,12 +507,12 @@ export default {
                 (this.forms.sales.add.data.details).push({id: uuidv4(), ...this.forms.sales.add.data.detail});
 
                 this.forms.sales.add.errors.detail = {};
-                toastrAlert({title: `Ítem agregado correctamente.`, type: "success"});
+                toastrs({title: `Ítem agregado correctamente.`, type: "success"});
 
             }else {
 
                 this.forms.sales.add.errors.detail = validation.messages;
-                toastrAlert({code: 422, type: "error"});
+                toastrs({code: 422, type: "error"});
 
             }
 
@@ -540,7 +538,7 @@ export default {
                 if(result.value) {
 
                     (el.forms.sales.add.data.details).splice(key, 1);
-                    toastrAlert({title: `Ítem eliminado correctamente`, type: "success"});
+                    toastrs({title: `Ítem eliminado correctamente`, type: "success"});
 
                 }
 
@@ -552,7 +550,7 @@ export default {
 
             let functionName = "createSale";
 
-            showLoading({type: "saveForm"});
+            swals({type: "saveForm"});
             this.clearFormErrors({functionName});
 
             let requestUrl  = `${requestRoute}/sales`,
@@ -570,7 +568,7 @@ export default {
                 switch(response.status) {
                     case 200:
                         this.clearForm({functionName});
-                        toastrAlert({subtitle: response.data.message, type: "success"});
+                        toastrs({subtitle: response.data.message, type: "success"});
                         break;
                 }
 
@@ -579,12 +577,12 @@ export default {
 
                 switch(error.response.status) {
                     case 403:
-                        toastrAlert({code: error.response.status, type: "error"});
+                        toastrs({code: error.response.status, type: "error"});
                         break;
 
                     case 422:
                         this.setFormErrors({functionName, errors: error.response.data.errors});
-                        toastrAlert({code: error.response.status, type: "error"});
+                        toastrs({code: error.response.status, type: "error"});
                         break;
                 }
 

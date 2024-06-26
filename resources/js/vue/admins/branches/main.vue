@@ -64,7 +64,7 @@
                     </template>
                     <template v-else>
                         <tr>
-                            <td class="text-center" colspan="99" v-text="generalConfiguration.messages.withoutResults"></td>
+                            <td class="text-center" colspan="99" v-text="generalConfig.messages.withoutResults"></td>
                         </tr>
                     </template>
                 </tbody>
@@ -151,16 +151,15 @@
 </template>
 
 <script>
-import { requestRoute, generalConfiguration } from "../helpers/constants.js";
-import { showLoading, hideSwal, toastrAlert } from "../helpers/alerts.js";
-import { initTooltips, hideTooltips } from "../helpers/tooltips.js";
-import { validateVariable, consultNumberDocument } from "../helpers/main.js";
-
 import axios from "axios";
-import inputDate from "../componentes/inputDate.vue";
+import * as Constants from "../helpers/constants.js";
+import * as Alerts from "../helpers/alerts.js";
+import * as Utils from "../helpers/utils.js";
+
 import inputText from "../componentes/inputText.vue";
 import inputSelect from "../componentes/inputSelect.vue";
 import inputSelect2 from "../componentes/inputSelect2.vue";
+import inputDate from "../componentes/inputDate.vue";
 
 export default {
     components: {
@@ -174,7 +173,7 @@ export default {
         await this.initOthers({});
 
         await this.listBranches({});
-        initTooltips();
+        tooltips();
 
     },
     data() {
@@ -211,7 +210,7 @@ export default {
                     }
                 }
             },
-            generalConfiguration: generalConfiguration
+            generalConfig: generalConfig
         };
     },
     methods: {
@@ -237,7 +236,7 @@ export default {
 
             return new Promise(resolve => {
 
-                showLoading({type: "list"});
+                swals({type: "list"});
 
                 let requestUrl    = url || `${requestRoute}/branches/list`,
                     requestConfig = {};
@@ -256,13 +255,13 @@ export default {
                 })
                 .catch((error) => {
 
-                    toastrAlert({subtitle: error, type: "error"});
+                    toastrs({subtitle: error, type: "error"});
 
                 })
                 .finally(() => {
 
                     hideSwal();
-                    initTooltips();
+                    tooltips();
 
                     resolve(true);
 
@@ -275,7 +274,7 @@ export default {
 
             let functionName = "createBranch";
 
-            showLoading({type: "saveForm"});
+            swals({type: "saveForm"});
             this.clearFormErrors({functionName});
 
             let requestUrl  = `${requestRoute}/branches`,
@@ -292,7 +291,7 @@ export default {
                 switch(response.status) {
                     case 200:
                         this.clearForm({functionName});
-                        toastrAlert({subtitle: response.data.message, type: "success"});
+                        toastrs({subtitle: response.data.message, type: "success"});
                         break;
                 }
 
@@ -302,7 +301,7 @@ export default {
                 switch(error.response.status) {
                     case 422:
                         this.setFormErrors({functionName, errors: error.response.data.errors});
-                        toastrAlert({code: error.response.status, type: "error"});
+                        toastrs({code: error.response.status, type: "error"});
                         break;
                 }
 

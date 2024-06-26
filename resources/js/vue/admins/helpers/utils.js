@@ -1,0 +1,109 @@
+import { requestRoute, generalConfig } from "./constants.js";
+import { toastrs } from "./alerts.js";
+
+import axios from "axios";
+
+export function route(route) {
+
+    return `${requestRoute}/${generalConfig.routes[route].default}`;
+
+}
+
+export function openNavbarItem(itemId) {
+
+    document.getElementById(itemId).classList.add("active");
+
+}
+
+export function validateVariable({value}) {
+
+    return value != "" && value != null && value != undefined;
+
+}
+
+export function consultNumberDocument({numberDocument, type, withAlert = true}) {
+
+    let responseData = {};
+    responseData.bool    = false;
+    responseData.message = "";
+    responseData.data    = {};
+
+    return new Promise(resolve => {
+
+        let requestUrl    = `${requestRoute}/helpers/consultNumberDocument`,
+            requestConfig = {};
+
+        let params = {};
+        params.number_document = numberDocument;
+        params.type            = type;
+
+        requestConfig.params = params;
+
+        axios
+        .get(requestUrl, requestConfig)
+        .then((response) => {
+
+            switch(response.status) {
+                case 200:
+                    if(response.data.success) {
+
+                        let data = response.data.data;
+
+                        responseData.bool    = true;
+                        responseData.message = "La información que buscabas ha sido encontrada.";
+                        responseData.data    = {number_document: `${data?.numero}`, last_name: `${data?.apellido_paterno} ${data?.apellido_materno}`, first_name: `${data?.nombres}`};
+
+                    }else {
+
+                        responseData.bool    = false;
+                        responseData.message = response.data.message;
+
+                    }
+                    break;
+            }
+
+        })
+        .catch((error) => {
+
+            responseData.bool    = false;
+            responseData.message = error;
+
+        })
+        .finally(() => {
+
+            if(withAlert) responseData.bool ? toastrs({subtitle: responseData.message, type: "success"}) : toastrs({subtitle: responseData.message, type: "warning"});
+
+            resolve(responseData);
+
+        });
+
+    });
+
+}
+
+export function uuidv4(length = 36) {
+
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)).substr(0, length);
+
+}
+
+export function getCurrentDate() {
+
+    // Obtener la fecha actual
+    const currentDate = new Date();
+
+    // Obtener el año actual
+    const currentYear = currentDate.getFullYear();
+
+    // Obtener el mes actual (agregando un cero adelante si es necesario)
+    const currentMonth = ('0' + (currentDate.getMonth() + 1)).slice(-2);
+
+    // Obtener el día del mes actual (agregando un cero adelante si es necesario)
+    const currentDay = ('0' + currentDate.getDate()).slice(-2);
+
+    // Construir la fecha en formato "YYYY-MM-DD"
+    const formattedDate = `${currentYear}-${currentMonth}-${currentDay}`;
+
+    return formattedDate;
+
+}

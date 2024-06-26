@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { requestRoute, generalConfiguration } from "../helpers/constants.js";
+import { requestRoute, generalConfig } from "../helpers/constants.js";
 
 export default {
     name: "inputText",
@@ -109,7 +109,7 @@ export default {
         maxlength: {
             type: [String, Number],
             required: false,
-            default: generalConfiguration.forms.inputs.maxlength
+            default: generalConfig.forms.inputs.maxlength
         },
         // Text Bottom
         showTextBottom: {

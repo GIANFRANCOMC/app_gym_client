@@ -1,6 +1,6 @@
-const requestRoute = `${window.location.protocol}//${window.location.hostname}/public`;
+export const requestRoute = `${window.location.protocol}//${window.location.hostname}/public`;
 
-const generalConfiguration = {
+export const generalConfig = {
     messages: {
         withoutResults: "Sin resultados"
     },
@@ -8,7 +8,10 @@ const generalConfiguration = {
         inputs: {
             maxlength: 999
         }
+    },
+    routes: {
+        admins: {
+            default: "admins"
+        }
     }
 };
-
-export { requestRoute, generalConfiguration };

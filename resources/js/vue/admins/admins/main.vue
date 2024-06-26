@@ -19,11 +19,8 @@
                 :titleClass="['fw-bold', 'colon-at-end', 'ms-1']"
                 placeholder="Ingrese la búsqueda"
                 @enter-key-pressed="listAdmins({})">
-                <template v-slot:default>
-                    <i class="fa fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Búsqueda por: Número de documento, Apellidos, Nombres." role="button"></i>
-                </template>
                 <template v-slot:inputGroupAppend>
-                    <button class="btn btn-primary waves-effect" type="button" @click="listAdmins({})">
+                    <button class="btn btn-primary waves-effect" type="button" @click="listAdmins({})" data-bs-toggle="tooltip" data-bs-placement="top" title="Búsqueda por: Número de documento, Apellidos, Nombres.">
                         <i class="fa fa-search"></i>
                     </button>
                 </template>
@@ -49,39 +46,42 @@
                         <th class="align-middle text-center fw-bold col-1" colspan="2">FECHA DE NACIMIENTO</th>
                         <th class="align-middle text-center fw-bold col-1">GÉNERO</th>
                         <th class="align-middle text-center fw-bold col-1">ESTADO</th>
-                        <!-- <th class="align-middle text-center fw-bold col-1">Acciones</th> -->
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">
-                    <template v-if="lists.admins.records.data && lists.admins.records.data.length > 0">
-                        <tr v-for="record in lists.admins.records.data" :key="record.id" class="align-middle">
-                            <td class="text-center text-uppercase" v-text="record.formatted_type_document"></td>
-                            <td class="text-center" v-text="record.number_document"></td>
-                            <td class="text-center" v-text="record.last_name"></td>
-                            <td class="text-center" v-text="record.first_name"></td>
-                            <td class="text-center" v-text="record?.user?.email"></td>
-                            <td class="text-center" v-text="record.formatted_birth_date"></td>
-                            <td class="text-start">
-                                <span class="badge rounded-pill bg-label-info">{{ record.age }} años</span>
+                    <template v-if="lists.admins.extras.loading">
+                        <tr>
+                            <td class="text-center" colspan="99">
+                                <i class="fas fa-spinner fa-spin fa-3x"></i>
                             </td>
-                            <td class="text-center">
-                                <i :class="['fa', { 'fa-male text-info': ['male'].includes(record.gender), 'fa-female text-danger': ['female'].includes(record.gender), 'fa-person-half-dress text-warning': ['other'].includes(record.gender) }]"></i>
-                                <span v-text="record.formatted_gender" class="text-capitalize ms-1"></span>
-                            </td>
-                            <td class="text-center">
-                                <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
-                            </td>
-                            <!-- <td class="text-center">
-                                <button type="button" class="btn btn-sm rounded-pill btn-warning waves-effect waves-light">
-                                    <i class="fa fa-pencil"></i>
-                                </button>
-                            </td> -->
                         </tr>
                     </template>
                     <template v-else>
-                        <tr>
-                            <td class="text-center" colspan="99" v-text="generalConfiguration.messages.withoutResults"></td>
-                        </tr>
+                        <template v-if="lists.admins.records.data && lists.admins.records.data.length > 0">
+                            <tr v-for="record in lists.admins.records.data" :key="record.id" class="align-middle">
+                                <td class="text-center text-uppercase" v-text="record.formatted_type_document"></td>
+                                <td class="text-center" v-text="record.number_document"></td>
+                                <td class="text-center" v-text="record.last_name"></td>
+                                <td class="text-center" v-text="record.first_name"></td>
+                                <td class="text-center" v-text="record?.user?.email"></td>
+                                <td class="text-center" v-text="record.formatted_birth_date"></td>
+                                <td class="text-start">
+                                    <span class="badge rounded-pill bg-label-info">{{ record.age }} años</span>
+                                </td>
+                                <td class="text-center">
+                                    <i :class="['fa', { 'fa-male text-info': ['male'].includes(record.gender), 'fa-female text-danger': ['female'].includes(record.gender), 'fa-person-half-dress text-warning': ['other'].includes(record.gender) }]"></i>
+                                    <span v-text="record.formatted_gender" class="text-capitalize ms-1"></span>
+                                </td>
+                                <td class="text-center">
+                                    <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
+                                </td>
+                            </tr>
+                        </template>
+                        <template v-else>
+                            <tr>
+                                <td class="text-center" colspan="99" v-text="generalConfig.messages.withoutResults"></td>
+                            </tr>
+                        </template>
                     </template>
                 </tbody>
             </table>
@@ -287,36 +287,48 @@
 </template>
 
 <script>
-import { requestRoute, generalConfiguration } from "../helpers/constants.js";
-import { showLoading, hideSwal, toastrAlert } from "../helpers/alerts.js";
-import { initTooltips, hideTooltips } from "../helpers/tooltips.js";
-import { validateVariable, consultNumberDocument } from "../helpers/main.js";
-
 import axios from "axios";
+import * as Constants from "../helpers/constants.js";
+import * as Alerts from "../helpers/alerts.js";
+import * as Utils from "../helpers/utils.js";
+
 import inputDate from "../componentes/inputDate.vue";
-import inputText from "../componentes/inputText.vue";
+import inputNumber from "../componentes/inputNumber.vue";
 import inputSelect from "../componentes/inputSelect.vue";
 import inputSelect2 from "../componentes/inputSelect2.vue";
+import inputText from "../componentes/inputText.vue";
 
 export default {
     components: {
-        inputDate, inputText, inputSelect, inputSelect2
+        inputDate,
+        inputNumber,
+        inputSelect,
+        inputSelect2,
+        inputText
     },
     mounted: async function() {
 
-        document.getElementById("menu-item-admins").classList.add("active");
+        Utils.openNavbarItem("menu-item-admins");
+        Alerts.swals({type: "initParams"});
 
-        await this.initParams({});
-        await this.initOthers({});
+        let initParams = await this.initParams({}),
+            initOthers = await this.initOthers({});
 
-        await this.listAdmins({});
-        initTooltips();
+        if(initParams && initOthers) {
+
+            Alerts.swals({show: false});
+            await this.listAdmins({});
+
+        }
 
     },
     data() {
         return {
             lists: {
                 admins: {
+                    extras: {
+                        loading: true
+                    },
                     filters: {
                         general: "",
                     },
@@ -366,7 +378,7 @@ export default {
                     }
                 }
             },
-            generalConfiguration: generalConfiguration
+            generalConfig: Constants.generalConfig
         };
     },
     methods: {
@@ -374,7 +386,7 @@ export default {
 
             return new Promise(resolve => {
 
-                let requestUrl    = `${requestRoute}/admins/initParams`,
+                let requestUrl    = `${Utils.route("admins")}/initParams`,
                     requestConfig = {};
 
                 let params = {};
@@ -387,17 +399,21 @@ export default {
 
                     let branches = response.data.branches;
 
-                    this.forms.admins.add.options.branches = branches.map(e => ({code: e.id, label: e.name}));
+                    this.forms.admins.add.options.branches = branches.map(x => ({code: x.id, label: x.name}));
+
+                    resolve(true);
 
                 })
                 .catch((error) => {
 
-                    toastrAlert({subtitle: error, type: "error"});
+                    Alerts.toastrs({subtitle: error, type: "error"});
+
+                    resolve(false);
 
                 })
                 .finally(() => {
 
-                    resolve(true);
+                    //
 
                 });
 
@@ -413,14 +429,14 @@ export default {
                 $(`#${el.forms.admins.add.select2.branches}`).on("select2:select", function(e) {
 
                     let data = e.params.data;
-                    if(((el.forms.admins.add.data.branches).filter(e => e.toString() == (data.id).toString())).length === 0) (el.forms.admins.add.data.branches).push(data.id);
+                    if(((el.forms.admins.add.data.branches).filter(x => x.toString() === (data.id).toString())).length === 0) (el.forms.admins.add.data.branches).push(data.id);
 
                 });
 
                 $(`#${el.forms.admins.add.select2.branches}`).on("select2:unselect", function(e) {
 
                     let data = e.params.data;
-                    el.forms.admins.add.data.branches = (el.forms.admins.add.data.branches).filter(e => e.toString() !== (data.id).toString());
+                    el.forms.admins.add.data.branches = (el.forms.admins.add.data.branches).filter(x => x.toString() !== (data.id).toString());
 
                 });
 
@@ -433,9 +449,9 @@ export default {
 
             return new Promise(resolve => {
 
-                showLoading({type: "list"});
+                this.lists.admins.extras.loading = true;
 
-                let requestUrl    = url || `${requestRoute}/admins/list`,
+                let requestUrl    = url || `${Utils.route("admins")}/list`,
                     requestConfig = {};
 
                 let params = {};
@@ -449,16 +465,17 @@ export default {
 
                     this.lists.admins.records = response.data;
 
+                    this.lists.admins.extras.loading = false;
+
                 })
                 .catch((error) => {
 
-                    toastrAlert({subtitle: error, type: "error"});
+                    Alerts.toastrs({subtitle: error, type: "error"});
 
                 })
                 .finally(() => {
 
-                    hideSwal();
-                    initTooltips();
+                    Alerts.tooltips({});
 
                     resolve(true);
 
@@ -471,10 +488,10 @@ export default {
 
             let functionName = "createAdmin";
 
-            showLoading({type: "saveForm"});
+            Alerts.swals({type: "saveForm"});
             this.clearFormErrors({functionName});
 
-            let requestUrl  = `${requestRoute}/admins`,
+            let requestUrl  = `${Utils.route("admins")}`,
                 requestData = {};
 
             requestData.type_document   = this.forms.admins.add.data.type_document;
@@ -496,7 +513,7 @@ export default {
                 switch(response.status) {
                     case 200:
                         this.clearForm({functionName});
-                        toastrAlert({subtitle: response.data.message, type: "success"});
+                        Alerts.toastrs({subtitle: response.data.message, type: "success"});
                         break;
                 }
 
@@ -506,14 +523,14 @@ export default {
                 switch(error.response.status) {
                     case 422:
                         this.setFormErrors({functionName, errors: error.response.data.errors});
-                        toastrAlert({code: error.response.status, type: "error"});
+                        Alerts.toastrs({code: error.response.status, type: "error"});
                         break;
                 }
 
             })
             .finally(() => {
 
-                hideSwal();
+                Alerts.hideSwal();
 
             });
 
@@ -576,16 +593,16 @@ export default {
         // Utils
         validateVariable({value}) {
 
-            return validateVariable({value});
+            return Utils.validateVariable({value});
 
         },
         async consultNumberDocument({functionName, numberDocument, type}) {
 
             switch(functionName) {
                 case "createAdmin":
-                    showLoading({type: "externalConsult"});
+                    Alerts.swals({type: "externalConsult"});
 
-                    let consult = await consultNumberDocument({numberDocument, type});
+                    let consult = await Utils.consultNumberDocument({numberDocument, type});
 
                     if(consult.bool) {
 
@@ -595,7 +612,7 @@ export default {
 
                     }
 
-                    hideSwal();
+                    Alerts.hideSwal();
                     break;
             }
 

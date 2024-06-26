@@ -1,57 +1,43 @@
-import { validateVariable } from "./main";
+export function swals({show = true, type = null, title = ""}) {
 
-function showLoading({type = null, title = ""}) {
+    if(show) {
 
-    let message = "";
+        let message = "";
 
-    switch(type) {
-        case "externalConsult":
-            message = "Consultando.";
-            break;
+        switch(type) {
+            case "initParams":
+                message = "";
+                break;
 
-        case "list":
-            message = "Cargando listado.";
-            break;
+            case "externalConsult":
+                message = "Consultando.";
+                break;
 
-        case "saveForm":
-            message = "Guardando formulario.";
-            break;
+            case "list":
+                message = "Cargando listado.";
+                break;
+
+            case "saveForm":
+                message = "Guardando formulario.";
+                break;
+        }
+
+        Swal.fire({
+            html: `<h5>${message} Este proceso puede tomar algunos segundos, por favor espere.</h5>
+                   <img src='../../../../public/assets/img/utils/spin.gif' width='80'>`,
+            allowOutsideClick: false,
+            showConfirmButton: false
+        });
+
+    }else {
+
+        Swal.close();
+
     }
 
-    Swal.fire({
-        html: `<h5>${message} Este proceso puede tomar algunos segundos, por favor espere.</h5>
-               <img src='../../../../public/assets/img/utils/spin.gif' width='80'>`,
-        allowOutsideClick: false,
-        showConfirmButton: false
-    });
-
 }
 
-function hideSwal() {
-
-	Swal.close();
-
-}
-
-function successSwal({titulo = "Se efectuó correctamente", descripcion = ""}){
-
-    Swal.fire(titulo, descripcion, "success");
-
-}
-
-function errorSwal({type = null, title = ""}){
-
-    Swal.fire(title, type.toString(), "error");
-
-}
-
-function mensajeEliminar(mensaje) {
-
-    return `Al realizar esta acción se eliminará ${mensaje}. No podrá revertir la acción.`;
-
-}
-
-function toastrAlert({title = null, subtitle = null, code = null, type = "success", options = null}) {
+export function toastrs({title = null, subtitle = null, code = null, type = "success", options = null}) {
 
     let toastrOptions = {};
 
@@ -116,4 +102,16 @@ function toastrAlert({title = null, subtitle = null, code = null, type = "succes
 
 }
 
-export { showLoading, hideSwal, successSwal, errorSwal, mensajeEliminar, toastrAlert };
+export function tooltips({show = true, time = 0}) {
+
+    if(show) {
+
+        time > 0 ? setTimeout(() => $('[data-bs-toggle="tooltip"]').tooltip(), time) : $('[data-bs-toggle="tooltip"]').tooltip();
+
+    }else {
+
+        time > 0 ? setTimeout(() => $(".tooltip").tooltip("hide"), time) : $(".tooltip").tooltip("hide");
+
+    }
+
+}

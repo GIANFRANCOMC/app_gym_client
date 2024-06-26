@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { requestRoute, generalConfiguration } from "../helpers/constants.js";
+import { requestRoute, generalConfig } from "../helpers/constants.js";
 
 export default {
     name: "inputNumber",
