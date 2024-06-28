@@ -12,7 +12,7 @@
                     :disabled="disabled"
                     @change="handleChange"
                     :multiple="multiple">
-                    <option value="">Seleccione</option>
+                    <option v-if="!multiple" value="">Seleccione</option>
                     <option v-for="(option, index) in options" :value="option.code" v-text="option.label" :extras="option?.extras"></option>
                 </select>
                 <slot name="inputGroupAppend"></slot>

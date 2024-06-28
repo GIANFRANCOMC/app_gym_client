@@ -27,7 +27,7 @@
             </inputText>
         </div>
         <div class="align-self-end ms-3">
-            <button class="btn btn-primary" data-bs-toggle="modal" :data-bs-target="`#${forms.admins.add.modals.default}`">
+            <button class="btn btn-primary" @click="modalCreateAdmin({})">
                 <i class="fa fa-plus"></i>
                 <span class="ms-1">Agregar</span>
             </button>
@@ -46,6 +46,7 @@
                         <th class="align-middle text-center fw-bold col-1" colspan="2">FECHA DE NACIMIENTO</th>
                         <th class="align-middle text-center fw-bold col-1">GÉNERO</th>
                         <th class="align-middle text-center fw-bold col-1">ESTADO</th>
+                        <th class="align-middle text-center fw-bold col-1">ACCIONES</th>
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">
@@ -74,6 +75,11 @@
                                 </td>
                                 <td class="text-center">
                                     <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
+                                </td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-sm rounded-pill btn-warning waves-effect waves-light" @click="modalUpdateAdmin({record})">
+                                        <i class="fa fa-pencil"></i>
+                                    </button>
                                 </td>
                             </tr>
                         </template>
@@ -284,6 +290,181 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" :id="forms.admins.update.modals.default" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-uppercase">EDITAR COLABORADOR</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-2 mb-3">
+                            <inputSelect
+                                v-model="forms.admins.update.data.type_document"
+                                :options="forms.admins.update.options.type_document"
+                                :showDiv="true"
+                                title="Tipo de documento"
+                                :required="true"
+                                :showTextBottom="true"
+                                :textBottomInfo="forms.admins.update.errors?.type_document"
+                                :xl="6"
+                                :lg="6"
+                                :md="12"
+                                :sm="12">
+                            </inputSelect>
+                            <inputText
+                                v-model="forms.admins.update.data.number_document"
+                                :showDiv="true"
+                                title="Número de documento"
+                                :required="true"
+                                :maxlength="25"
+                                :showTextBottom="true"
+                                :textBottomInfo="forms.admins.update.errors?.number_document"
+                                :xl="6"
+                                :lg="6"
+                                :md="12"
+                                :sm="12">
+                            </inputText>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <inputText
+                            v-model="forms.admins.update.data.last_name"
+                            :showDiv="true"
+                            title="Apellidos"
+                            :required="true"
+                            :maxlength="60"
+                            :showTextBottom="true"
+                            :textBottomInfo="forms.admins.update.errors?.last_name"
+                            :xl="6"
+                            :lg="6"
+                            :md="12"
+                            :sm="12">
+                        </inputText>
+                        <inputText
+                            v-model="forms.admins.update.data.first_name"
+                            :showDiv="true"
+                            title="Nombres"
+                            :required="true"
+                            :maxlength="80"
+                            :showTextBottom="true"
+                            :textBottomInfo="forms.admins.update.errors?.first_name"
+                            :xl="6"
+                            :lg="6"
+                            :md="12"
+                            :sm="12">
+                        </inputText>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <inputText
+                            v-model="forms.admins.update.data.email"
+                            :showDiv="true"
+                            title="Correo electrónico"
+                            :required="true"
+                            :maxlength="60"
+                            :showTextBottom="true"
+                            :textBottomInfo="forms.admins.update.errors?.email"
+                            :xl="6"
+                            :lg="6"
+                            :md="12"
+                            :sm="12">
+                        </inputText>
+                        <inputText
+                            v-model="forms.admins.update.data.password"
+                            :showDiv="true"
+                            title="Contraseña"
+                            :required="true"
+                            :maxlength="80"
+                            :showTextBottom="true"
+                            :textBottomInfo="forms.admins.update.errors?.password"
+                            :xl="6"
+                            :lg="6"
+                            :md="12"
+                            :sm="12">
+                        </inputText>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <inputDate
+                            v-model="forms.admins.update.data.birth_date"
+                            :showDiv="true"
+                            title="Fecha de nacimiento"
+                            :required="true"
+                            :showTextBottom="true"
+                            :textBottomInfo="forms.admins.update.errors?.birth_date"
+                            :xl="6"
+                            :lg="6"
+                            :md="12"
+                            :sm="12">
+                        </inputDate>
+                        <inputSelect
+                            v-model="forms.admins.update.data.gender"
+                            :options="forms.admins.update.options.gender"
+                            :showDiv="true"
+                            title="Género"
+                            :required="true"
+                            :showTextBottom="true"
+                            :textBottomInfo="forms.admins.update.errors?.gender"
+                            :xl="6"
+                            :lg="6"
+                            :md="12"
+                            :sm="12">
+                        </inputSelect>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <inputText
+                            v-model="forms.admins.update.data.phone"
+                            :showDiv="true"
+                            title="Celular"
+                            :required="true"
+                            :maxlength="80"
+                            :showTextBottom="true"
+                            :textBottomInfo="forms.admins.update.errors?.phone"
+                            :xl="6"
+                            :lg="6"
+                            :md="12"
+                            :sm="12">
+                        </inputText>
+                        <inputSelect
+                            v-model="forms.admins.update.data.status"
+                            :options="forms.admins.update.options.status"
+                            :showDiv="true"
+                            title="Estado"
+                            :required="true"
+                            :showTextBottom="true"
+                            :textBottomInfo="forms.admins.update.errors?.status"
+                            :xl="6"
+                            :lg="6"
+                            :md="12"
+                            :sm="12">
+                        </inputSelect>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <inputSelect2
+                            :id="`${forms.admins.update.select2.branches}`"
+                            :options="forms.admins.update.options.branches"
+                            :multiple="true"
+                            :showDiv="true"
+                            title="Sucursal"
+                            :required="true"
+                            :showTextBottom="true"
+                            :textBottomInfo="forms.admins.update.errors?.branches"
+                            :xl="12"
+                            :lg="12"
+                            :md="12"
+                            :sm="12">
+                        </inputSelect2>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" @click="updateAdmin()">
+                        <i class="fa fa-save"></i>
+                        <span class="ms-1">Guardar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -344,7 +525,7 @@ export default {
                             default: "addAdminModal"
                         },
                         select2: {
-                            branches: "branchesSelect2"
+                            branches: "addAdminBranchesSelect2"
                         },
                         data: {
                             type_document: "",
@@ -360,18 +541,38 @@ export default {
                             branches: []
                         },
                         options: {
-                            type_document: [
-                                {code: "dni", label: "DNI"}
-                            ],
-                            gender: [
-                                {code: "male", label: "Masculino"},
-                                {code: "female", label: "Femenino"},
-                                {code: "other", label: "Otro"}
-                            ],
-                            status: [
-                                {code: "active", label: "Activo"},
-                                {code: "inactive", label: "Inactivo"}
-                            ],
+                            type_document: [],
+                            gender: [],
+                            status: [],
+                            branches: []
+                        },
+                        errors: {}
+                    },
+                    update: {
+                        modals: {
+                            default: "updateAdminModal"
+                        },
+                        select2: {
+                            branches: "updateAdminBranchesSelect2"
+                        },
+                        data: {
+                            id: "",
+                            type_document: "",
+                            number_document: "",
+                            last_name: "",
+                            first_name: "",
+                            email: "",
+                            password: "",
+                            birth_date: "",
+                            gender: "",
+                            phone: "",
+                            status: "",
+                            branches: []
+                        },
+                        options: {
+                            type_document: [],
+                            gender: [],
+                            status: [],
                             branches: []
                         },
                         errors: {}
@@ -397,9 +598,17 @@ export default {
                 .get(requestUrl, requestConfig)
                 .then((response) => {
 
-                    let branches = response.data.branches;
+                    let configs = response.data.configs;
 
-                    this.forms.admins.add.options.branches = branches.map(x => ({code: x.id, label: x.name}));
+                    this.forms.admins.add.options.type_document = configs.admins.documentsType.map(x => ({code: x.id, label: x.name}));
+                    this.forms.admins.add.options.gender        = configs.admins.genders.map(x => ({code: x.id, label: x.name}));
+                    this.forms.admins.add.options.status        = configs.admins.statuses.map(x => ({code: x.id, label: x.name}));
+                    this.forms.admins.add.options.branches      = configs.admins.branches.map(x => ({code: x.id, label: x.name}));
+
+                    this.forms.admins.update.options.type_document = configs.admins.documentsType.map(x => ({code: x.id, label: x.name}));
+                    this.forms.admins.update.options.gender        = configs.admins.genders.map(x => ({code: x.id, label: x.name}));
+                    this.forms.admins.update.options.status        = configs.admins.statuses.map(x => ({code: x.id, label: x.name}));
+                    this.forms.admins.update.options.branches      = configs.admins.branches.map(x => ({code: x.id, label: x.name}));
 
                     resolve(true);
 
@@ -426,17 +635,37 @@ export default {
 
                 let el = this;
 
-                $(`#${el.forms.admins.add.select2.branches}`).on("select2:select", function(e) {
+                $(`#${el.forms.admins.add.select2.branches}, #${el.forms.admins.update.select2.branches}`).on("select2:select", function(e) {
 
-                    let data = e.params.data;
-                    if(((el.forms.admins.add.data.branches).filter(x => x.toString() === (data.id).toString())).length === 0) (el.forms.admins.add.data.branches).push(data.id);
+                    let targetId = e.target.id,
+                        data     = e.params.data;
+
+                    if(targetId === el.forms.admins.add.select2.branches) {
+
+                        if(((el.forms.admins.add.data.branches).filter(x => x.toString() === (data.id).toString())).length === 0) (el.forms.admins.add.data.branches).push(data.id);
+
+                    }else if(targetId === el.forms.admins.update.select2.branches) {
+
+                        if(((el.forms.admins.update.data.branches).filter(x => x.toString() === (data.id).toString())).length === 0) (el.forms.admins.update.data.branches).push(data.id);
+
+                    }
 
                 });
 
-                $(`#${el.forms.admins.add.select2.branches}`).on("select2:unselect", function(e) {
+                $(`#${el.forms.admins.add.select2.branches}, #${el.forms.admins.update.select2.branches}`).on("select2:unselect", function(e) {
 
-                    let data = e.params.data;
-                    el.forms.admins.add.data.branches = (el.forms.admins.add.data.branches).filter(x => x.toString() !== (data.id).toString());
+                    let targetId = e.target.id,
+                        data     = e.params.data;
+
+                    if(targetId === el.forms.admins.add.select2.branches) {
+
+                        el.forms.admins.add.data.branches = (el.forms.admins.add.data.branches).filter(x => x.toString() !== (data.id).toString());
+
+                    }else if(targetId === el.forms.admins.update.select2.branches) {
+
+                        el.forms.admins.update.data.branches = (el.forms.admins.update.data.branches).filter(x => x.toString() !== (data.id).toString());
+
+                    }
 
                 });
 
@@ -484,6 +713,11 @@ export default {
             });
 
         },
+        modalCreateAdmin({}) {
+
+            $(`#${this.forms.admins.add.modals.default}`).modal("show");
+
+        },
         createAdmin() {
 
             let functionName = "createAdmin";
@@ -492,19 +726,7 @@ export default {
             this.clearFormErrors({functionName});
 
             let requestUrl  = `${Utils.route("admins")}`,
-                requestData = {};
-
-            requestData.type_document   = this.forms.admins.add.data.type_document;
-            requestData.number_document = this.forms.admins.add.data.number_document;
-            requestData.last_name       = this.forms.admins.add.data.last_name;
-            requestData.first_name      = this.forms.admins.add.data.first_name;
-            requestData.email           = this.forms.admins.add.data.email;
-            requestData.password        = this.forms.admins.add.data.password;
-            requestData.birth_date      = this.forms.admins.add.data.birth_date;
-            requestData.gender          = this.forms.admins.add.data.gender;
-            requestData.phone           = this.forms.admins.add.data.phone;
-            requestData.status          = this.forms.admins.add.data.status;
-            requestData.branches        = this.forms.admins.add.data.branches;
+                requestData = {...this.forms.admins.add.data};
 
             axios
             .post(requestUrl, requestData)
@@ -530,7 +752,63 @@ export default {
             })
             .finally(() => {
 
-                Alerts.hideSwal();
+                Alerts.swals({show: false});
+
+            });
+
+        },
+        modalUpdateAdmin({record}) {
+
+            this.forms.admins.update.data.id              = record.id;
+            this.forms.admins.update.data.type_document   = record.type_document;
+            this.forms.admins.update.data.number_document = record.number_document;
+            this.forms.admins.update.data.last_name       = record.last_name;
+            this.forms.admins.update.data.first_name      = record.first_name;
+            this.forms.admins.update.data.birth_date      = record.birth_date;
+            this.forms.admins.update.data.phone           = record.phone;
+            this.forms.admins.update.data.status          = record.status;
+
+            $(`#${this.forms.admins.update.modals.default}`).modal("show");
+
+        },
+        updateAdmin() {
+
+            let functionName = "updateAdmin";
+
+            Alerts.swals({type: "saveForm"});
+            this.clearFormErrors({functionName});
+
+            let requestUrl  = `${Utils.route("admins")}/${this.forms.admins.update.data.id}`,
+                requestData = {...this.forms.admins.update.data};
+
+            axios
+            .patch(requestUrl, requestData)
+            .then((response) => {
+
+                switch(response.status) {
+                    case 200:
+                        this.clearForm({functionName});
+                        Alerts.toastrs({subtitle: response.data.message, type: "success"});
+                        $(`#${this.forms.admins.update.modals.default}`).modal("hide");
+                        break;
+                }
+
+                this.listAdmins({});
+
+            })
+            .catch((error) => {
+
+                switch(error.response.status) {
+                    case 422:
+                        this.setFormErrors({functionName, errors: error.response.data.errors});
+                        Alerts.toastrs({code: error.response.status, type: "error"});
+                        break;
+                }
+
+            })
+            .finally(() => {
+
+                Alerts.swals({show: false});
 
             });
 
@@ -553,18 +831,45 @@ export default {
                     this.forms.admins.add.data.branches        = [];
                     $(`#${this.forms.admins.add.select2.branches}`).val(null).trigger("change");
                     break;
+
+                case "updateAdmin":
+                    this.forms.admins.update.data.type_document   = "";
+                    this.forms.admins.update.data.number_document = "";
+                    this.forms.admins.update.data.last_name       = "";
+                    this.forms.admins.update.data.first_name      = "";
+                    this.forms.admins.update.data.email           = "";
+                    this.forms.admins.update.data.password        = "";
+                    this.forms.admins.update.data.birth_date      = "";
+                    this.forms.admins.update.data.gender          = "";
+                    this.forms.admins.update.data.phone           = "";
+                    this.forms.admins.update.data.status          = "";
+                    this.forms.admins.update.data.branches        = [];
+                    $(`#${this.forms.admins.update.select2.branches}`).val(null).trigger("change");
+                    break;
             }
 
         },
         clearFormErrors({functionName}) {
 
+            let errorsKeys = [];
+
             switch(functionName) {
                 case "createAdmin":
-                    let errorsKeys = Object.keys(this.forms.admins.add.errors);
+                    errorsKeys = Object.keys(this.forms.admins.add.errors);
 
                     for(const errorKey of errorsKeys) {
 
                         this.forms.admins.add.errors[errorKey] = [];
+
+                    }
+                    break;
+
+                case "updateAdmin":
+                    errorsKeys = Object.keys(this.forms.admins.update.errors);
+
+                    for(const errorKey of errorsKeys) {
+
+                        this.forms.admins.update.errors[errorKey] = [];
 
                     }
                     break;
@@ -586,6 +891,20 @@ export default {
                     this.forms.admins.add.errors.phone           = errors.phone ?? [];
                     this.forms.admins.add.errors.status          = errors.status ?? [];
                     this.forms.admins.add.errors.branches        = errors.branches ?? [];
+                    break;
+
+                case "updateAdmin":
+                    this.forms.admins.update.errors.type_document   = errors.type_document ?? [];
+                    this.forms.admins.update.errors.number_document = errors.number_document ?? [];
+                    this.forms.admins.update.errors.last_name       = errors.last_name ?? [];
+                    this.forms.admins.update.errors.first_name      = errors.first_name ?? [];
+                    this.forms.admins.update.errors.email           = errors.email ?? [];
+                    this.forms.admins.update.errors.password        = errors.password ?? [];
+                    this.forms.admins.update.errors.birth_date      = errors.birth_date ?? [];
+                    this.forms.admins.update.errors.gender          = errors.gender ?? [];
+                    this.forms.admins.update.errors.phone           = errors.phone ?? [];
+                    this.forms.admins.update.errors.status          = errors.status ?? [];
+                    this.forms.admins.update.errors.branches        = errors.branches ?? [];
                     break;
             }
 
@@ -612,7 +931,7 @@ export default {
 
                     }
 
-                    Alerts.hideSwal();
+                    Alerts.swals({show: false});
                     break;
             }
 

@@ -17,7 +17,17 @@ class Admin extends Model {
     protected $appends             = ['formatted_type_document', 'formatted_birth_date', 'formatted_gender', 'formatted_status', 'age'];
     public static $snakeAttributes = false;
 
-    protected $fillable = ['type_document', 'number_document', 'last_name', 'first_name', 'birth_date', 'gender', 'phone', 'company_id', 'status'];
+    protected $fillable = [
+        'type_document',
+        'number_document',
+        'last_name',
+        'first_name',
+        'birth_date',
+        'gender',
+        'phone',
+        'status',
+        'company_id'
+    ];
 
     public function getFormattedTypeDocumentAttribute() {
 

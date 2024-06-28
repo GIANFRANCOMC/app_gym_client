@@ -31,7 +31,25 @@ class AdminController extends Controller {
                           ->orderBy("location", "ASC")
                           ->get();
 
-        $initParams->branches = $branches;
+        $configs = [
+            "admins" => [
+                "documentsType" => [
+                    ["id" => "dni", "name" => "DNI"]
+                ],
+                "genders" => [
+                    ["id" => "male", "name" => "Masculino"],
+                    ["id" => "female", "name" => "Femenino"],
+                    ["id" => "other", "name" => "Otro"]
+                ],
+                "statuses" => [
+                    ["id" => "active", "name" => "Activo"],
+                    ["id" => "inactive", "name" => "Inactivo"]
+                ],
+                "branches" => $branches
+            ]
+        ];
+
+        $initParams->configs  = $configs;
 
         return $initParams;
 
@@ -167,9 +185,14 @@ class AdminController extends Controller {
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAdminRequest $request, Admin $admin) {
+    public function update(UpdateAdminRequest $request, $id) {
 
-        //
+        $admin = Admin::find($id);
+        $admin->type_document   = $request->type_document;
+        $admin->number_document = $request->number_document;
+        $admin->save();
+
+        return response()->json(["message" => "Colaborador editado correctamente.", "admin" => $admin], 200);
 
     }
 
