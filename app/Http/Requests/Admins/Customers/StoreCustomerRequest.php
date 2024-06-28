@@ -27,10 +27,10 @@ class StoreCustomerRequest extends FormRequest
 
         return [
             'type_document'   => 'required|string',
-            'number_document' => ['required', 'string', 'min:2', 'max:30', new UniqueCustomerNumberDocumentForCompany($userAuth->company_id)],
+            'number_document' => ['required', 'string', 'min:2', 'max:30', new UniqueCustomerNumberDocumentForCompany()],
             'last_name'       => 'required|string|min:2|max:65',
             'first_name'      => 'required|string|min:2|max:85',
-            'email'           => ['required', 'string', 'email', new UniqueCustomerUserEmailForCompany($userAuth->company_id)],
+            'email'           => ['required', 'string', 'email', new UniqueCustomerUserEmailForCompany()],
             //'password'        => 'required|string',
             'birth_date'      => 'required|date',
             'gender'          => 'required|string',

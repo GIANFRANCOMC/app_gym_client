@@ -26,7 +26,7 @@ class StoreBranchRequest extends FormRequest
         $userAuth = Auth::user();
 
         return [
-            'name'     => ['required', 'string', 'min:2', 'max:65', new UniqueBranchNameForCompany($userAuth->company_id)],
+            'name'     => ['required', 'string', 'min:2', 'max:65', new UniqueBranchNameForCompany()],
             'location' => 'required|string|min:2|max:85',
             'status'   => 'required|string'
         ];

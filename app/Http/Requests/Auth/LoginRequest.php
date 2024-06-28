@@ -28,15 +28,14 @@ class LoginRequest extends FormRequest
     {
         return [
             'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
-            'company_id' => ['required', 'string', 'exists:companies,id'],
+            'password' => ['required', 'string']
         ];
     }
 
     public function messages()
     {
         return [
-            'company_id.exists' => 'No existe.',
+
         ];
     }
 
@@ -49,7 +48,7 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        $credentials = $this->only('email', 'password') + ['company_id' => $this->input('company_id')];
+        $credentials = $this->only('email', 'password');
 
         // Attempt to authenticate the user
         if (! Auth::attempt($credentials, $this->boolean('remember'))) {
@@ -57,17 +56,6 @@ class LoginRequest extends FormRequest
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
-            ]);
-        }
-
-        // Check if the company is active
-       $company = Auth::user()->company;
-
-        if (!$company || $company->status !== 'active') {
-            Auth::logout();
-
-            throw ValidationException::withMessages([
-                'company_id' => trans('auth.company_id'),
             ]);
         }
 

@@ -16,7 +16,7 @@ class Branch extends Model {
     protected $appends             = ['formatted_status'];
     public static $snakeAttributes = false;
 
-    protected $fillable = ['name', 'location', 'company_id', 'status'];
+    protected $fillable = ['name', 'location', 'status'];
 
     public function getFormattedStatusAttribute() {
 
@@ -33,12 +33,6 @@ class Branch extends Model {
                 return $this->attributes['status'];
                 break;
         }
-
-    }
-
-    public function company() {
-
-        return $this->belongsTo(Company::class);
 
     }
 

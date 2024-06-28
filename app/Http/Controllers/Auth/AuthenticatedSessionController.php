@@ -19,27 +19,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
-        $company_id   = env('COMPANY_ID', null);
-        $company_info = null;
-        $companies    = [];
-
-        if(Utilities::validateVariable($company_id)) {
-
-            $company_info = Company::where('id', $company_id)
-                                   ->first();
-
-            $companies = $company_info ? [$company_info] : [];
-
-        }
-
-        if(count($companies) === 0 || !Utilities::validateVariable($company_id)) {
-
-            $companies = Company::orderBy('commercial_name')
-                                ->get();
-
-        }
-
-        return view('auth.login', ["companies" => $companies, "company_info" => $company_info]);
+        return view('auth.login', []);
     }
 
     /**

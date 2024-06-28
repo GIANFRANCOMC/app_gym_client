@@ -25,8 +25,7 @@ class AdminController extends Controller {
 
         $initParams = new stdClass();
 
-        $branches = Branch::where("company_id", $userAuth->company_id)
-                          ->where("status", "active")
+        $branches = Branch::where("status", "active")
                           ->orderBy("name", "ASC")
                           ->orderBy("location", "ASC")
                           ->get();
@@ -74,7 +73,6 @@ class AdminController extends Controller {
                               ->orWhere("first_name", "like", $filter);
 
                     })
-                    ->where("company_id", $userAuth->company_id)
                     ->orderBy("last_name", "ASC")
                     ->orderBy("first_name", "ASC")
                     ->with(["user.branchUsers"])
@@ -120,7 +118,6 @@ class AdminController extends Controller {
             $admin->birth_date      = $request->birth_date;
             $admin->gender          = $request->gender;
             $admin->phone           = $request->phone;
-            $admin->company_id      = $userAuth->company_id;
             $admin->status          = $request->status;
             $admin->save();
 
@@ -128,7 +125,6 @@ class AdminController extends Controller {
             $user->name       = $admin->last_name." ".$admin->first_name;
             $user->email      = $request->email;
             $user->password   = $request->password;
-            $user->company_id = $admin->company_id;
             $user->admin_id   = $admin->id;
             $user->status     = "active";
             $user->save();
@@ -140,7 +136,6 @@ class AdminController extends Controller {
                 foreach($branchesId as $branchId) {
 
                     $branch = Branch::where("id", $branchId)
-                                    ->where("company_id", $userAuth->company_id)
                                     ->where("status", "active")
                                     ->first();
 

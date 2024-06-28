@@ -47,7 +47,6 @@ class ProductServiceController extends Controller {
                               ->orwhere("description", "like", $filter);
 
                     })
-                    ->where("company_id", $userAuth->company_id)
                     ->orderBy("name", "ASC")
                     ->orderBy("description", "ASC")
                     ->paginate(10);
@@ -88,7 +87,6 @@ class ProductServiceController extends Controller {
             $productService->name        = $request->name;
             $productService->description = $request->description;
             $productService->price       = $request->price;
-            $productService->company_id  = $userAuth->company_id;
             $productService->status      = $request->status;
             $productService->save();
 

@@ -26,7 +26,7 @@ class StoreMembershipRequest extends FormRequest
         $userAuth = Auth::user();
 
         return [
-            'name'              => ['required', 'string', 'min:2', 'max:65', new UniqueMembershipNameForCompany($userAuth->company_id)],
+            'name'              => ['required', 'string', 'min:2', 'max:65', new UniqueMembershipNameForCompany()],
             'description'       => 'required|string|min:2|max:85',
             'duration_quantity' => 'required|integer|min:1|max:999999999',
             'type'              => 'required|string',

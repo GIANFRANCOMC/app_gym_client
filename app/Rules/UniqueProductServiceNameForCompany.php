@@ -8,11 +8,9 @@ use Illuminate\Contracts\Validation\ValidationRule;
 
 class UniqueProductServiceNameForCompany implements ValidationRule {
 
-    protected $companyId;
+    public function __construct() {
 
-    public function __construct($companyId) {
-
-        $this->companyId = $companyId;
+        //
 
     }
 
@@ -24,7 +22,6 @@ class UniqueProductServiceNameForCompany implements ValidationRule {
     public function validate(string $attribute, mixed $value, Closure $fail): void {
 
         $productService = ProductService::where('name', $value)
-                                         ->where('company_id', $this->companyId)
                                          ->exists();
 
         if($productService) $fail('Ya ha sido registrado.');

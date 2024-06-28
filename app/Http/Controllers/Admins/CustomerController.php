@@ -48,7 +48,6 @@ class CustomerController extends Controller {
                               ->orWhere("first_name", "like", $filter);
 
                     })
-                    ->where("company_id", $userAuth->company_id)
                     ->orderBy("last_name", "ASC")
                     ->orderBy("first_name", "ASC")
                     ->with(["customerUser"])
@@ -94,7 +93,6 @@ class CustomerController extends Controller {
             $customer->birth_date      = $request->birth_date;
             $customer->gender          = $request->gender;
             $customer->phone           = $request->phone;
-            $customer->company_id      = $userAuth->company_id;
             $customer->status          = $request->status;
             $customer->save();
 
@@ -102,7 +100,6 @@ class CustomerController extends Controller {
             $customerUser->name        = $customer->last_name." ".$customer->first_name;
             $customerUser->email       = $request->email;
             $customerUser->password    = $request->number_document; // $request->password;
-            $customerUser->company_id  = $customer->company_id;
             $customerUser->customer_id = $customer->id;
             $customerUser->status      = "active";
             $customerUser->save();

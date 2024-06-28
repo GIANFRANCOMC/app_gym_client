@@ -47,7 +47,6 @@ class MembershipController extends Controller {
                               ->orwhere("description", "like", $filter);
 
                     })
-                    ->where("company_id", $userAuth->company_id)
                     ->orderBy("name", "ASC")
                     ->orderBy("description", "ASC")
                     ->paginate(10);
@@ -90,7 +89,6 @@ class MembershipController extends Controller {
             $membership->duration_quantity = $request->duration_quantity;
             $membership->type              = $request->type;
             $membership->price             = $request->price;
-            $membership->company_id        = $userAuth->company_id;
             $membership->status            = $request->status;
             $membership->save();
 

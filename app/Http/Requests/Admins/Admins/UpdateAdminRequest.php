@@ -27,10 +27,10 @@ class UpdateAdminRequest extends FormRequest
 
         return [
             //'type_document'   => 'required|string',
-            //'number_document' => ['required', 'string', 'min:2', 'max:30', new UniqueAdminNumberDocumentForCompany($userAuth->company_id)],
+            //'number_document' => ['required', 'string', 'min:2', 'max:30', new UniqueAdminNumberDocumentForCompany()],
             //'last_name'       => 'required|string|min:2|max:65',
             //'first_name'      => 'required|string|min:2|max:85',
-            //'email'           => ['required', 'string', 'email', new UniqueUserEmailForCompany($userAuth->company_id)],
+            //'email'           => ['required', 'string', 'email', new UniqueUserEmailForCompany()],
             //'password'        => 'required|string',
             //'birth_date'      => 'required|date',
             //'gender'          => 'required|string',

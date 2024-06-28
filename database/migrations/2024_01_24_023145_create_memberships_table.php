@@ -18,11 +18,10 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->enum('type', ['daily', 'monthly', 'annual']);
             $table->integer('duration_quantity')->nullable();
-            $table->foreignId('company_id')->constrained('companies');
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
 
-            $table->unique(['name', 'company_id']);
+            $table->unique(['name']);
         });
     }
 

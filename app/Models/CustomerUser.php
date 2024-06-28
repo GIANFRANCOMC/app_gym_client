@@ -28,7 +28,6 @@ class CustomerUser extends Model {
         'name',
         'email',
         'password',
-        'company_id',
         'customer_id',
         'status'
     ];
@@ -68,12 +67,6 @@ class CustomerUser extends Model {
                 return $this->attributes['status'];
                 break;
         }
-
-    }
-
-    public function company() {
-
-        return $this->belongsTo(Company::class);
 
     }
 

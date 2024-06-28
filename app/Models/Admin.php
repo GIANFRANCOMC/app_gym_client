@@ -25,8 +25,7 @@ class Admin extends Model {
         'birth_date',
         'gender',
         'phone',
-        'status',
-        'company_id'
+        'status'
     ];
 
     public function getFormattedTypeDocumentAttribute() {
@@ -118,12 +117,6 @@ class Admin extends Model {
         }
 
         return null;
-
-    }
-
-    public function company() {
-
-        return $this->belongsTo(Company::class);
 
     }
 

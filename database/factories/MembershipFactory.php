@@ -23,9 +23,6 @@ class MembershipFactory extends Factory
             'price' => $this->faker->randomFloat(2, 10, 100),
             'type' => $this->faker->randomElement(['daily', 'monthly', 'annual']),
             'duration_quantity' => $this->faker->randomNumber(2),
-            'company_id' => function () {
-                return Company::factory()->create()->id;
-            },
             'status' => $this->faker->randomElement(['active', 'inactive'])
         ];
     }

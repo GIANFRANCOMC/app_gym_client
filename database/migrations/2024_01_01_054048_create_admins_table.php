@@ -20,11 +20,10 @@ return new class extends Migration
             $table->date('birth_date')->nullable();
             $table->enum('gender', ['male', 'female', 'other'])->nullable();
             $table->string('phone')->nullable();
-            $table->foreignId('company_id')->constrained('companies');
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
 
-            $table->unique(['number_document', 'company_id']);
+            $table->unique(['number_document']);
         });
     }
 

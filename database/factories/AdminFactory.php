@@ -25,9 +25,6 @@ class AdminFactory extends Factory
             'birth_date' => $this->faker->date,
             'gender' => $this->faker->randomElement(['male', 'female', 'other']),
             'phone' => $this->faker->phoneNumber,
-            'company_id' => function () {
-                return Company::factory()->create()->id;
-            },
             'status' => $this->faker->randomElement(['active', 'inactive'])
         ];
     }

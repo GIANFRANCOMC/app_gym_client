@@ -31,9 +31,6 @@ class CustomerUserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
-            'company_id' => function () {
-                return Company::factory()->create()->id;
-            },
             'customer_id' => function () {
                 return Customer::factory()->create()->id;
             },

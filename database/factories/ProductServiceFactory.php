@@ -21,9 +21,6 @@ class ProductServiceFactory extends Factory
             'name' => $this->faker->word,
             'description' => $this->faker->sentence,
             'price' => $this->faker->randomFloat(2, 10, 100),
-            'company_id' => function () {
-                return Company::factory()->create()->id;
-            },
             'status' => $this->faker->randomElement(['active', 'inactive'])
         ];
     }

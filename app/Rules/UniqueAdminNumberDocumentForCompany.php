@@ -8,11 +8,9 @@ use Illuminate\Contracts\Validation\ValidationRule;
 
 class UniqueAdminNumberDocumentForCompany implements ValidationRule {
 
-    protected $companyId;
+    public function __construct() {
 
-    public function __construct($companyId) {
-
-        $this->companyId = $companyId;
+        //
 
     }
 
@@ -24,7 +22,6 @@ class UniqueAdminNumberDocumentForCompany implements ValidationRule {
     public function validate(string $attribute, mixed $value, Closure $fail): void {
 
         $admin = Admin::where('number_document', $value)
-                      ->where('company_id', $this->companyId)
                       ->exists();
 
         if($admin) $fail('Ya ha sido registrado.');

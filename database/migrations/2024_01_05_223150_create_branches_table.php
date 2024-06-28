@@ -15,11 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('location')->nullable();
-            $table->foreignId('company_id')->constrained('companies');
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
 
-            $table->unique(['name', 'company_id']);
+            $table->unique(['name']);
         });
     }
 

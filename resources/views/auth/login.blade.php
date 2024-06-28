@@ -37,34 +37,6 @@
                 @endif
             </div>
         </div>
-        @if ($company_info)
-            <div class="mt-3 d-none">
-                <label for="company_id" class="form-label">Empresa</label>
-                <select class="form-select" id="company_id" name="company_id" required>
-                    <option value="{{ $company_info->id }}" selected>{{ $company_info->commercial_name }}</option>
-                </select>
-            </div>
-            @if ($errors->get('company_id'))
-                @foreach ((array) $errors->get('company_id') as $message)
-                    <small class="text-danger">{{ $message }}</small>
-                @endforeach
-            @endif
-        @else
-            <div class="mt-3">
-                <label for="company_id" class="form-label">Empresa</label>
-                <select class="form-select" id="company_id" name="company_id" :value="old('company_id')" required>
-                    <option value="">Seleccione</option>
-                    @foreach ($companies as $company)
-                        <option value="{{ $company->id }}">{{ $company->commercial_name }}</option>
-                    @endforeach
-                </select>
-                @if ($errors->get('company_id'))
-                    @foreach ((array) $errors->get('company_id') as $message)
-                        <small class="text-danger">{{ $message }}</small>
-                    @endforeach
-                @endif
-            </div>
-        @endif
         <!-- Remember Me -->
         {{-- <div class="block mt-4">
             <label for="remember_me" class="inline-flex items-center">

@@ -28,7 +28,6 @@ class User extends Authenticatable {
         'name',
         'email',
         'password',
-        'company_id',
         'admin_id',
         'status'
     ];
@@ -74,12 +73,6 @@ class User extends Authenticatable {
     public function admin() {
 
         return $this->belongsTo(Admin::class);
-
-    }
-
-    public function company() {
-
-        return $this->belongsTo(Company::class);
 
     }
 

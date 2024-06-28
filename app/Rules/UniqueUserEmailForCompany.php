@@ -8,11 +8,9 @@ use Illuminate\Contracts\Validation\ValidationRule;
 
 class UniqueUserEmailForCompany implements ValidationRule {
 
-    protected $companyId;
+    public function __construct() {
 
-    public function __construct($companyId) {
-
-        $this->companyId = $companyId;
+        //
 
     }
 
@@ -24,7 +22,6 @@ class UniqueUserEmailForCompany implements ValidationRule {
     public function validate(string $attribute, mixed $value, Closure $fail): void {
 
         $user = User::where('email', $value)
-                    ->where('company_id', $this->companyId)
                     ->exists();
 
         if($user) $fail('Ya ha sido registrado.');

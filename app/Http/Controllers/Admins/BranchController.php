@@ -47,7 +47,6 @@ class BranchController extends Controller {
                               ->orwhere("location", "like", $filter);
 
                     })
-                    ->where("company_id", $userAuth->company_id)
                     ->orderBy("name", "ASC")
                     ->orderBy("location", "ASC")
                     ->paginate(10);
@@ -87,7 +86,6 @@ class BranchController extends Controller {
 
             $branch->name       = $request->name;
             $branch->location   = $request->location;
-            $branch->company_id = $userAuth->company_id;
             $branch->status     = $request->status;
             $branch->save();
 

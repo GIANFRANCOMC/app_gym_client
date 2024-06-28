@@ -25,26 +25,22 @@ class SaleController extends Controller {
 
         $initParams = new stdClass();
 
-        $branches = Branch::where("company_id", $userAuth->company_id)
-                          ->where("status", "active")
+        $branches = Branch::where("status", "active")
                           ->orderBy("name", "ASC")
                           ->orderBy("location", "ASC")
                           ->get();
 
-        $customers = Customer::where("company_id", $userAuth->company_id)
-                             ->where("status", "active")
+        $customers = Customer::where("status", "active")
                              ->orderBy("last_name", "ASC")
                              ->orderBy("first_name", "ASC")
                              ->get();
 
-        $memberships = Membership::where("company_id", $userAuth->company_id)
-                                 ->where("status", "active")
+        $memberships = Membership::where("status", "active")
                                  ->orderBy("name", "ASC")
                                  ->orderBy("description", "ASC")
                                  ->get();
 
-        $productServices = ProductService::where("company_id", $userAuth->company_id)
-                                         ->where("status", "active")
+        $productServices = ProductService::where("status", "active")
                                          ->orderBy("name", "ASC")
                                          ->orderBy("description", "ASC")
                                          ->get();

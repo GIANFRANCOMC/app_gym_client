@@ -26,7 +26,7 @@ class StoreProductServiceRequest extends FormRequest
         $userAuth = Auth::user();
 
         return [
-            'name'        => ['required', 'string', 'min:2', 'max:65', new UniqueProductServiceNameForCompany($userAuth->company_id)],
+            'name'        => ['required', 'string', 'min:2', 'max:65', new UniqueProductServiceNameForCompany()],
             'description' => 'required|string|min:2|max:85',
             'price'       => 'required|numeric|min:0.1|max:999999999.99|decimal:0,2',
             'status'      => 'required|string'

@@ -20,9 +20,6 @@ class BranchFactory extends Factory
         return [
             'name' => $this->faker->company,
             'location' => $this->faker->address,
-            'company_id' => function () {
-                return Company::factory()->create()->id;
-            },
             'status' => $this->faker->randomElement(['active', 'inactive'])
         ];
     }

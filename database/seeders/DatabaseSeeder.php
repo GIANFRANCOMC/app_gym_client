@@ -29,24 +29,24 @@ class DatabaseSeeder extends Seeder
 
         (Company::all())->each(function($company) {
 
-            $admins = Admin::factory(2)->create(['company_id' => $company->id, 'status' => 'active']);
-            $customers = Customer::factory(2)->create(['company_id' => $company->id]);
-            $branches = Branch::factory(2)->create(['company_id' => $company->id, 'status' => 'active']);
+            $admins = Admin::factory(2)->create(['status' => 'active']);
+            $customers = Customer::factory(2)->create([]);
+            $branches = Branch::factory(2)->create(['status' => 'active']);
 
             $admins->each(function($admin) use($company) {
 
-                User::factory(1)->create(['email' => Str::lower(str_replace(" ", "_", $admin->first_name))."@".Str::lower(str_replace(" ", "_", $company->commercial_name)).".com", 'company_id' => $company->id, 'admin_id' => $admin->id, 'status' => 'active']);
+                User::factory(1)->create(['email' => Str::lower(str_replace(" ", "_", $admin->first_name))."@".Str::lower(str_replace(" ", "_", $company->commercial_name)).".com", 'admin_id' => $admin->id, 'status' => 'active']);
 
             });
 
             $customers->each(function($customer) use($company) {
 
-                CustomerUser::factory(1)->create(['company_id' => $company->id, 'customer_id' => $customer->id]);
+                CustomerUser::factory(1)->create(['customer_id' => $customer->id]);
 
             });
 
-            $productServices = ProductService::factory(1)->create(['company_id' => $company->id]);
-            $memberships = Membership::factory(4)->create(['company_id' => $company->id]);
+            $productServices = ProductService::factory(1)->create([]);
+            $memberships = Membership::factory(4)->create([]);
 
         });
 

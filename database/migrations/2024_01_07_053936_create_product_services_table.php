@@ -16,11 +16,10 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2);
-            $table->foreignId('company_id')->constrained('companies');
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
 
-            $table->unique(['name', 'company_id']);
+            $table->unique(['name']);
         });
     }
 

@@ -16,7 +16,7 @@ class Membership extends Model {
     protected $appends             = ['formatted_type', 'formatted_status'];
     public static $snakeAttributes = false;
 
-    protected $fillable = ['name', 'description', 'price', 'type', 'duration_quantity', 'company_id', 'status'];
+    protected $fillable = ['name', 'description', 'price', 'type', 'duration_quantity', 'status'];
 
     public function getFormattedTypeAttribute() {
 
@@ -55,12 +55,6 @@ class Membership extends Model {
                 return $this->attributes['status'];
                 break;
         }
-
-    }
-
-    public function company() {
-
-        return $this->belongsTo(Company::class);
 
     }
 

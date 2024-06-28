@@ -16,7 +16,7 @@ class ProductService extends Model {
     protected $appends             = ['formatted_status'];
     public static $snakeAttributes = false;
 
-    protected $fillable = ['name', 'description', 'price', 'company_id', 'status'];
+    protected $fillable = ['name', 'description', 'price', 'status'];
 
     public function getFormattedStatusAttribute() {
 
@@ -33,12 +33,6 @@ class ProductService extends Model {
                 return $this->attributes['status'];
                 break;
         }
-
-    }
-
-    public function company() {
-
-        return $this->belongsTo(Company::class);
 
     }
 
