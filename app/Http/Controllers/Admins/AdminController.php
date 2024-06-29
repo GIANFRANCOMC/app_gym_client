@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\Admins\Admins\{StoreAdminRequest, UpdateAdminRequest};
-use App\Models\{Admin, Branch, BranchUser, User};
+use App\Models\Tenant\{Admin, Branch, BranchUser, User};
 
 class AdminController extends Controller {
 
@@ -87,7 +87,7 @@ class AdminController extends Controller {
      */
     public function index() {
 
-        return view("admins/admins/main");
+        return view("tenant/admins/admins/main");
 
     }
 

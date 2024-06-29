@@ -1,22 +1,22 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Tenant;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Branch extends Model {
+class ProductService extends Model {
 
     use HasFactory;
 
-    protected $table               = 'branches';
+    protected $table               = 'product_services';
     protected $primaryKey          = 'id';
     public $incrementing           = true;
     public $timestamps             = true;
     protected $appends             = ['formatted_status'];
     public static $snakeAttributes = false;
 
-    protected $fillable = ['name', 'location', 'status'];
+    protected $fillable = ['name', 'description', 'price', 'status'];
 
     public function getFormattedStatusAttribute() {
 
@@ -33,12 +33,6 @@ class Branch extends Model {
                 return $this->attributes['status'];
                 break;
         }
-
-    }
-
-    public function branchUsers() {
-
-        return $this->hasMany(BranchUser::class);
 
     }
 

@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Tenant;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable {
+class CustomerUser extends Model {
 
     use HasApiTokens, HasFactory, Notifiable;
 
-    protected $table               = 'users';
+    protected $table               = 'customer_users';
     protected $primaryKey          = 'id';
     public $incrementing           = true;
     public $timestamps             = true;
@@ -28,7 +28,7 @@ class User extends Authenticatable {
         'name',
         'email',
         'password',
-        'admin_id',
+        'customer_id',
         'status'
     ];
 
@@ -70,15 +70,9 @@ class User extends Authenticatable {
 
     }
 
-    public function admin() {
+    public function customer() {
 
-        return $this->belongsTo(Admin::class);
-
-    }
-
-    public function branchUsers() {
-
-        return $this->hasMany(BranchUser::class);
+        return $this->belongsTo(Customer::class);
 
     }
 

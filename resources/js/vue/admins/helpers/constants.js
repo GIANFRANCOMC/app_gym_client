@@ -1,4 +1,4 @@
-export const requestRoute = `${window.location.protocol}//${window.location.hostname}/public`;
+export const requestRoute = `${window.location.protocol}//${window.location.hostname}/gympe/public`;
 
 export const generalConfig = {
     messages: {
