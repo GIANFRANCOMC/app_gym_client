@@ -48,7 +48,7 @@ class AdminController extends Controller {
             ]
         ];
 
-        $initParams->configs  = $configs;
+        $initParams->configs = $configs;
 
         return $initParams;
 
@@ -87,7 +87,9 @@ class AdminController extends Controller {
      */
     public function index() {
 
-        return view("tenant/admins/admins/main");
+        $data = Utilities::getDefaultViewData();
+
+        return view("tenant/admins/admins/main", compact("data"));
 
     }
 

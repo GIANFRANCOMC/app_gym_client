@@ -110,6 +110,12 @@
                     <ul class="menu-inner py-1">
 
                          <!-- Layouts -->
+
+                        <li class="menu-item">
+                            <a href="{{ route('home.index') }}" class="menu-link fw-bold">
+                                <div data-i18n="Page 1">{{ $data->tenant->name }}</div>
+                            </a>
+                        </li>
                         <li class="menu-item">
                             <a href="{{ route('home.index') }}" class="menu-link">
                                 <i class="fa fa-home me-1"></i>

@@ -2,53 +2,47 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-
-use App\Models\Admin;
-use App\Models\Branch;
-use App\Models\Company;
-use App\Models\Customer;
-use App\Models\CustomerUser;
-use App\Models\Membership;
-use App\Models\ProductService;
-use App\Models\User;
+use App\Models\System\Tenant;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
-class DatabaseSeeder extends Seeder
-{
+class DatabaseSeeder extends Seeder {
+
     /**
      * Seed the application's database.
      */
-    public function run(): void
-    {
+    public function run(): void {
 
-        Company::factory(1)->create(["commercial_name" => "SUPLOS", 'status' => 'active']);
-        Company::factory(1)->create(["commercial_name" => "INTEL", 'status' => 'active']);
-        Company::factory(1)->create(["commercial_name" => "DEVC TECNOLOGIAS", 'status' => 'active']);
+        $clients = [
+            ["id" => 1, "name" => "Suplos", "subdomain" => "suplos"],
+            ["id" => 2, "name" => "DEVC", "subdomain" => "devc"]
+        ];
 
-        (Company::all())->each(function($company) {
+        foreach($clients as $client) {
 
-            $admins = Admin::factory(2)->create(['status' => 'active']);
-            $customers = Customer::factory(2)->create([]);
-            $branches = Branch::factory(2)->create(['status' => 'active']);
+            $tenant = Tenant::create($client);
 
-            $admins->each(function($admin) use($company) {
+            $tenant->createDomain([
+                "domain" => $client["subdomain"].".localhost",
+            ]);
 
-                User::factory(1)->create(['email' => Str::lower(str_replace(" ", "_", $admin->first_name))."@".Str::lower(str_replace(" ", "_", $company->commercial_name)).".com", 'admin_id' => $admin->id, 'status' => 'active']);
+            // User::factory()->create();
 
-            });
+        }
 
-            $customers->each(function($customer) use($company) {
+        /* php artisan migrate:reset
+        php artisan migrate
 
-                CustomerUser::factory(1)->create(['customer_id' => $customer->id]);
+        php artisan tinker
+        $tenant1 = App\Models\Tenant\Tenant::create(['id' => 3]);
+        $tenant1->domains()->create(['domain' => 'suplos.localhost']);
 
-            });
+        $tenant2 = App\Models\Tenant\Tenant::create(['id' => 4]);
+        $tenant2->domains()->create(['domain' => 'devc.localhost']);
 
-            $productServices = ProductService::factory(1)->create([]);
-            $memberships = Membership::factory(4)->create([]);
-
-        });
+        App\Models\Tenant::all()->runForEach(function () {
+            App\Models\User::factory()->create();
+        }); */
 
     }
+
 }

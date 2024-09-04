@@ -6,8 +6,21 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use stdClass;
 
 class Utilities {
+
+    public static function getDefaultViewData() {
+
+        $result = new stdClass();
+
+        $tenancy = tenancy();
+        $tenant = $tenancy->tenant;
+        $result->tenant = $tenant;
+
+        return $result;
+
+    }
 
     public static function validateVariable($valor) {
 
