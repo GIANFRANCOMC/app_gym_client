@@ -22,7 +22,7 @@ class Utilities {
 
     }
 
-    public static function validateVariable($valor) {
+    public static function isDefined($valor) {
 
         return isset($valor) && !empty($valor);
 

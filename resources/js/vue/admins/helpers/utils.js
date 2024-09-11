@@ -1,21 +1,21 @@
-import { requestRoute, generalConfig } from "./constants.js";
-import { toastrs } from "./alerts.js";
+import { requestRoute, generalConfig } from "./Constants.js";
+import { toastrs } from "./Alerts.js";
 
 import axios from "axios";
 
-export function route(route) {
-
-    return `${requestRoute}/${generalConfig.routes[route].default}`;
-
-}
-
 export function openNavbarItem(itemId) {
 
-    document.getElementById(itemId).classList.add("active");
+    try {
+
+        document.getElementById(itemId).classList.add("active");
+
+    }catch(e) {
+
+    }
 
 }
 
-export function validateVariable({value}) {
+export function isDefined({value}) {
 
     return value != "" && value != null && value != undefined;
 

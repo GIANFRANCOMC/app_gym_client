@@ -12,6 +12,9 @@ export const generalConfig = {
     routes: {
         admins: {
             default: "admins"
+        },
+        items: {
+            default: "items"
         }
     }
 };

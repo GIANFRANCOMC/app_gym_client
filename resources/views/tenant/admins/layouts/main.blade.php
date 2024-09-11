@@ -67,7 +67,7 @@
                 <!-- Menu -->
                 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
                     <div class="app-brand demo">
-                        <a href="{{ route('customers.index') }}" class="app-brand-link">
+                        {{-- <a href="{{ route('customers.index') }}" class="app-brand-link">
                             <span class="app-brand-logo demo">
                                 <svg width="32" height="22" viewBox="0 0 32 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path
@@ -97,7 +97,7 @@
                             <div class="app-brand-text demo menu-text fw-bold">
                                 {{ config('app.name', 'NombreSistema') }}
                             </div>
-                        </a>
+                        </a> --}}
 
                         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
                             <i class="ti menu-toggle-icon d-none d-xl-block ti-sm align-middle"></i>
@@ -111,7 +111,7 @@
 
                          <!-- Layouts -->
 
-                        <li class="menu-item">
+                        {{-- <li class="menu-item">
                             <a href="{{ route('home.index') }}" class="menu-link fw-bold">
                                 <div data-i18n="Page 1">{{ $data->tenant->name }}</div>
                             </a>
@@ -121,7 +121,7 @@
                                 <i class="fa fa-home me-1"></i>
                                 <div data-i18n="Page 1">Inicio</div>
                             </a>
-                        </li>
+                        </li> --}}
                         {{-- <li class="menu-item" id="menu-item-sales">
                             <a href="javascript:void(0);" class="menu-link menu-toggle">
                                 <i class="fa fa-cart-shopping me-1"></i>
@@ -158,18 +158,18 @@
                                 <div data-i18n="Page 1">Membresías</div>
                             </a>
                         </li> --}}
-                        {{-- <li class="menu-item" id="menu-item-product-services">
-                            <a href="{{ route('productServices.index') }}" class="menu-link">
+                        <li class="menu-item" id="menu-list-items">
+                            <a href="{{ route('items.index') }}" class="menu-link">
                                 <i class="fa fa-bottle-water me-1"></i>
-                                <div data-i18n="Page 1">Productos - Servicios</div>
+                                <div data-i18n="Page 1">Productos</div>
                             </a>
-                        </li> --}}
-                        <li class="menu-item" id="menu-item-admins">
+                        </li>
+                        {{-- <li class="menu-item" id="menu-item-admins">
                             <a href="{{ route('admins.index') }}" class="menu-link">
                                 <i class="fa fa-users me-1"></i>
                                 <div data-i18n="Page 1">Colaboradores</div>
                             </a>
-                        </li>
+                        </li> --}}
                         {{-- <li class="menu-item" id="menu-item-branches">
                             <a href="{{ route('branches.index') }}" class="menu-link">
                                 <i class="fa fa-warehouse me-1"></i>

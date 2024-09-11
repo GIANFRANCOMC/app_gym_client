@@ -1,4 +1,4 @@
-import { requestRoute } from "./constants.js";
+import { requestRoute } from "./Constants.js";
 
 export function swals({show = true, type = null, title = ""}) {
 

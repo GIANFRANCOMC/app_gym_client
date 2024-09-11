@@ -32,15 +32,9 @@ Route::middleware([
 
         $rutaDefecto = __DIR__.'/entities/Admins';
 
-        Route::prefix('/admins')->group($rutaDefecto.'/Admin.php');
-        Route::prefix('/branches')->group($rutaDefecto.'/Branch.php');
-        Route::prefix('/customers')->group($rutaDefecto.'/Customer.php');
         Route::prefix('/helpers')->group($rutaDefecto.'/Helper.php');
         Route::prefix('/home')->group($rutaDefecto.'/Home.php');
-        Route::prefix('/memberships')->group($rutaDefecto.'/Membership.php');
-        Route::prefix('/productServices')->group($rutaDefecto.'/ProductService.php');
-        Route::prefix('/sales')->group($rutaDefecto.'/Sale.php');
-        Route::prefix('/saleDetails')->group($rutaDefecto.'/SaleDetail.php');
+        Route::prefix('/items')->group($rutaDefecto.'/Item.php');
 
         require __DIR__.'/auth.php';
 

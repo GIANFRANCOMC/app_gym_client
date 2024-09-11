@@ -1,0 +1,35 @@
+<template>
+    <nav aria-label="Page navigation" class="mt-3" v-if="links.length > 0">
+        <ul class="pagination d-flex flex-wrap">
+            <template v-for="link in links">
+                <li :class="['page-item my-1', link.active ? 'active' : (link.url ? '' : 'disabled')]">
+                    <a class="page-link waves-effect mx-1 px-3" href="javascript:void(0);" @click="handleClickPage({url: link.url})" v-html="link.label"></a>
+                </li>
+            </template>
+        </ul>
+    </nav>
+</template>
+
+<script>
+export default {
+    name: "Paginator",
+    emits: ["clickPage"],
+    props: {
+        links: {
+            type: Array,
+            required: false,
+            default: []
+        }
+    },
+    computed: {
+        //
+    },
+    methods: {
+        handleClickPage({url}) {
+
+            this.$emit("clickPage", {url});
+
+        }
+    }
+};
+</script>

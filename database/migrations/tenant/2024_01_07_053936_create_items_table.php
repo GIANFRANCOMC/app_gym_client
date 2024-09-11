@@ -11,13 +11,12 @@ return new class extends Migration {
      */
     public function up(): void {
 
-        Schema::create('companies', function (Blueprint $table) {
+        Schema::create('items', function (Blueprint $table) {
             $table->id();
-            $table->enum('type_document', ['dni', 'ruc', 'none'])->default('none');
-            $table->string('number_document')->nullable();
-            $table->string('legal_name')->nullable();
-            $table->string('commercial_name')->nullable();
-            $table->string('logo')->nullable();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->decimal('price', 10, 2);
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->integer('created_by');
             $table->integer('updated_by');
             $table->timestamps();
@@ -30,7 +29,7 @@ return new class extends Migration {
      */
     public function down(): void {
 
-        Schema::dropIfExists('companies');
+        Schema::dropIfExists('items');
 
     }
 

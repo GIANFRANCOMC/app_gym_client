@@ -12,10 +12,8 @@ export default defineConfig({
                 'resources/js/vue/admins/admins/main.js',
 
                 //
-                'resources/js/vue/admins/branches/main.js',
-                'resources/js/vue/admins/customers/main.js',
                 'resources/js/vue/admins/home/main.js',
-                'resources/js/vue/admins/productServices/main.js',
+                'resources/js/vue/admins/items/main.js',
             ],
             refresh: true,
         }),
