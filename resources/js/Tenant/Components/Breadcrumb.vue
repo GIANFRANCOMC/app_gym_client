@@ -4,8 +4,8 @@
             <i class="fa fa-home fa-2xs"></i>
         </span>
         <template v-for="value in list">
-            <a href="javascript:void(0)" :class="[value?.active ? 'text-decoration-none' : 'text-muted', 'fw-light mx-2']">/</a>
-            <a href="javascript:void(0)" :class="[value?.active ? 'text-decoration-none' : 'text-muted']" v-text="value?.title"></a>
+            <a href="javascript:void(0)" :class="[value?.active ? 'text-decoration-none' : 'text-muted', 'fw-bold mx-2']">/</a>
+            <a href="javascript:void(0)" :class="[value?.active ? 'text-decoration-none' : 'text-muted', 'fw-bold']" v-text="value?.title"></a>
         </template>
     </h4>
 </template>

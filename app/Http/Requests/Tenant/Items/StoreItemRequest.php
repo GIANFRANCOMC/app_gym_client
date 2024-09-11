@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Admins\Items;
+namespace App\Http\Requests\Tenant\Items;
 
 // use App\Rules\UniqueProductServiceNameForCompany;
 use Illuminate\Foundation\Http\FormRequest;

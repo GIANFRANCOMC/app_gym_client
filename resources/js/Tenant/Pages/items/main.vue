@@ -77,8 +77,8 @@
 <script>
 import * as Constants from "../../Helpers/Constants.js";
 import * as Requests from "../../Helpers/Requests.js";
-import * as Alerts from "../../Helpers/alerts.js";
-import * as Utils from "../../Helpers/utils.js";
+import * as Alerts from "../../Helpers/Alerts.js";
+import * as Utils from "../../Helpers/Utils.js";
 
 import Breadcrumb from "../../Components/Breadcrumb.vue";
 import Paginator from "../../Components/Paginator.vue";

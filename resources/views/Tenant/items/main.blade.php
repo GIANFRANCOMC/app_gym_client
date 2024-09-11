@@ -1,4 +1,4 @@
-@extends("tenant/layouts/main")
+@extends("Tenant/layouts/main")
 
 @section("content")
     <div id="app"></div>

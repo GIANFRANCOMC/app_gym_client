@@ -26,7 +26,7 @@ export function swals({show = true, type = null, title = ""}) {
 
         Swal.fire({
             html: `<h5>${message} Este proceso puede tomar algunos segundos, por favor espere.</h5>
-                   <img src='${requestRoute}/tenancy/assets/img/utils/spin.gif' width='80'>`,
+                   <img src='${requestRoute}/Tenant/assets/img/utils/spin.gif' width='80'>`,
             allowOutsideClick: false,
             showConfirmButton: false
         });
