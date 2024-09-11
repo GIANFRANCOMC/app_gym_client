@@ -13,8 +13,11 @@ class Item extends Model {
     protected $primaryKey          = 'id';
     public $incrementing           = true;
     public $timestamps             = true;
-    protected $appends             = ['formatted_status'];
     public static $snakeAttributes = false;
+
+    protected $appends = [
+        'formatted_status'
+    ];
 
     protected $fillable = [
         'name',

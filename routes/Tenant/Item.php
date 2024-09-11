@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admins\{ItemController};
+use App\Http\Controllers\Tenant\{ItemController};
 use Illuminate\Support\Facades\Route;
 
 $entity = "items";

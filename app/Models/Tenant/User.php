@@ -16,8 +16,11 @@ class User extends Authenticatable {
     protected $primaryKey          = 'id';
     public $incrementing           = true;
     public $timestamps             = true;
-    protected $appends             = ['formatted_status'];
     public static $snakeAttributes = false;
+
+    protected $appends = [
+        'formatted_status'
+    ];
 
     /**
      * The attributes that are mass assignable.

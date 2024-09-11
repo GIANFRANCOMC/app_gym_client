@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { requestRoute, generalConfig } from "../Helpers/constants.js";
+import { requestRoute, generalConfig } from "../Helpers/Constants.js";
 
 export default {
     name: "InputText",

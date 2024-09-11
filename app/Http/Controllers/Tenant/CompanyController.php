@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admins;
+namespace App\Http\Controllers\Tenant;
 
 use App\Helpers\Utilities;
 use App\Http\Controllers\Controller;
@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\Admins\Companies\{StoreCompanyRequest, UpdateCompanyRequest};
-use App\Models\{Company};
+use App\Models\Tenant\{Company};
 
 class CompanyController extends Controller {
 
@@ -24,6 +24,7 @@ class CompanyController extends Controller {
         $userAuth = Auth::user();
 
         $initParams = new stdClass();
+        $initParams->bool = true;
 
         return $initParams;
 

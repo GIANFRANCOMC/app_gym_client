@@ -75,19 +75,19 @@
 </template>
 
 <script>
-import * as Constants from "../Helpers/constants.js";
-import * as Requests from "../Helpers/Requests.js";
-import * as Alerts from "../Helpers/alerts.js";
-import * as Utils from "../Helpers/utils.js";
+import * as Constants from "../../Helpers/Constants.js";
+import * as Requests from "../../Helpers/Requests.js";
+import * as Alerts from "../../Helpers/alerts.js";
+import * as Utils from "../../Helpers/utils.js";
 
-import Breadcrumb from "../Components/Breadcrumb.vue";
-import Paginator from "../Components/Paginator.vue";
+import Breadcrumb from "../../Components/Breadcrumb.vue";
+import Paginator from "../../Components/Paginator.vue";
 
-import InputText from "../Components/InputText.vue";
-import InputSelect from "../Components/InputSelect.vue";
-import InputSelect2 from "../Components/InputSelect2.vue";
-import InputDate from "../Components/InputDate.vue";
-import InputNumber from "../Components/InputNumber.vue";
+import InputText from "../../Components/InputText.vue";
+import InputSelect from "../../Components/InputSelect.vue";
+import InputSelect2 from "../../Components/InputSelect2.vue";
+import InputDate from "../../Components/InputDate.vue";
+import InputNumber from "../../Components/InputNumber.vue";
 
 export default {
     components: {

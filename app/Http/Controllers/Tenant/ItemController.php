@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admins;
+namespace App\Http\Controllers\Tenant;
 
 use App\Helpers\Utilities;
 use App\Http\Controllers\Controller;
@@ -61,7 +61,7 @@ class ItemController extends Controller {
      */
     public function index() {
 
-        return view("tenant/admins/items/main");
+        return view("Tenant/items/main");
 
     }
 

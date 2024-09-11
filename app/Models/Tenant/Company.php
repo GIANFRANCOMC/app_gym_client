@@ -13,8 +13,11 @@ class Company extends Model {
     protected $primaryKey          = 'id';
     public $incrementing           = true;
     public $timestamps             = true;
-    protected $appends             = ['formatted_type_document'];
     public static $snakeAttributes = false;
+
+    protected $appends = [
+        'formatted_type_document'
+    ];
 
     protected $fillable = [
         'type_document',

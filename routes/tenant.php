@@ -30,10 +30,8 @@ Route::middleware([
 
     //Route::middleware(['auth', 'verified'])->group(function () {
 
-        $rutaDefecto = __DIR__.'/entities/Admins';
+        $rutaDefecto = __DIR__.'/Tenant';
 
-        Route::prefix('/helpers')->group($rutaDefecto.'/Helper.php');
-        Route::prefix('/home')->group($rutaDefecto.'/Home.php');
         Route::prefix('/items')->group($rutaDefecto.'/Item.php');
 
         require __DIR__.'/auth.php';
