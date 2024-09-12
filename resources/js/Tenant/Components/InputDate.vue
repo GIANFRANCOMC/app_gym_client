@@ -15,7 +15,7 @@
                     @keyup.enter="handleEnterKey"/>
                 <slot name="inputGroupAppend"></slot>
             </div>
-            <div v-if="showTextBottom">
+            <div v-if="hasTextBottom">
                 <small v-if="textBottomType === 'first'" :class="[...textBottomClass]" v-text="textBottom"></small>
             </div>
         </div>
@@ -33,7 +33,7 @@
                 @keyup.enter="handleEnterKey"/>
             <slot name="inputGroupAppend"></slot>
         </div>
-        <div v-if="showTextBottom">
+        <div v-if="hasTextBottom">
             <small v-if="textBottomType === 'first'" :class="[...textBottomClass]" v-text="textBottom"></small>
         </div>
     </template>
@@ -96,7 +96,7 @@ export default {
             default: false
         },
         // Text Bottom
-        showTextBottom: {
+        hasTextBottom: {
             type: Boolean,
             required: false,
             default: false

@@ -48,6 +48,7 @@
     <style>
         .colon-at-end::after {
             content: ":";
+            margin-left: 1px;
         }
     </style>
 

@@ -90,7 +90,7 @@ class ItemController extends Controller {
             $item->price       = $request->price;
             $item->status      = $request->status;
             $item->created_at  = now();
-            $item->created_by  = $userAuth->id;
+            $item->created_by  = $userAuth->id ?? null;
             $item->save();
 
         });
@@ -134,7 +134,7 @@ class ItemController extends Controller {
             $item->price       = $request->price;
             $item->status      = $request->status;
             $item->updated_at  = now();
-            $item->updated_by  = $userAuth->id;
+            $item->updated_by  = $userAuth->id ?? null;
             $item->save();
 
         });

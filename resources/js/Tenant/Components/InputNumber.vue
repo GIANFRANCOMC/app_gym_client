@@ -1,5 +1,5 @@
 <template>
-    <template v-if="showDiv">
+    <template v-if="hasDiv">
         <div :class="[divSizeClass, ...divClass]">
             <slot name="default"></slot>
             <label :class="[...titleClass]" v-text="title"></label>
@@ -16,7 +16,7 @@
                     @keyup.enter="handleEnterKey"/>
                 <slot name="inputGroupAppend"></slot>
             </div>
-            <div v-if="showTextBottom">
+            <div v-if="hasTextBottom">
                 <small v-if="textBottomType === 'first'" :class="[...textBottomClass]" v-text="textBottom"></small>
             </div>
         </div>
@@ -35,7 +35,7 @@
                 @keyup.enter="handleEnterKey"/>
             <slot name="inputGroupAppend"></slot>
         </div>
-        <div v-if="showTextBottom">
+        <div v-if="hasTextBottom">
             <small v-if="textBottomType === 'first'" :class="[...textBottomClass]" v-text="textBottom"></small>
         </div>
     </template>
@@ -53,7 +53,7 @@ export default {
             default: ""
         },
         // Title
-        showDiv: {
+        hasDiv: {
             type: Boolean,
             required: false,
             default: false
@@ -105,7 +105,7 @@ export default {
             default: false
         },
         // Text Bottom
-        showTextBottom: {
+        hasTextBottom: {
             type: Boolean,
             required: false,
             default: false

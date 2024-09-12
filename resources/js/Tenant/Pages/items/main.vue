@@ -1,14 +1,16 @@
 <template>
     <Breadcrumb :list="[config.entity.page]"/>
+
+    <!-- Records -->
     <div class="d-flex flex-row mb-4">
         <div class="align-self-start">
             <InputText
                 v-model="lists.entity.filters.general"
-                :showDiv="true"
+                :hasDiv="true"
                 title="Buscar"
-                :titleClass="['fw-bold', 'colon-at-end', 'ms-1', 'fs-5']"
+                :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
                 placeholder="Ingrese la búsqueda"
-                @enter-key-pressed="listEntity({})">
+                @enterKeyPressed="listEntity({})">
                 <template v-slot:inputGroupAppend>
                     <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})" data-bs-toggle="tooltip" data-bs-placement="top" title="Búsqueda por: Nombre, Descripción.">
                         <i class="fa fa-search"></i>
@@ -16,65 +18,63 @@
                 </template>
             </InputText>
         </div>
-        <div class="align-self-end ms-3">
-            <button class="btn btn-primary waves-effect" @click="modalCreateUpdateEntity({})">
+        <div class="align-self-end">
+            <button class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})">
                 <i class="fa fa-plus"></i>
                 <span class="ms-1">Agregar</span>
             </button>
         </div>
     </div>
-    <div class="card">
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead class="table-light">
-                    <tr class="text-uppercase text-center">
-                        <th class="fw-bold col-1">NOMBRE</th>
-                        <th class="fw-bold col-1">DESCRIPCIÓN</th>
-                        <th class="fw-bold col-1">PRECIO</th>
-                        <th class="fw-bold col-1">ESTADO</th>
-                        <th class="fw-bold col-1">ACCIONES</th>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr class="text-center">
+                    <th class="fw-bold col-1">NOMBRE</th>
+                    <th class="fw-bold col-1">DESCRIPCIÓN</th>
+                    <th class="fw-bold col-1">PRECIO</th>
+                    <th class="fw-bold col-1">ESTADO</th>
+                    <th class="fw-bold col-1">ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0 bg-white">
+                <template v-if="lists.entity.extras.loading">
+                    <tr class="text-center">
+                        <td colspan="99">
+                            <i class="fas fa-spinner fa-spin fa-3x my-3"></i>
+                        </td>
                     </tr>
-                </thead>
-                <tbody class="table-border-bottom-0">
-                    <template v-if="lists.entity.extras.loading">
-                        <tr class="text-center">
-                            <td colspan="99">
-                                <i class="fas fa-spinner fa-spin fa-3x my-3"></i>
+                </template>
+                <template v-else>
+                    <template v-if="(lists?.entity?.records?.data ?? []).length > 0">
+                        <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
+                            <td v-text="record.name"></td>
+                            <td v-text="record.description"></td>
+                            <td v-text="record.price"></td>
+                            <td>
+                                <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-sm rounded-pill btn-warning waves-effect" @click="modalCreateUpdateEntity({record})" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
                             </td>
                         </tr>
                     </template>
                     <template v-else>
-                        <template v-if="lists.entity.records.data && lists.entity.records.data.length > 0">
-                            <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
-                                <td v-text="record.name"></td>
-                                <td v-text="record.description"></td>
-                                <td v-text="record.price"></td>
-                                <td>
-                                    <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-sm rounded-pill btn-warning waves-effect waves-light" @click="modalCreateUpdateEntity({record})" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
-                                        <i class="fa fa-pencil"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </template>
-                        <template v-else>
-                            <tr>
-                                <td class="text-center" colspan="99" v-text="config.messages.withoutResults"></td>
-                            </tr>
-                        </template>
+                        <tr>
+                            <td class="text-center" colspan="99" v-text="config.messages.withoutResults"></td>
+                        </tr>
                     </template>
-                </tbody>
-            </table>
-        </div>
+                </template>
+            </tbody>
+        </table>
     </div>
     <div class="d-flex justify-content-center" v-if="!lists.entity.extras.loading">
         <Paginator :links="lists.entity.records.links" @clickPage="listEntity"/>
     </div>
 
     <!-- Modals -->
-    <div class="modal fade" :id="forms.entity.createUpdate.extras.modals.default.id" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" :id="forms.entity.createUpdate.extras.modals.default.id" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -85,61 +85,59 @@
                     <div class="row g-2 mb-3">
                         <inputText
                             v-model="forms.entity.createUpdate.data.name"
-                            :showDiv="true"
+                            hasDiv
                             title="Nombre"
-                            :required="true"
-                            :maxlength="60"
-                            :showTextBottom="true"
+                            isRequired
+                            hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.name"
-                            :xl="6"
-                            :lg="6"
-                            :md="12"
-                            :sm="12">
+                            xl="6"
+                            lg="6"
+                            md="12"
+                            sm="12">
                         </inputText>
                         <inputText
                             v-model="forms.entity.createUpdate.data.description"
-                            :showDiv="true"
+                            hasDiv
                             title="Descripción"
-                            :required="true"
-                            :maxlength="80"
-                            :showTextBottom="true"
+                            isRequired
+                            hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.description"
-                            :xl="6"
-                            :lg="6"
-                            :md="12"
-                            :sm="12">
+                            xl="6"
+                            lg="6"
+                            md="12"
+                            sm="12">
                         </inputText>
                     </div>
                     <div class="row g-2 mb-3">
                         <inputNumber
                             v-model="forms.entity.createUpdate.data.price"
-                            :showDiv="true"
+                            hasDiv
                             title="Precio"
-                            :required="true"
-                            :showTextBottom="true"
+                            isRequired
+                            hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.price"
-                            :xl="6"
-                            :lg="6"
-                            :md="12"
-                            :sm="12">
+                            xl="6"
+                            lg="6"
+                            md="12"
+                            sm="12">
                         </inputNumber>
                         <inputSelect
                             v-model="forms.entity.createUpdate.data.status"
                             :options="options.items.status"
-                            :showDiv="true"
+                            hasDiv
                             title="Estado"
-                            :required="true"
-                            :showTextBottom="true"
+                            isRequired
+                            hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.status"
-                            :xl="6"
-                            :lg="6"
-                            :md="12"
-                            :sm="12">
+                            xl="6"
+                            lg="6"
+                            md="12"
+                            sm="12">
                         </inputSelect>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                     <button type="button" :class="['btn', isDefined({value: forms.entity.createUpdate.data?.id}) ? 'btn-warning' : 'btn-primary']" @click="createUpdateEntity()">
                         <i class="fa fa-save"></i>
                         <span class="ms-1">Guardar</span>
@@ -216,8 +214,7 @@ export default {
                                     titles: {
                                         store: "Agregar",
                                         update: "Editar"
-                                    },
-                                    errors: {}
+                                    }
                                 }
                             }
                         },
@@ -227,7 +224,8 @@ export default {
                             description: "",
                             price: "",
                             status: ""
-                        }
+                        },
+                        errors: {}
                     }
                 }
             },

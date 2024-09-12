@@ -2,18 +2,17 @@
 
 namespace App\Http\Requests\Tenant\Items;
 
-// use App\Rules\UniqueProductServiceNameForCompany;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
-class StoreItemRequest extends FormRequest
-{
+class StoreItemRequest extends FormRequest {
+
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
-    {
+    public function authorize(): bool {
+
         return true;
+
     }
 
     /**
@@ -21,15 +20,15 @@ class StoreItemRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
-    {
-        $userAuth = Auth::user();
+    public function rules(): array {
 
         return [
-            'name'        => ['required', 'string', 'min:2', 'max:65'/* , new UniqueProductServiceNameForCompany() */],
+            'name'        => ['required', 'string', 'min:2', 'max:65'],
             'description' => 'required|string|min:2|max:85',
             'price'       => 'required|numeric|min:0.1|max:999999999.99|decimal:0,2',
             'status'      => 'required|string'
         ];
+
     }
+
 }

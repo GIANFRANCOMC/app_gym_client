@@ -4,14 +4,15 @@ namespace App\Http\Requests\Tenant\Items;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateItemRequest extends FormRequest
-{
+class UpdateItemRequest extends FormRequest {
+
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
-    {
+    public function authorize(): bool {
+
         return true;
+
     }
 
     /**
@@ -22,7 +23,7 @@ class UpdateItemRequest extends FormRequest
     public function rules(): array {
 
         return [
-            'name'        => ['required', 'string', 'min:2', 'max:65'/* , new UniqueProductServiceNameForCompany() */],
+            'name'        => ['required', 'string', 'min:2', 'max:65'],
             'description' => 'required|string|min:2|max:85',
             'price'       => 'required|numeric|min:0.1|max:999999999.99|decimal:0,2',
             'status'      => 'required|string'

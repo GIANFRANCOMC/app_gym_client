@@ -3,7 +3,7 @@
         <span class="text-muted fw-light">
             <i class="fa fa-home fa-2xs"></i>
         </span>
-        <template v-for="value in list">
+        <template v-for="(value, index) in list" :key="index">
             <a href="javascript:void(0)" :class="[value?.active ? 'text-decoration-none' : 'text-muted', 'fw-bold mx-2']">/</a>
             <a href="javascript:void(0)" :class="[value?.active ? 'text-decoration-none' : 'text-muted', 'fw-bold']" v-text="value?.title"></a>
         </template>
