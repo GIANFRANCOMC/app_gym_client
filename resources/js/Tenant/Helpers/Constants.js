@@ -7,14 +7,12 @@ export const generalConfig = {
     forms: {
         inputs: {
             maxlength: 999
-        }
-    },
-    routes: {
-        admins: {
-            default: "admins"
         },
-        items: {
-            default: "items"
+        errors: {
+            labels: {
+                required: "Es obligatorio",
+                min_number_0: "Debe ser mayor a 0"
+            }
         }
     }
 };

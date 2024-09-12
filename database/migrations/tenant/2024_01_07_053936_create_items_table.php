@@ -17,9 +17,10 @@ return new class extends Migration {
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2);
             $table->enum('status', ['active', 'inactive'])->default('active');
-            $table->integer('created_by');
-            $table->integer('updated_by');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent()->nullable();
+            $table->integer('created_by')->nullable();
+            $table->timestamp('updated_at')->nullable();
+            $table->integer('updated_by')->nullable();
         });
 
     }

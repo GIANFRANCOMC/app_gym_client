@@ -23,8 +23,8 @@ export function config({entity = "", type = ""}) {
                 consult: `${requestRoute}/items`,
                 list: `${requestRoute}/items/list`,
                 get: `${requestRoute}/items/get`,
-                store: `${requestRoute}/items/store`,
-                update: `${requestRoute}/items/update`,
+                store: `${requestRoute}/items`,
+                update: `${requestRoute}/items`,
                 initParams: `${requestRoute}/items/initParams`,
             }
         };
@@ -64,7 +64,7 @@ export function get({route = "", data = {}}) {
 		})
 		.catch(error => {
 
-            Alerts.toastrs({subtitle: error, type: "error"});
+            Alerts.toastrs({type: "error", subtitle: error});
 			resolve({data: {data: [], msg: error}, bool: false});
 
 		})
@@ -94,12 +94,65 @@ export function post({route = "", data = {}, id = "", formData = null}) {
 		})
 		.catch(error => {
 
-			resolve({data: {msg: error}, bool: false});
+            if([405].includes(error?.response?.status)) {
+
+                resolve({data: {msg: error?.response?.data?.message}, bool: false});
+
+            }else if([422].includes(error?.response?.status)) {
+
+                resolve({data: {msg: error?.response?.data?.message}, errors: error?.response?.data?.errors ,bool: false});
+
+            }else {
+
+                resolve({data: {msg: error},  bool: false});
+
+            }
 
 		})
 		.finally(() => {
 
-			tooltips({show: true});
+			Alerts.tooltips({});
+
+		});
+
+	});
+
+}
+
+export function patch({route = "", data = {}, id = "", formData = null}) {
+
+	return new Promise((resolve, reject) => {
+
+		let requestURL  = `${route}/${id}`,
+			requestData = formData ?? {...data, id};
+
+		axios
+		.patch(requestURL, requestData)
+		.then(response => {
+
+			resolve({data: response.data, bool: true});
+
+		})
+		.catch(error => {
+
+            if([405].includes(error?.response?.status)) {
+
+                resolve({data: {msg: error?.response?.data?.message}, bool: false});
+
+            }else if([422].includes(error?.response?.status)) {
+
+                resolve({data: {msg: error?.response?.data?.message}, errors: error?.response?.data?.errors ,bool: false});
+
+            }else {
+
+                resolve({data: {msg: error},  bool: false});
+
+            }
+
+		})
+		.finally(() => {
+
+			Alerts.tooltips({});
 
 		});
 

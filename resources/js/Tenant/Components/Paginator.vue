@@ -1,5 +1,5 @@
 <template>
-    <nav aria-label="Page navigation" class="mt-3" v-if="links.length > 0">
+    <nav aria-label="Page navigation" class="my-3" v-if="links.length > 0">
         <ul class="pagination d-flex flex-wrap">
             <template v-for="link in links">
                 <li :class="['page-item my-1', link.active ? 'active' : (link.url ? '' : 'disabled')]">

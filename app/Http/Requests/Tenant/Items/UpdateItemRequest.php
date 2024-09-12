@@ -11,7 +11,7 @@ class UpdateItemRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -19,10 +19,15 @@ class UpdateItemRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
-    {
+    public function rules(): array {
+
         return [
-            //
+            'name'        => ['required', 'string', 'min:2', 'max:65'/* , new UniqueProductServiceNameForCompany() */],
+            'description' => 'required|string|min:2|max:85',
+            'price'       => 'required|numeric|min:0.1|max:999999999.99|decimal:0,2',
+            'status'      => 'required|string'
         ];
+
     }
+
 }

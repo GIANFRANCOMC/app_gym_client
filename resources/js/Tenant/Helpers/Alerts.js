@@ -1,12 +1,16 @@
 import { requestRoute } from "./Constants.js";
 
-export function swals({show = true, type = null, title = ""}) {
+export function swals({show = true, type = "default"}) {
 
     if(show) {
 
         let message = "";
 
         switch(type) {
+            case "default":
+                message = "Cargando";
+                break;
+
             case "initParams":
                 message = "";
                 break;
@@ -39,7 +43,7 @@ export function swals({show = true, type = null, title = ""}) {
 
 }
 
-export function toastrs({title = null, subtitle = null, code = null, type = "success", options = null}) {
+export function toastrs({type = "success", options = null, code = null, title = null, subtitle = null}) {
 
     let toastrOptions = {};
 
@@ -47,41 +51,15 @@ export function toastrs({title = null, subtitle = null, code = null, type = "suc
 
         switch(type) {
             case "error":
-                title = "Algo salió mal";
+                title = "¡Ups! Algo salió mal";
                 break;
 
             case "success":
-                title = "Completado con éxito";
+                title = "Exitoso";
                 break;
 
             case "warning":
                 title = "Atención";
-                break;
-        }
-
-    }
-
-    if(!subtitle) {
-
-        switch(type) {
-            case "error":
-                if(code) {
-
-                    switch(code) {
-                        case 422:
-                            subtitle = "Corrige los errores del formulario e intenta de nuevo.";
-                            break;
-                    }
-
-                }
-                break;
-
-            case "success":
-                subtitle = "";
-                break;
-
-            case "warning":
-                subtitle = "";
                 break;
         }
 
@@ -113,6 +91,20 @@ export function tooltips({show = true, time = 0}) {
     }else {
 
         time > 0 ? setTimeout(() => $(".tooltip").tooltip("hide"), time) : $(".tooltip").tooltip("hide");
+
+    }
+
+}
+
+export function modals({type = "show", id = null}) {
+
+    if(["show"].includes(type)) {
+
+        $(`#${id}`).modal("show");
+
+    }else if(["hide"].includes(type)) {
+
+        $(`#${id}`).modal("hide");
 
     }
 

@@ -17,7 +17,7 @@
             </InputText>
         </div>
         <div class="align-self-end ms-3">
-            <button class="btn btn-primary waves-effect" @click="modalCreateEntity({})">
+            <button class="btn btn-primary waves-effect" @click="modalCreateUpdateEntity({})">
                 <i class="fa fa-plus"></i>
                 <span class="ms-1">Agregar</span>
             </button>
@@ -53,7 +53,7 @@
                                     <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-sm rounded-pill btn-warning waves-effect waves-light">
+                                    <button type="button" class="btn btn-sm rounded-pill btn-warning waves-effect waves-light" @click="modalCreateUpdateEntity({record})" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
                                         <i class="fa fa-pencil"></i>
                                     </button>
                                 </td>
@@ -72,36 +72,111 @@
     <div class="d-flex justify-content-center" v-if="!lists.entity.extras.loading">
         <Paginator :links="lists.entity.records.links" @clickPage="listEntity"/>
     </div>
+
+    <!-- Modals -->
+    <div class="modal fade" :id="forms.entity.createUpdate.extras.modals.default.id" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.createUpdate.extras.modals.default.titles[isDefined({value: forms.entity.createUpdate.data?.id}) ? 'update' : 'store']"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-2 mb-3">
+                        <inputText
+                            v-model="forms.entity.createUpdate.data.name"
+                            :showDiv="true"
+                            title="Nombre"
+                            :required="true"
+                            :maxlength="60"
+                            :showTextBottom="true"
+                            :textBottomInfo="forms.entity.createUpdate.errors?.name"
+                            :xl="6"
+                            :lg="6"
+                            :md="12"
+                            :sm="12">
+                        </inputText>
+                        <inputText
+                            v-model="forms.entity.createUpdate.data.description"
+                            :showDiv="true"
+                            title="Descripción"
+                            :required="true"
+                            :maxlength="80"
+                            :showTextBottom="true"
+                            :textBottomInfo="forms.entity.createUpdate.errors?.description"
+                            :xl="6"
+                            :lg="6"
+                            :md="12"
+                            :sm="12">
+                        </inputText>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <inputNumber
+                            v-model="forms.entity.createUpdate.data.price"
+                            :showDiv="true"
+                            title="Precio"
+                            :required="true"
+                            :showTextBottom="true"
+                            :textBottomInfo="forms.entity.createUpdate.errors?.price"
+                            :xl="6"
+                            :lg="6"
+                            :md="12"
+                            :sm="12">
+                        </inputNumber>
+                        <inputSelect
+                            v-model="forms.entity.createUpdate.data.status"
+                            :options="options.items.status"
+                            :showDiv="true"
+                            title="Estado"
+                            :required="true"
+                            :showTextBottom="true"
+                            :textBottomInfo="forms.entity.createUpdate.errors?.status"
+                            :xl="6"
+                            :lg="6"
+                            :md="12"
+                            :sm="12">
+                        </inputSelect>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" :class="['btn', isDefined({value: forms.entity.createUpdate.data?.id}) ? 'btn-warning' : 'btn-primary']" @click="createUpdateEntity()">
+                        <i class="fa fa-save"></i>
+                        <span class="ms-1">Guardar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
 import * as Constants from "../../Helpers/Constants.js";
-import * as Requests from "../../Helpers/Requests.js";
-import * as Alerts from "../../Helpers/Alerts.js";
-import * as Utils from "../../Helpers/Utils.js";
+import * as Requests  from "../../Helpers/Requests.js";
+import * as Alerts    from "../../Helpers/Alerts.js";
+import * as Utils     from "../../Helpers/Utils.js";
 
-import Breadcrumb from "../../Components/Breadcrumb.vue";
-import Paginator from "../../Components/Paginator.vue";
-
-import InputText from "../../Components/InputText.vue";
-import InputSelect from "../../Components/InputSelect.vue";
+import Breadcrumb   from "../../Components/Breadcrumb.vue";
+import InputDate    from "../../Components/InputDate.vue";
+import InputNumber  from "../../Components/InputNumber.vue";
+import InputSelect  from "../../Components/InputSelect.vue";
 import InputSelect2 from "../../Components/InputSelect2.vue";
-import InputDate from "../../Components/InputDate.vue";
-import InputNumber from "../../Components/InputNumber.vue";
+import InputText    from "../../Components/InputText.vue";
+import Paginator    from "../../Components/Paginator.vue";
 
 export default {
     components: {
         Breadcrumb,
-        Paginator,
         InputDate,
-        InputText,
+        InputNumber,
         InputSelect,
         InputSelect2,
-        InputNumber
+        InputText,
+        Paginator
     },
-    mounted: async function () {
+    mounted: async function() {
 
-        Utils.openNavbarItem("menu-list-items");
+        Utils.openNavbarItem(this.config.entity.page.menu.id);
         Alerts.swals({type: "initParams"});
 
         let initParams = await this.initParams({}),
@@ -133,25 +208,35 @@ export default {
             },
             forms: {
                 entity: {
-                    add: {
-                        modals: {
-                            default: "addItemModal"
+                    createUpdate: {
+                        extras: {
+                            modals: {
+                                default: {
+                                    id: "addItemModal",
+                                    titles: {
+                                        store: "Agregar",
+                                        update: "Editar"
+                                    },
+                                    errors: {}
+                                }
+                            }
                         },
-                        select2: {},
                         data: {
+                            id: null,
                             name: "",
                             description: "",
                             price: "",
                             status: ""
-                        },
-                        options: {
-                            status: [
-                                {code: "active", label: "Activo"},
-                                {code: "inactive", label: "Inactivo"}
-                            ]
-                        },
-                        errors: {}
+                        }
                     }
+                }
+            },
+            options: {
+                items: {
+                    status: [
+                        {code: "active", label: "Activo"},
+                        {code: "inactive", label: "Inactivo"}
+                    ]
                 }
             },
             config: {
@@ -160,7 +245,10 @@ export default {
                     ...Requests.config({entity: "items"}),
                     page: {
                         title: "Productos",
-                        active: true
+                        active: true,
+                        menu: {
+                            id: "menu-list-items"
+                        }
                     }
                 }
             }
@@ -186,70 +274,145 @@ export default {
             this.lists.entity.extras.loading = false;
 
         },
-        modalCreateEntity() {
+        modalCreateUpdateEntity({record = null}) {
 
-            //
+            let functionName = "modalCreateUpdateEntity";
+
+            Alerts.swals({});
+            this.clearForm({functionName});
+            this.formErrors({functionName});
+
+            if(this.isDefined({value: record})) {
+
+                this.forms.entity.createUpdate.data.id          = record?.id;
+                this.forms.entity.createUpdate.data.name        = record?.name;
+                this.forms.entity.createUpdate.data.description = record?.description;
+                this.forms.entity.createUpdate.data.price       = record?.price;
+                this.forms.entity.createUpdate.data.status      = record?.status;
+
+            }else {
+
+                //
+
+            }
+
+            Alerts.swals({show: false});
+            Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.default.id});
 
         },
-        createEntity() {
+        async createUpdateEntity() {
 
-            //
+            let functionName = "createUpdateEntity";
 
-        },
-        modalUpdateEntity() {
+            Alerts.swals({});
+            this.formErrors({functionName});
 
-            //
+            let form = this.forms.entity.createUpdate.data;
+            const validateForm = this.validateForm({functionName, form});
 
-        },
-        updateEntity() {
+            if(validateForm?.bool) {
 
-            //
+                let createUpdate = await (this.isDefined({value: this.forms.entity.createUpdate.data.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: this.forms.entity.createUpdate.data.id}) : Requests.post({route: this.config.entity.routes.store, data: form}));
+
+                if(createUpdate?.bool && createUpdate?.data?.bool) {
+
+                    Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
+                    Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
+                    Alerts.swals({show: false});
+
+                    this.clearForm({functionName});
+                    this.listEntity({url: `${this.lists.entity.extras.route}?page=${this.lists.entity.records?.current_page ?? 1}`})
+
+                }else {
+
+                    this.formErrors({functionName, type: "set", errors: createUpdate?.errors ?? []});
+                    Alerts.toastrs({type: "error", subtitle: createUpdate?.data?.msg});
+                    Alerts.swals({show: false});
+
+                }
+
+            }else {
+
+                this.formErrors({functionName, type: "set", errors: validateForm});
+                Alerts.swals({show: false});
+
+            }
 
         },
         // Forms
         clearForm({functionName}) {
 
             switch(functionName) {
-                case "modalCreateEntity":
-                case "createEntity":
-                    break;
-
-                case "modalUpdateEntity":
-                case "updateEntity":
-                    break;
-            }
-
-        },
-        clearFormErrors({functionName}) {
-
-            switch(functionName) {
-                case "modalCreateEntity":
-                case "createEntity":
-                    break;
-
-                case "modalUpdateEntity":
-                case "updateEntity":
+                case "modalCreateUpdateEntity":
+                case "createUpdateEntity":
+                    this.forms.entity.createUpdate.data.id          = null;
+                    this.forms.entity.createUpdate.data.name        = "";
+                    this.forms.entity.createUpdate.data.description = "";
+                    this.forms.entity.createUpdate.data.price       = "";
+                    this.forms.entity.createUpdate.data.status      = "";
                     break;
             }
 
         },
-        setFormErrors({functionName, errors = []}) {
+        validateForm({functionName, form = null}) {
 
-            switch(functionName) {
-                case "modalCreateEntity":
-                case "createEntity":
-                    break;
+            let result = {
+                bool: true
+            };
 
-                case "modalUpdateEntity":
-                case "updateEntity":
-                    break;
+            if(["createUpdateEntity"].includes(functionName)) {
+
+                result.name        = [];
+                result.description = [];
+                result.price       = [];
+                result.status      = [];
+
+                if(!this.isDefined({value: form?.name})) {
+
+                    result.name.push(this.config.forms.errors.labels.required);
+                    result.bool = false;
+
+                }
+
+                if(!this.isDefined({value: form?.description})) {
+
+                    result.description.push(this.config.forms.errors.labels.required);
+                    result.bool = false;
+
+                }
+
+                if(!this.isDefined({value: form?.price})) {
+
+                    result.price.push(this.config.forms.errors.labels.required);
+                    result.bool = false;
+
+                }
+
+                if(!this.isDefined({value: form?.status})) {
+
+                    result.status.push(this.config.forms.errors.labels.required);
+                    result.bool = false;
+
+                }
+
+            }
+
+            return result;
+
+        },
+        formErrors({functionName, type = "clear", errors = []}) {
+
+            if(["modalCreateUpdateEntity", "createUpdateEntity"].includes(functionName)) {
+
+                this.forms.entity.createUpdate.errors = ["set"].includes(type) ? errors : [];
+
             }
 
         },
         // Utils
         isDefined({value}) {
 
-            return isDefined({value});
+            return Utils.isDefined({value});
 
         }
     }

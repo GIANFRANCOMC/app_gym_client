@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
-use App\Http\Requests\Admins\Items\{StoreItemRequest, UpdateItemRequest};
+use App\Http\Requests\Tenant\Items\{StoreItemRequest, UpdateItemRequest};
 use App\Models\Tenant\{Item};
 
 class ItemController extends Controller {
@@ -79,21 +79,23 @@ class ItemController extends Controller {
      */
     public function store(StoreItemRequest $request) {
 
+        $userAuth = Auth::user();
+
         $item = new Item();
 
-        DB::transaction(function() use($request, $item) {
-
-            $userAuth = Auth::user();
+        DB::transaction(function() use($request, $userAuth, $item) {
 
             $item->name        = $request->name;
             $item->description = $request->description;
             $item->price       = $request->price;
             $item->status      = $request->status;
+            $item->created_at  = now();
+            $item->created_by  = $userAuth->id;
             $item->save();
 
         });
 
-        return response()->json(["message" => "Producto - Servicio creado correctamente.", "item" => $item], 200);
+        return response()->json(["bool" => true, "msg" => "Producto creado correctamente.", "item" => $item], 200);
 
     }
 
@@ -118,9 +120,26 @@ class ItemController extends Controller {
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateItemRequest $request, Item $item) {
+    public function update(UpdateItemRequest $request, $id) {
 
-        //
+        $userAuth = Auth::user();
+
+        $item = Item::where("id", $id)
+                    ->firstOrFail();
+
+        DB::transaction(function() use($request, $userAuth, $item) {
+
+            $item->name        = $request->name;
+            $item->description = $request->description;
+            $item->price       = $request->price;
+            $item->status      = $request->status;
+            $item->updated_at  = now();
+            $item->updated_by  = $userAuth->id;
+            $item->save();
+
+        });
+
+        return response()->json(["bool" => true, "msg" => "Producto editado correctamente.", "item" => $item], 200);
 
     }
 
