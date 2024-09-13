@@ -21,9 +21,16 @@ class ItemController extends Controller {
      */
     public function initParams(Request $request) {
 
-        $userAuth = Auth::user();
-
         $initParams = new stdClass();
+
+        $initParams->config = new stdClass();
+
+        $initParams->config->items = new stdClass();
+        $initParams->config->items->statusses = [
+            ["code" => "active", "label" => "Activo"],
+            ["code" => "inactive", "label" => "Inactivo"]
+        ];
+
         $initParams->bool = true;
 
         return $initParams;
@@ -37,8 +44,6 @@ class ItemController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function list(Request $request) {
-
-        $userAuth = Auth::user();
 
         $list = Item::when(Utilities::isDefined($request->general), function($query) use($request) {
 

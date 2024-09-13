@@ -6,11 +6,11 @@
         <div class="align-self-start">
             <InputText
                 v-model="lists.entity.filters.general"
-                :hasDiv="true"
+                @enterKeyPressed="listEntity({})"
+                hasDiv
                 title="Buscar"
                 :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
-                placeholder="Ingrese la búsqueda"
-                @enterKeyPressed="listEntity({})">
+                placeholder="Ingrese la búsqueda">
                 <template v-slot:inputGroupAppend>
                     <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})" data-bs-toggle="tooltip" data-bs-placement="top" title="Búsqueda por: Nombre, Descripción.">
                         <i class="fa fa-search"></i>
@@ -93,8 +93,7 @@
                             xl="6"
                             lg="6"
                             md="12"
-                            sm="12">
-                        </inputText>
+                            sm="12"/>
                         <inputText
                             v-model="forms.entity.createUpdate.data.description"
                             hasDiv
@@ -105,8 +104,7 @@
                             xl="6"
                             lg="6"
                             md="12"
-                            sm="12">
-                        </inputText>
+                            sm="12"/>
                     </div>
                     <div class="row g-2 mb-3">
                         <inputNumber
@@ -119,11 +117,10 @@
                             xl="6"
                             lg="6"
                             md="12"
-                            sm="12">
-                        </inputNumber>
+                            sm="12"/>
                         <inputSelect
                             v-model="forms.entity.createUpdate.data.status"
-                            :options="options.items.status"
+                            :options="options?.items?.statusses"
                             hasDiv
                             title="Estado"
                             isRequired
@@ -132,8 +129,7 @@
                             xl="6"
                             lg="6"
                             md="12"
-                            sm="12">
-                        </inputSelect>
+                            sm="12"/>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -193,7 +189,7 @@ export default {
             lists: {
                 entity: {
                     extras: {
-                        loading: true,
+                        loading: false,
                         route: Requests.config({entity: "items", type: "list"})
                     },
                     filters: {
@@ -229,14 +225,7 @@ export default {
                     }
                 }
             },
-            options: {
-                items: {
-                    status: [
-                        {code: "active", label: "Activo"},
-                        {code: "inactive", label: "Inactivo"}
-                    ]
-                }
-            },
+            options: {},
             config: {
                 ...Constants.generalConfig,
                 entity: {
@@ -255,7 +244,9 @@ export default {
     methods: {
         async initParams({}) {
 
-            let initParams = await Requests.get({route: this.config.entity.routes.initParams});
+            let initParams = await Requests.get({route: this.config.entity.routes.initParams, showAlert: true});
+
+            this.options.items = initParams.data?.config?.items;
 
             return initParams?.bool && initParams?.data?.bool;
 
@@ -272,13 +263,14 @@ export default {
             this.lists.entity.extras.loading = false;
 
         },
+        // Forms
         modalCreateUpdateEntity({record = null}) {
 
-            let functionName = "modalCreateUpdateEntity";
+            const functionName = "modalCreateUpdateEntity";
 
-            Alerts.swals({});
+            // Alerts.swals({});
             this.clearForm({functionName});
-            this.formErrors({functionName});
+            this.formErrors({functionName, type: "clear"});
 
             if(this.isDefined({value: record})) {
 
@@ -294,16 +286,16 @@ export default {
 
             }
 
-            Alerts.swals({show: false});
+            // Alerts.swals({show: false});
             Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.default.id});
 
         },
         async createUpdateEntity() {
 
-            let functionName = "createUpdateEntity";
+            const functionName = "createUpdateEntity";
 
             Alerts.swals({});
-            this.formErrors({functionName});
+            this.formErrors({functionName, type: "clear"});
 
             let form = this.forms.entity.createUpdate.data;
             const validateForm = this.validateForm({functionName, form});
@@ -337,7 +329,7 @@ export default {
             }
 
         },
-        // Forms
+        // Forms utils
         clearForm({functionName}) {
 
             switch(functionName) {
@@ -349,6 +341,15 @@ export default {
                     this.forms.entity.createUpdate.data.price       = "";
                     this.forms.entity.createUpdate.data.status      = "";
                     break;
+            }
+
+        },
+        formErrors({functionName, type = "clear", errors = []}) {
+
+            if(["modalCreateUpdateEntity", "createUpdateEntity"].includes(functionName)) {
+
+                this.forms.entity.createUpdate.errors = ["set"].includes(type) ? errors : [];
+
             }
 
         },
@@ -398,16 +399,7 @@ export default {
             return result;
 
         },
-        formErrors({functionName, type = "clear", errors = []}) {
-
-            if(["modalCreateUpdateEntity", "createUpdateEntity"].includes(functionName)) {
-
-                this.forms.entity.createUpdate.errors = ["set"].includes(type) ? errors : [];
-
-            }
-
-        },
-        // Utils
+        // Others
         isDefined({value}) {
 
             return Utils.isDefined({value});

@@ -44,7 +44,7 @@ export function config({entity = "", type = ""}) {
 }
 
 
-export function get({route = "", data = {}}) {
+export function get({route = "", data = {}, showAlert = false}) {
 
 	return new Promise((resolve, reject) => {
 
@@ -64,7 +64,20 @@ export function get({route = "", data = {}}) {
 		})
 		.catch(error => {
 
-            Alerts.toastrs({type: "error", subtitle: error});
+            if(showAlert) {
+
+                if([500].includes(error?.response?.status)) {
+
+                    Alerts.toastrs({type: "error", subtitle: error?.response?.data?.message});
+
+                }else {
+
+                    Alerts.toastrs({type: "error", subtitle: error});
+
+                }
+
+            }
+
 			resolve({data: {data: [], msg: error}, bool: false});
 
 		})
