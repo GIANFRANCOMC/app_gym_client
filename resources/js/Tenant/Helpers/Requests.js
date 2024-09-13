@@ -113,7 +113,7 @@ export function post({route = "", data = {}, id = "", formData = null}) {
 
             }else if([422].includes(error?.response?.status)) {
 
-                resolve({data: {msg: error?.response?.data?.message}, errors: error?.response?.data?.errors ,bool: false});
+                resolve({data: {msg: error?.response?.data?.message}, errors: error?.response?.data?.errors, bool: false});
 
             }else {
 
@@ -154,7 +154,7 @@ export function patch({route = "", data = {}, id = "", formData = null}) {
 
             }else if([422].includes(error?.response?.status)) {
 
-                resolve({data: {msg: error?.response?.data?.message}, errors: error?.response?.data?.errors ,bool: false});
+                resolve({data: {msg: error?.response?.data?.message}, errors: error?.response?.data?.errors, bool: false});
 
             }else {
 

@@ -45,7 +45,7 @@
                     </tr>
                 </template>
                 <template v-else>
-                    <template v-if="(lists?.entity?.records?.data ?? []).length > 0">
+                    <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td v-text="record.name"></td>
                             <td v-text="record.description"></td>
@@ -145,26 +145,26 @@
 </template>
 
 <script>
+import * as Alerts    from "../../Helpers/Alerts.js";
 import * as Constants from "../../Helpers/Constants.js";
 import * as Requests  from "../../Helpers/Requests.js";
-import * as Alerts    from "../../Helpers/Alerts.js";
 import * as Utils     from "../../Helpers/Utils.js";
 
 import Breadcrumb   from "../../Components/Breadcrumb.vue";
-import InputDate    from "../../Components/InputDate.vue";
+// import InputDate    from "../../Components/InputDate.vue";
 import InputNumber  from "../../Components/InputNumber.vue";
 import InputSelect  from "../../Components/InputSelect.vue";
-import InputSelect2 from "../../Components/InputSelect2.vue";
+// import InputSelect2 from "../../Components/InputSelect2.vue";
 import InputText    from "../../Components/InputText.vue";
 import Paginator    from "../../Components/Paginator.vue";
 
 export default {
     components: {
         Breadcrumb,
-        InputDate,
+        // InputDate,
         InputNumber,
         InputSelect,
-        InputSelect2,
+        // InputSelect2,
         InputText,
         Paginator
     },
@@ -206,7 +206,7 @@ export default {
                         extras: {
                             modals: {
                                 default: {
-                                    id: "addItemModal",
+                                    id: "createUpdateItemModal",
                                     titles: {
                                         store: "Agregar",
                                         update: "Editar"
@@ -297,7 +297,8 @@ export default {
             Alerts.swals({});
             this.formErrors({functionName, type: "clear"});
 
-            let form = this.forms.entity.createUpdate.data;
+            let form = JSON.parse(JSON.stringify(this.forms.entity.createUpdate.data));
+
             const validateForm = this.validateForm({functionName, form});
 
             if(validateForm?.bool) {
