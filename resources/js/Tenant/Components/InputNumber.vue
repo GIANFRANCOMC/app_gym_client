@@ -1,16 +1,16 @@
 <template>
     <template v-if="hasDiv">
-        <div :class="[divSizeClass, ...divClass]">
+        <div :class="[...divClass, divSizeClass]">
             <slot name="default"></slot>
-            <label :class="[...titleClass]" v-text="title"></label>
-            <label v-if="required" :class="[...requiredClass]" v-text="requiredLabel"></label>
+            <label v-if="!!title" v-text="title" :class="[...titleClass]"></label>
+            <label v-if="isRequired" v-text="requiredLabel" :class="[...requiredClass]"></label>
             <div class="input-group">
                 <slot name="inputGroupPrepend"></slot>
                 <input
                     type="number"
                     :value="modelValue"
-                    @input="emitValue($event.target.value)"
-                    :class="[...addClass]"
+                    @input="updateValue($event.target.value)"
+                    :class="[...inputClass]"
                     :placeholder="placeholder"
                     :disabled="disabled"
                     @keyup.enter="handleEnterKey"/>
@@ -23,13 +23,15 @@
     </template>
     <template v-else>
         <slot name="default"></slot>
+        <label v-if="!!title" v-text="title" :class="[...titleClass]"></label>
+        <label v-if="isRequired" v-text="requiredLabel" :class="[...requiredClass]"></label>
         <div class="input-group">
             <slot name="inputGroupPrepend"></slot>
             <input
                 type="number"
                 :value="modelValue"
-                @input="emitValue($event.target.value)"
-                :class="[...addClass]"
+                @input="updateValue($event.target.value)"
+                :class="[...inputClass]"
                 :placeholder="placeholder"
                 :disabled="disabled"
                 @keyup.enter="handleEnterKey"/>
@@ -42,7 +44,7 @@
 </template>
 
 <script>
-import { requestRoute, generalConfig } from "../Helpers/Constants.js";
+import { generalConfig } from "../Helpers/Constants.js";
 
 export default {
     name: "InputNumber",
@@ -52,7 +54,7 @@ export default {
             type: [String, Number],
             default: ""
         },
-        // Title
+        // Div - Show
         hasDiv: {
             type: Boolean,
             required: false,
@@ -63,6 +65,7 @@ export default {
             required: false,
             default: []
         },
+        // Div - Title
         title: {
             type: String,
             required: false,
@@ -71,10 +74,10 @@ export default {
         titleClass: {
             type: Array,
             required: false,
-            default: ["form-label"]
+            default: ["form-label", "colon-at-end"]
         },
-        // Aspect
-        required: {
+        // Input - Required
+        isRequired: {
             type: Boolean,
             required: false,
             default: false
@@ -82,14 +85,15 @@ export default {
         requiredLabel: {
             type: String,
             required: false,
-            default: "*"
+            default: generalConfig.forms.inputs.required
         },
         requiredClass: {
             type: Array,
             required: false,
-            default: ["text-danger", "ms-1"]
+            default: ["text-danger", "ms-1", "fw-bold"]
         },
-        addClass:{
+        // Input - Props
+        inputClass:{
             type: Array,
             required: false,
             default: ["form-control"]
@@ -150,7 +154,15 @@ export default {
     computed: {
         textBottom() {
 
-            return this.textBottomInfo.length > 0 ? this.textBottomInfo[0] : "";
+            try {
+
+                return this.textBottomInfo.length > 0 ? this.textBottomInfo[0] : "";
+
+            }catch(e) {
+
+                return e;
+
+            }
 
         },
         divSizeClass() {
@@ -160,7 +172,7 @@ export default {
         }
     },
     methods: {
-        emitValue(value) {
+        updateValue(value) {
 
             this.$emit("update:modelValue", value);
 

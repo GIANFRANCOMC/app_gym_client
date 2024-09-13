@@ -156,7 +156,7 @@ export default {
             type: [String, Number],
             required: false,
             default: "12"
-        },
+        }
     },
     computed: {
         textBottom() {
