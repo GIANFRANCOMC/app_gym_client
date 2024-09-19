@@ -17,19 +17,31 @@ use Illuminate\Support\Facades\Artisan;
 |
 */
 
-foreach (config('tenancy.central_domains') as $domain) {
+use App\Http\Controllers\System\Auth\AuthenticatedSessionController;
 
-    Route::domain($domain)->group(function () {
+Route::middleware(["web"])
+     ->group(function() {
 
-        Route::get('/migrate-seed', function () {
+        Route::middleware('guest')->group(function() {
 
-            // Ejecutar migraciones y seeders
-            Artisan::call('migrate --seed');
-
-            // Devuelve la salida del comando Artisan
-            return Artisan::output();
+            Route::get('login',  [AuthenticatedSessionController::class, 'create'])->name('login');
+            Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
         });
 
-    });
-}
+        Route::middleware('auth')->group(function () {
+
+            Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
+                 ->name('logout');
+
+        });
+
+        Route::middleware(['auth', 'verified'])->group(function () {
+
+            // $rutaDefecto = __DIR__.'/System';
+
+            // Route::prefix('/items')->group($rutaDefecto.'/Item.php');
+
+        });
+
+  });
