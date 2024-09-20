@@ -39,6 +39,58 @@ export function config({entity = "", type = ""}) {
 
         }
 
+    }else if(entity === "sales") {
+
+        let config = {
+            session: {
+                default: "sale_id"
+            },
+            routes: {
+                consult: `${requestRoute}/sales`,
+                list: `${requestRoute}/sales/list`,
+                get: `${requestRoute}/sales/get`,
+                store: `${requestRoute}/sales`,
+                update: `${requestRoute}/sales`,
+                initParams: `${requestRoute}/sales/initParams`,
+            }
+        };
+
+        if(Utils.isDefined({value: type})) {
+
+            return config?.routes[type];
+
+        }else {
+
+            return config;
+
+        }
+
+    }else if(entity === "users") {
+
+        let config = {
+            session: {
+                default: "user_id"
+            },
+            routes: {
+                consult: `${requestRoute}/users`,
+                list: `${requestRoute}/users/list`,
+                get: `${requestRoute}/users/get`,
+                store: `${requestRoute}/users`,
+                update: `${requestRoute}/users`,
+                initParams: `${requestRoute}/users/initParams`,
+            }
+        };
+
+        if(Utils.isDefined({value: type})) {
+
+            return config?.routes[type];
+
+        }else {
+
+            return config;
+
+        }
+
     }
 
 }

@@ -1,7 +1,7 @@
 <x-system-guest-layout>
     <div class="d-flex justify-content-center mb-3">
         <span class="h5 text-center fw-bold text-uppercase">
-            HOLA
+            {{ $data->company->commercial_name }}
         </span>
     </div>
     <form method="POST" action="{{ route('login') }}" class="mb-3">

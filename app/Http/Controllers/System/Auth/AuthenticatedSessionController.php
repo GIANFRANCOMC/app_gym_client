@@ -4,12 +4,12 @@ namespace App\Http\Controllers\System\Auth;
 
 use App\Helpers\System\Utilities;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\System\Auth\LoginRequest;
 use App\Providers\RouteServiceProvider;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\{Request, RedirectResponse};
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use App\Models\System\{Company};
 
 class AuthenticatedSessionController extends Controller
 {
@@ -19,6 +19,8 @@ class AuthenticatedSessionController extends Controller
     public function create(): View {
 
         $data = Utilities::getDefaultViewData();
+
+        $data->company = Company::first();
 
         return view("System/auth/login", compact("data"));
 

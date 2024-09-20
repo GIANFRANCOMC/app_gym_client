@@ -73,16 +73,4 @@ class User extends Authenticatable {
 
     }
 
-    public function admin() {
-
-        return $this->belongsTo(Admin::class);
-
-    }
-
-    public function branchUsers() {
-
-        return $this->hasMany(BranchUser::class);
-
-    }
-
 }

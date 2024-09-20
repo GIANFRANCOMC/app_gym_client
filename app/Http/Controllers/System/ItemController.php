@@ -13,12 +13,6 @@ use App\Models\System\{Item};
 
 class ItemController extends Controller {
 
-    /**
-     * Display init params.
-     *
-     * @param  \App\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function initParams(Request $request) {
 
         $initParams = new stdClass();
@@ -34,12 +28,6 @@ class ItemController extends Controller {
 
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @param  \App\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function list(Request $request) {
 
         $list = Item::when(Utilities::isDefined($request->general), function($query) use($request) {
@@ -58,27 +46,18 @@ class ItemController extends Controller {
 
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index() {
 
-        return view("System/items/main");
+        return view("System/general/items/main");
 
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create() {
 
         //
 
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreItemRequest $request) {
 
         $userAuth = Auth::user();
@@ -101,27 +80,18 @@ class ItemController extends Controller {
 
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Item $item) {
 
         //
 
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Item $item) {
 
         //
 
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateItemRequest $request, $id) {
 
         $userAuth = Auth::user();
@@ -145,9 +115,6 @@ class ItemController extends Controller {
 
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Item $item) {
 
         //

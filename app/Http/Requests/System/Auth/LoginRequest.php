@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Auth\System;
+namespace App\Http\Requests\System\Auth;
 
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
@@ -53,17 +53,6 @@ class LoginRequest extends FormRequest
         // Attempt to authenticate the user
         if (! Auth::attempt($credentials, $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
-
-            throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
-            ]);
-        }
-
-        // Check if the admin is active
-        $admin = Auth::user()->admin;
-
-        if (!$admin || $admin->status !== 'active') {
-            Auth::logout();
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),

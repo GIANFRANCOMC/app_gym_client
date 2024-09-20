@@ -1,17 +1,18 @@
 <?php
 
-namespace App\Http\Requests\System\Companies;
+namespace App\Http\Requests\System\Sales;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreCompanyRequest extends FormRequest
-{
+class UpdateSaleRequest extends FormRequest {
+
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
-    {
-        return false;
+    public function authorize(): bool {
+
+        return true;
+
     }
 
     /**
@@ -19,10 +20,12 @@ class StoreCompanyRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
-    {
+    public function rules(): array {
+
         return [
             //
         ];
+
     }
+
 }

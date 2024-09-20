@@ -24,23 +24,22 @@ Route::middleware(["web"])
 
         Route::middleware('guest')->group(function() {
 
+            Route::get('/',  [AuthenticatedSessionController::class, 'create'])->name('login');
             Route::get('login',  [AuthenticatedSessionController::class, 'create'])->name('login');
             Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
         });
 
-        Route::middleware('auth')->group(function () {
+        Route::middleware(['auth', 'verified'])->group(function () {
+
+            $rutaDefecto = __DIR__.'/System';
+
+            Route::prefix('/items')->group($rutaDefecto.'/Item.php');
+            Route::prefix('/sales')->group($rutaDefecto.'/Sale.php');
+            Route::prefix('/users')->group($rutaDefecto.'/User.php');
 
             Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
                  ->name('logout');
-
-        });
-
-        Route::middleware(['auth', 'verified'])->group(function () {
-
-            // $rutaDefecto = __DIR__.'/System';
-
-            // Route::prefix('/items')->group($rutaDefecto.'/Item.php');
 
         });
 

@@ -116,7 +116,7 @@
                                 <div data-i18n="Page 1">Inicio</div>
                             </a>
                         </li> --}}
-                        {{-- <li class="menu-item" id="menu-item-sales">
+                        <li class="menu-item" id="menu-item-sales">
                             <a href="javascript:void(0);" class="menu-link menu-toggle">
                                 <i class="fa fa-cart-shopping me-1"></i>
                                 <div data-i18n="Layouts">Ventas</div>
@@ -133,7 +133,7 @@
                                     </a>
                                 </li>
                             </ul>
-                        </li> --}}
+                        </li>
                         {{-- <li class="menu-item" id="menu-item-customers">
                             <a href="{{ route('customers.index') }}" class="menu-link">
                                 <i class="fa fa-user me-1"></i>
@@ -158,12 +158,12 @@
                                 <div data-i18n="Page 1">Productos</div>
                             </a>
                         </li>
-                        {{-- <li class="menu-item" id="menu-item-admins">
-                            <a href="{{ route('admins.index') }}" class="menu-link">
+                        <li class="menu-item" id="menu-item-users">
+                            <a href="{{ route('users.index') }}" class="menu-link">
                                 <i class="fa fa-users me-1"></i>
                                 <div data-i18n="Page 1">Colaboradores</div>
                             </a>
-                        </li> --}}
+                        </li>
                         {{-- <li class="menu-item" id="menu-item-branches">
                             <a href="{{ route('branches.index') }}" class="menu-link">
                                 <i class="fa fa-warehouse me-1"></i>
