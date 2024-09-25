@@ -1,5 +1,5 @@
 <template>
-    <Breadcrumb :list="[config.entity.page]"/>
+    <Breadcrumb :list="[config.entity.page, { title: 'Listado' }]"/>
 
     <!-- Records -->
     <div class="d-flex flex-row mb-4">
@@ -12,7 +12,7 @@
                 :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
                 placeholder="Ingrese la búsqueda">
                 <template v-slot:inputGroupAppend>
-                    <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})" data-bs-toggle="tooltip" data-bs-placement="top" title="Búsqueda por: Nombre.">
+                    <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})" data-bs-toggle="tooltip" data-bs-placement="top" title="Búsqueda por: Nombre, Descripción.">
                         <i class="fa fa-search"></i>
                     </button>
                 </template>
@@ -30,7 +30,8 @@
             <thead class="table-light">
                 <tr class="text-center">
                     <th class="fw-bold col-1">NOMBRE</th>
-                    <th class="fw-bold col-1">CORREO ELECTRÓNICO</th>
+                    <th class="fw-bold col-1">DESCRIPCIÓN</th>
+                    <th class="fw-bold col-1">PRECIO</th>
                     <th class="fw-bold col-1">ESTADO</th>
                     <th class="fw-bold col-1">ACCIONES</th>
                 </tr>
@@ -47,7 +48,8 @@
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td v-text="record.name"></td>
-                            <td v-text="record.email"></td>
+                            <td v-text="record.description"></td>
+                            <td v-text="record.price"></td>
                             <td>
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
@@ -88,39 +90,37 @@
                             isRequired
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.name"
-                            xl="12"
-                            lg="12"
+                            xl="6"
+                            lg="6"
                             md="12"
                             sm="12"/>
-                    </div>
-                    <div class="row g-2 mb-3">
                         <InputText
-                            v-model="forms.entity.createUpdate.data.email"
+                            v-model="forms.entity.createUpdate.data.description"
                             hasDiv
-                            title="Correo electrónico"
+                            title="Descripción"
                             isRequired
                             hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.email"
-                            xl="6"
-                            lg="6"
-                            md="12"
-                            sm="12"/>
-                        <InputText
-                            v-model="forms.entity.createUpdate.data.password"
-                            hasDiv
-                            :title="!isDefined({value: forms.entity.createUpdate.data?.id}) ? 'Contraseña' : 'Cambiar contraseña'"
-                            :isRequired="!isDefined({value: forms.entity.createUpdate.data?.id})"
-                            hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.password"
+                            :textBottomInfo="forms.entity.createUpdate.errors?.description"
                             xl="6"
                             lg="6"
                             md="12"
                             sm="12"/>
                     </div>
                     <div class="row g-2 mb-3">
+                        <InputNumber
+                            v-model="forms.entity.createUpdate.data.price"
+                            hasDiv
+                            title="Precio"
+                            isRequired
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.price"
+                            xl="6"
+                            lg="6"
+                            md="12"
+                            sm="12"/>
                         <InputSelect
                             v-model="forms.entity.createUpdate.data.status"
-                            :options="options?.users?.statusses"
+                            :options="options?.sales?.statusses"
                             hasDiv
                             title="Estado"
                             isRequired
@@ -151,7 +151,7 @@ import * as Requests  from "../../Helpers/Requests.js";
 import * as Utils     from "../../Helpers/Utils.js";
 
 import Breadcrumb   from "../../Components/Breadcrumb.vue";
-// import InputDate    from "../../Components/InputDate.vue";
+import InputDate    from "../../Components/InputDate.vue";
 import InputNumber  from "../../Components/InputNumber.vue";
 import InputSelect  from "../../Components/InputSelect.vue";
 // import InputSelect2 from "../../Components/InputSelect2.vue";
@@ -161,7 +161,7 @@ import Paginator    from "../../Components/Paginator.vue";
 export default {
     components: {
         Breadcrumb,
-        // InputDate,
+        InputDate,
         InputNumber,
         InputSelect,
         // InputSelect2,
@@ -190,7 +190,7 @@ export default {
                 entity: {
                     extras: {
                         loading: false,
-                        route: Requests.config({entity: "users", type: "list"})
+                        route: Requests.config({entity: "sales", type: "list"})
                     },
                     filters: {
                         general: ""
@@ -217,6 +217,8 @@ export default {
                         data: {
                             id: null,
                             name: "",
+                            description: "",
+                            price: "",
                             status: ""
                         },
                         errors: {}
@@ -227,12 +229,12 @@ export default {
             config: {
                 ...Constants.generalConfig,
                 entity: {
-                    ...Requests.config({entity: "users"}),
+                    ...Requests.config({entity: "sales"}),
                     page: {
-                        title: "Colaboradores",
+                        title: "Ventas",
                         active: true,
                         menu: {
-                            id: "menu-list-users"
+                            id: "menu-list-sales"
                         }
                     }
                 }
@@ -244,7 +246,7 @@ export default {
 
             let initParams = await Requests.get({route: this.config.entity.routes.initParams, showAlert: true});
 
-            this.options.users = initParams.data?.config?.users;
+            this.options.sales = initParams.data?.config?.sales;
 
             return initParams?.bool && initParams?.data?.bool;
 
@@ -272,11 +274,11 @@ export default {
 
             if(this.isDefined({value: record})) {
 
-                this.forms.entity.createUpdate.data.id       = record?.id;
-                this.forms.entity.createUpdate.data.name     = record?.name;
-                this.forms.entity.createUpdate.data.email    = record?.email;
-                this.forms.entity.createUpdate.data.password = record?.password;
-                this.forms.entity.createUpdate.data.status   = record?.status;
+                this.forms.entity.createUpdate.data.id          = record?.id;
+                this.forms.entity.createUpdate.data.name        = record?.name;
+                this.forms.entity.createUpdate.data.description = record?.description;
+                this.forms.entity.createUpdate.data.price       = record?.price;
+                this.forms.entity.createUpdate.data.status      = record?.status;
 
             }else {
 
@@ -290,42 +292,7 @@ export default {
         },
         async createUpdateEntity() {
 
-            const functionName = "createUpdateEntity";
-
-            Alerts.swals({});
-            this.formErrors({functionName, type: "clear"});
-
-            let form = JSON.parse(JSON.stringify(this.forms.entity.createUpdate.data));
-
-            const validateForm = this.validateForm({functionName, form});
-
-            if(validateForm?.bool) {
-
-                let createUpdate = await (this.isDefined({value: this.forms.entity.createUpdate.data.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: this.forms.entity.createUpdate.data.id}) : Requests.post({route: this.config.entity.routes.store, data: form}));
-
-                if(createUpdate?.bool && createUpdate?.data?.bool) {
-
-                    Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
-                    Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
-                    Alerts.swals({show: false});
-
-                    this.clearForm({functionName});
-                    this.listEntity({url: `${this.lists.entity.extras.route}?page=${this.lists.entity.records?.current_page ?? 1}`})
-
-                }else {
-
-                    this.formErrors({functionName, type: "set", errors: createUpdate?.errors ?? []});
-                    Alerts.toastrs({type: "error", subtitle: createUpdate?.data?.msg});
-                    Alerts.swals({show: false});
-
-                }
-
-            }else {
-
-                this.formErrors({functionName, type: "set", errors: validateForm});
-                Alerts.swals({show: false});
-
-            }
+            //
 
         },
         // Forms utils
@@ -334,9 +301,7 @@ export default {
             switch(functionName) {
                 case "modalCreateUpdateEntity":
                 case "createUpdateEntity":
-                    this.forms.entity.createUpdate.data.id          = null;
-                    this.forms.entity.createUpdate.data.name        = "";
-                    this.forms.entity.createUpdate.data.status      = "";
+                    //
                     break;
             }
 
@@ -345,7 +310,7 @@ export default {
 
             if(["modalCreateUpdateEntity", "createUpdateEntity"].includes(functionName)) {
 
-                this.forms.entity.createUpdate.errors = ["set"].includes(type) ? errors : [];
+                //
 
             }
 
@@ -358,38 +323,7 @@ export default {
 
             if(["createUpdateEntity"].includes(functionName)) {
 
-                result.name     = [];
-                result.email    = [];
-                result.password = [];
-                result.status   = [];
-
-                if(!this.isDefined({value: form?.name})) {
-
-                    result.name.push(this.config.forms.errors.labels.required);
-                    result.bool = false;
-
-                }
-
-                if(!this.isDefined({value: form?.email})) {
-
-                    result.email.push(this.config.forms.errors.labels.required);
-                    result.bool = false;
-
-                }
-
-                if(!this.isDefined({value: form?.password})) {
-
-                    result.password.push(this.config.forms.errors.labels.required);
-                    result.bool = false;
-
-                }
-
-                if(!this.isDefined({value: form?.status})) {
-
-                    result.status.push(this.config.forms.errors.labels.required);
-                    result.bool = false;
-
-                }
+                //
 
             }
 

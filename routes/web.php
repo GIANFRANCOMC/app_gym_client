@@ -34,6 +34,7 @@ Route::middleware(["web"])
 
             $rutaDefecto = __DIR__.'/System';
 
+            Route::prefix('/customers')->group($rutaDefecto.'/Customer.php');
             Route::prefix('/items')->group($rutaDefecto.'/Item.php');
             Route::prefix('/sales')->group($rutaDefecto.'/Sale.php');
             Route::prefix('/users')->group($rutaDefecto.'/User.php');

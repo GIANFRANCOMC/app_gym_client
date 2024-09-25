@@ -30,7 +30,6 @@
             <thead class="table-light">
                 <tr class="text-center">
                     <th class="fw-bold col-1">NOMBRE</th>
-                    <th class="fw-bold col-1">CORREO ELECTRÓNICO</th>
                     <th class="fw-bold col-1">ESTADO</th>
                     <th class="fw-bold col-1">ACCIONES</th>
                 </tr>
@@ -47,7 +46,6 @@
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td v-text="record.name"></td>
-                            <td v-text="record.email"></td>
                             <td>
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
@@ -81,6 +79,31 @@
                 </div>
                 <div class="modal-body">
                     <div class="row g-2 mb-3">
+                        <InputSelect
+                            v-model="forms.entity.createUpdate.data.document_type"
+                            :options="options?.customers?.statusses"
+                            hasDiv
+                            title="Tipo de documento"
+                            isRequired
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.document_type"
+                            xl="6"
+                            lg="6"
+                            md="12"
+                            sm="12"/>
+                        <InputText
+                            v-model="forms.entity.createUpdate.data.document_number"
+                            hasDiv
+                            title="Número de documento"
+                            isRequired
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.document_number"
+                            xl="6"
+                            lg="6"
+                            md="12"
+                            sm="12"/>
+                    </div>
+                    <div class="row g-2 mb-3">
                         <InputText
                             v-model="forms.entity.createUpdate.data.name"
                             hasDiv
@@ -94,33 +117,9 @@
                             sm="12"/>
                     </div>
                     <div class="row g-2 mb-3">
-                        <InputText
-                            v-model="forms.entity.createUpdate.data.email"
-                            hasDiv
-                            title="Correo electrónico"
-                            isRequired
-                            hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.email"
-                            xl="6"
-                            lg="6"
-                            md="12"
-                            sm="12"/>
-                        <InputText
-                            v-model="forms.entity.createUpdate.data.password"
-                            hasDiv
-                            :title="!isDefined({value: forms.entity.createUpdate.data?.id}) ? 'Contraseña' : 'Cambiar contraseña'"
-                            :isRequired="!isDefined({value: forms.entity.createUpdate.data?.id})"
-                            hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.password"
-                            xl="6"
-                            lg="6"
-                            md="12"
-                            sm="12"/>
-                    </div>
-                    <div class="row g-2 mb-3">
                         <InputSelect
                             v-model="forms.entity.createUpdate.data.status"
-                            :options="options?.users?.statusses"
+                            :options="options?.customers?.statusses"
                             hasDiv
                             title="Estado"
                             isRequired
@@ -190,7 +189,7 @@ export default {
                 entity: {
                     extras: {
                         loading: false,
-                        route: Requests.config({entity: "users", type: "list"})
+                        route: Requests.config({entity: "customers", type: "list"})
                     },
                     filters: {
                         general: ""
@@ -216,6 +215,8 @@ export default {
                         },
                         data: {
                             id: null,
+                            document_type: "",
+                            document_number: "",
                             name: "",
                             status: ""
                         },
@@ -227,12 +228,12 @@ export default {
             config: {
                 ...Constants.generalConfig,
                 entity: {
-                    ...Requests.config({entity: "users"}),
+                    ...Requests.config({entity: "customers"}),
                     page: {
-                        title: "Colaboradores",
+                        title: "Clientes",
                         active: true,
                         menu: {
-                            id: "menu-list-users"
+                            id: "menu-list-customers"
                         }
                     }
                 }
@@ -244,7 +245,7 @@ export default {
 
             let initParams = await Requests.get({route: this.config.entity.routes.initParams, showAlert: true});
 
-            this.options.users = initParams.data?.config?.users;
+            this.options.customers = initParams.data?.config?.customers;
 
             return initParams?.bool && initParams?.data?.bool;
 
@@ -272,11 +273,11 @@ export default {
 
             if(this.isDefined({value: record})) {
 
-                this.forms.entity.createUpdate.data.id       = record?.id;
-                this.forms.entity.createUpdate.data.name     = record?.name;
-                this.forms.entity.createUpdate.data.email    = record?.email;
-                this.forms.entity.createUpdate.data.password = record?.password;
-                this.forms.entity.createUpdate.data.status   = record?.status;
+                this.forms.entity.createUpdate.data.id              = record?.id;
+                this.forms.entity.createUpdate.data.document_type   = record?.document_type;
+                this.forms.entity.createUpdate.data.document_number = record?.document_number;
+                this.forms.entity.createUpdate.data.name            = record?.name;
+                this.forms.entity.createUpdate.data.status          = record?.status;
 
             }else {
 
@@ -334,9 +335,11 @@ export default {
             switch(functionName) {
                 case "modalCreateUpdateEntity":
                 case "createUpdateEntity":
-                    this.forms.entity.createUpdate.data.id          = null;
-                    this.forms.entity.createUpdate.data.name        = "";
-                    this.forms.entity.createUpdate.data.status      = "";
+                    this.forms.entity.createUpdate.data.id              = null;
+                    this.forms.entity.createUpdate.data.document_type   = "";
+                    this.forms.entity.createUpdate.data.document_number = "";
+                    this.forms.entity.createUpdate.data.name            = "";
+                    this.forms.entity.createUpdate.data.status          = "";
                     break;
             }
 
@@ -358,28 +361,28 @@ export default {
 
             if(["createUpdateEntity"].includes(functionName)) {
 
-                result.name     = [];
-                result.email    = [];
-                result.password = [];
-                result.status   = [];
+                result.document_type   = [];
+                result.document_number = [];
+                result.name            = [];
+                result.status          = [];
+
+                if(!this.isDefined({value: form?.document_type})) {
+
+                    result.document_type.push(this.config.forms.errors.labels.required);
+                    result.bool = false;
+
+                }
+
+                if(!this.isDefined({value: form?.document_number})) {
+
+                    result.document_number.push(this.config.forms.errors.labels.required);
+                    result.bool = false;
+
+                }
 
                 if(!this.isDefined({value: form?.name})) {
 
                     result.name.push(this.config.forms.errors.labels.required);
-                    result.bool = false;
-
-                }
-
-                if(!this.isDefined({value: form?.email})) {
-
-                    result.email.push(this.config.forms.errors.labels.required);
-                    result.bool = false;
-
-                }
-
-                if(!this.isDefined({value: form?.password})) {
-
-                    result.password.push(this.config.forms.errors.labels.required);
                     result.bool = false;
 
                 }

@@ -18,10 +18,10 @@ class UserController extends Controller {
         $initParams = new stdClass();
 
         $config = new stdClass();
-        // $config->items = new stdClass();
-        // $config->items->statusses = Item::getStatusses();
+        $config->users = new stdClass();
+        $config->users->statusses = User::getStatusses();
 
-        // $initParams->config = $config;
+        $initParams->config = $config;
         $initParams->bool   = true;
 
         return $initParams;
@@ -30,7 +30,17 @@ class UserController extends Controller {
 
     public function list(Request $request) {
 
-        //
+        $list = User::when(Utilities::isDefined($request->general), function($query) use($request) {
+
+                            $filter = "%".trim($request->general)."%";
+
+                            $query->where("name", "like", $filter);
+
+                    })
+                    ->orderBy("name", "ASC")
+                    ->paginate(10);
+
+        return $list;
 
     }
 

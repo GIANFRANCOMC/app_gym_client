@@ -83,7 +83,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="row g-2 mb-3">
-                        <inputText
+                        <InputText
                             v-model="forms.entity.createUpdate.data.name"
                             hasDiv
                             title="Nombre"
@@ -94,7 +94,7 @@
                             lg="6"
                             md="12"
                             sm="12"/>
-                        <inputText
+                        <InputText
                             v-model="forms.entity.createUpdate.data.description"
                             hasDiv
                             title="Descripción"
@@ -107,7 +107,7 @@
                             sm="12"/>
                     </div>
                     <div class="row g-2 mb-3">
-                        <inputNumber
+                        <InputNumber
                             v-model="forms.entity.createUpdate.data.price"
                             hasDiv
                             title="Precio"
@@ -118,7 +118,7 @@
                             lg="6"
                             md="12"
                             sm="12"/>
-                        <inputSelect
+                        <InputSelect
                             v-model="forms.entity.createUpdate.data.status"
                             :options="options?.items?.statusses"
                             hasDiv
@@ -133,8 +133,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" :class="['btn', isDefined({value: forms.entity.createUpdate.data?.id}) ? 'btn-warning' : 'btn-primary']" @click="createUpdateEntity()">
+                    <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" :class="['btn waves-effect', isDefined({value: forms.entity.createUpdate.data?.id}) ? 'btn-warning' : 'btn-primary']" @click="createUpdateEntity()">
                         <i class="fa fa-save"></i>
                         <span class="ms-1">Guardar</span>
                     </button>
@@ -206,7 +206,7 @@ export default {
                         extras: {
                             modals: {
                                 default: {
-                                    id: "createUpdateItemModal",
+                                    id: "createUpdateEntityModal",
                                     titles: {
                                         store: "Agregar",
                                         update: "Editar"

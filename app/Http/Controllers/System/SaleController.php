@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\Sales\{StoreSaleRequest, UpdateSaleRequest};
-use App\Models\System\{Sale};
+use App\Models\System\{Customer, SaleHeader};
 
 class SaleController extends Controller {
 
@@ -18,10 +18,13 @@ class SaleController extends Controller {
         $initParams = new stdClass();
 
         $config = new stdClass();
-        // $config->items = new stdClass();
-        // $config->items->statusses = Item::getStatusses();
+        $config->salesHeader = new stdClass();
+        $config->salesHeader->statusses = SaleHeader::getStatusses();
 
-        // $initParams->config = $config;
+        $config->customers = new stdClass();
+        $config->customers->records = Customer::get();
+
+        $initParams->config = $config;
         $initParams->bool   = true;
 
         return $initParams;
@@ -36,13 +39,13 @@ class SaleController extends Controller {
 
     public function index() {
 
-        return view("System/general/sales/main");
+        return view("System/general/sales/list");
 
     }
 
     public function create() {
 
-        //
+        return view("System/general/sales/main");
 
     }
 
@@ -52,13 +55,13 @@ class SaleController extends Controller {
 
     }
 
-    public function show(Sale $record) {
+    public function show(SaleHeader $record) {
 
         //
 
     }
 
-    public function edit(Sale $record) {
+    public function edit(SaleHeader $record) {
 
         //
 
@@ -70,7 +73,7 @@ class SaleController extends Controller {
 
     }
 
-    public function destroy(Sale $record) {
+    public function destroy(SaleHeader $record) {
 
         //
 

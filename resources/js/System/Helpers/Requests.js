@@ -91,6 +91,32 @@ export function config({entity = "", type = ""}) {
 
         }
 
+    }else if(entity === "customers") {
+
+        let config = {
+            session: {
+                default: "customer_id"
+            },
+            routes: {
+                consult: `${requestRoute}/customers`,
+                list: `${requestRoute}/customers/list`,
+                get: `${requestRoute}/customers/get`,
+                store: `${requestRoute}/customers`,
+                update: `${requestRoute}/customers`,
+                initParams: `${requestRoute}/customers/initParams`,
+            }
+        };
+
+        if(Utils.isDefined({value: type})) {
+
+            return config?.routes[type];
+
+        }else {
+
+            return config;
+
+        }
+
     }
 
 }

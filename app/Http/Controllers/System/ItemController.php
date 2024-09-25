@@ -39,7 +39,6 @@ class ItemController extends Controller {
 
                     })
                     ->orderBy("name", "ASC")
-                    ->orderBy("description", "ASC")
                     ->paginate(10);
 
         return $list;
