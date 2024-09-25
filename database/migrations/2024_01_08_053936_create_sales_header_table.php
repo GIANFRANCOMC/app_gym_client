@@ -13,13 +13,17 @@ return new class extends Migration {
 
         Schema::create("sales_header", function (Blueprint $table) {
             $table->id();
-            $table->string("sequential")->nullable();
+            $table->string("sequential");
+            $table->unsignedBigInteger("customer_id");
+            $table->date("sale_date");
             $table->enum("status", ["active", "inactive"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();
             $table->integer("created_by")->nullable();
             $table->timestamp("updated_at")->nullable();
             $table->integer("updated_by")->nullable();
+
+            $table->foreign("customer_id")->references("id")->on("customers")->onDelete("cascade");
         });
 
     }

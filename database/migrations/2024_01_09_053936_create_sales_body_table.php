@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->unsignedBigInteger("item_id");
             $table->string("name");
             $table->decimal("price", 10, 2);
+            $table->decimal("quantity", 10, 2);
             $table->enum("status", ["active", "inactive"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();

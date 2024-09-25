@@ -24,6 +24,7 @@ class SaleBody extends Model {
         "item_id",
         "name",
         "price",
+        "quantity",
         "status"
     ];
 

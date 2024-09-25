@@ -29,9 +29,9 @@
         <table class="table table-hover">
             <thead class="table-light">
                 <tr class="text-center">
-                    <th class="fw-bold col-1">NOMBRE</th>
-                    <th class="fw-bold col-1">DESCRIPCIÓN</th>
-                    <th class="fw-bold col-1">PRECIO</th>
+                    <th class="fw-bold col-1">SECUENCIA</th>
+                    <th class="fw-bold col-1">CLIENTE</th>
+                    <th class="fw-bold col-1">FECHA DE VENTA</th>
                     <th class="fw-bold col-1">ESTADO</th>
                     <th class="fw-bold col-1">ACCIONES</th>
                 </tr>
@@ -47,9 +47,9 @@
                 <template v-else>
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
-                            <td v-text="record.name"></td>
-                            <td v-text="record.description"></td>
-                            <td v-text="record.price"></td>
+                            <td v-text="record.sequential"></td>
+                            <td v-text="record.customer?.name"></td>
+                            <td v-text="record.sale_date"></td>
                             <td>
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
@@ -71,76 +71,6 @@
     </div>
     <div class="d-flex justify-content-center" v-if="!lists.entity.extras.loading">
         <Paginator :links="lists.entity.records.links" @clickPage="listEntity"/>
-    </div>
-
-    <!-- Modals -->
-    <div class="modal fade" :id="forms.entity.createUpdate.extras.modals.default.id" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.createUpdate.extras.modals.default.titles[isDefined({value: forms.entity.createUpdate.data?.id}) ? 'update' : 'store']"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row g-2 mb-3">
-                        <InputText
-                            v-model="forms.entity.createUpdate.data.name"
-                            hasDiv
-                            title="Nombre"
-                            isRequired
-                            hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.name"
-                            xl="6"
-                            lg="6"
-                            md="12"
-                            sm="12"/>
-                        <InputText
-                            v-model="forms.entity.createUpdate.data.description"
-                            hasDiv
-                            title="Descripción"
-                            isRequired
-                            hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.description"
-                            xl="6"
-                            lg="6"
-                            md="12"
-                            sm="12"/>
-                    </div>
-                    <div class="row g-2 mb-3">
-                        <InputNumber
-                            v-model="forms.entity.createUpdate.data.price"
-                            hasDiv
-                            title="Precio"
-                            isRequired
-                            hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.price"
-                            xl="6"
-                            lg="6"
-                            md="12"
-                            sm="12"/>
-                        <InputSelect
-                            v-model="forms.entity.createUpdate.data.status"
-                            :options="options?.sales?.statusses"
-                            hasDiv
-                            title="Estado"
-                            isRequired
-                            hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.status"
-                            xl="6"
-                            lg="6"
-                            md="12"
-                            sm="12"/>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" :class="['btn waves-effect', isDefined({value: forms.entity.createUpdate.data?.id}) ? 'btn-warning' : 'btn-primary']" @click="createUpdateEntity()">
-                        <i class="fa fa-save"></i>
-                        <span class="ms-1">Guardar</span>
-                    </button>
-                </div>
-            </div>
-        </div>
     </div>
 </template>
 
@@ -170,7 +100,8 @@ export default {
     },
     mounted: async function() {
 
-        Utils.openNavbarItem(this.config.entity.page.menu.id);
+        Utils.openNavbarItem(this.config.entity.page.menu.id, {addClass: "open"});
+        Utils.openNavbarItem("menu-item-list-sales", {});
         Alerts.swals({type: "initParams"});
 
         let initParams = await this.initParams({}),
@@ -234,7 +165,7 @@ export default {
                         title: "Ventas",
                         active: true,
                         menu: {
-                            id: "menu-list-sales"
+                            id: "menu-item-sales"
                         }
                     }
                 }

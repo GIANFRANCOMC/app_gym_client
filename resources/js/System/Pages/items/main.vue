@@ -170,7 +170,7 @@ export default {
     },
     mounted: async function() {
 
-        Utils.openNavbarItem(this.config.entity.page.menu.id);
+        Utils.openNavbarItem(this.config.entity.page.menu.id, {});
         Alerts.swals({type: "initParams"});
 
         let initParams = await this.initParams({}),

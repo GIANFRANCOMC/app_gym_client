@@ -20,8 +20,9 @@ class SaleHeader extends Model {
     ];
 
     protected $fillable = [
-        "name",
         "sequential",
+        "customer_id",
+        "sale_date",
         "status"
     ];
 
@@ -52,6 +53,12 @@ class SaleHeader extends Model {
         }
 
         return $result;
+
+    }
+
+    public function customer() {
+
+        return $this->belongsTo(Customer::class);
 
     }
 

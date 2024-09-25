@@ -8,13 +8,13 @@
                 <div class="card-body">
                     <div class="row g-2 mb-3">
                         <InputSelect
-                            v-model="forms.entity.createUpdate.data.customer"
+                            v-model="forms.entity.createUpdate.data.customer_id"
                             :options="options?.customers?.records.map(e=>({code: e.id, label: e.name}))"
                             hasDiv
                             title="Cliente"
                             isRequired
                             hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.customer"
+                            :textBottomInfo="forms.entity.createUpdate.errors?.customer_id"
                             xl="8"
                             lg="8"
                             md="12"
@@ -76,6 +76,78 @@
             </div>
         </div>
     </div>
+
+    <!-- Modals -->
+    <div class="modal fade" :id="forms.entity.createUpdate.extras.modals.details.id" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.createUpdate.extras.modals.details.titles[isDefined({value: forms.entity.createUpdate.data?.id}) ? 'update' : 'store']"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-2 mb-3">
+                        <InputSelect
+                            v-model="forms.entity.createUpdate.extras.modals.details.data.item"
+                            :options="options?.items?.records.map(e=>({code: e.id, label: e.name}))"
+                            @change="changeSelectDetail()"
+                            hasDiv
+                            title="Producto"
+                            isRequired
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.customer"
+                            xl="12"
+                            lg="12"
+                            md="12"
+                            sm="12"/>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <InputText
+                            v-model="forms.entity.createUpdate.extras.modals.details.data.quantity"
+                            hasDiv
+                            title="Cantidad"
+                            isRequired
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.document_number"
+                            xl="4"
+                            lg="4"
+                            md="12"
+                            sm="12"/>
+                        <InputText
+                            v-model="forms.entity.createUpdate.extras.modals.details.data.price"
+                            hasDiv
+                            title="Precio"
+                            isRequired
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.document_number"
+                            xl="4"
+                            lg="4"
+                            md="12"
+                            sm="12"/>
+                        <InputText
+                            v-model="forms.entity.createUpdate.extras.modals.details.data.total"
+                            hasDiv
+                            title="Total"
+                            isRequired
+                            disabled
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.document_number"
+                            xl="4"
+                            lg="4"
+                            md="12"
+                            sm="12"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" :class="['btn waves-effect', isDefined({value: forms.entity.createUpdate.data?.id}) ? 'btn-warning' : 'btn-primary']" @click="addDetail()">
+                        <i class="fa fa-save"></i>
+                        <span class="ms-1">Guardar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -104,7 +176,8 @@ export default {
     },
     mounted: async function() {
 
-        Utils.openNavbarItem(this.config.entity.page.menu.id);
+        Utils.openNavbarItem(this.config.entity.page.menu.id, {addClass: "open"});
+        Utils.openNavbarItem("menu-item-create-sales", {});
         Alerts.swals({type: "initParams"});
 
         let initParams = await this.initParams({}),
@@ -145,11 +218,17 @@ export default {
                                         update: "Editar"
                                     }
                                 },
-                                items: {
-                                    id: "addItemModal",
+                                details: {
+                                    id: "addDetailModal",
                                     titles: {
                                         store: "Agregar",
                                         update: "Editar"
+                                    },
+                                    data: {
+                                        item: "",
+                                        quantity: 0,
+                                        price: 0,
+                                        total: 0
                                     }
                                 }
                             },
@@ -159,9 +238,10 @@ export default {
                         },
                         data: {
                             id: null,
-                            details: [],
+                            customer_id: "",
                             sale_date: "",
-                            status: ""
+                            status: "",
+                            details: []
                         },
                         errors: {}
                     }
@@ -176,7 +256,7 @@ export default {
                         title: "Ventas",
                         active: true,
                         menu: {
-                            id: "menu-list-sales"
+                            id: "menu-item-sales"
                         }
                     }
                 }
@@ -188,8 +268,9 @@ export default {
 
             let initParams = await Requests.get({route: this.config.entity.routes.initParams, showAlert: true});
 
-            this.options.sales = initParams.data?.config?.sales;
+            this.options.sales     = initParams.data?.config?.sales;
             this.options.customers = initParams.data?.config?.customers;
+            this.options.items     = initParams.data?.config?.items;
 
             return initParams?.bool && initParams?.data?.bool;
 
@@ -207,17 +288,111 @@ export default {
         // Forms
         modalAddDetail({}) {
 
-            this.addDetail({});
+            Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.details.id});
 
         },
-        addDetail({}) {
+        changeSelectDetail() {
 
-            (this.forms.entity.createUpdate.data.details).push({id: Utils.uuidv4(), name: "Gaseosa" , quantity: 3, price: 20, total: 60});
+            const detailModal = this.forms.entity.createUpdate.extras.modals.details.data;
+
+            let filter = (this.options.items?.records).filter(e => e?.id == detailModal.item);
+
+            if(filter.length === 1) {
+
+                let detail = filter[0];
+
+                this.forms.entity.createUpdate.extras.modals.details.data.price = parseFloat(detail?.price);
+
+            }else {
+
+                console.log("error");
+
+            }
+
+        },
+        addDetail() {
+
+            const detailModal = this.forms.entity.createUpdate.extras.modals.details.data;
+
+            let filter = (this.options.items?.records).filter(e => e?.id == detailModal.item);
+
+            if(filter.length === 1) {
+
+                let item = filter[0];
+
+                const quantity = detailModal?.quantity;
+                const price = detailModal?.price;
+                const total = parseFloat(quantity) * parseFloat(price);
+
+                (this.forms.entity.createUpdate.data.details).push({id: Utils.uuidv4(), name: item?.name , quantity, price, total, item});
+
+            }else {
+
+                console.log("error");
+
+            }
 
         },
         async createUpdateEntity() {
 
-            //
+            const functionName = "createUpdateEntity";
+
+            Alerts.swals({});
+            this.formErrors({functionName, type: "clear"});
+
+            let form = JSON.parse(JSON.stringify(this.forms.entity.createUpdate.data));
+
+            const validateForm = this.validateForm({functionName, form});
+
+            if(validateForm?.bool) {
+
+                let createUpdate = await (this.isDefined({value: this.forms.entity.createUpdate.data.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: this.forms.entity.createUpdate.data.id}) : Requests.post({route: this.config.entity.routes.store, data: form}));
+
+                if(createUpdate?.bool && createUpdate?.data?.bool) {
+
+                    Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
+                    Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
+                    Alerts.swals({show: false});
+
+                    // this.clearForm({functionName});
+                    // this.listEntity({url: `${this.lists.entity.extras.route}?page=${this.lists.entity.records?.current_page ?? 1}`})
+
+                    Swal.fire({
+                        html: `<h3 class="fw-bold">${createUpdate.data?.msg}</h3>`,
+                        allowOutsideClick: false,
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes, nueva venta"
+                    })
+                    .then((result) => {
+
+                        if(result.isConfirmed) {
+
+                            console.log("isConfirmed");
+
+                        }else if (result.isDenied) {
+
+                            console.log("isDenied")
+
+                        }
+
+                    });
+
+                }else {
+
+                    this.formErrors({functionName, type: "set", errors: createUpdate?.errors ?? []});
+                    Alerts.toastrs({type: "error", subtitle: createUpdate?.data?.msg});
+                    Alerts.swals({show: false});
+
+                }
+
+            }else {
+
+                this.formErrors({functionName, type: "set", errors: validateForm});
+                Alerts.swals({show: false});
+
+            }
 
         },
         // Forms utils
@@ -225,7 +400,10 @@ export default {
 
             switch(functionName) {
                 case "createUpdateEntity":
-                    //
+                    this.forms.entity.createUpdate.data.id        = null;
+                    this.forms.entity.createUpdate.data.details   = [];
+                    this.forms.entity.createUpdate.data.sale_date = "";
+                    this.forms.entity.createUpdate.data.status    = "";
                     break;
             }
 

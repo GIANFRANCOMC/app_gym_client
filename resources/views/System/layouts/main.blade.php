@@ -114,12 +114,12 @@
                                 <div data-i18n="Ventas">Ventas</div>
                             </a>
                             <ul class="menu-sub">
-                                <li class="menu-item">
+                                <li class="menu-item" id="menu-item-list-sales">
                                     <a href="{{ route('sales.index') }}" class="menu-link">
                                         <div data-i18n="Collapsed menu">Listado</div>
                                     </a>
                                 </li>
-                                <li class="menu-item">
+                                <li class="menu-item" id="menu-item-create-sales">
                                     <a href="{{ route('sales.create') }}" class="menu-link">
                                         <div data-i18n="Collapsed menu">Nuevo</div>
                                     </a>
