@@ -48,7 +48,7 @@ import { generalConfig } from "../Helpers/Constants.js";
 
 export default {
     name: "InputNumber",
-    emits: ["enterKeyPressed", "update:modelValue"],
+    emits: ["enterKeyPressed", "update:modelValue", "input", "change"],
     props: {
         modelValue: {
             type: [String, Number],
@@ -122,7 +122,7 @@ export default {
         textBottomClass: {
             type: Array,
             required: false,
-            default: ["text-danger"]
+            default: [generalConfig.forms.errors.styles.default]
         },
         textBottomInfo: {
             type: Array,
@@ -175,6 +175,8 @@ export default {
         updateValue(value) {
 
             this.$emit("update:modelValue", value);
+            this.$emit("input", value);
+            this.$emit("change", value);
 
         },
         handleEnterKey() {
@@ -185,3 +187,17 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>

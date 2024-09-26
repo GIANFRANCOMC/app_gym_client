@@ -18,12 +18,12 @@
                 </template>
             </InputText>
         </div>
-        <div class="align-self-end">
+        <!-- <div class="align-self-end">
             <button class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})">
                 <i class="fa fa-plus"></i>
                 <span class="ms-1">Agregar</span>
             </button>
-        </div>
+        </div> -->
     </div>
     <div class="table-responsive">
         <table class="table table-hover">
@@ -197,28 +197,7 @@ export default {
         // Forms
         modalCreateUpdateEntity({record = null}) {
 
-            const functionName = "modalCreateUpdateEntity";
-
-            // Alerts.swals({});
-            this.clearForm({functionName});
-            this.formErrors({functionName, type: "clear"});
-
-            if(this.isDefined({value: record})) {
-
-                this.forms.entity.createUpdate.data.id          = record?.id;
-                this.forms.entity.createUpdate.data.name        = record?.name;
-                this.forms.entity.createUpdate.data.description = record?.description;
-                this.forms.entity.createUpdate.data.price       = record?.price;
-                this.forms.entity.createUpdate.data.status      = record?.status;
-
-            }else {
-
-                //
-
-            }
-
-            // Alerts.swals({show: false});
-            Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.default.id});
+            window.location.href = this.config.entity.routes.create;
 
         },
         async createUpdateEntity() {

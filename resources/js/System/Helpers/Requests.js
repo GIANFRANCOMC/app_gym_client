@@ -49,6 +49,7 @@ export function config({entity = "", type = ""}) {
                 consult: `${requestRoute}/sales`,
                 list: `${requestRoute}/sales/list`,
                 get: `${requestRoute}/sales/get`,
+                create: `${requestRoute}/sales/create`,
                 store: `${requestRoute}/sales`,
                 update: `${requestRoute}/sales`,
                 initParams: `${requestRoute}/sales/initParams`,

@@ -50,7 +50,7 @@ import { generalConfig } from "../Helpers/Constants.js";
 
 export default {
     name: "InputText",
-    emits: ["enterKeyPressed", "update:modelValue"],
+    emits: ["enterKeyPressed", "update:modelValue", "input", "change"],
     props: {
         modelValue: {
             type: [String, Number],
@@ -129,7 +129,7 @@ export default {
         textBottomClass: {
             type: Array,
             required: false,
-            default: ["text-danger"]
+            default: [generalConfig.forms.errors.styles.default]
         },
         textBottomInfo: {
             type: Array,
@@ -182,6 +182,8 @@ export default {
         updateValue(value) {
 
             this.$emit("update:modelValue", value);
+            this.$emit("input", value);
+            this.$emit("change", value);
 
         },
         handleEnterKey() {

@@ -44,9 +44,17 @@
                             <tbody class="table-border-bottom-0 bg-white">
                                 <template v-if="(forms.entity.createUpdate.data.details).length > 0">
                                     <tr v-for="record in forms.entity.createUpdate.data.details" :key="record.id" class="text-center">
-                                        <td class="fw-bold" v-text="record.name"></td>
-                                        <td v-text="record.quantity"></td>
-                                        <td v-text="record.price"></td>
+                                        <td class="text-start fw-bold" v-text="record.name"></td>
+                                        <td>
+                                            <InputNumber
+                                                v-model="record.quantity"
+                                                @input="calculateRecordDetail({record})"/>
+                                        </td>
+                                        <td>
+                                            <InputNumber
+                                                v-model="record.price"
+                                                @input="calculateRecordDetail({record})"/>
+                                        </td>
                                         <td v-text="record.total"></td>
                                     </tr>
                                 </template>
@@ -58,6 +66,7 @@
                             </tbody>
                         </table>
                     </div>
+                    <small :class="config.forms.errors.styles.default" v-text="isDefined({value: forms.entity.createUpdate.errors?.details}) ? forms.entity.createUpdate.errors?.details[0] : ''"></small>
                 </div>
             </div>
         </div>
@@ -88,50 +97,52 @@
                 <div class="modal-body">
                     <div class="row g-2 mb-3">
                         <InputSelect
-                            v-model="forms.entity.createUpdate.extras.modals.details.data.item"
+                            v-model="forms.entity.createUpdate.extras.modals.details.data.item_id"
                             :options="options?.items?.records.map(e=>({code: e.id, label: e.name}))"
-                            @change="changeSelectDetail()"
+                            @change="changeSelectAddDetail()"
                             hasDiv
                             title="Producto"
                             isRequired
                             hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.customer"
+                            :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.item_id"
                             xl="12"
                             lg="12"
                             md="12"
                             sm="12"/>
                     </div>
                     <div class="row g-2 mb-3">
-                        <InputText
+                        <InputNumber
                             v-model="forms.entity.createUpdate.extras.modals.details.data.quantity"
+                            @input="calculateAddDetail()"
                             hasDiv
                             title="Cantidad"
                             isRequired
                             hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.document_number"
+                            :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.quantity"
                             xl="4"
                             lg="4"
                             md="12"
                             sm="12"/>
-                        <InputText
+                        <InputNumber
                             v-model="forms.entity.createUpdate.extras.modals.details.data.price"
+                            @input="calculateAddDetail()"
                             hasDiv
                             title="Precio"
                             isRequired
                             hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.document_number"
+                            :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.price"
                             xl="4"
                             lg="4"
                             md="12"
                             sm="12"/>
-                        <InputText
+                        <InputNumber
                             v-model="forms.entity.createUpdate.extras.modals.details.data.total"
                             hasDiv
                             title="Total"
                             isRequired
                             disabled
                             hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.document_number"
+                            :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.total"
                             xl="4"
                             lg="4"
                             md="12"
@@ -225,11 +236,13 @@ export default {
                                         update: "Editar"
                                     },
                                     data: {
-                                        item: "",
+                                        item_id: null,
+                                        item: null,
                                         quantity: 0,
                                         price: 0,
                                         total: 0
-                                    }
+                                    },
+                                    errors: {}
                                 }
                             },
                             select2: {
@@ -243,7 +256,9 @@ export default {
                             status: "",
                             details: []
                         },
-                        errors: {}
+                        errors: {
+                            details: []
+                        }
                     }
                 }
             },
@@ -291,44 +306,64 @@ export default {
             Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.details.id});
 
         },
-        changeSelectDetail() {
+        changeSelectAddDetail() {
 
-            const detailModal = this.forms.entity.createUpdate.extras.modals.details.data;
+            const item_id = this.forms.entity.createUpdate.extras.modals.details.data?.item_id;
 
-            let filter = (this.options.items?.records).filter(e => e?.id == detailModal.item);
+            let filter = (this.options.items?.records).filter(e => e?.id == item_id);
 
             if(filter.length === 1) {
 
                 let detail = filter[0];
 
+                this.forms.entity.createUpdate.extras.modals.details.data.item  = detail;
                 this.forms.entity.createUpdate.extras.modals.details.data.price = parseFloat(detail?.price);
+                this.calculateAddDetail();
 
             }else {
 
-                console.log("error");
+                this.forms.entity.createUpdate.extras.modals.details.data.item_id = null;
+                this.forms.entity.createUpdate.extras.modals.details.data.item    = null;
+
+                Alerts.toastrs({type: "error", subtitle: "El producto seleccionado no es válido."});
 
             }
 
         },
+        calculateAddDetail() {
+
+            const detailModal = this.forms.entity.createUpdate.extras.modals.details.data,
+                  quantity    = parseFloat(detailModal?.quantity),
+                  price       = parseFloat(detailModal?.price),
+                  total       = quantity * price;
+
+            this.forms.entity.createUpdate.extras.modals.details.data.quantity = quantity;
+            this.forms.entity.createUpdate.extras.modals.details.data.price    = price;
+            this.forms.entity.createUpdate.extras.modals.details.data.total    = parseFloat(total).toFixed(2);
+
+        },
         addDetail() {
 
-            const detailModal = this.forms.entity.createUpdate.extras.modals.details.data;
+            const functionName = "addDetail";
 
-            let filter = (this.options.items?.records).filter(e => e?.id == detailModal.item);
+            this.formErrors({functionName, type: "clear"});
+            this.calculateAddDetail();
 
-            if(filter.length === 1) {
+            let form = JSON.parse(JSON.stringify(this.forms.entity.createUpdate.extras.modals.details.data));
 
-                let item = filter[0];
+            const validateForm = this.validateForm({functionName, form});
 
-                const quantity = detailModal?.quantity;
-                const price = detailModal?.price;
-                const total = parseFloat(quantity) * parseFloat(price);
+            if(validateForm?.bool) {
 
-                (this.forms.entity.createUpdate.data.details).push({id: Utils.uuidv4(), name: item?.name , quantity, price, total, item});
+                (this.forms.entity.createUpdate.data.details).push({id: Utils.uuidv4(), ...form, name: form?.item?.name});
+
+                Alerts.toastrs({type: "success", subtitle: "El producto ha sido agregado al detalle."});
+
+                this.clearForm({functionName});
 
             }else {
 
-                console.log("error");
+                this.formErrors({functionName, type: "set", errors: validateForm});
 
             }
 
@@ -350,30 +385,24 @@ export default {
 
                 if(createUpdate?.bool && createUpdate?.data?.bool) {
 
-                    Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
-                    Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
-                    Alerts.swals({show: false});
-
-                    // this.clearForm({functionName});
-                    // this.listEntity({url: `${this.lists.entity.extras.route}?page=${this.lists.entity.records?.current_page ?? 1}`})
-
                     Swal.fire({
                         html: `<h3 class="fw-bold">${createUpdate.data?.msg}</h3>`,
                         allowOutsideClick: false,
                         showCancelButton: true,
                         confirmButtonColor: "#3085d6",
                         cancelButtonColor: "#d33",
-                        confirmButtonText: "Yes, nueva venta"
+                        confirmButtonText: "Yes, nueva venta",
+                        denyButtonText: "No, ir al listado"
                     })
                     .then((result) => {
 
                         if(result.isConfirmed) {
 
-                            console.log("isConfirmed");
+                            this.clearForm({functionName});
 
                         }else if (result.isDenied) {
 
-                            console.log("isDenied")
+                            window.location.href = this.config.entity.routes.consult;
 
                         }
 
@@ -395,10 +424,30 @@ export default {
             }
 
         },
+        // Calculate
+        calculateRecordDetail({record = null}) {
+
+            const quantity    = parseFloat(record?.quantity),
+                  price       = parseFloat(record?.price),
+                  total       = quantity * price;
+
+            record.quantity = quantity;
+            record.price    = price;
+            record.total    = parseFloat(total).toFixed(2);
+
+        },
         // Forms utils
         clearForm({functionName}) {
 
             switch(functionName) {
+                case "addDetail":
+                    this.forms.entity.createUpdate.extras.modals.details.data.item_id  = null;
+                    this.forms.entity.createUpdate.extras.modals.details.data.item     = null;
+                    this.forms.entity.createUpdate.extras.modals.details.data.quantity = 0;
+                    this.forms.entity.createUpdate.extras.modals.details.data.price    = 0;
+                    this.forms.entity.createUpdate.extras.modals.details.data.total    = 0;
+                    break;
+
                 case "createUpdateEntity":
                     this.forms.entity.createUpdate.data.id        = null;
                     this.forms.entity.createUpdate.data.details   = [];
@@ -410,9 +459,13 @@ export default {
         },
         formErrors({functionName, type = "clear", errors = []}) {
 
-            if(["createUpdateEntity"].includes(functionName)) {
+            if(["addDetail"].includes(functionName)) {
 
-                //
+                this.forms.entity.createUpdate.extras.modals.details.errors = ["set"].includes(type) ? errors : [];
+
+            }else if(["createUpdateEntity"].includes(functionName)) {
+
+                this.forms.entity.createUpdate.errors = ["set"].includes(type) ? errors : [];
 
             }
 
@@ -423,9 +476,79 @@ export default {
                 bool: true
             };
 
-            if(["createUpdateEntity"].includes(functionName)) {
+            if(["addDetail"].includes(functionName)) {
 
-                //
+                result.item_id  = [];
+                result.price    = [];
+                result.quantity = [];
+                result.total    = [];
+
+                if(!this.isDefined({value: form?.item_id})) {
+
+                    result.item_id.push(this.config.forms.errors.labels.required);
+                    result.bool = false;
+
+                }
+
+                if(!this.isDefined({value: form?.quantity}) || parseFloat(form?.quantity) < 0) {
+
+                    result.quantity.push(this.config.forms.errors.labels.min_number_0);
+                    result.bool = false;
+
+                }
+
+                if(!this.isDefined({value: form?.price}) || parseFloat(form?.price) < 0) {
+
+                    result.price.push(this.config.forms.errors.labels.min_number_0);
+                    result.bool = false;
+
+                }
+
+                if(!this.isDefined({value: form?.total}) || parseFloat(form?.total) < 0) {
+
+                    result.total.push(this.config.forms.errors.labels.min_number_0);
+                    result.bool = false;
+
+                }
+
+            }else if(["createUpdateEntity"].includes(functionName)) {
+
+                result.customer_id = [];
+                result.sale_date   = [];
+                result.status      = [];
+                result.details     = [];
+
+                if(!this.isDefined({value: form?.customer_id})) {
+
+                    result.customer_id.push(this.config.forms.errors.labels.required);
+                    result.bool = false;
+
+                }
+
+                if(!this.isDefined({value: form?.sale_date})) {
+
+                    result.sale_date.push(this.config.forms.errors.labels.required);
+                    result.bool = false;
+
+                }
+
+                if(this.isDefined({value: form?.id})) {
+
+                    if(!this.isDefined({value: form?.status})) {
+
+                        result.status.push(this.config.forms.errors.labels.required);
+                        result.bool = false;
+
+                    }
+
+                }
+
+                if(!this.isDefined({value: form?.details})) {
+
+                    result.details.push(this.config.forms.errors.labels.required);
+                    result.bool = false;
+
+                }
 
             }
 

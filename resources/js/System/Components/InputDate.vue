@@ -129,7 +129,7 @@ export default {
         textBottomClass: {
             type: Array,
             required: false,
-            default: ["text-danger"]
+            default: [generalConfig.forms.errors.styles.default]
         },
         textBottomInfo: {
             type: Array,

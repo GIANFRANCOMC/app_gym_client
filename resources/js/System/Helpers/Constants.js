@@ -13,6 +13,9 @@ export const generalConfig = {
             labels: {
                 required: "Es obligatorio",
                 min_number_0: "Debe ser mayor a 0"
+            },
+            styles: {
+                default: "text-danger"
             }
         }
     }
