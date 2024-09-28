@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger("sale_header_id");
             $table->unsignedBigInteger("item_id");
+            $table->unsignedBigInteger("currency_id");
             $table->string("name");
             $table->decimal("price", 10, 2);
             $table->decimal("quantity", 10, 2);
@@ -27,6 +28,7 @@ return new class extends Migration {
 
             $table->foreign("sale_header_id")->references("id")->on("sales_header")->onDelete("cascade");
             $table->foreign("item_id")->references("id")->on("items")->onDelete("cascade");
+            $table->foreign("currency_id")->references("id")->on("currencies")->onDelete("cascade");
         });
 
     }

@@ -11,11 +11,11 @@ return new class extends Migration {
      */
     public function up(): void {
 
-        Schema::create("items", function (Blueprint $table) {
+        Schema::create("company_socials_media", function (Blueprint $table) {
             $table->id();
-            $table->string("name");
-            $table->text("description");
-            $table->decimal("price", 10, 2);
+            $table->unsignedBigInteger("company_id");
+            $table->enum("type", ["facebook"])->default("active");
+            $table->text("link");
             $table->enum("status", ["active", "inactive"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();
@@ -31,7 +31,7 @@ return new class extends Migration {
      */
     public function down(): void {
 
-        Schema::dropIfExists("items");
+        Schema::dropIfExists("company_socials_media");
 
     }
 

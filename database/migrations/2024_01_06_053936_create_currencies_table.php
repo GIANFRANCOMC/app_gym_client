@@ -11,11 +11,12 @@ return new class extends Migration {
      */
     public function up(): void {
 
-        Schema::create("items", function (Blueprint $table) {
+        Schema::create("currencies", function (Blueprint $table) {
             $table->id();
-            $table->string("name");
-            $table->text("description");
-            $table->decimal("price", 10, 2);
+            $table->string("code");
+            $table->string("sign");
+            $table->string("singular_name");
+            $table->string("plural_name");
             $table->enum("status", ["active", "inactive"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();
@@ -31,7 +32,7 @@ return new class extends Migration {
      */
     public function down(): void {
 
-        Schema::dropIfExists("items");
+        Schema::dropIfExists("currencies");
 
     }
 

@@ -61,6 +61,14 @@
 
     <!-- Padding -->
     <style>
+        .p-3{
+            padding: 3px !important;
+        }
+
+        .p-5{
+            padding: 5px !important;
+        }
+
         .p-10{
             padding: 10px !important;
         }
@@ -258,6 +266,26 @@
 
     <!-- Font size -->
     <style>
+        .fs-0-50{
+            font-size: 0.50em;
+        }
+
+        .fs-0-55{
+            font-size: 0.55em;
+        }
+
+        .fs-0-60{
+            font-size: 0.60em;
+        }
+
+        .fs-0-65{
+            font-size: 0.65em;
+        }
+
+        .fs-0-70{
+            font-size: 0.70em;
+        }
+
         .fs-0-75{
             font-size: 0.75em;
         }
@@ -299,48 +327,71 @@
             font-style: normal;
         }
     </style>
+
+    <style>
+         @page {
+            margin: 0;
+        }
+        body {
+            margin: 0;
+        }
+    </style>
 </head>
 <body>
-    <!-- Cabecera -->
     <div class="div-w-100">
-        <table class="table-no-boder">
+        <table class="table-no-boder fs-0-65">
             <tr>
-                <td class="w-20 center">
+                <td class="w-100 center">
                     <img src="{{ asset('System/assets/img/favicon/favicon.ico') }}" alt="Logo" height="100px">
                 </td>
-                <td class="w-50 left bold">
-                    <label class="fs-1-75 arialBlack400">{{ $company->commercial_name }}</label><br/>
-                    <label class="fs-1 arial">{{ $company->formatted_document_type }} {{ $company->document_number }}</label><br/>
-                    <div>
-                        <label class="fs-0-75 arial">Dirección:</label>
-                        <label class="fs-0-75 arial">Av. Alto Cayalti #313</label>
-                    </div>
-                    <div>
-                        <label class="fs-0-75 arial">Central telefónica:</label>
-                        <label class="fs-0-75 arial">879098778</label>
-                    </div>
-                    <div>
-                        <label class="fs-0-75 arial">Correo electrónico:</label>
-                        <label class="fs-0-75 arial">gian@hotmail.com</label>
-                    </div>
+            </tr>
+            <tr>
+                <td class="w-100 center">
+                    {{ $company->commercial_name }}
                 </td>
-                <td class="w-30 center">
-                    <div class="margin-padding-foto-border h-80px">
-                        <div class="mt-20">
-                            <span class="fs-0-75">BOLETA DE VENTA</span><br/>
-                            <span class="fs-1 arial">{{ $saleHeader->sequential }}</span>
-                        </div>
-                    </div>
+            </tr>
+            <tr>
+                <td class="w-100 center">
+                    {{ $company->formatted_document_type }} {{ $company->document_number }}
+                </td>
+            </tr>
+            <tr>
+                <td class="w-100 center">
+                    Dirección: Av. Alto Cayalti #313
+                </td>
+            </tr>
+            <tr>
+                <td class="w-100 center">
+                    Central telefónica: 879098778
+                </td>
+            </tr>
+            <tr>
+                <td class="w-100 center">
+                    Correo electrónico: gian@hotmail.com
                 </td>
             </tr>
         </table>
     </div>
     <div class="div-w-100">
-        <div class="m-10 p-10">
-            <table class="table-no-border arial fs-0-75">
+        <table class="table-no-boder fs-0-70">
+            <tr>
+                <td class="bold center">
+                    BOLETA DE VENTA
+                </td>
+            </tr>
+            <tr>
+                <td class="bold center">
+                    {{ $saleHeader->sequential }}
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="div-w-100">
+        <div class="mt-10">
+            <table class="table-no-border arial fs-0-60">
                 <tr class="left">
                     <td class="bold">FECHA DE EMISIÓN:</td>
-                    <td class="">{{ $saleHeader->sale_date }}</td>
+                    <td class="">{{ $saleHeader->formatted_sale_date }}</td>
                 </tr>
                 <tr class="left">
                     <td class="bold">CLIENTE:</td>
@@ -349,28 +400,26 @@
             </table>
         </div>
     </div>
-
-    <!-- Cuerpo -->
     <div class="div-w-100">
-        <div class="m-10 p-10 border arial fs-0-75">
-            <table class="table-border">
+        <div class="p-5">
+            <table class="table-border arial fs-0-55">
                 <thead>
                     <tr>
                         <th class="w-40">DESCRIPCIÓN</th>
-                        <th class="w-10">CANTIDAD</th>
+                        <th class="w-10">CANT.</th>
                         <th class="w-10">UNIDAD</th>
-                        <th class="w-20">P. UNITARIO</th>
+                        <th class="w-20">P. UNIT</th>
                         <th class="w-20">TOTAL</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($saleHeader->positions as $position)
                         <tr>
-                            <td class="w-40">{{ $position->name }}</td>
-                            <td class="w-10">{{ $position->quantity }}</td>
-                            <td class="w-10">UND</td>
-                            <td class="w-20">S/ {{ $position->price }}</td>
-                            <td class="w-20">S/ {{ floatval($position->quantity) * floatval($position->price) }}</td>
+                            <td class="w-40 left">{{ $position->name }}</td>
+                            <td class="w-10 center">{{ $position->quantity }}</td>
+                            <td class="w-10 center">UND</td>
+                            <td class="w-20 center">S/ {{ $position->price }}</td>
+                            <td class="w-20 center">S/ {{ floatval($position->quantity) * floatval($position->price) }}</td>
                         </tr>
                     @endforeach
                     <tr>
@@ -381,16 +430,12 @@
             </table>
         </div>
     </div>
-
-    <div class="m-10 p-10">
-        <table class="table-no-boder arial fs-0-75">
+    <div class="div-w-100">
+        <table class="table-no-boder arial fs-0-60">
             <tr>
-                <td class="w-50">
+                <td>
                     <span>Son:</span>
                     <span class="bold">{{ $saleHeader->legible_total }}</span>
-                </td>
-                <td class="w-50">
-                    {{--  --}}
                 </td>
             </tr>
         </table>

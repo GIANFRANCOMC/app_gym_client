@@ -28,14 +28,13 @@ class ExportController extends Controller {
                 "extras"  => $saleHeader
             ];
 
-            //return view("System.pdf.sale_a4", $data);
-            //$pdf = Pdf::loadView('System.pdf.sale_a4', $data); return $pdf->download("Ficha de matrícula $saleHeader->id.pdf");
+            //return view("System.pdf.sales.a4", $data);
+            //$pdf = Pdf::loadView('System.pdf.sales.a4', $data); return $pdf->download("Ficha de matrícula $saleHeader->id.pdf");
 
-            //return view("System.pdf.sale_80mm", $data);
-            $pdf = Pdf::loadView('System.pdf.sale_80mm', $data)
-                      ->setPaper([0, 0, 80 * 2.83, 80 * 2.83]);
+            //return view("System.pdf.sales.80mm", $data);
+            $pdf = Pdf::loadView('System.pdf.sales.80mm', $data)->setPaper([0, 0, 80 * 2.83, 160 * 2.83]);
 
-            return $pdf->download("Ficha de matrícula $saleHeader->id.pdf");
+            return $pdf->download("Comprobante $saleHeader->id.pdf");
 
         }catch(Exception $e) {
 

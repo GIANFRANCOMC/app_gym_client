@@ -110,7 +110,7 @@
                         </li>
                         <li class="menu-item" id="menu-item-sales">
                             <a href="javascript:void(0);" class="menu-link menu-toggle">
-                                <i class="fa fa-cart-shopping me-2"></i>
+                                <i class="fa-solid fa-cash-register me-2"></i>
                                 <div data-i18n="Ventas">Ventas</div>
                             </a>
                             <ul class="menu-sub">
@@ -143,6 +143,40 @@
                                 <i class="fa fa-users me-2"></i>
                                 <div data-i18n="Page 1">Colaboradores</div>
                             </a>
+                        </li>
+                        <li class="menu-item" id="menu-list-users">
+                            <a href="{{ route('users.index') }}" class="menu-link">
+                                <i class="fa fa-print me-2"></i>
+                                <div data-i18n="Page 1">Reportes</div>
+                            </a>
+                        </li>
+                        <li class="menu-item" id="menu-configuration">
+                            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                                <i class="fa fa-gear me-2"></i>
+                                <div data-i18n="Configuración">Configuración</div>
+                            </a>
+                            <ul class="menu-sub">
+                                <li class="menu-item" id="menu-item-list-sales">
+                                    <a href="{{ route('sales.index') }}" class="menu-link">
+                                        <div data-i18n="Collapsed menu">Mi empresa</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item" id="menu-item-list-sales">
+                                    <a href="{{ route('sales.index') }}" class="menu-link">
+                                        <div data-i18n="Collapsed menu">Sucursales</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item" id="menu-item-list-sales">
+                                    <a href="{{ route('sales.index') }}" class="menu-link">
+                                        <div data-i18n="Collapsed menu">Series</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item" id="menu-item-create-sales">
+                                    <a href="{{ route('sales.create') }}" class="menu-link">
+                                        <div data-i18n="Collapsed menu">Moneda</div>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                         <li class="menu-item">
                             <a href="javascript:void(0)" class="menu-link bg-danger" onclick="$('#logout').submit();">

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create("customers", function (Blueprint $table) {
             $table->id();
             $table->enum('document_type', ['dni', 'ruc', 'none'])->default('none');
-            $table->string('document_number')->nullable();
+            $table->string('document_number');
             $table->string("name");
             $table->enum("status", ["active", "inactive"])->default("active");
 

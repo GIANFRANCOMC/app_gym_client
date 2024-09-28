@@ -11,17 +11,18 @@ return new class extends Migration {
      */
     public function up(): void {
 
-        Schema::create("items", function (Blueprint $table) {
+        Schema::create("branches", function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger("company_id");
             $table->string("name");
-            $table->text("description");
-            $table->decimal("price", 10, 2);
             $table->enum("status", ["active", "inactive"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();
             $table->integer("created_by")->nullable();
             $table->timestamp("updated_at")->nullable();
             $table->integer("updated_by")->nullable();
+
+            $table->foreign("company_id")->references("id")->on("companies")->onDelete("cascade");
         });
 
     }
@@ -31,7 +32,7 @@ return new class extends Migration {
      */
     public function down(): void {
 
-        Schema::dropIfExists("items");
+        Schema::dropIfExists("branches");
 
     }
 

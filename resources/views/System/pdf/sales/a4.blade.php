@@ -308,15 +308,39 @@
                 <td class="w-20 center">
                     <img src="{{ asset('System/assets/img/favicon/favicon.ico') }}" alt="Logo" height="100px">
                 </td>
+                <td class="w-50 left bold">
+                    <label class="fs-1-75 arialBlack400">{{ $company->commercial_name }}</label><br/>
+                    <label class="fs-1 arial">{{ $company->formatted_document_type }} {{ $company->document_number }}</label><br/>
+                    <div>
+                        <label class="fs-0-75 arial">Dirección:</label>
+                        <label class="fs-0-75 arial">Av. Alto Cayalti #313</label>
+                    </div>
+                    <div>
+                        <label class="fs-0-75 arial">Central telefónica:</label>
+                        <label class="fs-0-75 arial">879098778</label>
+                    </div>
+                    <div>
+                        <label class="fs-0-75 arial">Correo electrónico:</label>
+                        <label class="fs-0-75 arial">gian@hotmail.com</label>
+                    </div>
+                </td>
+                <td class="w-30 center">
+                    <div class="margin-padding-foto-border h-80px">
+                        <div class="mt-20">
+                            <span class="fs-0-75">BOLETA DE VENTA</span><br/>
+                            <span class="fs-1 arial">{{ $saleHeader->sequential }}</span>
+                        </div>
+                    </div>
+                </td>
             </tr>
         </table>
     </div>
     <div class="div-w-100">
-        <div class="mt-10">
+        <div class="m-10 p-10">
             <table class="table-no-border arial fs-0-75">
                 <tr class="left">
                     <td class="bold">FECHA DE EMISIÓN:</td>
-                    <td class="">{{ $saleHeader->sale_date }}</td>
+                    <td class="">{{ $saleHeader->formatted_sale_date }}</td>
                 </tr>
                 <tr class="left">
                     <td class="bold">CLIENTE:</td>
@@ -324,6 +348,49 @@
                 </tr>
             </table>
         </div>
+    </div>
+    <div class="div-w-100">
+        <div class="m-10 p-10 border arial fs-0-75">
+            <table class="table-border">
+                <thead>
+                    <tr>
+                        <th class="w-40">DESCRIPCIÓN</th>
+                        <th class="w-10">CANTIDAD</th>
+                        <th class="w-10">UNIDAD</th>
+                        <th class="w-20">P. UNITARIO</th>
+                        <th class="w-20">TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($saleHeader->positions as $position)
+                        <tr>
+                            <td class="w-40">{{ $position->name }}</td>
+                            <td class="w-10">{{ $position->quantity }}</td>
+                            <td class="w-10">UND</td>
+                            <td class="w-20">S/ {{ $position->price }}</td>
+                            <td class="w-20">S/ {{ floatval($position->quantity) * floatval($position->price) }}</td>
+                        </tr>
+                    @endforeach
+                    <tr>
+                        <td colspan="4" class="right bold">TOTAL A PAGAR</td>
+                        <td colspan="1" class="bold">S/ {{ $saleHeader->total }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="div-w-100">
+        <table class="table-no-boder arial fs-0-75">
+            <tr>
+                <td class="w-50">
+                    <span>Son:</span>
+                    <span class="bold">{{ $saleHeader->legible_total }}</span>
+                </td>
+                <td class="w-50">
+                    {{--  --}}
+                </td>
+            </tr>
+        </table>
     </div>
 </body>
 
