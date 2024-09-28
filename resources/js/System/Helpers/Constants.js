@@ -7,7 +7,8 @@ export const generalConfig = {
     forms: {
         inputs: {
             maxlength: 999,
-            required: "*"
+            required: "*",
+            round: 2
         },
         errors: {
             labels: {

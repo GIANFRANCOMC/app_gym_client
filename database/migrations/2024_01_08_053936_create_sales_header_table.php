@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->string("sequential");
             $table->unsignedBigInteger("customer_id");
             $table->date("sale_date");
+            $table->decimal("total", 10, 2);
             $table->enum("status", ["active", "inactive"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();

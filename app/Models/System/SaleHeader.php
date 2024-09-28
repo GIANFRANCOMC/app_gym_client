@@ -2,6 +2,8 @@
 
 namespace App\Models\System;
 
+use App\Helpers\System\Utilities;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -16,6 +18,9 @@ class SaleHeader extends Model {
     public static $snakeAttributes = false;
 
     protected $appends = [
+        "formatted_sale_date",
+        "formatted_total",
+        "legible_total",
         "formatted_status"
     ];
 
@@ -23,8 +28,27 @@ class SaleHeader extends Model {
         "sequential",
         "customer_id",
         "sale_date",
+        "total",
         "status"
     ];
+
+    public function getFormattedSaleDateAttribute() {
+
+        return Carbon::createFromFormat("Y-m-d", $this->attributes["sale_date"])->format("d-m-Y");
+
+    }
+
+    public function getFormattedTotalAttribute() {
+
+        return "S/ ".$this->attributes["total"];
+
+    }
+
+    public function getLegibleTotalAttribute() {
+
+        return Utilities::convertNumberToWords($this->attributes["total"]);
+
+    }
 
     public function getFormattedStatusAttribute() {
 
@@ -59,6 +83,12 @@ class SaleHeader extends Model {
     public function customer() {
 
         return $this->belongsTo(Customer::class);
+
+    }
+
+    public function positions() {
+
+        return $this->hasMany(SaleBody::class, "sale_header_id", "id");
 
     }
 

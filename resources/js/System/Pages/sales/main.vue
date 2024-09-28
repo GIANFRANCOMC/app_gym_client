@@ -7,8 +7,8 @@
             <div class="card invoice-preview-card">
                 <div class="card-body">
                     <div class="row g-2 mb-3">
-                        <InputSelect
-                            v-model="forms.entity.createUpdate.data.customer_id"
+                        <InputSelect2
+                            :id="forms.entity.createUpdate.extras.select2.customer"
                             :options="options?.customers?.records.map(e=>({code: e.id, label: e.name}))"
                             hasDiv
                             title="Cliente"
@@ -55,7 +55,11 @@
                                                 v-model="record.price"
                                                 @input="calculateRecordDetail({record})"/>
                                         </td>
-                                        <td v-text="record.total"></td>
+                                        <td v-text="'S/ '+record.total"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" class="fw-bold text-end">TOTAL:</td>
+                                        <td colspan="1" class="fw-bold text-center" v-text="'S/ '+forms.entity.createUpdate.data.total"></td>
                                     </tr>
                                 </template>
                                 <template v-else>
@@ -78,7 +82,7 @@
                         <span class="ms-2">Agregar ítem</span>
                     </button>
                     <button class="btn btn-success w-100 my-1 waves-effect" @click="createUpdateEntity()">
-                        <i class="fa fa-save"></i>
+                        <i class="fa-solid fa-cash-register"></i>
                         <span class="ms-2">Generar venta</span>
                     </button>
                 </div>
@@ -96,10 +100,9 @@
                 </div>
                 <div class="modal-body">
                     <div class="row g-2 mb-3">
-                        <InputSelect
-                            v-model="forms.entity.createUpdate.extras.modals.details.data.item_id"
+                        <InputSelect2
+                            :id="forms.entity.createUpdate.extras.modals.details.select2.item"
                             :options="options?.items?.records.map(e=>({code: e.id, label: e.name}))"
-                            @change="changeSelectAddDetail()"
                             hasDiv
                             title="Producto"
                             isRequired
@@ -159,6 +162,64 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" :id="forms.entity.createUpdate.extras.modals.finished.id" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-uppercase fw-bold"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-1 mb-4">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 text-center">
+                            <i :class="['fa fa-check-circle fs-4', forms.entity.createUpdate.extras.modals.finished.titles.bool ? 'text-success' : 'text-danger']"></i>
+                            <span class="fw-bold text-uppercase fs-4 ms-2" v-text="forms.entity.createUpdate.extras.modals.finished.titles.header"></span>
+                        </div>
+                    </div>
+                    <template v-if="forms.entity.createUpdate.extras.modals.finished.titles.bool">
+                        <div class="row g-1">
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3">
+                                <div class="text-center cursor-pointer p-1" @click="exportpp({})">
+                                    <div class="badge bg-primary p-3 rounded mb-3">
+                                        <i class="fa fa-print fs-3"></i>
+                                    </div>
+                                    <h5 class="fw-semibold">A4</h5>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3">
+                                <div class="text-center cursor-pointer p-1">
+                                    <div class="badge bg-primary p-3 rounded mb-3">
+                                        <i class="fa-solid fa-note-sticky fs-3"></i>
+                                    </div>
+                                    <h5 class="fw-semibold">Ticket</h5>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3">
+                                <div class="text-center cursor-pointer p-1">
+                                    <div class="badge bg-success p-3 rounded mb-3">
+                                        <i class="fa-solid fa-cash-register fs-3"></i>
+                                    </div>
+                                    <h5 class="fw-semibold">Nueva venta</h5>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3">
+                                <div class="text-center cursor-pointer p-1">
+                                    <div class="badge bg-secondary p-3 rounded mb-3">
+                                        <i class="fa fa-list fs-3"></i>
+                                    </div>
+                                    <h5 class="fw-semibold">Ir al listado</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -171,7 +232,7 @@ import Breadcrumb   from "../../Components/Breadcrumb.vue";
 import InputDate    from "../../Components/InputDate.vue";
 import InputNumber  from "../../Components/InputNumber.vue";
 import InputSelect  from "../../Components/InputSelect.vue";
-// import InputSelect2 from "../../Components/InputSelect2.vue";
+import InputSelect2 from "../../Components/InputSelect2.vue";
 import InputText    from "../../Components/InputText.vue";
 import Paginator    from "../../Components/Paginator.vue";
 
@@ -181,7 +242,7 @@ export default {
         InputDate,
         InputNumber,
         InputSelect,
-        // InputSelect2,
+        InputSelect2,
         InputText,
         Paginator
     },
@@ -235,14 +296,27 @@ export default {
                                         store: "Agregar",
                                         update: "Editar"
                                     },
+                                    select2: {
+                                        item: "itemSelect2"
+                                    },
                                     data: {
-                                        item_id: null,
+                                        item_id: "",
                                         item: null,
-                                        quantity: 0,
+                                        quantity: 1,
                                         price: 0,
                                         total: 0
                                     },
                                     errors: {}
+                                },
+                                finished: {
+                                    id: "finishedModal",
+                                    titles: {
+                                        header: "",
+                                        bool: false
+                                    },
+                                    data: {
+                                        id: ""
+                                    }
                                 }
                             },
                             select2: {
@@ -250,11 +324,13 @@ export default {
                             }
                         },
                         data: {
-                            id: null,
+                            id: "",
                             customer_id: "",
+                            customer: null,
                             sale_date: "",
                             status: "",
-                            details: []
+                            details: [],
+                            total: 0
                         },
                         errors: {
                             details: []
@@ -292,7 +368,51 @@ export default {
         },
         async initOthers({}) {
 
-            return true;
+            return new Promise(resolve => {
+
+                let el = this;
+
+                this.forms.entity.createUpdate.data.sale_date = Utils.getCurrentDate();
+
+                $(`#${el.forms.entity.createUpdate.extras.select2.customer}`).on("select2:select", function(e) {
+
+                    let data = e.params.data;
+
+                    el.forms.entity.createUpdate.data.customer_id = data?.id;
+                    el.forms.entity.createUpdate.data.customer    = {id: data?.id, text: data?.text};
+
+                });
+
+                $(`#${el.forms.entity.createUpdate.extras.modals.details.select2.item}`).on("select2:select", function(e) {
+
+                    let data = e.params.data;
+
+                    const filter = (el.options.items?.records).filter(e => e?.id == data?.id);
+
+                    if(filter.length === 1) {
+
+                        let detail = filter[0];
+
+                        el.forms.entity.createUpdate.extras.modals.details.data.item_id = detail?.id;
+                        el.forms.entity.createUpdate.extras.modals.details.data.item    = {...detail, text: data?.text};
+                        el.forms.entity.createUpdate.extras.modals.details.data.price   = el.fixedNumber(detail?.price);
+
+                        el.calculateAddDetail();
+
+                    }else {
+
+                        el.forms.entity.createUpdate.extras.modals.details.data.item_id = null;
+                        el.forms.entity.createUpdate.extras.modals.details.data.item    = null;
+
+                        Alerts.toastrs({type: "error", subtitle: "El producto seleccionado no es válido."});
+
+                    }
+
+                });
+
+                resolve(true);
+
+            });
 
         },
         async listEntity({url = null}) {
@@ -300,46 +420,41 @@ export default {
             //
 
         },
-        // Forms
+        // Form details
+        calculateRecordDetail({record = null}) {
+
+            record.quantity = this.fixedNumber(record?.quantity);
+            record.price    = this.fixedNumber(record?.price);
+            record.total    = this.calculateTotal({item: record});
+
+            this.calculateTotalDetail();
+
+        },
+        calculateTotalDetail() {
+
+            let total = 0;
+
+            for(let detail of this.forms.entity.createUpdate.data.details) {
+
+                total += Number(detail?.total);
+
+            }
+
+            this.forms.entity.createUpdate.data.total = this.fixedNumber(total);
+
+        },
         modalAddDetail({}) {
 
             Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.details.id});
 
         },
-        changeSelectAddDetail() {
-
-            const item_id = this.forms.entity.createUpdate.extras.modals.details.data?.item_id;
-
-            let filter = (this.options.items?.records).filter(e => e?.id == item_id);
-
-            if(filter.length === 1) {
-
-                let detail = filter[0];
-
-                this.forms.entity.createUpdate.extras.modals.details.data.item  = detail;
-                this.forms.entity.createUpdate.extras.modals.details.data.price = parseFloat(detail?.price);
-                this.calculateAddDetail();
-
-            }else {
-
-                this.forms.entity.createUpdate.extras.modals.details.data.item_id = null;
-                this.forms.entity.createUpdate.extras.modals.details.data.item    = null;
-
-                Alerts.toastrs({type: "error", subtitle: "El producto seleccionado no es válido."});
-
-            }
-
-        },
         calculateAddDetail() {
 
-            const detailModal = this.forms.entity.createUpdate.extras.modals.details.data,
-                  quantity    = parseFloat(detailModal?.quantity),
-                  price       = parseFloat(detailModal?.price),
-                  total       = quantity * price;
+            const detailModal = this.forms.entity.createUpdate.extras.modals.details.data;
 
-            this.forms.entity.createUpdate.extras.modals.details.data.quantity = quantity;
-            this.forms.entity.createUpdate.extras.modals.details.data.price    = price;
-            this.forms.entity.createUpdate.extras.modals.details.data.total    = parseFloat(total).toFixed(2);
+            this.forms.entity.createUpdate.extras.modals.details.data.quantity = Number(detailModal?.quantity);
+            this.forms.entity.createUpdate.extras.modals.details.data.price    = Number(detailModal?.price);
+            this.forms.entity.createUpdate.extras.modals.details.data.total    = this.calculateTotal({item: detailModal});
 
         },
         addDetail() {
@@ -367,7 +482,10 @@ export default {
 
             }
 
+            this.calculateTotalDetail();
+
         },
+        // Forms
         async createUpdateEntity() {
 
             const functionName = "createUpdateEntity";
@@ -385,28 +503,13 @@ export default {
 
                 if(createUpdate?.bool && createUpdate?.data?.bool) {
 
-                    Swal.fire({
-                        html: `<h3 class="fw-bold">${createUpdate.data?.msg}</h3>`,
-                        allowOutsideClick: false,
-                        showCancelButton: true,
-                        confirmButtonColor: "#3085d6",
-                        cancelButtonColor: "#d33",
-                        confirmButtonText: "Yes, nueva venta",
-                        denyButtonText: "No, ir al listado"
-                    })
-                    .then((result) => {
+                    Alerts.swals({show: false});
 
-                        if(result.isConfirmed) {
+                    this.forms.entity.createUpdate.extras.modals.finished.titles.header = createUpdate?.data?.msg;
+                    this.forms.entity.createUpdate.extras.modals.finished.titles.bool   = createUpdate?.data?.bool;
+                    this.forms.entity.createUpdate.extras.modals.finished.data          = createUpdate?.data?.sale;
 
-                            this.clearForm({functionName});
-
-                        }else if (result.isDenied) {
-
-                            window.location.href = this.config.entity.routes.consult;
-
-                        }
-
-                    });
+                    Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.finished.id});
 
                 }else {
 
@@ -424,35 +527,28 @@ export default {
             }
 
         },
-        // Calculate
-        calculateRecordDetail({record = null}) {
-
-            const quantity    = parseFloat(record?.quantity),
-                  price       = parseFloat(record?.price),
-                  total       = quantity * price;
-
-            record.quantity = quantity;
-            record.price    = price;
-            record.total    = parseFloat(total).toFixed(2);
-
-        },
         // Forms utils
         clearForm({functionName}) {
 
             switch(functionName) {
                 case "addDetail":
-                    this.forms.entity.createUpdate.extras.modals.details.data.item_id  = null;
+                    this.forms.entity.createUpdate.extras.modals.details.data.item_id  = "";
                     this.forms.entity.createUpdate.extras.modals.details.data.item     = null;
-                    this.forms.entity.createUpdate.extras.modals.details.data.quantity = 0;
+                    this.forms.entity.createUpdate.extras.modals.details.data.quantity = 1;
                     this.forms.entity.createUpdate.extras.modals.details.data.price    = 0;
                     this.forms.entity.createUpdate.extras.modals.details.data.total    = 0;
+                    $(`#${this.forms.entity.createUpdate.extras.modals.details.select2.item}`).val("");
                     break;
 
                 case "createUpdateEntity":
-                    this.forms.entity.createUpdate.data.id        = null;
-                    this.forms.entity.createUpdate.data.details   = [];
-                    this.forms.entity.createUpdate.data.sale_date = "";
-                    this.forms.entity.createUpdate.data.status    = "";
+                    this.forms.entity.createUpdate.data.id          = "";
+                    this.forms.entity.createUpdate.data.customer_id = "";
+                    this.forms.entity.createUpdate.data.customer    = null;
+                    this.forms.entity.createUpdate.data.sale_date   = Utils.getCurrentDate();
+                    this.forms.entity.createUpdate.data.status      = "";
+                    this.forms.entity.createUpdate.data.details     = [];
+                    this.forms.entity.createUpdate.data.total       = 0;
+                    $(`#${this.forms.entity.createUpdate.extras.select2.customer}`).val("");
                     break;
             }
 
@@ -490,21 +586,21 @@ export default {
 
                 }
 
-                if(!this.isDefined({value: form?.quantity}) || parseFloat(form?.quantity) < 0) {
+                if(!this.isDefined({value: form?.quantity}) || Number(form?.quantity) < 0) {
 
                     result.quantity.push(this.config.forms.errors.labels.min_number_0);
                     result.bool = false;
 
                 }
 
-                if(!this.isDefined({value: form?.price}) || parseFloat(form?.price) < 0) {
+                if(!this.isDefined({value: form?.price}) || Number(form?.price) < 0) {
 
                     result.price.push(this.config.forms.errors.labels.min_number_0);
                     result.bool = false;
 
                 }
 
-                if(!this.isDefined({value: form?.total}) || parseFloat(form?.total) < 0) {
+                if(!this.isDefined({value: form?.total}) || Number(form?.total) < 0) {
 
                     result.total.push(this.config.forms.errors.labels.min_number_0);
                     result.bool = false;
@@ -559,6 +655,28 @@ export default {
         isDefined({value}) {
 
             return Utils.isDefined({value});
+
+        },
+        calculateTotal({item}) {
+
+            const quantity    = Number(item?.quantity),
+                  price       = Number(item?.price);
+
+            const total = (isNaN(quantity) || isNaN(price)) ? 0 : this.fixedNumber(quantity * price);
+
+            return total;
+
+        },
+        fixedNumber(value) {
+
+            return Number(value).toFixed(this.config.forms.inputs.round);
+
+        },
+        // export({type, resource}) {
+        exportpp({}) {
+
+            // , data: this.lists.entity.filters;
+            Requests.get({route: Requests.config({entity: "exports", type: "default"})});
 
         }
     }

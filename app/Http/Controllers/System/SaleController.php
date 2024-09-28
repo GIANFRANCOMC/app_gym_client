@@ -74,6 +74,7 @@ class SaleController extends Controller {
             $saleHeader->sequential  = random_int(1, 200);
             $saleHeader->customer_id = $request->customer_id;
             $saleHeader->sale_date   = $request->sale_date;
+            $saleHeader->total       = $request->total;
             $saleHeader->status      = "active";
             $saleHeader->created_at  = now();
             $saleHeader->created_by  = $userAuth->id ?? null;

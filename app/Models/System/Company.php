@@ -26,7 +26,7 @@ class Company extends Model {
         "commercial_name"
     ];
 
-    public function getFormattedTypeDocumentAttribute() {
+    public function getFormattedDocumentTypeAttribute() {
 
         return self::getTypeDocument("first", $this->attributes["document_type"])["label"] ?? "";
 

@@ -118,6 +118,27 @@ export function config({entity = "", type = ""}) {
 
         }
 
+    }else if(entity === "exports") {
+
+        let config = {
+            session: {
+                default: "export_id"
+            },
+            routes: {
+                default: `${requestRoute}/exports`
+            }
+        };
+
+        if(Utils.isDefined({value: type})) {
+
+            return config?.routes[type];
+
+        }else {
+
+            return config;
+
+        }
+
     }
 
 }

@@ -27,11 +27,12 @@
     </div>
     <div class="table-responsive">
         <table class="table table-hover">
-            <thead class="table-light">
+            <thead class="table-light align-middle">
                 <tr class="text-center">
                     <th class="fw-bold col-1">SECUENCIA</th>
                     <th class="fw-bold col-1">CLIENTE</th>
                     <th class="fw-bold col-1">FECHA DE VENTA</th>
+                    <th class="fw-bold col-1">TOTAL</th>
                     <th class="fw-bold col-1">ESTADO</th>
                     <th class="fw-bold col-1">ACCIONES</th>
                 </tr>
@@ -49,12 +50,16 @@
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td v-text="record.sequential"></td>
                             <td v-text="record.customer?.name"></td>
-                            <td v-text="record.sale_date"></td>
+                            <td v-text="record.formatted_sale_date"></td>
+                            <td v-text="record.formatted_total"></td>
                             <td>
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-sm rounded-pill btn-warning waves-effect" @click="modalCreateUpdateEntity({record})" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
+                                <button type="button" class="btn btn-sm rounded-pill btn-success waves-effect m-1" @click="modalCreateUpdateEntity({record})" data-bs-toggle="tooltip" data-bs-placement="top" title="Imprimir">
+                                    <i class="fa fa-print"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm rounded-pill btn-warning waves-effect m-1" @click="modalCreateUpdateEntity({record})" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
                                     <i class="fa fa-pencil"></i>
                                 </button>
                             </td>
