@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->string("name");
             $table->decimal("price", 10, 2);
             $table->decimal("quantity", 10, 2);
+            $table->text("observation");
             $table->enum("status", ["active", "inactive"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();
