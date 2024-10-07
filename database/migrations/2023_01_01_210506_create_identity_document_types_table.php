@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\{DB, Schema};
 
 return new class extends Migration {
 
@@ -11,20 +11,24 @@ return new class extends Migration {
      */
     public function up(): void {
 
-        Schema::create("series", function (Blueprint $table) {
+        Schema::create("identity_document_types", function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger("branch_id");
             $table->string("name");
-            $table->string("code");
-            $table->enum("status", ["active", "inactive"])->default("active");
 
+            $table->enum("status", ["active", "inactive"])->default("active");
             $table->timestamp("created_at")->useCurrent()->nullable();
             $table->integer("created_by")->nullable();
             $table->timestamp("updated_at")->nullable();
             $table->integer("updated_by")->nullable();
-
-            $table->foreign("branch_id")->references("id")->on("branches")->onDelete("cascade");
         });
+
+        DB::table("identity_document_types")->insert([
+            ["id" => 1, "name" => "Doc.trib.no.dom.sin.ruc"],
+            ["id" => 2, "name" => "DNI"],
+            ["id" => 3, "name" => "CE"],
+            ["id" => 4, "name" => "RUC"],
+            ["id" => 5, "name" => "Pasaporte"]
+        ]);
 
     }
 
@@ -33,7 +37,7 @@ return new class extends Migration {
      */
     public function down(): void {
 
-        Schema::dropIfExists("series");
+        Schema::dropIfExists("identify_document_types");
 
     }
 

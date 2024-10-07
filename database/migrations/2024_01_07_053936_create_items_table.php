@@ -16,8 +16,8 @@ return new class extends Migration {
             $table->string("name");
             $table->text("description");
             $table->decimal("price", 10, 2);
-            $table->enum("status", ["active", "inactive"])->default("active");
 
+            $table->enum("status", ["active", "inactive"])->default("active");
             $table->timestamp("created_at")->useCurrent()->nullable();
             $table->integer("created_by")->nullable();
             $table->timestamp("updated_at")->nullable();

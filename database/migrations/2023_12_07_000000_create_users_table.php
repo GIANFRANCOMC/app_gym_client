@@ -2,15 +2,15 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\{DB, Hash, Schema};
 
-return new class extends Migration
-{
+return new class extends Migration {
+
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
+    public function up(): void {
+
         Schema::create("users", function (Blueprint $table) {
             $table->id();
             $table->string("name");
@@ -18,8 +18,8 @@ return new class extends Migration
             $table->timestamp("email_verified_at")->nullable();
             $table->string("password");
             $table->rememberToken();
-            $table->enum("status", ["active", "inactive"])->default("active");
 
+            $table->enum("status", ["active", "inactive"])->default("active");
             $table->timestamp("created_at")->useCurrent()->nullable();
             $table->integer("created_by")->nullable();
             $table->timestamp("updated_at")->nullable();
@@ -27,13 +27,28 @@ return new class extends Migration
 
             $table->unique(["email"]);
         });
+
+        DB::table("users")->insert([
+            "name" => "Demo",
+            "email" => "demo@pagape.com",
+            "password" => Hash::make("1")
+        ]);
+
+        DB::table("users")->insert([
+            "name" => "Gianfranco",
+            "email" => "gmc@pagape.com",
+            "password" => Hash::make("1")
+        ]);
+
     }
 
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
+    public function down(): void {
+
         Schema::dropIfExists("users");
+
     }
+
 };

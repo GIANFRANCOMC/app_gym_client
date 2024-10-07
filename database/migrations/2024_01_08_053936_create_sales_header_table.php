@@ -14,15 +14,15 @@ return new class extends Migration {
         Schema::create("sales_header", function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("serie_id");
-            $table->string("sequential");
+            $table->integer("sequential");
             $table->unsignedBigInteger("holder_id");
             $table->unsignedBigInteger("seller_id");
             $table->unsignedBigInteger("currency_id");
             $table->date("sale_date");
             $table->decimal("total", 10, 2);
             $table->text("observation");
-            $table->enum("status", ["active", "inactive"])->default("active");
 
+            $table->enum("status", ["active", "inactive"])->default("active");
             $table->timestamp("created_at")->useCurrent()->nullable();
             $table->integer("created_by")->nullable();
             $table->timestamp("updated_at")->nullable();

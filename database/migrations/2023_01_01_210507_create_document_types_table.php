@@ -11,9 +11,8 @@ return new class extends Migration {
      */
     public function up(): void {
 
-        Schema::create("branches", function (Blueprint $table) {
+        Schema::create("document_types", function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger("company_id");
             $table->string("name");
 
             $table->enum("status", ["active", "inactive"])->default("active");
@@ -21,24 +20,18 @@ return new class extends Migration {
             $table->integer("created_by")->nullable();
             $table->timestamp("updated_at")->nullable();
             $table->integer("updated_by")->nullable();
-
-            $table->foreign("company_id")->references("id")->on("companies")->onDelete("cascade");
         });
 
-        DB::table("branches")->insert([
-            "id" => 1,
-            "company_id" => 1,
-            "name" => "Sede Principal"
+        DB::table("document_types")->insert([
+            ["id" => 1, "name" => "FACTURA"],
+            ["id" => 2, "name" => "BOLETA DE VENTA"],
+            ["id" => 3, "name" => "NOTA DE VENTA"]
         ]);
-
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void {
 
-        Schema::dropIfExists("branches");
+        Schema::dropIfExists("document_types");
 
     }
 
