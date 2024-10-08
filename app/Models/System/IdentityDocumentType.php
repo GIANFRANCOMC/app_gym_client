@@ -2,12 +2,11 @@
 
 namespace App\Models\System;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DocumentType extends Model {
+class IdentityDocumentType extends Model {
 
-    protected $table               = "document_types";
+    protected $table               = "identity_document_types";
     protected $primaryKey          = "id";
     public $incrementing           = true;
     public $timestamps             = true;

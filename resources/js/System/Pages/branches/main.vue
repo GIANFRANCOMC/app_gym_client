@@ -1,5 +1,5 @@
 <template>
-    <Breadcrumb :list="[config.entity.page]"/>
+    <Breadcrumb :list="[config.entity.page, { title: 'Sucursales' }]"/>
 
     <!-- Records -->
     <div class="d-flex flex-row mb-4">
@@ -12,7 +12,7 @@
                 :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
                 placeholder="Ingrese la búsqueda">
                 <template v-slot:inputGroupAppend>
-                    <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})" data-bs-toggle="tooltip" data-bs-placement="top" title="Búsqueda por: Nombre, Descripción.">
+                    <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})" data-bs-toggle="tooltip" data-bs-placement="top" title="Búsqueda por: Nombre.">
                         <i class="fa fa-search"></i>
                     </button>
                 </template>
@@ -30,8 +30,7 @@
             <thead class="table-light">
                 <tr class="text-center">
                     <th class="fw-bold col-1">NOMBRE</th>
-                    <th class="fw-bold col-1">DESCRIPCIÓN</th>
-                    <th class="fw-bold col-1">PRECIO</th>
+                    <th class="fw-bold col-1">SERIES</th>
                     <th class="fw-bold col-1">ESTADO</th>
                     <th class="fw-bold col-1">ACCIONES</th>
                 </tr>
@@ -48,8 +47,7 @@
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td v-text="record.name"></td>
-                            <td v-text="record.description"></td>
-                            <td v-text="record.price"></td>
+                            <td class="text-start" v-html="record?.series?.map(e => '* '+e?.code+e?.number+' - '+e?.documentType?.name).join('<br/>')"></td>
                             <td>
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
@@ -94,33 +92,9 @@
                             lg="6"
                             md="12"
                             sm="12"/>
-                        <InputText
-                            v-model="forms.entity.createUpdate.data.description"
-                            hasDiv
-                            title="Descripción"
-                            isRequired
-                            hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.description"
-                            xl="6"
-                            lg="6"
-                            md="12"
-                            sm="12"/>
-                    </div>
-                    <div class="row g-2 mb-3">
-                        <InputNumber
-                            v-model="forms.entity.createUpdate.data.price"
-                            hasDiv
-                            title="Precio"
-                            isRequired
-                            hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.price"
-                            xl="6"
-                            lg="6"
-                            md="12"
-                            sm="12"/>
                         <InputSelect
                             v-model="forms.entity.createUpdate.data.status"
-                            :options="options?.items?.statusses"
+                            :options="options?.branches?.statusses"
                             hasDiv
                             title="Estado"
                             isRequired
@@ -190,7 +164,7 @@ export default {
                 entity: {
                     extras: {
                         loading: false,
-                        route: Requests.config({entity: "items", type: "list"})
+                        route: Requests.config({entity: "branches", type: "list"})
                     },
                     filters: {
                         general: ""
@@ -217,8 +191,6 @@ export default {
                         data: {
                             id: null,
                             name: "",
-                            description: "",
-                            price: "",
                             status: ""
                         },
                         errors: {}
@@ -229,12 +201,12 @@ export default {
             config: {
                 ...Constants.generalConfig,
                 entity: {
-                    ...Requests.config({entity: "items"}),
+                    ...Requests.config({entity: "branches"}),
                     page: {
-                        title: "Productos - Servicios",
+                        title: "Configuración",
                         active: true,
                         menu: {
-                            id: "menu-list-items"
+                            id: "menu-list-branches"
                         }
                     }
                 }
@@ -246,7 +218,7 @@ export default {
 
             let initParams = await Requests.get({route: this.config.entity.routes.initParams, showAlert: true});
 
-            this.options.items = initParams.data?.config?.items;
+            this.options.branches = initParams.data?.config?.branches;
 
             return initParams?.bool && initParams?.data?.bool;
 
@@ -276,8 +248,6 @@ export default {
 
                 this.forms.entity.createUpdate.data.id          = record?.id;
                 this.forms.entity.createUpdate.data.name        = record?.name;
-                this.forms.entity.createUpdate.data.description = record?.description;
-                this.forms.entity.createUpdate.data.price       = record?.price;
                 this.forms.entity.createUpdate.data.status      = record?.status;
 
             }else {
@@ -336,11 +306,9 @@ export default {
             switch(functionName) {
                 case "modalCreateUpdateEntity":
                 case "createUpdateEntity":
-                    this.forms.entity.createUpdate.data.id          = null;
-                    this.forms.entity.createUpdate.data.name        = "";
-                    this.forms.entity.createUpdate.data.description = "";
-                    this.forms.entity.createUpdate.data.price       = "";
-                    this.forms.entity.createUpdate.data.status      = "";
+                    this.forms.entity.createUpdate.data.id     = null;
+                    this.forms.entity.createUpdate.data.name   = "";
+                    this.forms.entity.createUpdate.data.status = "";
                     break;
             }
 
@@ -362,28 +330,12 @@ export default {
 
             if(["createUpdateEntity"].includes(functionName)) {
 
-                result.name        = [];
-                result.description = [];
-                result.price       = [];
-                result.status      = [];
+                result.name   = [];
+                result.status = [];
 
                 if(!this.isDefined({value: form?.name})) {
 
                     result.name.push(this.config.forms.errors.labels.required);
-                    result.bool = false;
-
-                }
-
-                if(!this.isDefined({value: form?.description})) {
-
-                    result.description.push(this.config.forms.errors.labels.required);
-                    result.bool = false;
-
-                }
-
-                if(!this.isDefined({value: form?.price})) {
-
-                    result.price.push(this.config.forms.errors.labels.required);
                     result.bool = false;
 
                 }

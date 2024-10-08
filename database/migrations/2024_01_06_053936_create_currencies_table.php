@@ -27,8 +27,8 @@ return new class extends Migration {
 
         DB::table("currencies")->insert([
             "id" => 1,
-            "code" => "SOL",
-            "sign" => "S",
+            "code" => "PEN",
+            "sign" => "S/",
             "singular_name" => "SOL",
             "plural_name" => "SOLES"
         ]);

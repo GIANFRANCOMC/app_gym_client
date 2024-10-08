@@ -20,7 +20,8 @@ class AuthenticatedSessionController extends Controller
 
         $data = Utilities::getDefaultViewData();
 
-        $data->company = Company::first();
+        $data->company = Company::with(["socialsMedia"])
+                                ->first();
 
         return view("System/auth/login", compact("data"));
 

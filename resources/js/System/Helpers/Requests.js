@@ -139,6 +139,32 @@ export function config({entity = "", type = ""}) {
 
         }
 
+    }else if(entity === "branches") {
+
+        let config = {
+            session: {
+                default: "branch_id"
+            },
+            routes: {
+                consult: `${requestRoute}/branches`,
+                list: `${requestRoute}/branches/list`,
+                get: `${requestRoute}/branches/get`,
+                store: `${requestRoute}/branches`,
+                update: `${requestRoute}/branches`,
+                initParams: `${requestRoute}/branches/initParams`,
+            }
+        };
+
+        if(Utils.isDefined({value: type})) {
+
+            return config?.routes[type];
+
+        }else {
+
+            return config;
+
+        }
+
     }
 
 }

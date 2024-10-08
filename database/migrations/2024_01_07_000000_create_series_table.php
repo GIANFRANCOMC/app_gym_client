@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger("branch_id");
             $table->unsignedBigInteger("document_type_id");
+            $table->string("code");
             $table->string("number");
             $table->integer("init")->default(1);
 
@@ -29,9 +30,9 @@ return new class extends Migration {
         });
 
         DB::table('series')->insert([
-            ['branch_id' => 1, 'document_type_id' => 1, 'number' => 'FA01'],
-            ['branch_id' => 1, 'document_type_id' => 2, 'number' => 'BE01'],
-            ['branch_id' => 1, 'document_type_id' => 3, 'number' => 'NV01']
+            ['branch_id' => 1, 'document_type_id' => 1, 'code' => 'FA', 'number' => '1'],
+            ['branch_id' => 1, 'document_type_id' => 2, 'code' => 'BE', 'number' => '1'],
+            ['branch_id' => 1, 'document_type_id' => 3, 'code' => 'NV', 'number' => '1']
         ]);
 
     }

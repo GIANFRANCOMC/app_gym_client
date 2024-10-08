@@ -32,5 +32,31 @@
                 </button>
             </div>
         </div>
+        <div class="d-flex justify-content-center mt-4">
+            @foreach ($data->company->socialsMedia as $socialMedia)
+                @switch($socialMedia->type)
+                    @case("facebook")
+                        <a href="{{ $socialMedia->link }}" class="btn btn-icon btn-label-info me-3" target="_blank">
+                            <i class="tf-icons fa-brands fa-facebook-f fs-5"></i>
+                        </a>
+                        @break
+
+                    @case("instagram")
+                        <a href="{{ $socialMedia->link }}" class="btn btn-icon btn-label-danger me-3" target="_blank">
+                            <i class="tf-icons fa-brands fa-instagram fs-5"></i>
+                        </a>
+                        @break
+
+                    @case("whatsapp")
+                        <a href="{{ $socialMedia->link }}" class="btn btn-icon btn-label-success me-3" target="_blank">
+                            <i class="tf-icons fa-brands fa-whatsapp fs-5"></i>
+                        </a>
+                        @break
+
+                    @default
+                        {{--  --}}
+                @endswitch
+            @endforeach
+        </div>
     </form>
 </x-system-guest-layout>

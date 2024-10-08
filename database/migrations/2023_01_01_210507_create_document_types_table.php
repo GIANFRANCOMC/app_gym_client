@@ -13,6 +13,7 @@ return new class extends Migration {
 
         Schema::create("document_types", function (Blueprint $table) {
             $table->id();
+            $table->string("code");
             $table->string("name");
 
             $table->enum("status", ["active", "inactive"])->default("active");
@@ -23,9 +24,9 @@ return new class extends Migration {
         });
 
         DB::table("document_types")->insert([
-            ["id" => 1, "name" => "FACTURA"],
-            ["id" => 2, "name" => "BOLETA DE VENTA"],
-            ["id" => 3, "name" => "NOTA DE VENTA"]
+            ["id" => 1, "code" => "FA", "name" => "FACTURA"],
+            ["id" => 2, "code" => "BE", "name" => "BOLETA DE VENTA"],
+            ["id" => 3, "code" => "NV", "name" => "NOTA DE VENTA"]
         ]);
     }
 

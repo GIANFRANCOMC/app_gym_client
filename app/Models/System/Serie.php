@@ -4,39 +4,39 @@ namespace App\Models\System;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Company extends Model {
+class Serie extends Model {
 
-    protected $table               = "companies";
+    protected $table               = "series";
     protected $primaryKey          = "id";
     public $incrementing           = true;
     public $timestamps             = true;
     public static $snakeAttributes = false;
 
     protected $appends = [
-        "formatted_document_type"
+        "formatted_status"
     ];
 
     protected $fillable = [
-        "document_type",
-        "document_number",
-        "legal_name",
-        "commercial_name"
+        "branch_id",
+        "document_type_id",
+        "number",
+        "init",
+        "status"
     ];
 
-    public function getFormattedDocumentTypeAttribute() {
+    public function getFormattedStatusAttribute() {
 
-        return self::getTypeDocument("first", $this->attributes["document_type"])["label"] ?? "";
+        return self::getStatusses("first", $this->attributes["status"])["label"] ?? "";
 
     }
 
-    public static function getTypeDocument($type = "all", $code = "") {
+    public static function getStatusses($type = "all", $code = "") {
 
         $result = null;
 
         $statusses = [
-            ["code" => "dni", "label" => "DNI"],
-            ["code" => "ruc", "label" => "RUC"],
-            ["code" => "none", "label" => "Ninguno"]
+            ["code" => "active", "label" => "Activo"],
+            ["code" => "inactive", "label" => "Inactivo"]
         ];
 
         if(in_array($type, ["all"])) {
@@ -54,9 +54,9 @@ class Company extends Model {
 
     }
 
-    public function socialsMedia() {
+    public function documentType() {
 
-        return $this->hasMany(CompanySocialMedia::class, "company_id", "id");
+        return $this->belongsTo(DocumentType::class, "document_type_id", "id");
 
     }
 
