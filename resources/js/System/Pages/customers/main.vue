@@ -115,12 +115,10 @@
                             isRequired
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.name"
-                            xl="12"
-                            lg="12"
+                            xl="6"
+                            lg="6"
                             md="12"
                             sm="12"/>
-                    </div>
-                    <div class="row g-2 mb-3">
                         <InputSelect
                             v-model="forms.entity.createUpdate.data.status"
                             :options="options?.customers?.statusses"

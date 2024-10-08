@@ -51,7 +51,7 @@ class SaleController extends Controller {
 
                            })
                            ->orderBy("id", "DESC")
-                           ->with(["customer"])
+                           ->with(["serie.documentType", "holder", "currency"])
                            ->paginate(10);
 
         return $list;

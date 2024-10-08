@@ -761,13 +761,6 @@ export default {
 
             return Number(value).toFixed(this.config.forms.inputs.round);
 
-        },
-        // export({type, resource}) {
-        exportpp({}) {
-
-            // , data: this.lists.entity.filters;
-            Requests.get({route: Requests.config({entity: "exports", type: "default"})});
-
         }
     },
     computed: {

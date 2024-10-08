@@ -25,10 +25,14 @@ class SaleHeader extends Model {
     ];
 
     protected $fillable = [
+        "serie_id",
         "sequential",
         "holder_id",
+        "seller_id",
+        "currency_id",
         "sale_date",
         "total",
+        "observation",
         "status"
     ];
 
@@ -80,9 +84,27 @@ class SaleHeader extends Model {
 
     }
 
+    public function serie() {
+
+        return $this->belongsTo(Serie::class, "serie_id", "id");
+
+    }
+
     public function holder() {
 
         return $this->belongsTo(Customer::class, "holder_id", "id");
+
+    }
+
+    public function seller() {
+
+        return $this->belongsTo(User::class, "seller_id", "id");
+
+    }
+
+    public function currency() {
+
+        return $this->belongsTo(Currency::class, "currency_id", "id");
 
     }
 

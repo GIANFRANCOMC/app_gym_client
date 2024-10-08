@@ -48,15 +48,21 @@
                 <template v-else>
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
-                            <td v-text="record.sequential"></td>
-                            <td v-text="record.customer?.name"></td>
+                            <td class="text-start">
+                                <span v-text="record.serie?.code+record.serie?.number+'-'+record.sequential"></span><br/>
+                                <small v-text="record.serie?.documentType?.name"></small>
+                            </td>
+                            <td class="text-start">
+                                <span v-text="record.holder?.name"></span><br/>
+                                <small v-text="record.holder?.document_number"></small>
+                            </td>
                             <td v-text="record.formatted_sale_date"></td>
                             <td v-text="record.formatted_total"></td>
                             <td>
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-sm rounded-pill btn-success waves-effect m-1" @click="modalCreateUpdateEntity({record})" data-bs-toggle="tooltip" data-bs-placement="top" title="Imprimir">
+                                <button type="button" class="btn btn-sm rounded-pill btn-success waves-effect m-1" @click="modalPrintEntity({record})" data-bs-toggle="tooltip" data-bs-placement="top" title="Imprimir">
                                     <i class="fa fa-print"></i>
                                 </button>
                                 <button type="button" class="btn btn-sm rounded-pill btn-warning waves-effect m-1" @click="modalCreateUpdateEntity({record})" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
@@ -77,6 +83,8 @@
     <div class="d-flex justify-content-center" v-if="!lists.entity.extras.loading">
         <Paginator :links="lists.entity.records.links" @clickPage="listEntity"/>
     </div>
+
+    <PrintSale modalId="adasdasd" :bool="true" :title="forms.entity.createUpdate.extras.modals.finished.titles.header" :data="forms.entity.createUpdate.extras.modals.finished.data"/>
 </template>
 
 <script>
@@ -93,6 +101,8 @@ import InputSelect  from "../../Components/InputSelect.vue";
 import InputText    from "../../Components/InputText.vue";
 import Paginator    from "../../Components/Paginator.vue";
 
+import PrintSale    from "../../Components/Sales/PrintSale.vue";
+
 export default {
     components: {
         Breadcrumb,
@@ -101,7 +111,8 @@ export default {
         InputSelect,
         // InputSelect2,
         InputText,
-        Paginator
+        Paginator,
+        PrintSale
     },
     mounted: async function() {
 
@@ -146,6 +157,16 @@ export default {
                                     titles: {
                                         store: "Agregar",
                                         update: "Editar"
+                                    }
+                                },
+                                finished: {
+                                    id: "finishedModal",
+                                    titles: {
+                                        header: "Comprobante",
+                                        bool: false
+                                    },
+                                    data: {
+                                        id: ""
                                     }
                                 }
                             }
@@ -200,6 +221,13 @@ export default {
 
         },
         // Forms
+        modalPrintEntity({record = null}) {
+
+            this.forms.entity.createUpdate.extras.modals.finished.data = record;
+
+            $("#adasdasd").modal("show");
+
+        },
         modalCreateUpdateEntity({record = null}) {
 
             window.location.href = this.config.entity.routes.create;

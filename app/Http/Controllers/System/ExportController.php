@@ -17,8 +17,13 @@ class ExportController extends Controller {
 
     public function index(Request $request) {
 
-        $saleHeader = SaleHeader::with(["holder", "positions"])->first();
-        $company    = Company::first();
+        $id = $request->id;
+
+        $saleHeader = SaleHeader::where("id", $id)
+                                ->with(["holder", "positions"])
+                                ->first();
+
+        $company = Company::first();
 
         try {
 
@@ -28,13 +33,21 @@ class ExportController extends Controller {
                 "extras"  => $saleHeader
             ];
 
-            //return view("System.pdf.sales.a4", $data);
-            //$pdf = Pdf::loadView('System.pdf.sales.a4', $data); return $pdf->download("Ficha de matrícula $saleHeader->id.pdf");
+            $printType = $request->type;
 
-            //return view("System.pdf.sales.80mm", $data);
-            $pdf = Pdf::loadView('System.pdf.sales.80mm', $data)->setPaper([0, 0, 80 * 2.83, 160 * 2.83]);
+            if(in_array($printType, ["a4"])) {
 
-            return $pdf->download("Comprobante $saleHeader->id.pdf");
+                // return view("System.pdf.sales.a4", $data);
+                $pdf = Pdf::loadView('System.pdf.sales.a4', $data); return $pdf->download("Ficha de matrícula $saleHeader->id.pdf");
+                return $pdf->download("Comprobante $saleHeader->id.pdf");
+
+            }else if(in_array($printType, ["mm80"])) {
+
+                // return view("System.pdf.sales.mm80", $data);
+                $pdf = Pdf::loadView('System.pdf.sales.mm80', $data)->setPaper([0, 0, 80 * 2.83, 160 * 2.83]);
+                return $pdf->download("Comprobante $saleHeader->id.pdf");
+
+            }
 
         }catch(Exception $e) {
 
