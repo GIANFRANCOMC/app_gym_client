@@ -7,21 +7,31 @@
             <div class="card invoice-preview-card">
                 <div class="card-body">
                     <div class="row g-3 mb-3">
-                        <InputSelect2
-                            :id="forms.entity.createUpdate.extras.select2.branch"
-                            :options="options?.branches?.records.map(e=>({code: e.id, label: e.name}))"
+                        <InputSlot
                             hasDiv
                             title="Sucursal"
                             isRequired
                             hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.holder_id"
+                            :textBottomInfo="forms.entity.createUpdate.errors?.branch_id"
                             xl="5"
                             lg="5"
                             md="12"
-                            sm="12"/>
-                        <InputSelect2
-                            :id="forms.entity.createUpdate.extras.select2.serie"
-                            :options="series"
+                            sm="12">
+                            <template v-slot:input>
+                                <v-select
+                                    v-model="forms.entity.createUpdate.data.branch"
+
+                                    @input="(country) => updateCountry(person, country)"
+
+                                    @change="onChange($event)"
+                                    @open="xd('open')"
+                                    @close="xd('close')"
+                                    :options="options?.branches?.records.map(e => ({code: e.id, label: e.name}))"
+                                    style="width: 100% !important;">
+                                </v-select>
+                            </template>
+                        </InputSlot>
+                        <InputSlot
                             hasDiv
                             title="Tipo de comprobante"
                             isRequired
@@ -30,7 +40,15 @@
                             xl="4"
                             lg="4"
                             md="12"
-                            sm="12"/>
+                            sm="12">
+                            <template v-slot:input>
+                                <v-select
+                                    v-model="forms.entity.createUpdate.data.serie"
+                                    :options="series"
+                                    style="width: 100% !important;">
+                                </v-select>
+                            </template>
+                        </InputSlot>
                         <InputDate
                             v-model="forms.entity.createUpdate.data.sale_date"
                             hasDiv
@@ -44,9 +62,7 @@
                             sm="12"/>
                     </div>
                     <div class="row g-3 mb-3">
-                        <InputSelect2
-                            :id="forms.entity.createUpdate.extras.select2.holder"
-                            :options="options?.holders?.records.map(e=>({code: e.id, label: e.name}))"
+                        <InputSlot
                             hasDiv
                             title="Cliente"
                             isRequired
@@ -55,10 +71,16 @@
                             xl="9"
                             lg="9"
                             md="12"
-                            sm="12"/>
-                        <InputSelect2
-                            :id="forms.entity.createUpdate.extras.select2.currency"
-                            :options="options?.currencies?.records.map(e=>({code: e.id, label: e.plural_name+' ('+e.sign+')', extras: JSON.stringify({sign: e.sign})}))"
+                            sm="12">
+                            <template v-slot:input>
+                                <v-select
+                                    v-model="forms.entity.createUpdate.data.holder"
+                                    :options="options?.holders?.records.map(e=>({code: e.id, label: e.name}))"
+                                    style="width: 100% !important;">
+                                </v-select>
+                            </template>
+                        </InputSlot>
+                        <InputSlot
                             hasDiv
                             title="Moneda"
                             isRequired
@@ -67,7 +89,15 @@
                             xl="3"
                             lg="3"
                             md="12"
-                            sm="12"/>
+                            sm="12">
+                            <template v-slot:input>
+                                <v-select
+                                    v-model="forms.entity.createUpdate.data.currency"
+                                    :options="options?.currencies?.records.map(e=>({code: e.id, label: e.plural_name+' ('+e.sign+')'}))"
+                                    style="width: 100% !important;">
+                                </v-select>
+                            </template>
+                        </InputSlot>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-hover">
@@ -241,26 +271,9 @@ import * as Constants from "../../Helpers/Constants.js";
 import * as Requests  from "../../Helpers/Requests.js";
 import * as Utils     from "../../Helpers/Utils.js";
 
-import Breadcrumb   from "../../Components/Breadcrumb.vue";
-import InputDate    from "../../Components/InputDate.vue";
-import InputNumber  from "../../Components/InputNumber.vue";
-import InputSelect  from "../../Components/InputSelect.vue";
-import InputSelect2 from "../../Components/InputSelect2.vue";
-import InputText    from "../../Components/InputText.vue";
-import Paginator    from "../../Components/Paginator.vue";
-
-import PrintSale    from "../../Components/Sales/PrintSale.vue";
-
 export default {
     components: {
-        Breadcrumb,
-        InputDate,
-        InputNumber,
-        InputSelect,
-        InputSelect2,
-        InputText,
-        Paginator,
-        PrintSale
+        //
     },
     mounted: async function() {
 
@@ -349,13 +362,10 @@ export default {
                         },
                         data: {
                             id: "",
-                            branch_id: "",
                             branch: null,
-                            serie_id: "",
                             serie: null,
                             currency_id: "",
                             currency: null,
-                            holder_id: "",
                             holder: null,
                             sale_date: "",
                             status: "",
@@ -406,39 +416,12 @@ export default {
 
                 this.forms.entity.createUpdate.data.sale_date = Utils.getCurrentDate();
 
-                $(`#${el.forms.entity.createUpdate.extras.select2.branch}`).on("select2:select", function(e) {
-
-                    let data = e.params.data;
-
-                    el.forms.entity.createUpdate.data.branch_id = data?.id;
-                    el.forms.entity.createUpdate.data.branch    = {id: data?.id, text: data?.text};
-
-                });
-
                 $(`#${el.forms.entity.createUpdate.extras.select2.currency}`).on("select2:select change", function(e) {
 
                     let data = e.params.data;
 
                     el.forms.entity.createUpdate.data.currency_id = data?.id;
                     el.forms.entity.createUpdate.data.currency    = {id: data?.id, text: data?.text, ...JSON.parse(data.element.getAttribute("extras"))};
-
-                });
-
-                $(`#${el.forms.entity.createUpdate.extras.select2.holder}`).on("select2:select", function(e) {
-
-                    let data = e.params.data;
-
-                    el.forms.entity.createUpdate.data.holder_id = data?.id;
-                    el.forms.entity.createUpdate.data.holder    = {id: data?.id, text: data?.text};
-
-                });
-
-                $(`#${el.forms.entity.createUpdate.extras.select2.serie}`).on("select2:select", function(e) {
-
-                    let data = e.params.data;
-
-                    el.forms.entity.createUpdate.data.serie_id = data?.id;
-                    el.forms.entity.createUpdate.data.serie    = {id: data?.id, text: data?.text};
 
                 });
 
@@ -601,7 +584,6 @@ export default {
 
                 case "createUpdateEntity":
                     this.forms.entity.createUpdate.data.id          = "";
-                    this.forms.entity.createUpdate.data.holder_id   = "";
                     this.forms.entity.createUpdate.data.holder      = null;
                     this.forms.entity.createUpdate.data.sale_date   = Utils.getCurrentDate();
                     this.forms.entity.createUpdate.data.status      = "";
@@ -730,12 +712,17 @@ export default {
 
             return Number(value).toFixed(this.config.forms.inputs.round);
 
+        },
+        xd(type) {
+
+            console.log(type);
+
         }
     },
     computed: {
         series() {
 
-            let branch = (this.options?.branches?.records ?? []).filter(e => e?.id == this.forms.entity.createUpdate.data.branch_id);
+            let branch = (this.options?.branches?.records ?? []).filter(e => e?.id == this.forms.entity.createUpdate.data.branch?.code);
 
             if(branch.length === 1) {
 
@@ -748,6 +735,13 @@ export default {
                 return [];
 
             }
+
+        }
+    },
+    watch: {
+        "forms.entity.createUpdate.data.branch": function(newValue, oldValue) {
+
+            this.forms.entity.createUpdate.data.serie = null;
 
         }
     }
