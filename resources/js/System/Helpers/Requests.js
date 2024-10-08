@@ -13,157 +13,27 @@ export function config({entity = "", type = ""}) {
 
     let requestRoute = this.route({});
 
-    if(entity === "items") {
+    let config = {
+        routes: this.generateRoutes({entity, requestRoute})
+    };
 
-        let config = {
-            session: {
-                default: "item_id"
-            },
-            routes: {
-                consult: `${requestRoute}/items`,
-                list: `${requestRoute}/items/list`,
-                get: `${requestRoute}/items/get`,
-                store: `${requestRoute}/items`,
-                update: `${requestRoute}/items`,
-                initParams: `${requestRoute}/items/initParams`,
-            }
-        };
+    if(entity === "exports") {
 
-        if(Utils.isDefined({value: type})) {
-
-            return config?.routes[type];
-
-        }else {
-
-            return config;
-
-        }
-
-    }else if(entity === "sales") {
-
-        let config = {
-            session: {
-                default: "sale_id"
-            },
-            routes: {
-                consult: `${requestRoute}/sales`,
-                list: `${requestRoute}/sales/list`,
-                get: `${requestRoute}/sales/get`,
-                create: `${requestRoute}/sales/create`,
-                store: `${requestRoute}/sales`,
-                update: `${requestRoute}/sales`,
-                initParams: `${requestRoute}/sales/initParams`,
-            }
-        };
-
-        if(Utils.isDefined({value: type})) {
-
-            return config?.routes[type];
-
-        }else {
-
-            return config;
-
-        }
-
-    }else if(entity === "users") {
-
-        let config = {
-            session: {
-                default: "user_id"
-            },
-            routes: {
-                consult: `${requestRoute}/users`,
-                list: `${requestRoute}/users/list`,
-                get: `${requestRoute}/users/get`,
-                store: `${requestRoute}/users`,
-                update: `${requestRoute}/users`,
-                initParams: `${requestRoute}/users/initParams`,
-            }
-        };
-
-        if(Utils.isDefined({value: type})) {
-
-            return config?.routes[type];
-
-        }else {
-
-            return config;
-
-        }
-
-    }else if(entity === "customers") {
-
-        let config = {
-            session: {
-                default: "customer_id"
-            },
-            routes: {
-                consult: `${requestRoute}/customers`,
-                list: `${requestRoute}/customers/list`,
-                get: `${requestRoute}/customers/get`,
-                store: `${requestRoute}/customers`,
-                update: `${requestRoute}/customers`,
-                initParams: `${requestRoute}/customers/initParams`,
-            }
-        };
-
-        if(Utils.isDefined({value: type})) {
-
-            return config?.routes[type];
-
-        }else {
-
-            return config;
-
-        }
-
-    }else if(entity === "exports") {
-
-        let config = {
-            session: {
-                default: "export_id"
-            },
+        config = {
             routes: {
                 default: `${requestRoute}/exports`
             }
         };
 
-        if(Utils.isDefined({value: type})) {
+    }
 
-            return config?.routes[type];
+    if(Utils.isDefined({value: type})) {
 
-        }else {
+        return config?.routes[type];
 
-            return config;
+    }else {
 
-        }
-
-    }else if(entity === "branches") {
-
-        let config = {
-            session: {
-                default: "branch_id"
-            },
-            routes: {
-                consult: `${requestRoute}/branches`,
-                list: `${requestRoute}/branches/list`,
-                get: `${requestRoute}/branches/get`,
-                store: `${requestRoute}/branches`,
-                update: `${requestRoute}/branches`,
-                initParams: `${requestRoute}/branches/initParams`,
-            }
-        };
-
-        if(Utils.isDefined({value: type})) {
-
-            return config?.routes[type];
-
-        }else {
-
-            return config;
-
-        }
+        return config;
 
     }
 
@@ -296,5 +166,19 @@ export function patch({route = "", data = {}, id = "", formData = null}) {
 		});
 
 	});
+
+}
+
+export function generateRoutes({entity, requestRoute}) {
+
+    return {
+        consult: `${requestRoute}/${entity}`,
+        list: `${requestRoute}/${entity}/list`,
+        get: `${requestRoute}/${entity}/get`,
+        create: `${requestRoute}/${entity}/create`,
+        store: `${requestRoute}/${entity}`,
+        update: `${requestRoute}/${entity}`,
+        initParams: `${requestRoute}/${entity}/initParams`,
+    };
 
 }

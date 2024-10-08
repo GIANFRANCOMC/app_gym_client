@@ -213,63 +213,26 @@
         </div>
     </div>
 
-    <div class="modal fade" :id="forms.entity.createUpdate.extras.modals.finished.id" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-uppercase fw-bold"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row g-1 mb-4">
-                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 text-center">
-                            <i :class="['fa fa-check-circle fs-4', forms.entity.createUpdate.extras.modals.finished.titles.bool ? 'text-success' : 'text-danger']"></i>
-                            <span class="fw-bold text-uppercase fs-4 ms-2" v-text="forms.entity.createUpdate.extras.modals.finished.titles.header"></span>
-                        </div>
+    <PrintSale :modalId="forms.entity.createUpdate.extras.modals.finished.id" :bool="true" :title="forms.entity.createUpdate.extras.modals.finished.titles.header" :data="forms.entity.createUpdate.extras.modals.finished.data">
+        <template v-slot:extraGroupAppend>
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3">
+                <div class="text-center cursor-pointer p-1">
+                    <div class="badge bg-success p-3 rounded mb-3">
+                        <i class="fa-solid fa-cash-register fs-3"></i>
                     </div>
-                    <template v-if="forms.entity.createUpdate.extras.modals.finished.titles.bool">
-                        <div class="row g-1">
-                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3">
-                                <div class="text-center cursor-pointer p-1" @click="exportpp({})">
-                                    <div class="badge bg-primary p-3 rounded mb-3">
-                                        <i class="fa fa-print fs-3"></i>
-                                    </div>
-                                    <h5 class="fw-semibold">A4</h5>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3">
-                                <div class="text-center cursor-pointer p-1">
-                                    <div class="badge bg-primary p-3 rounded mb-3">
-                                        <i class="fa-solid fa-note-sticky fs-3"></i>
-                                    </div>
-                                    <h5 class="fw-semibold">Ticket</h5>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3">
-                                <div class="text-center cursor-pointer p-1">
-                                    <div class="badge bg-success p-3 rounded mb-3">
-                                        <i class="fa-solid fa-cash-register fs-3"></i>
-                                    </div>
-                                    <h5 class="fw-semibold">Nueva venta</h5>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3">
-                                <div class="text-center cursor-pointer p-1">
-                                    <div class="badge bg-secondary p-3 rounded mb-3">
-                                        <i class="fa fa-list fs-3"></i>
-                                    </div>
-                                    <h5 class="fw-semibold">Ir al listado</h5>
-                                </div>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-                <div class="modal-footer">
-
+                    <h5 class="fw-semibold">Nueva venta</h5>
                 </div>
             </div>
-        </div>
-    </div>
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3">
+                <div class="text-center cursor-pointer p-1">
+                    <div class="badge bg-secondary p-3 rounded mb-3">
+                        <i class="fa fa-list fs-3"></i>
+                    </div>
+                    <h5 class="fw-semibold">Ir al listado</h5>
+                </div>
+            </div>
+        </template>
+    </PrintSale>
 </template>
 
 <script>
@@ -286,6 +249,8 @@ import InputSelect2 from "../../Components/InputSelect2.vue";
 import InputText    from "../../Components/InputText.vue";
 import Paginator    from "../../Components/Paginator.vue";
 
+import PrintSale    from "../../Components/Sales/PrintSale.vue";
+
 export default {
     components: {
         Breadcrumb,
@@ -294,7 +259,8 @@ export default {
         InputSelect,
         InputSelect2,
         InputText,
-        Paginator
+        Paginator,
+        PrintSale
     },
     mounted: async function() {
 
@@ -306,6 +272,11 @@ export default {
             initOthers = await this.initOthers({});
 
         if(initParams && initOthers) {
+
+            // $(`#${this.forms.entity.createUpdate.extras.select2.branch}`).val("1").trigger("change.select2");
+            // $(`#${this.forms.entity.createUpdate.extras.select2.currency}`).val("1").trigger("change.select2");
+            // $(`#${this.forms.entity.createUpdate.extras.select2.holder}`).val("1").trigger("change.select2");
+            // $(`#${this.forms.entity.createUpdate.extras.select2.serie}`).val("1").trigger("change.select2");
 
             Alerts.swals({show: false});
 
@@ -418,11 +389,11 @@ export default {
 
             let initParams = await Requests.get({route: this.config.entity.routes.initParams, showAlert: true});
 
-            this.options.branches = initParams.data?.config?.branches;
+            this.options.branches   = initParams.data?.config?.branches;
             this.options.currencies = initParams.data?.config?.currencies;
-            this.options.sales    = initParams.data?.config?.sales;
-            this.options.holders  = initParams.data?.config?.customers;
-            this.options.items    = initParams.data?.config?.items;
+            this.options.sales      = initParams.data?.config?.sales;
+            this.options.holders    = initParams.data?.config?.customers;
+            this.options.items      = initParams.data?.config?.items;
 
             return initParams?.bool && initParams?.data?.bool;
 
@@ -444,9 +415,9 @@ export default {
 
                 });
 
-                $(`#${el.forms.entity.createUpdate.extras.select2.currency}`).on("select2:select", function(e) {
+                $(`#${el.forms.entity.createUpdate.extras.select2.currency}`).on("select2:select change", function(e) {
 
-                    let data = e.params.data;console.log(12);
+                    let data = e.params.data;
 
                     el.forms.entity.createUpdate.data.currency_id = data?.id;
                     el.forms.entity.createUpdate.data.currency    = {id: data?.id, text: data?.text, ...JSON.parse(data.element.getAttribute("extras"))};
@@ -497,8 +468,6 @@ export default {
                     }
 
                 });
-
-                // $(`#${el.forms.entity.createUpdate.extras.select2.currency}`).val("1").trigger("change.select2");
 
                 resolve(true);
 
