@@ -13,11 +13,11 @@ class Company extends Model {
     public static $snakeAttributes = false;
 
     protected $appends = [
-        "formatted_document_type"
+        //
     ];
 
     protected $fillable = [
-        "document_type",
+        "identity_document_type_id",
         "document_number",
         "legal_name",
         "commercial_name"
@@ -25,7 +25,7 @@ class Company extends Model {
 
     public function getFormattedDocumentTypeAttribute() {
 
-        return self::getTypeDocument("first", $this->attributes["document_type"])["label"] ?? "";
+        // return self::getTypeDocument("first", $this->attributes["document_type"])["label"] ?? "";
 
     }
 
@@ -57,6 +57,12 @@ class Company extends Model {
     public function socialsMedia() {
 
         return $this->hasMany(CompanySocialMedia::class, "company_id", "id");
+
+    }
+
+    public function identityDocumentType() {
+
+        return $this->belongsTo(IdentityDocumentType::class, "identity_document_type_id", "id");
 
     }
 

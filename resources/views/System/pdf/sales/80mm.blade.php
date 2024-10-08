@@ -352,7 +352,7 @@
             </tr>
             <tr>
                 <td class="w-100 center">
-                    {{ $company->formatted_document_type }} {{ $company->document_number }}
+                    {{ $company->identityDocumentType->name }} {{ $company->document_number }}
                 </td>
             </tr>
             <tr>
@@ -395,7 +395,7 @@
                 </tr>
                 <tr class="left">
                     <td class="bold">CLIENTE:</td>
-                    <td class="">{{ $saleHeader->customer->name }}</td>
+                    <td class="">{{ $saleHeader->holder->name }}</td>
                 </tr>
             </table>
         </div>

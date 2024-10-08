@@ -20,7 +20,7 @@ class Customer extends Model {
     ];
 
     protected $fillable = [
-        "document_type",
+        "identity_document_type_id",
         "document_number",
         "name",
         "status"
@@ -53,6 +53,12 @@ class Customer extends Model {
         }
 
         return $result;
+
+    }
+
+    public function identityDocumentType() {
+
+        return $this->belongsTo(IdentityDocumentType::class, "identity_document_type_id", "id");
 
     }
 

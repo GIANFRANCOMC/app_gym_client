@@ -310,7 +310,7 @@
                 </td>
                 <td class="w-50 left bold">
                     <label class="fs-1-75 arialBlack400">{{ $company->commercial_name }}</label><br/>
-                    <label class="fs-1 arial">{{ $company->formatted_document_type }} {{ $company->document_number }}</label><br/>
+                    <label class="fs-1 arial">{{ $company->identityDocumentType->name }} {{ $company->document_number }}</label><br/>
                     <div>
                         <label class="fs-0-75 arial">Dirección:</label>
                         <label class="fs-0-75 arial">Av. Alto Cayalti #313</label>
@@ -344,7 +344,7 @@
                 </tr>
                 <tr class="left">
                     <td class="bold">CLIENTE:</td>
-                    <td class="">{{ $saleHeader->customer->name }}</td>
+                    <td class="">{{ $saleHeader->holder->name }}</td>
                 </tr>
             </table>
         </div>

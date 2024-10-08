@@ -23,6 +23,7 @@ class Item extends Model {
         "name",
         "description",
         "price",
+        "currency_id",
         "status"
     ];
 
@@ -53,6 +54,12 @@ class Item extends Model {
         }
 
         return $result;
+
+    }
+
+    public function currency() {
+
+        return $this->belongsTo(Currency::class, "currency_id", "id");
 
     }
 

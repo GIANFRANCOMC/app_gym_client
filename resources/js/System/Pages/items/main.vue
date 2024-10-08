@@ -49,7 +49,7 @@
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td v-text="record.name"></td>
                             <td v-text="record.description"></td>
-                            <td v-text="record.price"></td>
+                            <td v-text="record.currency?.sign+record.price"></td>
                             <td>
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
@@ -90,19 +90,20 @@
                             isRequired
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.name"
-                            xl="6"
-                            lg="6"
+                            xl="12"
+                            lg="12"
                             md="12"
                             sm="12"/>
+                    </div>
+                    <div class="row g-2 mb-3">
                         <InputText
                             v-model="forms.entity.createUpdate.data.description"
                             hasDiv
                             title="Descripción"
-                            isRequired
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.description"
-                            xl="6"
-                            lg="6"
+                            xl="12"
+                            lg="12"
                             md="12"
                             sm="12"/>
                     </div>
@@ -118,6 +119,20 @@
                             lg="6"
                             md="12"
                             sm="12"/>
+                        <InputSelect
+                            v-model="forms.entity.createUpdate.data.currency_id"
+                            :options="options?.currencies?.records.map(e=>({code: e.id, label: e.plural_name+' ('+e.sign+')'}))"
+                            hasDiv
+                            title="Moneda"
+                            isRequired
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.currency_id"
+                            xl="6"
+                            lg="6"
+                            md="12"
+                            sm="12"/>
+                    </div>
+                    <div class="row g-2 mb-3">
                         <InputSelect
                             v-model="forms.entity.createUpdate.data.status"
                             :options="options?.items?.statusses"
@@ -219,6 +234,7 @@ export default {
                             name: "",
                             description: "",
                             price: "",
+                            currency_id: "",
                             status: ""
                         },
                         errors: {}
@@ -246,7 +262,8 @@ export default {
 
             let initParams = await Requests.get({route: this.config.entity.routes.initParams, showAlert: true});
 
-            this.options.items = initParams.data?.config?.items;
+            this.options.currencies = initParams.data?.config?.currencies;
+            this.options.items      = initParams.data?.config?.items;
 
             return initParams?.bool && initParams?.data?.bool;
 
@@ -278,6 +295,7 @@ export default {
                 this.forms.entity.createUpdate.data.name        = record?.name;
                 this.forms.entity.createUpdate.data.description = record?.description;
                 this.forms.entity.createUpdate.data.price       = record?.price;
+                this.forms.entity.createUpdate.data.currency_id = record?.currency_id;
                 this.forms.entity.createUpdate.data.status      = record?.status;
 
             }else {
@@ -340,6 +358,7 @@ export default {
                     this.forms.entity.createUpdate.data.name        = "";
                     this.forms.entity.createUpdate.data.description = "";
                     this.forms.entity.createUpdate.data.price       = "";
+                    this.forms.entity.createUpdate.data.currency_id = "";
                     this.forms.entity.createUpdate.data.status      = "";
                     break;
             }
@@ -365,6 +384,7 @@ export default {
                 result.name        = [];
                 result.description = [];
                 result.price       = [];
+                result.currency_id = [];
                 result.status      = [];
 
                 if(!this.isDefined({value: form?.name})) {
@@ -374,16 +394,16 @@ export default {
 
                 }
 
-                if(!this.isDefined({value: form?.description})) {
+                if(!this.isDefined({value: form?.price})) {
 
-                    result.description.push(this.config.forms.errors.labels.required);
+                    result.price.push(this.config.forms.errors.labels.required);
                     result.bool = false;
 
                 }
 
-                if(!this.isDefined({value: form?.price})) {
+                if(!this.isDefined({value: form?.currency_id})) {
 
-                    result.price.push(this.config.forms.errors.labels.required);
+                    result.currency_id.push(this.config.forms.errors.labels.required);
                     result.bool = false;
 
                 }

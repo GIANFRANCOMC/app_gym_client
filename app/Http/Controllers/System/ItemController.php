@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\Items\{StoreItemRequest, UpdateItemRequest};
-use App\Models\System\{Item};
+use App\Models\System\{Currency, Item};
 
 class ItemController extends Controller {
 
@@ -20,6 +20,9 @@ class ItemController extends Controller {
         $config = new stdClass();
         $config->items = new stdClass();
         $config->items->statusses = Item::getStatusses();
+
+        $config->currencies = new stdClass();
+        $config->currencies->records = Currency::get();
 
         $initParams->config = $config;
         $initParams->bool   = true;
@@ -39,6 +42,7 @@ class ItemController extends Controller {
 
                     })
                     ->orderBy("name", "ASC")
+                    ->with(["currency"])
                     ->paginate(10);
 
         return $list;
@@ -68,6 +72,7 @@ class ItemController extends Controller {
             $item->name        = $request->name;
             $item->description = $request->description;
             $item->price       = $request->price;
+            $item->currency_id = $request->currency_id;
             $item->status      = $request->status;
             $item->created_at  = now();
             $item->created_by  = $userAuth->id ?? null;
@@ -103,6 +108,7 @@ class ItemController extends Controller {
             $item->name        = $request->name;
             $item->description = $request->description;
             $item->price       = $request->price;
+            $item->currency_id = $request->currency_id;
             $item->status      = $request->status;
             $item->updated_at  = now();
             $item->updated_by  = $userAuth->id ?? null;

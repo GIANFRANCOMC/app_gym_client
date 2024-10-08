@@ -54,7 +54,8 @@ class Branch extends Model {
 
     public function series() {
 
-        return $this->hasMany(Serie::class, "branch_id", "id");
+        return $this->hasMany(Serie::class, "branch_id", "id")
+                    ->whereIn("status", ["active"]);
 
     }
 

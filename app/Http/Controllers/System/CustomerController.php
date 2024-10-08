@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\Customers\{StoreCustomerRequest, UpdateCustomerRequest};
-use App\Models\System\{Customer};
+use App\Models\System\{Customer, IdentityDocumentType};
 
 class CustomerController extends Controller {
 
@@ -20,6 +20,9 @@ class CustomerController extends Controller {
         $config = new stdClass();
         $config->customers = new stdClass();
         $config->customers->statusses = Customer::getStatusses();
+
+        $config->identityDocumentTypes = new stdClass();
+        $config->identityDocumentTypes->records = IdentityDocumentType::get();
 
         $initParams->config = $config;
         $initParams->bool   = true;
@@ -38,6 +41,7 @@ class CustomerController extends Controller {
 
                         })
                         ->orderBy("name", "ASC")
+                        ->with(["identityDocumentType"])
                         ->paginate(10);
 
         return $list;
@@ -64,10 +68,12 @@ class CustomerController extends Controller {
 
         DB::transaction(function() use($request, $userAuth, $customer) {
 
-            $customer->name       = $request->name;
-            $customer->status     = $request->status;
-            $customer->created_at = now();
-            $customer->created_by = $userAuth->id ?? null;
+            $customer->identity_document_type_id = $request->identity_document_type_id;
+            $customer->document_number           = $request->document_number;
+            $customer->name                      = $request->name;
+            $customer->status                    = $request->status;
+            $customer->created_at                = now();
+            $customer->created_by                = $userAuth->id ?? null;
             $customer->save();
 
         });
@@ -97,10 +103,12 @@ class CustomerController extends Controller {
 
         DB::transaction(function() use($request, $userAuth, $customer) {
 
-            $customer->name       = $request->name;
-            $customer->status     = $request->status;
-            $customer->updated_at = now();
-            $customer->updated_by = $userAuth->id ?? null;
+            $customer->identity_document_type_id = $request->identity_document_type_id;
+            $customer->document_number           = $request->document_number;
+            $customer->name                      = $request->name;
+            $customer->status                    = $request->status;
+            $customer->updated_at                = now();
+            $customer->updated_by                = $userAuth->id ?? null;
             $customer->save();
 
         });

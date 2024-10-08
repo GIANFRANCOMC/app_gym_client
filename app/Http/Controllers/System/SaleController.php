@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\Sales\{StoreSaleRequest, UpdateSaleRequest};
-use App\Models\System\{Customer, Item, SaleBody, SaleHeader};
+use App\Models\System\{Branch, Currency, Customer, Item, SaleBody, SaleHeader};
 
 class SaleController extends Controller {
 
@@ -21,11 +21,18 @@ class SaleController extends Controller {
         $config->salesHeader = new stdClass();
         $config->salesHeader->statusses = SaleHeader::getStatusses();
 
+        $config = new stdClass();
+        $config->branches = new stdClass();
+        $config->branches->records = Branch::with(["series.documentType"])->get();
+
+        $config->currencies = new stdClass();
+        $config->currencies->records = Currency::get();
+
         $config->customers = new stdClass();
         $config->customers->records = Customer::get();
 
         $config->items = new stdClass();
-        $config->items->records = Item::get();
+        $config->items->records = Item::with(["currency"])->get();
 
         $initParams->config = $config;
         $initParams->bool   = true;
@@ -71,10 +78,14 @@ class SaleController extends Controller {
 
         DB::transaction(function() use($request, $userAuth, $saleHeader) {
 
+            $saleHeader->serie_id    = $request->serie_id;
             $saleHeader->sequential  = random_int(1, 200);
-            $saleHeader->customer_id = $request->customer_id;
+            $saleHeader->holder_id   = $request->holder_id;
+            $saleHeader->seller_id   = $userAuth->id;
+            $saleHeader->currency_id = $request->currency_id;
             $saleHeader->sale_date   = $request->sale_date;
             $saleHeader->total       = $request->total;
+            $saleHeader->observation = $request->observation ?? "";
             $saleHeader->status      = "active";
             $saleHeader->created_at  = now();
             $saleHeader->created_by  = $userAuth->id ?? null;
@@ -85,9 +96,11 @@ class SaleController extends Controller {
                 $saleBody = new SaleBody();
                 $saleBody->sale_header_id = $saleHeader->id;
                 $saleBody->item_id        = $detail["item"]["id"];
+                $saleBody->currency_id    = $detail["currency"]["id"];
                 $saleBody->name           = $detail["name"];
                 $saleBody->price          = $detail["price"];
                 $saleBody->quantity       = $detail["quantity"];
+                $saleBody->observation    = $detail["observation"] ?? "";
                 $saleBody->status         = "active";
                 $saleBody->created_at     = now();
                 $saleBody->created_by     = $userAuth->id ?? null;

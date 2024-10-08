@@ -17,7 +17,7 @@ class ExportController extends Controller {
 
     public function index(Request $request) {
 
-        $saleHeader = SaleHeader::with(["customer", "positions"])->first();
+        $saleHeader = SaleHeader::with(["holder", "positions"])->first();
         $company    = Company::first();
 
         try {

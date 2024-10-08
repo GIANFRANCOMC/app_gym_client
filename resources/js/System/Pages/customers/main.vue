@@ -28,7 +28,9 @@
     <div class="table-responsive">
         <table class="table table-hover">
             <thead class="table-light">
-                <tr class="text-center">
+                <tr class="text-center align-middle">
+                    <th class="fw-bold col-1">TIPO DE<br/>DOCUMENTO</th>
+                    <th class="fw-bold col-1">NÚMERO DE<br/>DOCUMENTO</th>
                     <th class="fw-bold col-1">NOMBRE</th>
                     <th class="fw-bold col-1">ESTADO</th>
                     <th class="fw-bold col-1">ACCIONES</th>
@@ -45,6 +47,8 @@
                 <template v-else>
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
+                            <td v-text="record.identityDocumentType?.name"></td>
+                            <td v-text="record.document_number"></td>
                             <td v-text="record.name"></td>
                             <td>
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
@@ -80,13 +84,13 @@
                 <div class="modal-body">
                     <div class="row g-2 mb-3">
                         <InputSelect
-                            v-model="forms.entity.createUpdate.data.document_type"
-                            :options="options?.customers?.statusses"
+                            v-model="forms.entity.createUpdate.data.identity_document_type_id"
+                            :options="options?.identityDocumentTypes?.records.map(e=>({code: e.id, label: e.name}))"
                             hasDiv
                             title="Tipo de documento"
                             isRequired
                             hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.document_type"
+                            :textBottomInfo="forms.entity.createUpdate.errors?.identity_document_type_id"
                             xl="6"
                             lg="6"
                             md="12"
@@ -215,7 +219,7 @@ export default {
                         },
                         data: {
                             id: null,
-                            document_type: "",
+                            identity_document_type_id: "",
                             document_number: "",
                             name: "",
                             status: ""
@@ -245,7 +249,8 @@ export default {
 
             let initParams = await Requests.get({route: this.config.entity.routes.initParams, showAlert: true});
 
-            this.options.customers = initParams.data?.config?.customers;
+            this.options.customers             = initParams.data?.config?.customers;
+            this.options.identityDocumentTypes = initParams.data?.config?.identityDocumentTypes;
 
             return initParams?.bool && initParams?.data?.bool;
 
@@ -274,7 +279,7 @@ export default {
             if(this.isDefined({value: record})) {
 
                 this.forms.entity.createUpdate.data.id              = record?.id;
-                this.forms.entity.createUpdate.data.document_type   = record?.document_type;
+                this.forms.entity.createUpdate.data.identity_document_type_id   = record?.identity_document_type_id;
                 this.forms.entity.createUpdate.data.document_number = record?.document_number;
                 this.forms.entity.createUpdate.data.name            = record?.name;
                 this.forms.entity.createUpdate.data.status          = record?.status;
@@ -336,7 +341,7 @@ export default {
                 case "modalCreateUpdateEntity":
                 case "createUpdateEntity":
                     this.forms.entity.createUpdate.data.id              = null;
-                    this.forms.entity.createUpdate.data.document_type   = "";
+                    this.forms.entity.createUpdate.data.identity_document_type_id   = "";
                     this.forms.entity.createUpdate.data.document_number = "";
                     this.forms.entity.createUpdate.data.name            = "";
                     this.forms.entity.createUpdate.data.status          = "";
@@ -361,14 +366,14 @@ export default {
 
             if(["createUpdateEntity"].includes(functionName)) {
 
-                result.document_type   = [];
+                result.identity_document_type_id   = [];
                 result.document_number = [];
                 result.name            = [];
                 result.status          = [];
 
-                if(!this.isDefined({value: form?.document_type})) {
+                if(!this.isDefined({value: form?.identity_document_type_id})) {
 
-                    result.document_type.push(this.config.forms.errors.labels.required);
+                    result.identity_document_type_id.push(this.config.forms.errors.labels.required);
                     result.bool = false;
 
                 }

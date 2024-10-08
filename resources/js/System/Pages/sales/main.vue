@@ -6,17 +6,29 @@
         <div class="col-lg-9 col-12 mb-lg-0 mb-4">
             <div class="card invoice-preview-card">
                 <div class="card-body">
-                    <div class="row g-2 mb-3">
+                    <div class="row g-3 mb-3">
                         <InputSelect2
-                            :id="forms.entity.createUpdate.extras.select2.customer"
-                            :options="options?.customers?.records.map(e=>({code: e.id, label: e.name}))"
+                            :id="forms.entity.createUpdate.extras.select2.branch"
+                            :options="options?.branches?.records.map(e=>({code: e.id, label: e.name}))"
                             hasDiv
-                            title="Cliente"
+                            title="Sucursal"
                             isRequired
                             hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.customer_id"
-                            xl="8"
-                            lg="8"
+                            :textBottomInfo="forms.entity.createUpdate.errors?.holder_id"
+                            xl="5"
+                            lg="5"
+                            md="12"
+                            sm="12"/>
+                        <InputSelect2
+                            :id="forms.entity.createUpdate.extras.select2.serie"
+                            :options="series"
+                            hasDiv
+                            title="Tipo de comprobante"
+                            isRequired
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.serie_id"
+                            xl="4"
+                            lg="4"
                             md="12"
                             sm="12"/>
                         <InputDate
@@ -26,8 +38,34 @@
                             isRequired
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.sale_date"
-                            xl="4"
-                            lg="4"
+                            xl="3"
+                            lg="3"
+                            md="12"
+                            sm="12"/>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <InputSelect2
+                            :id="forms.entity.createUpdate.extras.select2.holder"
+                            :options="options?.holders?.records.map(e=>({code: e.id, label: e.name}))"
+                            hasDiv
+                            title="Cliente"
+                            isRequired
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.holder_id"
+                            xl="9"
+                            lg="9"
+                            md="12"
+                            sm="12"/>
+                        <InputSelect2
+                            :id="forms.entity.createUpdate.extras.select2.currency"
+                            :options="options?.currencies?.records.map(e=>({code: e.id, label: e.plural_name+' ('+e.sign+')', extras: JSON.stringify({sign: e.sign})}))"
+                            hasDiv
+                            title="Moneda"
+                            isRequired
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.currency_id"
+                            xl="3"
+                            lg="3"
                             md="12"
                             sm="12"/>
                     </div>
@@ -53,13 +91,17 @@
                                         <td>
                                             <InputNumber
                                                 v-model="record.price"
-                                                @input="calculateRecordDetail({record})"/>
+                                                @input="calculateRecordDetail({record})">
+                                                <template v-slot:inputGroupPrepend v-if="isDefined({value: record?.currency})">
+                                                    <button class="btn btn-primary waves-effect" type="button" v-text="record?.currency?.sign"></button>
+                                                </template>
+                                            </InputNumber>
                                         </td>
-                                        <td v-text="'S/ '+record.total"></td>
+                                        <td v-text="(forms.entity.createUpdate.data.currency?.sign ?? '')+' '+record.total"></td>
                                     </tr>
                                     <tr>
                                         <td colspan="3" class="fw-bold text-end">TOTAL:</td>
-                                        <td colspan="1" class="fw-bold text-center" v-text="'S/ '+forms.entity.createUpdate.data.total"></td>
+                                        <td colspan="1" class="fw-bold text-center" v-text="(forms.entity.createUpdate.data.currency?.sign ?? '')+' '+forms.entity.createUpdate.data.total"></td>
                                     </tr>
                                 </template>
                                 <template v-else>
@@ -99,7 +141,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row g-2 mb-3">
+                    <div class="row g-3 mb-3">
                         <InputSelect2
                             :id="forms.entity.createUpdate.extras.modals.details.select2.item"
                             :options="options?.items?.records.map(e=>({code: e.id, label: e.name}))"
@@ -113,7 +155,7 @@
                             md="12"
                             sm="12"/>
                     </div>
-                    <div class="row g-2 mb-3">
+                    <div class="row g-3 mb-3">
                         <InputNumber
                             v-model="forms.entity.createUpdate.extras.modals.details.data.quantity"
                             @input="calculateAddDetail()"
@@ -137,7 +179,11 @@
                             xl="4"
                             lg="4"
                             md="12"
-                            sm="12"/>
+                            sm="12">
+                            <template v-slot:inputGroupPrepend v-if="isDefined({value: forms.entity.createUpdate.extras.modals.details.data.item?.currency})">
+                                <button class="btn btn-primary waves-effect" type="button" v-text="forms.entity.createUpdate.extras.modals.details.data.item?.currency?.sign"></button>
+                            </template>
+                        </InputNumber>
                         <InputNumber
                             v-model="forms.entity.createUpdate.extras.modals.details.data.total"
                             hasDiv
@@ -149,7 +195,11 @@
                             xl="4"
                             lg="4"
                             md="12"
-                            sm="12"/>
+                            sm="12">
+                            <template v-slot:inputGroupPrepend v-if="isDefined({value: forms.entity.createUpdate.data.currency})">
+                                <button class="btn btn-primary waves-effect" type="button" v-text="forms.entity.createUpdate.data.currency?.sign"></button>
+                            </template>
+                        </InputNumber>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -320,13 +370,22 @@ export default {
                                 }
                             },
                             select2: {
-                                customer: "customerSelect2"
+                                branch: "branchSelect2",
+                                currency: "currencySelect2",
+                                holder: "holderSelect2",
+                                serie: "serieSelect2"
                             }
                         },
                         data: {
                             id: "",
-                            customer_id: "",
-                            customer: null,
+                            branch_id: "",
+                            branch: null,
+                            serie_id: "",
+                            serie: null,
+                            currency_id: "",
+                            currency: null,
+                            holder_id: "",
+                            holder: null,
                             sale_date: "",
                             status: "",
                             details: [],
@@ -359,9 +418,11 @@ export default {
 
             let initParams = await Requests.get({route: this.config.entity.routes.initParams, showAlert: true});
 
-            this.options.sales     = initParams.data?.config?.sales;
-            this.options.customers = initParams.data?.config?.customers;
-            this.options.items     = initParams.data?.config?.items;
+            this.options.branches = initParams.data?.config?.branches;
+            this.options.currencies = initParams.data?.config?.currencies;
+            this.options.sales    = initParams.data?.config?.sales;
+            this.options.holders  = initParams.data?.config?.customers;
+            this.options.items    = initParams.data?.config?.items;
 
             return initParams?.bool && initParams?.data?.bool;
 
@@ -374,12 +435,39 @@ export default {
 
                 this.forms.entity.createUpdate.data.sale_date = Utils.getCurrentDate();
 
-                $(`#${el.forms.entity.createUpdate.extras.select2.customer}`).on("select2:select", function(e) {
+                $(`#${el.forms.entity.createUpdate.extras.select2.branch}`).on("select2:select", function(e) {
 
                     let data = e.params.data;
 
-                    el.forms.entity.createUpdate.data.customer_id = data?.id;
-                    el.forms.entity.createUpdate.data.customer    = {id: data?.id, text: data?.text};
+                    el.forms.entity.createUpdate.data.branch_id = data?.id;
+                    el.forms.entity.createUpdate.data.branch    = {id: data?.id, text: data?.text};
+
+                });
+
+                $(`#${el.forms.entity.createUpdate.extras.select2.currency}`).on("select2:select", function(e) {
+
+                    let data = e.params.data;console.log(12);
+
+                    el.forms.entity.createUpdate.data.currency_id = data?.id;
+                    el.forms.entity.createUpdate.data.currency    = {id: data?.id, text: data?.text, ...JSON.parse(data.element.getAttribute("extras"))};
+
+                });
+
+                $(`#${el.forms.entity.createUpdate.extras.select2.holder}`).on("select2:select", function(e) {
+
+                    let data = e.params.data;
+
+                    el.forms.entity.createUpdate.data.holder_id = data?.id;
+                    el.forms.entity.createUpdate.data.holder    = {id: data?.id, text: data?.text};
+
+                });
+
+                $(`#${el.forms.entity.createUpdate.extras.select2.serie}`).on("select2:select", function(e) {
+
+                    let data = e.params.data;
+
+                    el.forms.entity.createUpdate.data.serie_id = data?.id;
+                    el.forms.entity.createUpdate.data.serie    = {id: data?.id, text: data?.text};
 
                 });
 
@@ -409,6 +497,8 @@ export default {
                     }
 
                 });
+
+                // $(`#${el.forms.entity.createUpdate.extras.select2.currency}`).val("1").trigger("change.select2");
 
                 resolve(true);
 
@@ -470,7 +560,7 @@ export default {
 
             if(validateForm?.bool) {
 
-                (this.forms.entity.createUpdate.data.details).push({id: Utils.uuidv4(), ...form, name: form?.item?.name});
+                (this.forms.entity.createUpdate.data.details).push({id: Utils.uuidv4(), ...form, name: form?.item?.name, currency: form?.item?.currency});
 
                 Alerts.toastrs({type: "success", subtitle: "El producto ha sido agregado al detalle."});
 
@@ -542,13 +632,13 @@ export default {
 
                 case "createUpdateEntity":
                     this.forms.entity.createUpdate.data.id          = "";
-                    this.forms.entity.createUpdate.data.customer_id = "";
-                    this.forms.entity.createUpdate.data.customer    = null;
+                    this.forms.entity.createUpdate.data.holder_id   = "";
+                    this.forms.entity.createUpdate.data.holder      = null;
                     this.forms.entity.createUpdate.data.sale_date   = Utils.getCurrentDate();
                     this.forms.entity.createUpdate.data.status      = "";
                     this.forms.entity.createUpdate.data.details     = [];
                     this.forms.entity.createUpdate.data.total       = 0;
-                    $(`#${this.forms.entity.createUpdate.extras.select2.customer}`).val("");
+                    $(`#${this.forms.entity.createUpdate.extras.select2.holder}`).val("");
                     break;
             }
 
@@ -609,14 +699,14 @@ export default {
 
             }else if(["createUpdateEntity"].includes(functionName)) {
 
-                result.customer_id = [];
-                result.sale_date   = [];
-                result.status      = [];
-                result.details     = [];
+                result.holder_id = [];
+                result.sale_date = [];
+                result.status    = [];
+                result.details   = [];
 
-                if(!this.isDefined({value: form?.customer_id})) {
+                if(!this.isDefined({value: form?.holder_id})) {
 
-                    result.customer_id.push(this.config.forms.errors.labels.required);
+                    result.holder_id.push(this.config.forms.errors.labels.required);
                     result.bool = false;
 
                 }
@@ -677,6 +767,25 @@ export default {
 
             // , data: this.lists.entity.filters;
             Requests.get({route: Requests.config({entity: "exports", type: "default"})});
+
+        }
+    },
+    computed: {
+        series() {
+
+            let branch = (this.options?.branches?.records ?? []).filter(e => e?.id == this.forms.entity.createUpdate.data.branch_id);
+
+            if(branch.length === 1) {
+
+                let series = branch[0].series;
+
+                return series.map(e => ({code: e.id, label: `${e.code}${e.number} - ${e?.documentType?.name}`}));
+
+            }else {
+
+                return [];
+
+            }
 
         }
     }
