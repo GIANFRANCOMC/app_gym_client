@@ -20,6 +20,7 @@ class ItemFactory extends Factory {
             'name' => $this->faker->catchPhrase,
             'description' => $this->faker->sentence,
             'price' => $this->faker->randomFloat(2, 10, 100),
+            'currency_id' => 1,
             'status' => $this->faker->randomElement(['active', 'inactive'])
         ];
 

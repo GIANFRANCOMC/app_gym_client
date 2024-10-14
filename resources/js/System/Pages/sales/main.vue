@@ -2,33 +2,22 @@
     <Breadcrumb :list="[config.entity.page, { title: 'Crear' }]"/>
 
     <div class="row invoice-add">
-        <!-- Invoice Add-->
-        <div class="col-lg-9 col-12 mb-lg-0 mb-4">
+        <div class="col-lg-9 col-12 mb-4">
             <div class="card invoice-preview-card">
                 <div class="card-body">
-                    <div class="row g-3 mb-3">
+                    <div class="row g-3 mb-4">
                         <InputSlot
                             hasDiv
                             title="Sucursal"
                             isRequired
                             hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.branch_id"
+                            :textBottomInfo="forms.entity.createUpdate.errors?.branch"
                             xl="5"
-                            lg="5"
-                            md="12"
-                            sm="12">
+                            lg="6">
                             <template v-slot:input>
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.branch"
-
-                                    @input="(country) => updateCountry(person, country)"
-
-                                    @change="onChange($event)"
-                                    @open="xd('open')"
-                                    @close="xd('close')"
-                                    :options="options?.branches?.records.map(e => ({code: e.id, label: e.name}))"
-                                    style="width: 100% !important;">
-                                </v-select>
+                                    :options="branches" />
                             </template>
                         </InputSlot>
                         <InputSlot
@@ -36,17 +25,13 @@
                             title="Tipo de comprobante"
                             isRequired
                             hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.serie_id"
+                            :textBottomInfo="forms.entity.createUpdate.errors?.serie"
                             xl="4"
-                            lg="4"
-                            md="12"
-                            sm="12">
+                            lg="6">
                             <template v-slot:input>
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.serie"
-                                    :options="series"
-                                    style="width: 100% !important;">
-                                </v-select>
+                                    :options="series" />
                             </template>
                         </InputSlot>
                         <InputDate
@@ -57,27 +42,19 @@
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.sale_date"
                             xl="3"
-                            lg="3"
-                            md="12"
-                            sm="12"/>
-                    </div>
-                    <div class="row g-3 mb-3">
+                            lg="6" />
                         <InputSlot
                             hasDiv
                             title="Cliente"
                             isRequired
                             hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.holder_id"
+                            :textBottomInfo="forms.entity.createUpdate.errors?.holder"
                             xl="9"
-                            lg="9"
-                            md="12"
-                            sm="12">
+                            lg="6">
                             <template v-slot:input>
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.holder"
-                                    :options="options?.holders?.records.map(e=>({code: e.id, label: e.name}))"
-                                    style="width: 100% !important;">
-                                </v-select>
+                                    :options="holders" />
                             </template>
                         </InputSlot>
                         <InputSlot
@@ -85,24 +62,20 @@
                             title="Moneda"
                             isRequired
                             hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.currency_id"
+                            :textBottomInfo="forms.entity.createUpdate.errors?.currency"
                             xl="3"
-                            lg="3"
-                            md="12"
-                            sm="12">
+                            lg="6">
                             <template v-slot:input>
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.currency"
-                                    :options="options?.currencies?.records.map(e=>({code: e.id, label: e.plural_name+' ('+e.sign+')'}))"
-                                    style="width: 100% !important;">
-                                </v-select>
+                                    :options="currencies" />
                             </template>
                         </InputSlot>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead class="table-light">
-                                <tr class="text-center">
+                                <tr class="text-center align-middle">
                                     <th class="fw-bold col-1">DESCRIPCIÓN</th>
                                     <th class="fw-bold col-1">CANTIDAD</th>
                                     <th class="fw-bold col-1">PRECIO UNITARIO</th>
@@ -127,11 +100,11 @@
                                                 </template>
                                             </InputNumber>
                                         </td>
-                                        <td v-text="(forms.entity.createUpdate.data.currency?.sign ?? '')+' '+record.total"></td>
+                                        <td v-text="(forms.entity.createUpdate.data.currency?.data?.sign ?? '')+' '+record.total"></td>
                                     </tr>
                                     <tr>
                                         <td colspan="3" class="fw-bold text-end">TOTAL:</td>
-                                        <td colspan="1" class="fw-bold text-center" v-text="(forms.entity.createUpdate.data.currency?.sign ?? '')+' '+forms.entity.createUpdate.data.total"></td>
+                                        <td colspan="1" class="fw-bold text-center" v-text="(forms.entity.createUpdate.data.currency?.data?.sign ?? '')+' '+total"></td>
                                     </tr>
                                 </template>
                                 <template v-else>
@@ -149,11 +122,11 @@
         <div class="col-lg-3 col-12 invoice-actions">
             <div class="card mb-4">
                 <div class="card-body">
-                    <button class="btn btn-primary w-100 my-1 waves-effect" @click="modalAddDetail({})">
+                    <button class="btn btn-primary waves-effect w-100 my-1" @click="modalAddDetail({})">
                         <i class="fa fa-plus"></i>
                         <span class="ms-2">Agregar ítem</span>
                     </button>
-                    <button class="btn btn-success w-100 my-1 waves-effect" @click="createUpdateEntity()">
+                    <button class="btn btn-success waves-effect w-100 my-1" @click="createUpdateEntity()">
                         <i class="fa-solid fa-cash-register"></i>
                         <span class="ms-2">Generar venta</span>
                     </button>
@@ -172,46 +145,42 @@
                 </div>
                 <div class="modal-body">
                     <div class="row g-3 mb-3">
-                        <InputSelect2
-                            :id="forms.entity.createUpdate.extras.modals.details.select2.item"
-                            :options="options?.items?.records.map(e=>({code: e.id, label: e.name}))"
+                        <InputSlot
                             hasDiv
                             title="Producto"
                             isRequired
                             hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.item_id"
-                            xl="12"
-                            lg="12"
-                            md="12"
-                            sm="12"/>
+                            :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.item">
+                            <template v-slot:input>
+                                <v-select
+                                    v-model="forms.entity.createUpdate.extras.modals.details.data.item"
+                                    :options="items" />
+                            </template>
+                        </InputSlot>
                     </div>
                     <div class="row g-3 mb-3">
                         <InputNumber
                             v-model="forms.entity.createUpdate.extras.modals.details.data.quantity"
-                            @input="calculateAddDetail()"
+                            @input="calculateAddDetail({})"
                             hasDiv
                             title="Cantidad"
                             isRequired
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.quantity"
                             xl="4"
-                            lg="4"
-                            md="12"
-                            sm="12"/>
+                            lg="6"/>
                         <InputNumber
                             v-model="forms.entity.createUpdate.extras.modals.details.data.price"
-                            @input="calculateAddDetail()"
+                            @input="calculateAddDetail({notChange: {price: true}})"
                             hasDiv
                             title="Precio"
                             isRequired
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.price"
                             xl="4"
-                            lg="4"
-                            md="12"
-                            sm="12">
-                            <template v-slot:inputGroupPrepend v-if="isDefined({value: forms.entity.createUpdate.extras.modals.details.data.item?.currency})">
-                                <button class="btn btn-primary waves-effect" type="button" v-text="forms.entity.createUpdate.extras.modals.details.data.item?.currency?.sign"></button>
+                            lg="6">
+                            <template v-slot:inputGroupPrepend v-if="isDefined({value: forms.entity.createUpdate.extras.modals.details.data.item?.data?.currency})">
+                                <button class="btn btn-primary waves-effect" type="button" v-text="forms.entity.createUpdate.extras.modals.details.data.item?.data?.currency?.sign"></button>
                             </template>
                         </InputNumber>
                         <InputNumber
@@ -223,11 +192,9 @@
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.total"
                             xl="4"
-                            lg="4"
-                            md="12"
-                            sm="12">
-                            <template v-slot:inputGroupPrepend v-if="isDefined({value: forms.entity.createUpdate.data.currency})">
-                                <button class="btn btn-primary waves-effect" type="button" v-text="forms.entity.createUpdate.data.currency?.sign"></button>
+                            lg="6">
+                            <template v-slot:inputGroupPrepend v-if="isDefined({value: forms.entity.createUpdate.data.currency?.data})">
+                                <button class="btn btn-primary waves-effect" type="button" v-text="forms.entity.createUpdate.data.currency?.data?.sign"></button>
                             </template>
                         </InputNumber>
                     </div>
@@ -286,10 +253,8 @@ export default {
 
         if(initParams && initOthers) {
 
-            // $(`#${this.forms.entity.createUpdate.extras.select2.branch}`).val("1").trigger("change.select2");
-            // $(`#${this.forms.entity.createUpdate.extras.select2.currency}`).val("1").trigger("change.select2");
-            // $(`#${this.forms.entity.createUpdate.extras.select2.holder}`).val("1").trigger("change.select2");
-            // $(`#${this.forms.entity.createUpdate.extras.select2.serie}`).val("1").trigger("change.select2");
+            this.forms.entity.createUpdate.data.branch   = (this.branches).length > 0 ? this.branches[0] : null;
+            this.forms.entity.createUpdate.data.currency = (this.currencies).length > 0 ? this.currencies[0] : null;
 
             Alerts.swals({show: false});
 
@@ -330,11 +295,7 @@ export default {
                                         store: "Agregar",
                                         update: "Editar"
                                     },
-                                    select2: {
-                                        item: "itemSelect2"
-                                    },
                                     data: {
-                                        item_id: "",
                                         item: null,
                                         quantity: 1,
                                         price: 0,
@@ -352,19 +313,12 @@ export default {
                                         id: ""
                                     }
                                 }
-                            },
-                            select2: {
-                                branch: "branchSelect2",
-                                currency: "currencySelect2",
-                                holder: "holderSelect2",
-                                serie: "serieSelect2"
                             }
                         },
                         data: {
                             id: "",
                             branch: null,
                             serie: null,
-                            currency_id: "",
                             currency: null,
                             holder: null,
                             sale_date: "",
@@ -416,42 +370,6 @@ export default {
 
                 this.forms.entity.createUpdate.data.sale_date = Utils.getCurrentDate();
 
-                $(`#${el.forms.entity.createUpdate.extras.select2.currency}`).on("select2:select change", function(e) {
-
-                    let data = e.params.data;
-
-                    el.forms.entity.createUpdate.data.currency_id = data?.id;
-                    el.forms.entity.createUpdate.data.currency    = {id: data?.id, text: data?.text, ...JSON.parse(data.element.getAttribute("extras"))};
-
-                });
-
-                $(`#${el.forms.entity.createUpdate.extras.modals.details.select2.item}`).on("select2:select", function(e) {
-
-                    let data = e.params.data;
-
-                    const filter = (el.options.items?.records).filter(e => e?.id == data?.id);
-
-                    if(filter.length === 1) {
-
-                        let detail = filter[0];
-
-                        el.forms.entity.createUpdate.extras.modals.details.data.item_id = detail?.id;
-                        el.forms.entity.createUpdate.extras.modals.details.data.item    = {...detail, text: data?.text};
-                        el.forms.entity.createUpdate.extras.modals.details.data.price   = el.fixedNumber(detail?.price);
-
-                        el.calculateAddDetail();
-
-                    }else {
-
-                        el.forms.entity.createUpdate.extras.modals.details.data.item_id = null;
-                        el.forms.entity.createUpdate.extras.modals.details.data.item    = null;
-
-                        Alerts.toastrs({type: "error", subtitle: "El producto seleccionado no es válido."});
-
-                    }
-
-                });
-
                 resolve(true);
 
             });
@@ -462,27 +380,9 @@ export default {
             //
 
         },
-        // Form details
         calculateRecordDetail({record = null}) {
 
-            record.quantity = this.fixedNumber(record?.quantity);
-            record.price    = this.fixedNumber(record?.price);
-            record.total    = this.calculateTotal({item: record});
-
-            this.calculateTotalDetail();
-
-        },
-        calculateTotalDetail() {
-
-            let total = 0;
-
-            for(let detail of this.forms.entity.createUpdate.data.details) {
-
-                total += Number(detail?.total);
-
-            }
-
-            this.forms.entity.createUpdate.data.total = this.fixedNumber(total);
+            record.total = this.calculateTotal({item: record});
 
         },
         modalAddDetail({}) {
@@ -490,7 +390,7 @@ export default {
             Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.details.id});
 
         },
-        calculateAddDetail() {
+        calculateAddDetail({}) {
 
             const detailModal = this.forms.entity.createUpdate.extras.modals.details.data;
 
@@ -504,7 +404,7 @@ export default {
             const functionName = "addDetail";
 
             this.formErrors({functionName, type: "clear"});
-            this.calculateAddDetail();
+            this.calculateAddDetail({});
 
             let form = JSON.parse(JSON.stringify(this.forms.entity.createUpdate.extras.modals.details.data));
 
@@ -512,7 +412,7 @@ export default {
 
             if(validateForm?.bool) {
 
-                (this.forms.entity.createUpdate.data.details).push({id: Utils.uuidv4(), ...form, name: form?.item?.name, currency: form?.item?.currency});
+                (this.forms.entity.createUpdate.data.details).push({id: Utils.uuidv4(), ...form, name: form?.item?.data?.name, currency: form?.item?.data?.currency});
 
                 Alerts.toastrs({type: "success", subtitle: "El producto ha sido agregado al detalle."});
 
@@ -523,8 +423,6 @@ export default {
                 this.formErrors({functionName, type: "set", errors: validateForm});
 
             }
-
-            this.calculateTotalDetail();
 
         },
         // Forms
@@ -574,12 +472,10 @@ export default {
 
             switch(functionName) {
                 case "addDetail":
-                    this.forms.entity.createUpdate.extras.modals.details.data.item_id  = "";
                     this.forms.entity.createUpdate.extras.modals.details.data.item     = null;
-                    this.forms.entity.createUpdate.extras.modals.details.data.quantity = 1;
-                    this.forms.entity.createUpdate.extras.modals.details.data.price    = 0;
-                    this.forms.entity.createUpdate.extras.modals.details.data.total    = 0;
-                    $(`#${this.forms.entity.createUpdate.extras.modals.details.select2.item}`).val("");
+                    // this.forms.entity.createUpdate.extras.modals.details.data.quantity = 1;
+                    // this.forms.entity.createUpdate.extras.modals.details.data.price    = 0;
+                    // this.forms.entity.createUpdate.extras.modals.details.data.total    = 0;
                     break;
 
                 case "createUpdateEntity":
@@ -588,8 +484,6 @@ export default {
                     this.forms.entity.createUpdate.data.sale_date   = Utils.getCurrentDate();
                     this.forms.entity.createUpdate.data.status      = "";
                     this.forms.entity.createUpdate.data.details     = [];
-                    this.forms.entity.createUpdate.data.total       = 0;
-                    $(`#${this.forms.entity.createUpdate.extras.select2.holder}`).val("");
                     break;
             }
 
@@ -615,14 +509,14 @@ export default {
 
             if(["addDetail"].includes(functionName)) {
 
-                result.item_id  = [];
+                result.item     = [];
                 result.price    = [];
                 result.quantity = [];
                 result.total    = [];
 
-                if(!this.isDefined({value: form?.item_id})) {
+                if(!this.isDefined({value: form?.item})) {
 
-                    result.item_id.push(this.config.forms.errors.labels.required);
+                    result.item.push(this.config.forms.errors.labels.required);
                     result.bool = false;
 
                 }
@@ -650,14 +544,14 @@ export default {
 
             }else if(["createUpdateEntity"].includes(functionName)) {
 
-                result.holder_id = [];
+                result.holder    = [];
                 result.sale_date = [];
                 result.status    = [];
                 result.details   = [];
 
-                if(!this.isDefined({value: form?.holder_id})) {
+                if(!this.isDefined({value: form?.holder})) {
 
-                    result.holder_id.push(this.config.forms.errors.labels.required);
+                    result.holder.push(this.config.forms.errors.labels.required);
                     result.bool = false;
 
                 }
@@ -712,15 +606,15 @@ export default {
 
             return Number(value).toFixed(this.config.forms.inputs.round);
 
-        },
-        xd(type) {
-
-            console.log(type);
-
         }
     },
     computed: {
-        series() {
+        branches: function() {
+
+            return this.options?.branches?.records.map(e => ({code: e.id, label: e.name}));
+
+        },
+        series: function() {
 
             let branch = (this.options?.branches?.records ?? []).filter(e => e?.id == this.forms.entity.createUpdate.data.branch?.code);
 
@@ -730,18 +624,50 @@ export default {
 
                 return series.map(e => ({code: e.id, label: `${e.code}${e.number} - ${e?.documentType?.name}`}));
 
-            }else {
+            }
 
-                return [];
+            return [];
+
+        },
+        holders: function() {
+
+            return this.options?.holders?.records.map(e => ({code: e.id, label: e.name}));
+
+        },
+        items: function() {
+
+            return this.options?.items?.records.map(e => ({code: e.id, label: e.name, data: e}));
+
+        },
+        currencies: function() {
+
+            return this.options?.currencies?.records.map(e => ({code: e.id, label: e.plural_name+' ('+e.sign+')', data: e}));
+
+        },
+        total: function() {
+
+            let total = 0;
+
+            for(let detail of this.forms.entity.createUpdate.data.details) {
+
+                total += Number(detail?.total);
 
             }
+
+            return this.fixedNumber(total);
 
         }
     },
     watch: {
         "forms.entity.createUpdate.data.branch": function(newValue, oldValue) {
 
-            this.forms.entity.createUpdate.data.serie = null;
+            this.forms.entity.createUpdate.data.serie = (this.series).length > 0 ? this.series[0] : null;
+
+        },
+        "forms.entity.createUpdate.extras.modals.details.data.item": function(newValue, oldValue) {
+
+            this.forms.entity.createUpdate.extras.modals.details.data.price = Number(newValue?.data?.price ?? 0);
+            this.calculateAddDetail({});
 
         }
     }

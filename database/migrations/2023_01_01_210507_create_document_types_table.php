@@ -24,8 +24,8 @@ return new class extends Migration {
         });
 
         DB::table("document_types")->insert([
-            ["id" => 1, "code" => "FA", "name" => "FACTURA"],
-            ["id" => 2, "code" => "BE", "name" => "BOLETA DE VENTA"],
+            ["id" => 1, "code" => "BE", "name" => "BOLETA DE VENTA"],
+            ["id" => 2, "code" => "FA", "name" => "FACTURA"],
             ["id" => 3, "code" => "NV", "name" => "NOTA DE VENTA"]
         ]);
     }

@@ -78,11 +78,11 @@ class SaleController extends Controller {
 
         DB::transaction(function() use($request, $userAuth, $saleHeader) {
 
-            $saleHeader->serie_id    = $request->serie_id;
+            $saleHeader->serie_id    = $request->serie["code"];
             $saleHeader->sequential  = random_int(1, 200);
-            $saleHeader->holder_id   = $request->holder_id;
+            $saleHeader->holder_id   = $request->holder["code"];
             $saleHeader->seller_id   = $userAuth->id;
-            $saleHeader->currency_id = $request->currency_id;
+            $saleHeader->currency_id = $request->currency["code"];
             $saleHeader->sale_date   = $request->sale_date;
             $saleHeader->total       = $request->total;
             $saleHeader->observation = $request->observation ?? "";
@@ -95,7 +95,7 @@ class SaleController extends Controller {
 
                 $saleBody = new SaleBody();
                 $saleBody->sale_header_id = $saleHeader->id;
-                $saleBody->item_id        = $detail["item"]["id"];
+                $saleBody->item_id        = $detail["item"]["code"];
                 $saleBody->currency_id    = $detail["currency"]["id"];
                 $saleBody->name           = $detail["name"];
                 $saleBody->price          = $detail["price"];

@@ -30,8 +30,8 @@ return new class extends Migration {
         });
 
         DB::table('series')->insert([
-            ['branch_id' => 1, 'document_type_id' => 1, 'code' => 'FA', 'number' => '1'],
-            ['branch_id' => 1, 'document_type_id' => 2, 'code' => 'BE', 'number' => '1'],
+            ['branch_id' => 1, 'document_type_id' => 1, 'code' => 'BE', 'number' => '1'],
+            ['branch_id' => 1, 'document_type_id' => 2, 'code' => 'FA', 'number' => '1'],
             ['branch_id' => 1, 'document_type_id' => 3, 'code' => 'NV', 'number' => '1']
         ]);
 
