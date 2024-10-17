@@ -39,13 +39,14 @@ class ExportController extends Controller {
 
                 // return view("System.pdf.sales.a4", $data);
                 $pdf = Pdf::loadView('System.pdf.sales.a4', $data);
+                // return $pdf->stream('archivo.pdf', ['Attachment' => false]);
                 return $pdf->download("Comprobante ".SaleHeader::getSerieSequential($saleHeader).".pdf");
 
             }else if(in_array($printType, ["mm80"])) {
 
                 // return view("System.pdf.sales.mm80", $data);
-                $pdf = Pdf::loadView('System.pdf.sales.mm80', $data)->setPaper([0, 0, 80 * 2.83, 160 * 2.83]);
-                return $pdf->download("Comprobante ".SaleHeader::getSerieSequential($saleHeader).".pdf");
+                // $pdf = Pdf::loadView('System.pdf.sales.mm80', $data)->setPaper([0, 0, 80 * 2.83, 160 * 2.83]);
+                // return $pdf->download("Comprobante ".SaleHeader::getSerieSequential($saleHeader).".pdf");
 
             }
 
