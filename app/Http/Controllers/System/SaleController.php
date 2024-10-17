@@ -18,10 +18,6 @@ class SaleController extends Controller {
         $initParams = new stdClass();
 
         $config = new stdClass();
-        $config->salesHeader = new stdClass();
-        $config->salesHeader->statusses = SaleHeader::getStatusses();
-
-        $config = new stdClass();
         $config->branches = new stdClass();
         $config->branches->records = Branch::with(["series.documentType"])->get();
 
@@ -33,6 +29,9 @@ class SaleController extends Controller {
 
         $config->items = new stdClass();
         $config->items->records = Item::with(["currency"])->get();
+
+        $config->salesHeader = new stdClass();
+        $config->salesHeader->statusses = SaleHeader::getStatusses();
 
         $initParams->config = $config;
         $initParams->bool   = true;
@@ -78,15 +77,17 @@ class SaleController extends Controller {
 
         DB::transaction(function() use($request, $userAuth, $saleHeader) {
 
+            $total = 0;
+
             $saleHeader->serie_id    = $request->serie["code"];
             $saleHeader->sequential  = random_int(1, 200);
             $saleHeader->holder_id   = $request->holder["code"];
             $saleHeader->seller_id   = $userAuth->id;
             $saleHeader->currency_id = $request->currency["code"];
             $saleHeader->sale_date   = $request->sale_date;
-            $saleHeader->total       = $request->total;
+            $saleHeader->total       = 0;
             $saleHeader->observation = $request->observation ?? "";
-            $saleHeader->status      = "active";
+            $saleHeader->status      = "inactive";
             $saleHeader->created_at  = now();
             $saleHeader->created_by  = $userAuth->id ?? null;
             $saleHeader->save();
@@ -106,7 +107,16 @@ class SaleController extends Controller {
                 $saleBody->created_by     = $userAuth->id ?? null;
                 $saleBody->save();
 
+                $total += (floatval($saleBody->quantity) * floatval($saleBody->price));
+
             }
+
+            $saleHeader->total  = $total;
+            $saleHeader->status = "active";
+            $saleHeader->save();
+
+            // With
+            $saleHeader->serie;
 
         });
 

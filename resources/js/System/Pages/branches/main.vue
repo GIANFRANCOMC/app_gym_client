@@ -267,7 +267,7 @@ export default {
             Alerts.swals({});
             this.formErrors({functionName, type: "clear"});
 
-            let form = JSON.parse(JSON.stringify(this.forms.entity.createUpdate.data));
+            let form = Utils.cloneJson(this.forms.entity.createUpdate.data);
 
             const validateForm = this.validateForm({functionName, form});
 

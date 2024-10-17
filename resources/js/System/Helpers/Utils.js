@@ -87,7 +87,7 @@ export function consultDocumentNumber({numberDocument, type, withAlert = true}) 
 
 }
 
-export function uuidv4(length = 36) {
+export function uuid(length = 36) {
 
     return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)).substr(0, length);
 
@@ -111,5 +111,28 @@ export function getCurrentDate() {
     const formattedDate = `${currentYear}-${currentMonth}-${currentDay}`;
 
     return formattedDate;
+
+}
+
+export function cloneJson(json) {
+
+    return JSON.parse(JSON.stringify(json));
+
+}
+
+export function calculateTotal({item}) {
+
+    const quantity = Number(item?.quantity),
+          price    = Number(item?.price);
+
+    const total = (isNaN(quantity) || isNaN(price)) ? 0 : this.fixedNumber(quantity * price);
+
+    return total;
+
+}
+
+export function fixedNumber(value) {
+
+    return Number(value).toFixed(generalConfig.forms.inputs.round);
 
 }

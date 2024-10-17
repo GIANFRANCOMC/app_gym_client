@@ -9,7 +9,7 @@
                 <div class="modal-body">
                     <div class="row g-1">
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 text-start">
-                            <span class="fw-semibold text-uppercase fs-4 ms-2" v-text="'Comprobante: '+data.serie?.code+data.serie?.number+'-'+data.sequential"></span>
+                            <span class="fw-semibold text-uppercase fs-5 ms-2" v-text="'Comprobante: '+data.serie?.code+data.serie?.number+'-'+data.sequential"></span>
                         </div>
                     </div>
                     <template v-if="bool">

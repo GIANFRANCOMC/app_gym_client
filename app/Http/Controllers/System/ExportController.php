@@ -20,7 +20,7 @@ class ExportController extends Controller {
         $id = $request->id;
 
         $saleHeader = SaleHeader::where("id", $id)
-                                ->with(["holder", "positions"])
+                                ->with(["serie", "holder", "positions"])
                                 ->first();
 
         $company = Company::first();
@@ -38,14 +38,14 @@ class ExportController extends Controller {
             if(in_array($printType, ["a4"])) {
 
                 // return view("System.pdf.sales.a4", $data);
-                $pdf = Pdf::loadView('System.pdf.sales.a4', $data); return $pdf->download("Ficha de matrícula $saleHeader->id.pdf");
-                return $pdf->download("Comprobante $saleHeader->id.pdf");
+                $pdf = Pdf::loadView('System.pdf.sales.a4', $data);
+                return $pdf->download("Comprobante ".SaleHeader::getSerieSequential($saleHeader).".pdf");
 
             }else if(in_array($printType, ["mm80"])) {
 
                 // return view("System.pdf.sales.mm80", $data);
                 $pdf = Pdf::loadView('System.pdf.sales.mm80', $data)->setPaper([0, 0, 80 * 2.83, 160 * 2.83]);
-                return $pdf->download("Comprobante $saleHeader->id.pdf");
+                return $pdf->download("Comprobante ".SaleHeader::getSerieSequential($saleHeader).".pdf");
 
             }
 

@@ -82,7 +82,7 @@ export function toastrs({type = "success", options = null, code = null, title = 
 
 }
 
-export function tooltips({show = true, time = 0}) {
+export function tooltips({show = true, time = 10}) {
 
     if(show) {
 

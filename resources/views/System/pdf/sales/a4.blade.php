@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Venta</title>
+    <title>A4</title>
 
     <style>
         .c-white{

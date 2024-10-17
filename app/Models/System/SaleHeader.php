@@ -84,6 +84,12 @@ class SaleHeader extends Model {
 
     }
 
+    public static function getSerieSequential(SaleHeader $saleHeader) {
+
+        return $saleHeader->serie->code.$saleHeader->serie->number."-".$saleHeader->sequential;
+
+    }
+
     public function serie() {
 
         return $this->belongsTo(Serie::class, "serie_id", "id");
