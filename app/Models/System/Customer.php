@@ -3,11 +3,8 @@
 namespace App\Models\System;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Customer extends Model {
-
-    use HasFactory;
 
     protected $table               = "customers";
     protected $primaryKey          = "id";
@@ -23,6 +20,7 @@ class Customer extends Model {
         "identity_document_type_id",
         "document_number",
         "name",
+        "email",
         "status"
     ];
 

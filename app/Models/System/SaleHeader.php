@@ -5,11 +5,8 @@ namespace App\Models\System;
 use App\Helpers\System\Utilities;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class SaleHeader extends Model {
-
-    use HasFactory;
 
     protected $table               = "sales_header";
     protected $primaryKey          = "id";
@@ -19,7 +16,6 @@ class SaleHeader extends Model {
 
     protected $appends = [
         "formatted_sale_date",
-        "formatted_total",
         "legible_total",
         "formatted_status"
     ];
@@ -39,12 +35,6 @@ class SaleHeader extends Model {
     public function getFormattedSaleDateAttribute() {
 
         return Carbon::createFromFormat("Y-m-d", $this->attributes["sale_date"])->format("d-m-Y");
-
-    }
-
-    public function getFormattedTotalAttribute() {
-
-        return "S/ ".$this->attributes["total"];
 
     }
 

@@ -3,23 +3,22 @@
 namespace App\Models\System;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable {
 
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, Notifiable;
 
-    protected $table               = 'users';
-    protected $primaryKey          = 'id';
+    protected $table               = "users";
+    protected $primaryKey          = "id";
     public $incrementing           = true;
     public $timestamps             = true;
     public static $snakeAttributes = false;
 
     protected $appends = [
-        'formatted_status'
+        "formatted_status"
     ];
 
     /**
@@ -28,11 +27,13 @@ class User extends Authenticatable {
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'admin_id',
-        'status'
+        "identity_document_type_id",
+        "document_number",
+        "name",
+        "email",
+        "password",
+        "admin_id",
+        "status"
     ];
 
     /**
@@ -41,8 +42,8 @@ class User extends Authenticatable {
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
-        'remember_token',
+        "password",
+        "remember_token",
     ];
 
     /**
@@ -51,8 +52,8 @@ class User extends Authenticatable {
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        "email_verified_at" => "datetime",
+        "password" => "hashed",
     ];
 
     public function getFormattedStatusAttribute() {

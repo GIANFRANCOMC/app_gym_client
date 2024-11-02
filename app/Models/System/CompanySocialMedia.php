@@ -3,7 +3,6 @@
 namespace App\Models\System;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CompanySocialMedia extends Model {
 
@@ -14,13 +13,44 @@ class CompanySocialMedia extends Model {
     public static $snakeAttributes = false;
 
     protected $appends = [
-        //
+        "formatted_status"
     ];
 
     protected $fillable = [
         "company_id",
         "type",
-        "link"
+        "link",
+        "status"
     ];
+
+    public function getFormattedStatusAttribute() {
+
+        return self::getStatusses("first", $this->attributes["status"])["label"] ?? "";
+
+    }
+
+    public static function getStatusses($type = "all", $code = "") {
+
+        $result = null;
+
+        $statusses = [
+            ["code" => "active", "label" => "Activo"],
+            ["code" => "inactive", "label" => "Inactivo"]
+        ];
+
+        if(in_array($type, ["all"])) {
+
+            $result = $statusses;
+
+        }else if(in_array($type, ["first"])) {
+
+            $filter = array_filter($statusses, function($e) use($code) { return $e["code"] === $code; });
+            $result = count($filter) > 0 ? reset($filter) : null;
+
+        }
+
+        return $result;
+
+    }
 
 }

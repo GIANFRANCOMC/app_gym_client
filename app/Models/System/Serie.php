@@ -19,6 +19,7 @@ class Serie extends Model {
     protected $fillable = [
         "branch_id",
         "document_type_id",
+        "code",
         "number",
         "init",
         "status"
