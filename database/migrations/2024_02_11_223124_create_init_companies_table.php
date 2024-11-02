@@ -61,7 +61,7 @@ return new class extends Migration {
             $table->unsignedBigInteger("branch_id");
             $table->unsignedBigInteger("document_type_id");
             $table->string("code");
-            $table->string("number");
+            $table->integer("number");
             $table->integer("init")->default(1);
 
             $table->enum("status", ["active", "inactive"])->default("active");
@@ -121,10 +121,10 @@ return new class extends Migration {
             ["id" => 1, "company_id" => 1, "name" => "Sede Principal"]
         ]);
 
-        DB::table('series')->insert([
-            ['branch_id' => 1, 'document_type_id' => 1, 'code' => 'BV', 'number' => '1', 'init' => 1],
-            ['branch_id' => 1, 'document_type_id' => 2, 'code' => 'FA', 'number' => '1', 'init' => 1],
-            ['branch_id' => 1, 'document_type_id' => 3, 'code' => 'NV', 'number' => '1', 'init' => 1]
+        DB::table("series")->insert([
+            ["branch_id" => 1, "document_type_id" => 1, "code" => "BV", "number" => 1, "init" => 1],
+            ["branch_id" => 1, "document_type_id" => 2, "code" => "FA", "number" => 1, "init" => 1],
+            ["branch_id" => 1, "document_type_id" => 3, "code" => "NV", "number" => 1, "init" => 1]
         ]);
 
         DB::table("customers")->insert([
@@ -138,16 +138,12 @@ return new class extends Migration {
      */
     public function down(): void {
 
-        Schema::dropIfExists("identity_document_types");
-        Schema::dropIfExists("document_types");
-        Schema::dropIfExists("currencies");
-        Schema::dropIfExists("companies");
-        Schema::dropIfExists("company_socials_media");
-
-        Schema::dropIfExists("branches");
-        Schema::dropIfExists("series");
-        Schema::dropIfExists("items");
         Schema::dropIfExists("customers");
+        Schema::dropIfExists("items");
+        Schema::dropIfExists("series");
+        Schema::dropIfExists("branches");
+        Schema::dropIfExists("company_socials_media");
+        Schema::dropIfExists("companies");
 
     }
 

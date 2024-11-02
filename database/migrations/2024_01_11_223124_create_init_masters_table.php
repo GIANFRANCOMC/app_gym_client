@@ -66,6 +66,7 @@ return new class extends Migration {
             $table->integer("updated_by")->nullable();
 
             $table->unique(["email"]);
+            $table->foreign("identity_document_type_id")->references("id")->on("identity_document_types")->onDelete("cascade");
         });
 
         // Inserts
@@ -99,10 +100,10 @@ return new class extends Migration {
      */
     public function down(): void {
 
-        Schema::dropIfExists("identity_document_types");
-        Schema::dropIfExists("document_types");
-        Schema::dropIfExists("currencies");
         Schema::dropIfExists("users");
+        Schema::dropIfExists("currencies");
+        Schema::dropIfExists("document_types");
+        Schema::dropIfExists("identity_document_types");
 
     }
 
