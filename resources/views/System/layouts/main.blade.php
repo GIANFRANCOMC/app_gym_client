@@ -103,7 +103,7 @@
 
                     <ul class="menu-inner py-1">
                         <li class="menu-item mt-3">
-                            <a href="#" class="menu-link">
+                            <a href="#" class="menu-link" id="menu-item-home">
                                 <i class="fa fa-home me-2"></i>
                                 <div data-i18n="Inicio">Inicio</div>
                             </a>
@@ -126,44 +126,43 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="menu-item" id="menu-list-items">
+                        <li class="menu-item" id="menu-item-items">
                             <a href="{{ route('items.index') }}" class="menu-link">
                                 <i class="fa fa-bottle-water me-2"></i>
                                 <div data-i18n="Page 1">Productos - Servicios</div>
                             </a>
                         </li>
-                        <li class="menu-item" id="menu-list-customers">
+                        <li class="menu-item" id="menu-item-customers">
                             <a href="{{ route('customers.index') }}" class="menu-link">
                                 <i class="fa fa-user me-2"></i>
                                 <div data-i18n="Page 1">Clientes</div>
                             </a>
                         </li>
-                        <li class="menu-item" id="menu-list-users">
-                            <a href="{{ route('users.index') }}" class="menu-link">
-                                <i class="fa fa-users me-2"></i>
-                                <div data-i18n="Page 1">Colaboradores</div>
-                            </a>
-                        </li>
-                        {{-- <li class="menu-item" id="menu-list-users">
+                        <li class="menu-item" id="menu-item-reports">
                             <a href="{{ route('users.index') }}" class="menu-link">
                                 <i class="fa fa-print me-2"></i>
                                 <div data-i18n="Page 1">Reportes</div>
                             </a>
-                        </li> --}}
-                        <li class="menu-item" id="menu-configuration">
+                        </li>
+                        <li class="menu-item" id="menu-item-configuration">
                             <a href="javascript:void(0);" class="menu-link menu-toggle">
                                 <i class="fa fa-gear me-2"></i>
                                 <div data-i18n="Configuración">Configuración</div>
                             </a>
                             <ul class="menu-sub">
-                                {{-- <li class="menu-item" id="menu-item-list-sales">
+                                <li class="menu-item" id="menu-item-list-sales">
                                     <a href="{{ route('sales.index') }}" class="menu-link">
                                         <div data-i18n="Collapsed menu">Mi empresa</div>
                                     </a>
-                                </li> --}}
-                                <li class="menu-item" id="menu-item-list-sales">
+                                </li>
+                                <li class="menu-item" id="menu-item-list-brands">
                                     <a href="{{ route('branches.index') }}" class="menu-link">
                                         <div data-i18n="Collapsed menu">Sucursales</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item" id="menu-item-list-users">
+                                    <a href="{{ route('users.index') }}" class="menu-link">
+                                        <div data-i18n="Collapsed menu">Colaboradores</div>
                                     </a>
                                 </li>
                             </ul>
@@ -179,7 +178,6 @@
                         </li>
                     </ul>
                 </aside>
-
                 <div class="layout-page">
                     <nav
                         class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"

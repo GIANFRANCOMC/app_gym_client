@@ -169,6 +169,12 @@ export function patch({route = "", data = {}, id = "", formData = null}) {
 
 }
 
+export function valid({result}) {
+
+    return result?.bool && result?.data?.bool;
+
+}
+
 export function generateRoutes({entity, requestRoute}) {
 
     return {

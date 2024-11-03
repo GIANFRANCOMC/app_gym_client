@@ -41,7 +41,7 @@
                 <template v-if="lists.entity.extras.loading">
                     <tr class="text-center">
                         <td colspan="99">
-                            <i class="fas fa-spinner fa-spin fa-3x my-3"></i>
+                            <Loader/>
                         </td>
                     </tr>
                 </template>
@@ -49,7 +49,7 @@
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td class="text-start">
-                                <span v-text="record.serie?.code+record.serie?.number+'-'+record.sequential"></span><br/>
+                                <span v-text="record.serie_sequential"></span><br/>
                                 <small v-text="record.serie?.documentType?.name"></small>
                             </td>
                             <td class="text-start">
@@ -57,7 +57,10 @@
                                 <small v-text="record.holder?.document_number"></small>
                             </td>
                             <td v-text="record.formatted_sale_date"></td>
-                            <td v-text="record.formatted_total"></td>
+                            <td>
+                                <span v-text="record.currency?.sign ?? ''"></span>
+                                <span v-text="record.total" class="ms-1"></span>
+                            </td>
                             <td>
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
@@ -73,7 +76,9 @@
                     </template>
                     <template v-else>
                         <tr>
-                            <td class="text-center" colspan="99" v-text="config.messages.withoutResults"></td>
+                            <td class="text-center" colspan="99">
+                                <WithoutData type="image"/>
+                            </td>
                         </tr>
                     </template>
                 </template>
@@ -93,31 +98,14 @@ import * as Constants from "../../Helpers/Constants.js";
 import * as Requests  from "../../Helpers/Requests.js";
 import * as Utils     from "../../Helpers/Utils.js";
 
-import Breadcrumb   from "../../Components/Breadcrumb.vue";
-import InputDate    from "../../Components/InputDate.vue";
-import InputNumber  from "../../Components/InputNumber.vue";
-import InputSelect  from "../../Components/InputSelect.vue";
-// import InputSelect2 from "../../Components/InputSelect2.vue";
-import InputText    from "../../Components/InputText.vue";
-import Paginator    from "../../Components/Paginator.vue";
-
-import PrintSale    from "../../Components/Sales/PrintSale.vue";
-
 export default {
     components: {
-        Breadcrumb,
-        InputDate,
-        InputNumber,
-        InputSelect,
-        // InputSelect2,
-        InputText,
-        Paginator,
-        PrintSale
+        //
     },
     mounted: async function() {
 
-        Utils.openNavbarItem(this.config.entity.page.menu.id, {addClass: "open"});
-        Utils.openNavbarItem("menu-item-list-sales", {});
+        Utils.navbarItem(this.config.entity.page.menu.id, {addClass: "open"});
+        Utils.navbarItem("menu-item-list-sales", {});
         Alerts.swals({type: "initParams"});
 
         let initParams = await this.initParams({}),

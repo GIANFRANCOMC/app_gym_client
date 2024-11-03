@@ -20,9 +20,12 @@ class SaleBody extends Model {
     protected $fillable = [
         "sale_header_id",
         "item_id",
+        "currency_id",
         "name",
-        "price",
         "quantity",
+        "price",
+        "total",
+        "observation",
         "status"
     ];
 
@@ -52,6 +55,12 @@ class SaleBody extends Model {
     public function item() {
 
         return $this->belongsTo(Item::class, "item_id", "id");
+
+    }
+
+    public function currency() {
+
+        return $this->belongsTo(Currency::class, "currency_id", "id");
 
     }
 

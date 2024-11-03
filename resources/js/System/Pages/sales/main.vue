@@ -76,60 +76,64 @@
                             </template>
                         </InputSlot>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead class="table-light">
-                                <tr class="text-center align-middle">
-                                    <th class="fw-bold col-1">#</th>
-                                    <th class="fw-bold col-3">DESCRIPCIÓN</th>
-                                    <th class="fw-bold col-2">CANTIDAD</th>
-                                    <th class="fw-bold col-4">PRECIO UNITARIO</th>
-                                    <th class="fw-bold col-3">TOTAL</th>
-                                    <th class="fw-bold col-1"></th>
-                                </tr>
-                            </thead>
-                            <tbody class="table-border-bottom-0 bg-white">
-                                <template v-if="(forms.entity.createUpdate.data.details).length > 0">
-                                    <tr v-for="(record, keyRecord) in forms.entity.createUpdate.data.details" :key="record.id" class="text-center">
-                                        <td class="fw-bold" v-text="keyRecord + 1"></td>
-                                        <td class="text-start fw-bold" v-text="record.name"></td>
-                                        <td>
-                                            <InputNumber v-model="record.quantity"/>
-                                        </td>
-                                        <td>
-                                            <InputNumber v-model="record.price">
-                                                <template v-slot:inputGroupPrepend v-if="isDefined({value: record?.currency})">
-                                                    <button class="btn btn-primary waves-effect" type="button" v-text="record?.currency?.sign"></button>
-                                                </template>
-                                            </InputNumber>
-                                        </td>
-                                        <td>
-                                            <span v-text="forms.entity.createUpdate.data.currency?.data?.sign ?? ''"></span>
-                                            <span v-text="calculateTotal({item: record})" class="ms-1"></span>
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-danger btn-xs" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">
-                                                <i class="fa fa-times"></i>
-                                            </button>
-                                        </td>
+                    <div class="row g-3">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr class="text-center align-middle">
+                                        <th class="fw-bold col-1">#</th>
+                                        <th class="fw-bold col-3">DESCRIPCIÓN</th>
+                                        <th class="fw-bold col-2">CANTIDAD</th>
+                                        <th class="fw-bold col-4">PRECIO UNITARIO</th>
+                                        <th class="fw-bold col-3">TOTAL</th>
+                                        <th class="fw-bold col-1"></th>
                                     </tr>
-                                    <tr>
-                                        <td colspan="4" class="fw-bold text-end">TOTAL:</td>
-                                        <td colspan="1" class="fw-bold text-center">
-                                            <span v-text="forms.entity.createUpdate.data.currency?.data?.sign ?? ''"></span>
-                                            <span v-text="total" class="ms-1"></span>
-                                        </td>
-                                    </tr>
-                                </template>
-                                <template v-else>
-                                    <tr>
-                                        <td class="text-center" colspan="99" v-text="config.messages.withoutResults"></td>
-                                    </tr>
-                                </template>
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody class="table-border-bottom-0 bg-white">
+                                    <template v-if="(forms.entity.createUpdate.data.details).length > 0">
+                                        <tr v-for="(record, keyRecord) in forms.entity.createUpdate.data.details" :key="record.id" class="text-center">
+                                            <td class="fw-bold" v-text="keyRecord + 1"></td>
+                                            <td class="text-start fw-bold" v-text="record.name"></td>
+                                            <td>
+                                                <InputNumber v-model="record.quantity"/>
+                                            </td>
+                                            <td>
+                                                <InputNumber v-model="record.price">
+                                                    <template v-slot:inputGroupPrepend v-if="isDefined({value: record?.currency})">
+                                                        <button class="btn btn-primary waves-effect" type="button" v-text="record?.currency?.sign"></button>
+                                                    </template>
+                                                </InputNumber>
+                                            </td>
+                                            <td>
+                                                <span v-text="forms.entity.createUpdate.data.currency?.data?.sign ?? ''"></span>
+                                                <span v-text="calculateTotal({item: record})" class="ms-1"></span>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger btn-xs" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">
+                                                    <i class="fa fa-times"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4" class="fw-bold text-end">TOTAL:</td>
+                                            <td colspan="1" class="fw-bold text-center">
+                                                <span v-text="forms.entity.createUpdate.data.currency?.data?.sign ?? ''"></span>
+                                                <span v-text="total" class="ms-1"></span>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                    <template v-else>
+                                        <tr>
+                                            <td class="text-center" colspan="99">
+                                                <WithoutData type="text"/>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                        <small :class="config.forms.errors.styles.default" v-text="isDefined({value: forms.entity.createUpdate.errors?.details}) ? forms.entity.createUpdate.errors?.details[0] : ''"></small>
                     </div>
-                    <small :class="config.forms.errors.styles.default" v-text="isDefined({value: forms.entity.createUpdate.errors?.details}) ? forms.entity.createUpdate.errors?.details[0] : ''"></small>
                 </div>
             </div>
         </div>
@@ -228,7 +232,7 @@
     <PrintSale :modalId="forms.entity.createUpdate.extras.modals.finished.id" :bool="true" :title="forms.entity.createUpdate.extras.modals.finished.titles.header" :data="forms.entity.createUpdate.extras.modals.finished.data">
         <template v-slot:extraGroupAppend>
             <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3">
-                <div class="text-center cursor-pointer p-1">
+                <div class="text-center cursor-pointer p-1" data-bs-dismiss="modal">
                     <div class="badge bg-success p-3 rounded mb-2">
                         <i class="fa-solid fa-cash-register fs-3"></i>
                     </div>
@@ -259,8 +263,8 @@ export default {
     },
     mounted: async function() {
 
-        Utils.openNavbarItem(this.config.entity.page.menu.id, {addClass: "open"});
-        Utils.openNavbarItem("menu-item-create-sales", {});
+        Utils.navbarItem(this.config.entity.page.menu.id, {addClass: "open"});
+        Utils.navbarItem("menu-item-create-sales", {});
         Alerts.swals({type: "initParams"});
 
         let initParams = await this.initParams({}),
@@ -346,12 +350,12 @@ export default {
             let initParams = await Requests.get({route: this.config.entity.routes.initParams, showAlert: true});
 
             this.options.branches    = initParams.data?.config?.branches;
-            this.options.currencies  = initParams.data?.config?.currencies;
             this.options.holders     = initParams.data?.config?.customers;
+            this.options.currencies  = initParams.data?.config?.currencies;
             this.options.items       = initParams.data?.config?.items;
             this.options.salesHeader = initParams.data?.config?.salesHeader;
 
-            return initParams?.bool && initParams?.data?.bool;
+            return Requests.valid({result: initParams});
 
         },
         async initOthers({}) {
@@ -360,6 +364,7 @@ export default {
 
                 this.forms.entity.createUpdate.data.branch    = (this.branches).length > 0 ? this.branches[0] : null;
                 this.forms.entity.createUpdate.data.sale_date = Utils.getCurrentDate();
+                this.forms.entity.createUpdate.data.holder    = (this.holders).length > 0 ? this.holders[0] : null;
                 this.forms.entity.createUpdate.data.currency  = (this.currencies).length > 0 ? this.currencies[0] : null;
 
                 resolve(true);
@@ -468,8 +473,8 @@ export default {
 
                 case "createUpdateEntity":
                     this.forms.entity.createUpdate.data.id        = null;
-                    this.forms.entity.createUpdate.data.holder    = null;
                     this.forms.entity.createUpdate.data.sale_date = Utils.getCurrentDate();
+                    // this.forms.entity.createUpdate.data.holder    = null;
                     this.forms.entity.createUpdate.data.status    = "";
                     this.forms.entity.createUpdate.data.details   = [];
                     break;
@@ -498,8 +503,8 @@ export default {
             if(["addDetail"].includes(functionName)) {
 
                 result.item     = [];
-                result.price    = [];
                 result.quantity = [];
+                result.price    = [];
 
                 if(!this.isDefined({value: form?.item})) {
 

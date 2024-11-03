@@ -611,7 +611,7 @@
         <tr>
             <td width="20%">
                 <div class="company_logo_box">
-                    <img src="{{ asset('System/assets/img/favicon/favicon.ico') }}" alt="Logo" class="company_logo" style="max-width: 150px;">
+                    <img src="{{ $logo }}" alt="Logo" class="company_logo" style="max-width: 150px;">
                 </div>
             </td>
             <td width="50%" class="pl-3">
@@ -625,7 +625,7 @@
             </td>
             <td width="30%" class="border-box py-4 px-2">
                 <p class="m-0 font-xlg font-bold text-center">BOLETA DE VENTA</p>
-                <p class="m-0 font-lg font-bold text-center">{{ $saleHeader->serie->code }}{{ $saleHeader->serie->number }}-{{ $saleHeader->sequential }}</p>
+                <p class="m-0 font-lg font-bold text-center">{{ $saleHeader->serie_sequential }}</p>
             </td>
         </tr>
     </table>
@@ -658,7 +658,7 @@
                     <td class="text-center align-top">{{ $position->quantity }}</td>
                     <td class="text-center align-top">UND</td>
                     <td class="text-right align-top">S/ {{ $position->price }}</td>
-                    <td class="text-right align-top">S/ {{ floatval($position->quantity) * floatval($position->price) }}</td>
+                    <td class="text-right align-top">S/ {{ $position->total }}</td>
                 </tr>
             @endforeach
             <tr>

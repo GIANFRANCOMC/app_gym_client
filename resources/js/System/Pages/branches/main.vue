@@ -39,7 +39,7 @@
                 <template v-if="lists.entity.extras.loading">
                     <tr class="text-center">
                         <td colspan="99">
-                            <i class="fas fa-spinner fa-spin fa-3x my-3"></i>
+                            <Loader/>
                         </td>
                     </tr>
                 </template>
@@ -60,7 +60,9 @@
                     </template>
                     <template v-else>
                         <tr>
-                            <td class="text-center" colspan="99" v-text="config.messages.withoutResults"></td>
+                            <td class="text-center" colspan="99">
+                                <WithoutData type="image"/>
+                            </td>
                         </tr>
                     </template>
                 </template>
@@ -124,27 +126,13 @@ import * as Constants from "../../Helpers/Constants.js";
 import * as Requests  from "../../Helpers/Requests.js";
 import * as Utils     from "../../Helpers/Utils.js";
 
-import Breadcrumb   from "../../Components/Breadcrumb.vue";
-// import InputDate    from "../../Components/InputDate.vue";
-import InputNumber  from "../../Components/InputNumber.vue";
-import InputSelect  from "../../Components/InputSelect.vue";
-// import InputSelect2 from "../../Components/InputSelect2.vue";
-import InputText    from "../../Components/InputText.vue";
-import Paginator    from "../../Components/Paginator.vue";
-
 export default {
     components: {
-        Breadcrumb,
-        // InputDate,
-        InputNumber,
-        InputSelect,
-        // InputSelect2,
-        InputText,
-        Paginator
+        //
     },
     mounted: async function() {
 
-        Utils.openNavbarItem(this.config.entity.page.menu.id, {});
+        Utils.navbarItem(this.config.entity.page.menu.id, {});
         Alerts.swals({type: "initParams"});
 
         let initParams = await this.initParams({}),

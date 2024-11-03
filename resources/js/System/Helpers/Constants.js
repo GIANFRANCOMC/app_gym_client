@@ -2,7 +2,7 @@ export const requestRoute = `${window.location.protocol}//${window.location.host
 
 export const generalConfig = {
     messages: {
-        withoutResults: "Sin resultados"
+        withoutResults: "Sin registros"
     },
     forms: {
         inputs: {

@@ -63,7 +63,7 @@ class SaleHeader extends Model {
 
     public static function getSerieSequential(SaleHeader $saleHeader) {
 
-        return $saleHeader->serie->code.$saleHeader->serie->number."-".$saleHeader->sequential;
+        return $saleHeader->serie->code.$saleHeader->serie->number."-".str_pad($saleHeader->sequential, 8, "0", STR_PAD_LEFT);
 
     }
 

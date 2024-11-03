@@ -53,6 +53,12 @@ class SaleController extends Controller {
                            ->with(["serie.documentType", "holder", "currency"])
                            ->paginate(10);
 
+        foreach($list as $record) {
+
+            $record->serie_sequential = SaleHeader::getSerieSequential($record);
+
+        }
+
         return $list;
 
     }
@@ -99,15 +105,16 @@ class SaleController extends Controller {
                 $saleBody->item_id        = $detail["item"]["code"];
                 $saleBody->currency_id    = $detail["currency"]["id"];
                 $saleBody->name           = $detail["name"];
-                $saleBody->price          = $detail["price"];
                 $saleBody->quantity       = $detail["quantity"];
+                $saleBody->price          = $detail["price"];
+                $saleBody->total          = (floatval($saleBody->quantity) * floatval($saleBody->price));
                 $saleBody->observation    = $detail["observation"] ?? "";
                 $saleBody->status         = "active";
                 $saleBody->created_at     = now();
                 $saleBody->created_by     = $userAuth->id ?? null;
                 $saleBody->save();
 
-                $total += (floatval($saleBody->quantity) * floatval($saleBody->price));
+                $total += floatval($saleBody->total);
 
             }
 
@@ -117,6 +124,7 @@ class SaleController extends Controller {
 
             // With
             $saleHeader->serie;
+            $saleHeader->serie_sequential = SaleHeader::getSerieSequential($saleHeader);
 
         });
 

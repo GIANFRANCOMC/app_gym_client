@@ -3,11 +3,11 @@ import { toastrs } from "./Alerts.js";
 
 import axios from "axios";
 
-export function openNavbarItem(id, {addClass = null}) {
+export function navbarItem(id, {type = "active", addClass = null}) {
 
     try {
 
-        document.getElementById(id).classList.add(`active`);
+        document.getElementById(id).classList.add(type);
 
         if(isDefined({value: addClass})) {
 
