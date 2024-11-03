@@ -3,6 +3,8 @@
 namespace App\Models\System;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Helpers\System\Utilities;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -32,7 +34,6 @@ class User extends Authenticatable {
         "name",
         "email",
         "password",
-        "admin_id",
         "status"
     ];
 
@@ -64,25 +65,25 @@ class User extends Authenticatable {
 
     public static function getStatusses($type = "all", $code = "") {
 
-        $result = null;
-
         $statusses = [
             ["code" => "active", "label" => "Activo"],
             ["code" => "inactive", "label" => "Inactivo"]
         ];
 
-        if(in_array($type, ["all"])) {
+        return Utilities::getValues($statusses, $type, $code);
 
-            $result = $statusses;
+    }
 
-        }else if(in_array($type, ["first"])) {
+    public function identityDocumentType() {
 
-            $filter = array_filter($statusses, function($e) use($code) { return $e["code"] === $code; });
-            $result = count($filter) > 0 ? reset($filter) : null;
+        return $this->belongsTo(IdentityDocumentType::class, "identity_document_type_id", "id");
 
-        }
+    }
 
-        return $result;
+    public function salesHeader() {
+
+        return $this->hasMany(SaleHeader::class, "seller_id", "id")
+                    ->whereIn("status", ["active"]);
 
     }
 

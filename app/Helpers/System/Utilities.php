@@ -26,19 +26,22 @@ class Utilities {
 
     }
 
-    public static function parsePadStart($value, $length = 2, $valuePad = "0") {
+    public static function getValues($array, $type, $code) {
 
-        $respuesta = "";
+        $result = null;
 
-        try {
+        if(in_array($type, ["all"])) {
 
-            $respuesta  = str_pad($value, $length, $valuePad, STR_PAD_LEFT);
+            $result = $array;
 
-        }catch(Exception $e) {
+        }else if(in_array($type, ["first"])) {
+
+            $filter = array_filter($array, function($e) use($code) { return $e["code"] === $code; });
+            $result = count($filter) > 0 ? reset($filter) : null;
 
         }
 
-        return $respuesta;
+        return $result;
 
     }
 

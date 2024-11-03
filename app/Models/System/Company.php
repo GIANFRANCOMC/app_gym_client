@@ -2,6 +2,7 @@
 
 namespace App\Models\System;
 
+use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
 
 class Company extends Model {
@@ -39,62 +40,37 @@ class Company extends Model {
 
     public static function getDocumentTypes($type = "all", $code = "") {
 
-        $result = null;
-
         $documentTypes = [
             ["code" => "dni", "label" => "DNI"],
             ["code" => "ruc", "label" => "RUC"],
             ["code" => "none", "label" => "Ninguno"]
         ];
 
-        if(in_array($type, ["all"])) {
-
-            $result = $documentTypes;
-
-        }else if(in_array($type, ["first"])) {
-
-            $filter = array_filter($documentTypes, function($e) use($code) { return $e["code"] === $code; });
-            $result = count($filter) > 0 ? reset($filter) : null;
-
-        }
-
-        return $result;
+        return Utilities::getValues($documentTypes, $type, $code);
 
     }
 
     public static function getStatusses($type = "all", $code = "") {
-
-        $result = null;
 
         $statusses = [
             ["code" => "active", "label" => "Activo"],
             ["code" => "inactive", "label" => "Inactivo"]
         ];
 
-        if(in_array($type, ["all"])) {
-
-            $result = $statusses;
-
-        }else if(in_array($type, ["first"])) {
-
-            $filter = array_filter($statusses, function($e) use($code) { return $e["code"] === $code; });
-            $result = count($filter) > 0 ? reset($filter) : null;
-
-        }
-
-        return $result;
-
-    }
-
-    public function socialsMedia() {
-
-        return $this->hasMany(CompanySocialMedia::class, "company_id", "id");
+        return Utilities::getValues($statusses, $type, $code);
 
     }
 
     public function identityDocumentType() {
 
         return $this->belongsTo(IdentityDocumentType::class, "identity_document_type_id", "id");
+
+    }
+
+    public function socialsMedia() {
+
+        return $this->hasMany(CompanySocialMedia::class, "company_id", "id")
+                    ->whereIn("status", ["active"]);
 
     }
 

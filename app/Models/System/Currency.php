@@ -2,6 +2,7 @@
 
 namespace App\Models\System;
 
+use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
 
 class Currency extends Model {
@@ -32,25 +33,33 @@ class Currency extends Model {
 
     public static function getStatusses($type = "all", $code = "") {
 
-        $result = null;
-
         $statusses = [
             ["code" => "active", "label" => "Activo"],
             ["code" => "inactive", "label" => "Inactivo"]
         ];
 
-        if(in_array($type, ["all"])) {
+        return Utilities::getValues($statusses, $type, $code);
 
-            $result = $statusses;
+    }
 
-        }else if(in_array($type, ["first"])) {
+    public function items() {
 
-            $filter = array_filter($statusses, function($e) use($code) { return $e["code"] === $code; });
-            $result = count($filter) > 0 ? reset($filter) : null;
+        return $this->hasMany(Item::class, "currency_id", "id")
+                    ->whereIn("status", ["active"]);
 
-        }
+    }
 
-        return $result;
+    public function salesBody() {
+
+        return $this->hasMany(SaleBody::class, "currency_id", "id")
+                    ->whereIn("status", ["active"]);
+
+    }
+
+    public function salesHeader() {
+
+        return $this->hasMany(SaleHeader::class, "currency_id", "id")
+                    ->whereIn("status", ["active"]);
 
     }
 

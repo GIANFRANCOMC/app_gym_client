@@ -2,6 +2,7 @@
 
 namespace App\Models\System;
 
+use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
 
 class Customer extends Model {
@@ -32,31 +33,25 @@ class Customer extends Model {
 
     public static function getStatusses($type = "all", $code = "") {
 
-        $result = null;
-
         $statusses = [
             ["code" => "active", "label" => "Activo"],
             ["code" => "inactive", "label" => "Inactivo"]
         ];
 
-        if(in_array($type, ["all"])) {
-
-            $result = $statusses;
-
-        }else if(in_array($type, ["first"])) {
-
-            $filter = array_filter($statusses, function($e) use($code) { return $e["code"] === $code; });
-            $result = count($filter) > 0 ? reset($filter) : null;
-
-        }
-
-        return $result;
+        return Utilities::getValues($statusses, $type, $code);
 
     }
 
     public function identityDocumentType() {
 
         return $this->belongsTo(IdentityDocumentType::class, "identity_document_type_id", "id");
+
+    }
+
+    public function salesHeader() {
+
+        return $this->hasMany(SaleHeader::class, "holder_id", "id")
+                    ->whereIn("status", ["active"]);
 
     }
 

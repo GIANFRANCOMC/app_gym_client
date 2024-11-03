@@ -2,6 +2,7 @@
 
 namespace App\Models\System;
 
+use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
 
 class SaleBody extends Model {
@@ -33,25 +34,24 @@ class SaleBody extends Model {
 
     public static function getStatusses($type = "all", $code = "") {
 
-        $result = null;
-
         $statusses = [
             ["code" => "active", "label" => "Activo"],
             ["code" => "inactive", "label" => "Inactivo"]
         ];
 
-        if(in_array($type, ["all"])) {
+        return Utilities::getValues($statusses, $type, $code);
 
-            $result = $statusses;
+    }
 
-        }else if(in_array($type, ["first"])) {
+    public function saleHeader() {
 
-            $filter = array_filter($statusses, function($e) use($code) { return $e["code"] === $code; });
-            $result = count($filter) > 0 ? reset($filter) : null;
+        return $this->belongsTo(SaleHeader::class, "sale_header_id", "id");
 
-        }
+    }
 
-        return $result;
+    public function item() {
+
+        return $this->belongsTo(Item::class, "item_id", "id");
 
     }
 

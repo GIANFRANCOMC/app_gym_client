@@ -2,6 +2,7 @@
 
 namespace App\Models\System;
 
+use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
 
 class IdentityDocumentType extends Model {
@@ -29,25 +30,33 @@ class IdentityDocumentType extends Model {
 
     public static function getStatusses($type = "all", $code = "") {
 
-        $result = null;
-
         $statusses = [
             ["code" => "active", "label" => "Activo"],
             ["code" => "inactive", "label" => "Inactivo"]
         ];
 
-        if(in_array($type, ["all"])) {
+        return Utilities::getValues($statusses, $type, $code);
 
-            $result = $statusses;
+    }
 
-        }else if(in_array($type, ["first"])) {
+    public function companies() {
 
-            $filter = array_filter($statusses, function($e) use($code) { return $e["code"] === $code; });
-            $result = count($filter) > 0 ? reset($filter) : null;
+        return $this->hasMany(Company::class, "identity_document_type_id", "id")
+                    ->whereIn("status", ["active"]);
 
-        }
+    }
 
-        return $result;
+    public function customers() {
+
+        return $this->hasMany(Customer::class, "identity_document_type_id", "id")
+                    ->whereIn("status", ["active"]);
+
+    }
+
+    public function users() {
+
+        return $this->hasMany(User::class, "identity_document_type_id", "id")
+                    ->whereIn("status", ["active"]);
 
     }
 

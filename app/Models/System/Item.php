@@ -2,6 +2,7 @@
 
 namespace App\Models\System;
 
+use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -35,31 +36,25 @@ class Item extends Model {
 
     public static function getStatusses($type = "all", $code = "") {
 
-        $result = null;
-
         $statusses = [
             ["code" => "active", "label" => "Activo"],
             ["code" => "inactive", "label" => "Inactivo"]
         ];
 
-        if(in_array($type, ["all"])) {
-
-            $result = $statusses;
-
-        }else if(in_array($type, ["first"])) {
-
-            $filter = array_filter($statusses, function($e) use($code) { return $e["code"] === $code; });
-            $result = count($filter) > 0 ? reset($filter) : null;
-
-        }
-
-        return $result;
+        return Utilities::getValues($statusses, $type, $code);
 
     }
 
     public function currency() {
 
         return $this->belongsTo(Currency::class, "currency_id", "id");
+
+    }
+
+    public function salesBody() {
+
+        return $this->hasMany(SaleBody::class, "item_id", "id")
+                    ->whereIn("status", ["active"]);
 
     }
 

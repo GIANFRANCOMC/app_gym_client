@@ -2,6 +2,7 @@
 
 namespace App\Models\System;
 
+use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
 
 class Branch extends Model {
@@ -30,25 +31,18 @@ class Branch extends Model {
 
     public static function getStatusses($type = "all", $code = "") {
 
-        $result = null;
-
         $statusses = [
             ["code" => "active", "label" => "Activo"],
             ["code" => "inactive", "label" => "Inactivo"]
         ];
 
-        if(in_array($type, ["all"])) {
+        return Utilities::getValues($statusses, $type, $code);
 
-            $result = $statusses;
+    }
 
-        }else if(in_array($type, ["first"])) {
+    public function company() {
 
-            $filter = array_filter($statusses, function($e) use($code) { return $e["code"] === $code; });
-            $result = count($filter) > 0 ? reset($filter) : null;
-
-        }
-
-        return $result;
+        return $this->belongsTo(Company::class, "company_id", "id");
 
     }
 
