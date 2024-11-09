@@ -53,12 +53,6 @@ class SaleController extends Controller {
                            ->with(["serie.documentType", "holder", "currency"])
                            ->paginate(10);
 
-        foreach($list as $record) {
-
-            $record->serie_sequential;
-
-        }
-
         return $list;
 
     }
@@ -123,8 +117,8 @@ class SaleController extends Controller {
             $saleHeader->save();
 
             // With
-            $saleHeader->serie;
-            $saleHeader->serie_sequential;
+            // $saleHeader->serie;
+            // $saleHeader->serie_sequential;
 
         });
 

@@ -16,6 +16,7 @@ class SaleHeader extends Model {
     public static $snakeAttributes = true;
 
     protected $appends = [
+        "serie_sequential",
         "formatted_issue_date",
         "legible_total",
         "formatted_status"
@@ -38,6 +39,24 @@ class SaleHeader extends Model {
     ];
 
     // Appends
+    public function getSerieSequentialAttribute() {
+
+        $serie_sequential = "";
+
+        try {
+
+            $serie_sequential = $this->serie->code.$this->serie->number."-".str_pad($this->sequential, 8, "0", STR_PAD_LEFT);
+
+        }catch(Exception $e) {
+
+            $serie_sequential = "Error";
+
+        }
+
+        return $serie_sequential;
+
+    }
+
     public function getFormattedIssueDateAttribute() {
 
         return Carbon::createFromFormat("Y-m-d", $this->attributes["issue_date"])->format("d-m-Y");
@@ -97,25 +116,6 @@ class SaleHeader extends Model {
 
         return $this->hasMany(SaleBody::class, "sale_header_id", "id")
                     ->whereIn("status", ["active"]);
-
-    }
-
-    // Attributes
-    public function getSerieSequentialAttribute() {
-
-        $serie_sequential = "";
-
-        try {
-
-            $serie_sequential = $this->serie->code.$this->serie->number."-".str_pad($this->sequential, 8, "0", STR_PAD_LEFT);
-
-        }catch(Exception $e) {
-
-            $serie_sequential = "Error";
-
-        }
-
-        return $serie_sequential;
 
     }
 

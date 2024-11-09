@@ -641,7 +641,7 @@ export default {
 
                 let series = branch[0].series;
 
-                return series.map(e => ({code: e.id, label: `${e.code}${e.number} - ${e?.documentType?.name}`}));
+                return series.map(e => ({code: e.id, label: `${e.code}${e.number} - ${e?.document_type?.name}`}));
 
             }
 

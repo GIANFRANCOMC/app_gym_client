@@ -49,11 +49,11 @@
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td class="text-start">
-                                <span v-text="record.serie_sequential"></span><br/>
-                                <small v-text="record.serie?.documentType?.name"></small>
+                                <span v-text="record.serie_sequential" class="fw-bold"></span><br/>
+                                <small v-text="record.serie?.document_type?.name"></small>
                             </td>
                             <td class="text-start">
-                                <span v-text="record.holder?.name"></span><br/>
+                                <span v-text="record.holder?.name" class="fw-bold"></span><br/>
                                 <small v-text="record.holder?.document_number"></small>
                             </td>
                             <td v-text="record.formatted_issue_date"></td>
