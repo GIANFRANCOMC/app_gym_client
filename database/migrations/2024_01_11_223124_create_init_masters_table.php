@@ -80,8 +80,7 @@ return new class extends Migration {
 
         DB::table("document_types")->insert([
             ["id" => 1, "code" => "BV", "name" => "BOLETA DE VENTA"],
-            ["id" => 2, "code" => "FA", "name" => "FACTURA"],
-            ["id" => 3, "code" => "NV", "name" => "NOTA DE VENTA"]
+            ["id" => 2, "code" => "FA", "name" => "FACTURA"]
         ]);
 
         DB::table("currencies")->insert([

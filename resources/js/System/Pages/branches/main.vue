@@ -47,7 +47,7 @@
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td v-text="record.name"></td>
-                            <td class="text-start" v-html="record?.series?.map(e => '* '+e?.code+e?.number+' - '+e?.documentType?.name).join('<br/>')"></td>
+                            <td class="text-start" v-html="record?.series?.map(e => '* '+e?.legible_serie+' - '+e?.document_type?.name).join('<br/>')"></td>
                             <td>
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>

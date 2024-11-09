@@ -45,7 +45,7 @@ class SaleHeader extends Model {
 
         try {
 
-            $serie_sequential = $this->serie->code.$this->serie->number."-".str_pad($this->sequential, 8, "0", STR_PAD_LEFT);
+            $serie_sequential = $this->serie->legible_serie."-".str_pad($this->sequential, 8, "0", STR_PAD_LEFT);
 
         }catch(Exception $e) {
 
@@ -84,6 +84,43 @@ class SaleHeader extends Model {
         ];
 
         return Utilities::getValues($statusses, $type, $code);
+
+    }
+
+    public static function getNewSequential($serie_id) {
+
+        $newSequential = 0;
+
+        try {
+
+            $maxSequential = SaleHeader::where("serie_id", $serie_id)
+                                       ->max("sequential");
+
+            if(Utilities::isDefined($maxSequential)) {
+
+                $newSequential = intval($maxSequential) + 1;
+
+            }else {
+
+                $serie = Serie::where("id", $serie_id)
+                              ->whereIn("status", ["active"])
+                              ->first();
+
+                if(Utilities::isDefined($serie)) {
+
+                    $newSequential = intval($serie->init);
+
+                }
+
+            }
+
+        }catch(Exception $e) {
+
+            $newSequential = 0;
+
+        }
+
+        return $newSequential;
 
     }
 

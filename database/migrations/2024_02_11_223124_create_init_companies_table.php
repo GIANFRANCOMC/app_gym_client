@@ -123,8 +123,7 @@ return new class extends Migration {
 
         DB::table("series")->insert([
             ["branch_id" => 1, "document_type_id" => 1, "code" => "BV", "number" => 1, "init" => 1],
-            ["branch_id" => 1, "document_type_id" => 2, "code" => "FA", "number" => 1, "init" => 1],
-            ["branch_id" => 1, "document_type_id" => 3, "code" => "NV", "number" => 1, "init" => 1]
+            ["branch_id" => 1, "document_type_id" => 2, "code" => "FA", "number" => 1, "init" => 1]
         ]);
 
         DB::table("customers")->insert([

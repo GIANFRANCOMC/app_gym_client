@@ -14,6 +14,7 @@ class Serie extends Model {
     public static $snakeAttributes = true;
 
     protected $appends = [
+        "legible_serie",
         "formatted_status"
     ];
 
@@ -31,6 +32,12 @@ class Serie extends Model {
     ];
 
     // Appends
+    public function getLegibleSerieAttribute() {
+
+        return $this->attributes["code"].$this->attributes["number"];
+
+    }
+
     public function getFormattedStatusAttribute() {
 
         return self::getStatusses("first", $this->attributes["status"])["label"] ?? "";

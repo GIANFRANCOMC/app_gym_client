@@ -33,7 +33,12 @@
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.serie"
                                     :options="series"
-                                    :clearable="false"/>
+                                    :clearable="false">
+                                    <template #option="{ label, data }">
+                                        <span v-text="label" class="d-block fw-bold"></span>
+                                        <span v-text="data?.document_type?.name" class="d-block"></span>
+                                    </template>
+                                </v-select>
                             </template>
                         </InputSlot>
                         <InputDate
@@ -72,7 +77,12 @@
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.currency"
                                     :options="currencies"
-                                    :clearable="false"/>
+                                    :clearable="false">
+                                    <template #option="{ label, data }">
+                                        <span v-text="label" class="d-block fw-bold"></span>
+                                        <span v-text="'('+data?.sign+')'" class="d-block"></span>
+                                    </template>
+                                </v-select>
                             </template>
                         </InputSlot>
                     </div>
@@ -120,6 +130,7 @@
                                                 <span v-text="forms.entity.createUpdate.data.currency?.data?.sign ?? ''"></span>
                                                 <span v-text="total" class="ms-1"></span>
                                             </td>
+                                            <td colspan="1" class="fw-bold text-center"></td>
                                         </tr>
                                     </template>
                                     <template v-else>
@@ -173,7 +184,15 @@
                                 <v-select
                                     v-model="forms.entity.createUpdate.extras.modals.details.data.item"
                                     :options="items"
-                                    :clearable="false"/>
+                                    :clearable="false">
+                                    <template #option="{ label, data }">
+                                        <span v-text="label" class="d-block fw-bold"></span>
+                                        <div class="d-block">
+                                            <span v-text="data?.currency?.sign"></span>
+                                            <span v-text="data?.price" class="ms-1"></span>
+                                        </div>
+                                    </template>
+                                </v-select>
                             </template>
                         </InputSlot>
                         <InputNumber
@@ -641,7 +660,7 @@ export default {
 
                 let series = branch[0].series;
 
-                return series.map(e => ({code: e.id, label: `${e.code}${e.number} - ${e?.document_type?.name}`}));
+                return series.map(e => ({code: e.id, label: e.legible_serie, data: e}));
 
             }
 
@@ -655,7 +674,7 @@ export default {
         },
         currencies: function() {
 
-            return this.options?.currencies?.records.map(e => ({code: e.id, label: `${e.plural_name} (${e.sign})`, data: e}));
+            return this.options?.currencies?.records.map(e => ({code: e.id, label: e.plural_name, data: e}));
 
         },
         items: function() {

@@ -79,46 +79,52 @@ class SaleController extends Controller {
 
             $total = 0;
 
-            $saleHeader->serie_id    = $request->serie["code"];
-            $saleHeader->sequential  = random_int(1, 200);
-            $saleHeader->holder_id   = $request->holder["code"];
-            $saleHeader->seller_id   = $userAuth->id;
-            $saleHeader->currency_id = $request->currency["code"];
-            $saleHeader->issue_date  = $request->issue_date;
-            $saleHeader->total       = 0;
-            $saleHeader->observation = $request->observation ?? "";
-            $saleHeader->status      = "inactive";
-            $saleHeader->created_at  = now();
-            $saleHeader->created_by  = $userAuth->id ?? null;
-            $saleHeader->save();
+            $newSequential = SaleHeader::getNewSequential($request->serie["code"]);
 
-            foreach($request["details"] as $detail) {
+            if($newSequential > 0) {
 
-                $saleBody = new SaleBody();
-                $saleBody->sale_header_id = $saleHeader->id;
-                $saleBody->item_id        = $detail["item"]["code"];
-                $saleBody->currency_id    = $detail["currency"]["id"];
-                $saleBody->name           = $detail["name"];
-                $saleBody->quantity       = $detail["quantity"];
-                $saleBody->price          = $detail["price"];
-                $saleBody->total          = (floatval($saleBody->quantity) * floatval($saleBody->price));
-                $saleBody->observation    = $detail["observation"] ?? "";
-                $saleBody->status         = "active";
-                $saleBody->created_at     = now();
-                $saleBody->created_by     = $userAuth->id ?? null;
-                $saleBody->save();
+                $saleHeader->serie_id    = $request->serie["code"];
+                $saleHeader->sequential  = $newSequential;
+                $saleHeader->holder_id   = $request->holder["code"];
+                $saleHeader->seller_id   = $userAuth->id;
+                $saleHeader->currency_id = $request->currency["code"];
+                $saleHeader->issue_date  = $request->issue_date;
+                $saleHeader->total       = 0;
+                $saleHeader->observation = $request->observation ?? "";
+                $saleHeader->status      = "inactive";
+                $saleHeader->created_at  = now();
+                $saleHeader->created_by  = $userAuth->id ?? null;
+                $saleHeader->save();
 
-                $total += floatval($saleBody->total);
+                foreach($request["details"] as $detail) {
+
+                    $saleBody = new SaleBody();
+                    $saleBody->sale_header_id = $saleHeader->id;
+                    $saleBody->item_id        = $detail["item"]["code"];
+                    $saleBody->currency_id    = $detail["currency"]["id"];
+                    $saleBody->name           = $detail["name"];
+                    $saleBody->quantity       = $detail["quantity"];
+                    $saleBody->price          = $detail["price"];
+                    $saleBody->total          = (floatval($saleBody->quantity) * floatval($saleBody->price));
+                    $saleBody->observation    = $detail["observation"] ?? "";
+                    $saleBody->status         = "active";
+                    $saleBody->created_at     = now();
+                    $saleBody->created_by     = $userAuth->id ?? null;
+                    $saleBody->save();
+
+                    $total += floatval($saleBody->total);
+
+                }
+
+                $saleHeader->total  = $total;
+                $saleHeader->status = "active";
+                $saleHeader->save();
+
+                // With
+                // $saleHeader->serie;
+                // $saleHeader->serie_sequential;
 
             }
-
-            $saleHeader->total  = $total;
-            $saleHeader->status = "active";
-            $saleHeader->save();
-
-            // With
-            // $saleHeader->serie;
-            // $saleHeader->serie_sequential;
 
         });
 
