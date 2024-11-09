@@ -73,16 +73,17 @@ class SaleController extends Controller {
 
         $userAuth = Auth::user();
 
-        $saleHeader = new SaleHeader();
+        $saleHeader = null;
 
-        DB::transaction(function() use($request, $userAuth, $saleHeader) {
-
-            $total = 0;
+        DB::transaction(function() use($request, $userAuth, &$saleHeader) {
 
             $newSequential = SaleHeader::getNewSequential($request->serie["code"]);
 
             if($newSequential > 0) {
 
+                $total = 0;
+
+                $saleHeader = new SaleHeader();
                 $saleHeader->serie_id    = $request->serie["code"];
                 $saleHeader->sequential  = $newSequential;
                 $saleHeader->holder_id   = $request->holder["code"];
@@ -128,7 +129,10 @@ class SaleController extends Controller {
 
         });
 
-        return response()->json(["bool" => true, "msg" => "Venta creada correctamente.", "sale" => $saleHeader], 200);
+        $bool = Utilities::isDefined($saleHeader);
+        $msg  = $bool ? "Venta creada correctamente." : "No se ha podido crear la Venta.";
+
+        return response()->json(["bool" => $bool, "msg" => $msg, "sale" => $saleHeader], 200);
 
     }
 
