@@ -61,7 +61,7 @@ class ExportController extends Controller {
 
                     }catch(Exception $e) {
 
-                        return response()->view("errors.404", ["msg" => $e->getMessage()], 404);
+                        return response()->view("errors.500", ["msg" => $e->getMessage()], 500);
 
                     }
 
