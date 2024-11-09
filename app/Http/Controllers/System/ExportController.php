@@ -30,7 +30,7 @@ class ExportController extends Controller {
             $path = public_path('System/assets/img/avatars/1.png');
             $logo = "data:image/".pathinfo($path, PATHINFO_EXTENSION).";base64,".base64_encode(file_get_contents($path));
 
-            $saleHeader->serie_sequential = SaleHeader::getSerieSequential($saleHeader);
+            $serie_sequential = $saleHeader->serie_sequential;
 
             $data = [
                 "saleHeader" => $saleHeader,
@@ -46,13 +46,13 @@ class ExportController extends Controller {
                 // return view("System.pdf.sales.a4", $data);
                 $pdf = Pdf::loadView('System.pdf.sales.a4', $data);
                 return $pdf->stream('archivo.pdf', ['Attachment' => false]);
-                // return $pdf->download("Comprobante ".SaleHeader::getSerieSequential($saleHeader).".pdf");
+                // return $pdf->download("Comprobante ".$serie_sequential.".pdf");
 
             }else if(in_array($printType, ["mm80"])) {
 
                 // return view("System.pdf.sales.mm80", $data);
                 // $pdf = Pdf::loadView('System.pdf.sales.mm80', $data)->setPaper([0, 0, 80 * 2.83, 160 * 2.83]);
-                // return $pdf->download("Comprobante ".SaleHeader::getSerieSequential($saleHeader).".pdf");
+                // return $pdf->download("Comprobante ".$serie_sequential.".pdf");
 
             }
 

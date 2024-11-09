@@ -391,7 +391,7 @@
             <table class="table-no-border arial fs-0-60">
                 <tr class="left">
                     <td class="bold">FECHA DE EMISIÓN:</td>
-                    <td class="">{{ $saleHeader->formatted_sale_date }}</td>
+                    <td class="">{{ $saleHeader->formatted_issue_date }}</td>
                 </tr>
                 <tr class="left">
                     <td class="bold">CLIENTE:</td>

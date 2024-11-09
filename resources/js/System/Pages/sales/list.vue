@@ -56,7 +56,7 @@
                                 <span v-text="record.holder?.name"></span><br/>
                                 <small v-text="record.holder?.document_number"></small>
                             </td>
-                            <td v-text="record.formatted_sale_date"></td>
+                            <td v-text="record.formatted_issue_date"></td>
                             <td>
                                 <span v-text="record.currency?.sign ?? ''"></span>
                                 <span v-text="record.total" class="ms-1"></span>

@@ -5,6 +5,7 @@ namespace App\Models\System;
 use App\Helpers\System\Utilities;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Exception;
 
 class SaleHeader extends Model {
 
@@ -67,12 +68,6 @@ class SaleHeader extends Model {
 
     }
 
-    public static function getSerieSequential(SaleHeader $saleHeader) {
-
-        return $saleHeader->serie->code.$saleHeader->serie->number."-".str_pad($saleHeader->sequential, 8, "0", STR_PAD_LEFT);
-
-    }
-
     // Relationships
     public function serie() {
 
@@ -102,6 +97,25 @@ class SaleHeader extends Model {
 
         return $this->hasMany(SaleBody::class, "sale_header_id", "id")
                     ->whereIn("status", ["active"]);
+
+    }
+
+    // Attributes
+    public function getSerieSequentialAttribute() {
+
+        $serie_sequential = "";
+
+        try {
+
+            $serie_sequential = $this->serie->code.$this->serie->number."-".str_pad($this->sequential, 8, "0", STR_PAD_LEFT);
+
+        }catch(Exception $e) {
+
+            $serie_sequential = "Error";
+
+        }
+
+        return $serie_sequential;
 
     }
 

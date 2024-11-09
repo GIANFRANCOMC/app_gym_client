@@ -633,7 +633,7 @@
         <tr>
             <td width="120px">FECHA DE EMISIÓN</td>
             <td width="8px">:</td>
-            <td>{{$saleHeader->formatted_sale_date}}</td>
+            <td>{{$saleHeader->formatted_issue_date}}</td>
         </tr>
         <tr>
             <td style="vertical-align: top;">CLIENTE:</td>

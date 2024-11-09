@@ -55,7 +55,7 @@ class SaleController extends Controller {
 
         foreach($list as $record) {
 
-            $record->serie_sequential = SaleHeader::getSerieSequential($record);
+            $record->serie_sequential;
 
         }
 
@@ -90,7 +90,7 @@ class SaleController extends Controller {
             $saleHeader->holder_id   = $request->holder["code"];
             $saleHeader->seller_id   = $userAuth->id;
             $saleHeader->currency_id = $request->currency["code"];
-            $saleHeader->sale_date   = $request->sale_date;
+            $saleHeader->issue_date  = $request->issue_date;
             $saleHeader->total       = 0;
             $saleHeader->observation = $request->observation ?? "";
             $saleHeader->status      = "inactive";
@@ -124,7 +124,7 @@ class SaleController extends Controller {
 
             // With
             $saleHeader->serie;
-            $saleHeader->serie_sequential = SaleHeader::getSerieSequential($saleHeader);
+            $saleHeader->serie_sequential;
 
         });
 

@@ -37,12 +37,12 @@
                             </template>
                         </InputSlot>
                         <InputDate
-                            v-model="forms.entity.createUpdate.data.sale_date"
+                            v-model="forms.entity.createUpdate.data.issue_date"
                             hasDiv
                             title="Fecha de emisión"
                             isRequired
                             hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.sale_date"
+                            :textBottomInfo="forms.entity.createUpdate.errors?.issue_date"
                             xl="3"
                             lg="6"/>
                         <InputSlot
@@ -315,7 +315,7 @@ export default {
                             id: "",
                             branch: null,
                             serie: null,
-                            sale_date: "",
+                            issue_date: "",
                             holder: null,
                             currency: null,
                             status: "",
@@ -362,10 +362,10 @@ export default {
 
             return new Promise(resolve => {
 
-                this.forms.entity.createUpdate.data.branch    = (this.branches).length > 0 ? this.branches[0] : null;
-                this.forms.entity.createUpdate.data.sale_date = Utils.getCurrentDate();
-                this.forms.entity.createUpdate.data.holder    = (this.holders).length > 0 ? this.holders[0] : null;
-                this.forms.entity.createUpdate.data.currency  = (this.currencies).length > 0 ? this.currencies[0] : null;
+                this.forms.entity.createUpdate.data.branch     = (this.branches).length > 0 ? this.branches[0] : null;
+                this.forms.entity.createUpdate.data.issue_date = Utils.getCurrentDate();
+                this.forms.entity.createUpdate.data.holder     = (this.holders).length > 0 ? this.holders[0] : null;
+                this.forms.entity.createUpdate.data.currency   = (this.currencies).length > 0 ? this.currencies[0] : null;
 
                 resolve(true);
 
@@ -472,11 +472,11 @@ export default {
                     break;
 
                 case "createUpdateEntity":
-                    this.forms.entity.createUpdate.data.id        = null;
-                    this.forms.entity.createUpdate.data.sale_date = Utils.getCurrentDate();
-                    // this.forms.entity.createUpdate.data.holder    = null;
-                    this.forms.entity.createUpdate.data.status    = "";
-                    this.forms.entity.createUpdate.data.details   = [];
+                    this.forms.entity.createUpdate.data.id         = null;
+                    this.forms.entity.createUpdate.data.issue_date = Utils.getCurrentDate();
+                    // this.forms.entity.createUpdate.data.holder     = null;
+                    this.forms.entity.createUpdate.data.status     = "";
+                    this.forms.entity.createUpdate.data.details    = [];
                     break;
             }
 
@@ -529,13 +529,13 @@ export default {
 
             }else if(["createUpdateEntity"].includes(functionName)) {
 
-                result.branch    = [];
-                result.serie     = [];
-                result.sale_date = [];
-                result.holder    = [];
-                result.currency  = [];
-                result.status    = [];
-                result.details   = [];
+                result.branch     = [];
+                result.serie      = [];
+                result.issue_date = [];
+                result.holder     = [];
+                result.currency   = [];
+                result.status     = [];
+                result.details    = [];
 
                 if(!this.isDefined({value: form?.branch})) {
 
@@ -551,9 +551,9 @@ export default {
 
                 }
 
-                if(!this.isDefined({value: form?.sale_date})) {
+                if(!this.isDefined({value: form?.issue_date})) {
 
-                    result.sale_date.push(this.config.forms.errors.labels.required);
+                    result.issue_date.push(this.config.forms.errors.labels.required);
                     result.bool = false;
 
                 }
