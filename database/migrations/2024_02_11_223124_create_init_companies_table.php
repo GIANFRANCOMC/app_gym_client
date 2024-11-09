@@ -17,8 +17,8 @@ return new class extends Migration {
             $table->string("document_number");
             $table->string("legal_name");
             $table->string("commercial_name");
-
             $table->enum("status", ["active", "inactive"])->default("active");
+
             $table->timestamp("created_at")->useCurrent()->nullable();
             $table->integer("created_by")->nullable();
             $table->timestamp("updated_at")->nullable();
@@ -32,8 +32,8 @@ return new class extends Migration {
             $table->unsignedBigInteger("company_id");
             $table->enum("type", ["web", "facebook", "instagram", "tiktok", "whatsapp", "other"])->default("other");
             $table->text("link");
-
             $table->enum("status", ["active", "inactive"])->default("active");
+
             $table->timestamp("created_at")->useCurrent()->nullable();
             $table->integer("created_by")->nullable();
             $table->timestamp("updated_at")->nullable();
@@ -46,8 +46,8 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger("company_id");
             $table->string("name");
-
             $table->enum("status", ["active", "inactive"])->default("active");
+
             $table->timestamp("created_at")->useCurrent()->nullable();
             $table->integer("created_by")->nullable();
             $table->timestamp("updated_at")->nullable();
@@ -63,8 +63,8 @@ return new class extends Migration {
             $table->string("code");
             $table->integer("number");
             $table->integer("init")->default(1);
-
             $table->enum("status", ["active", "inactive"])->default("active");
+
             $table->timestamp("created_at")->useCurrent()->nullable();
             $table->integer("created_by")->nullable();
             $table->timestamp("updated_at")->nullable();
@@ -80,8 +80,8 @@ return new class extends Migration {
             $table->text("description");
             $table->decimal("price", 10, 2);
             $table->unsignedBigInteger("currency_id");
-
             $table->enum("status", ["active", "inactive"])->default("active");
+
             $table->timestamp("created_at")->useCurrent()->nullable();
             $table->integer("created_by")->nullable();
             $table->timestamp("updated_at")->nullable();
@@ -96,8 +96,8 @@ return new class extends Migration {
             $table->string("document_number");
             $table->string("name");
             $table->string("email")->nullable();
-
             $table->enum("status", ["active", "inactive"])->default("active");
+
             $table->timestamp("created_at")->useCurrent()->nullable();
             $table->integer("created_by")->nullable();
             $table->timestamp("updated_at")->nullable();

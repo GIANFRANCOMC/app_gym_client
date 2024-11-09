@@ -18,11 +18,11 @@ return new class extends Migration {
             $table->unsignedBigInteger("holder_id");
             $table->unsignedBigInteger("seller_id");
             $table->unsignedBigInteger("currency_id");
-            $table->date("sale_date");
+            $table->date("issue_date");
             $table->decimal("total", 10, 2);
             $table->text("observation")->nullable();
-
             $table->enum("status", ["active", "inactive"])->default("active");
+
             $table->timestamp("created_at")->useCurrent()->nullable();
             $table->integer("created_by")->nullable();
             $table->timestamp("updated_at")->nullable();
@@ -44,8 +44,8 @@ return new class extends Migration {
             $table->decimal("price", 10, 2);
             $table->decimal("total", 10, 2);
             $table->text("observation");
-
             $table->enum("status", ["active", "inactive"])->default("active");
+
             $table->timestamp("created_at")->useCurrent()->nullable();
             $table->integer("created_by")->nullable();
             $table->timestamp("updated_at")->nullable();

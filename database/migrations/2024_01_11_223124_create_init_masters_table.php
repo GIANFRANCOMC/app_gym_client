@@ -15,8 +15,8 @@ return new class extends Migration {
         Schema::create("identity_document_types", function(Blueprint $table) {
             $table->id();
             $table->string("name");
-
             $table->enum("status", ["active", "inactive"])->default("active");
+
             $table->timestamp("created_at")->useCurrent()->nullable();
             $table->integer("created_by")->nullable();
             $table->timestamp("updated_at")->nullable();
@@ -27,8 +27,8 @@ return new class extends Migration {
             $table->id();
             $table->string("code");
             $table->string("name");
-
             $table->enum("status", ["active", "inactive"])->default("active");
+
             $table->timestamp("created_at")->useCurrent()->nullable();
             $table->integer("created_by")->nullable();
             $table->timestamp("updated_at")->nullable();
@@ -41,8 +41,8 @@ return new class extends Migration {
             $table->string("sign");
             $table->string("singular_name");
             $table->string("plural_name");
-
             $table->enum("status", ["active", "inactive"])->default("active");
+
             $table->timestamp("created_at")->useCurrent()->nullable();
             $table->integer("created_by")->nullable();
             $table->timestamp("updated_at")->nullable();
@@ -58,8 +58,8 @@ return new class extends Migration {
             $table->timestamp("email_verified_at")->nullable();
             $table->string("password");
             $table->rememberToken();
-
             $table->enum("status", ["active", "inactive"])->default("active");
+
             $table->timestamp("created_at")->useCurrent()->nullable();
             $table->integer("created_by")->nullable();
             $table->timestamp("updated_at")->nullable();

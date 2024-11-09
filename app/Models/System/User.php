@@ -17,7 +17,7 @@ class User extends Authenticatable {
     protected $primaryKey          = "id";
     public $incrementing           = true;
     public $timestamps             = true;
-    public static $snakeAttributes = false;
+    public static $snakeAttributes = true;
 
     protected $appends = [
         "formatted_status"
@@ -34,7 +34,11 @@ class User extends Authenticatable {
         "name",
         "email",
         "password",
-        "status"
+        "status",
+        "created_at",
+        "created_by",
+        "updated_at",
+        "updated_by"
     ];
 
     /**
@@ -57,12 +61,14 @@ class User extends Authenticatable {
         "password" => "hashed",
     ];
 
+    // Appends
     public function getFormattedStatusAttribute() {
 
         return self::getStatusses("first", $this->attributes["status"])["label"] ?? "";
 
     }
 
+    // Functions
     public static function getStatusses($type = "all", $code = "") {
 
         $statusses = [
@@ -74,6 +80,7 @@ class User extends Authenticatable {
 
     }
 
+    // Relationships
     public function identityDocumentType() {
 
         return $this->belongsTo(IdentityDocumentType::class, "identity_document_type_id", "id");

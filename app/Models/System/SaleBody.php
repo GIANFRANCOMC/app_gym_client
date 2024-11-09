@@ -11,7 +11,7 @@ class SaleBody extends Model {
     protected $primaryKey          = "id";
     public $incrementing           = true;
     public $timestamps             = true;
-    public static $snakeAttributes = false;
+    public static $snakeAttributes = true;
 
     protected $appends = [
         "formatted_status"
@@ -26,15 +26,21 @@ class SaleBody extends Model {
         "price",
         "total",
         "observation",
-        "status"
+        "status",
+        "created_at",
+        "created_by",
+        "updated_at",
+        "updated_by"
     ];
 
+    // Appends
     public function getFormattedStatusAttribute() {
 
         return self::getStatusses("first", $this->attributes["status"])["label"] ?? "";
 
     }
 
+    // Functions
     public static function getStatusses($type = "all", $code = "") {
 
         $statusses = [
@@ -46,6 +52,7 @@ class SaleBody extends Model {
 
     }
 
+    // Relationships
     public function saleHeader() {
 
         return $this->belongsTo(SaleHeader::class, "sale_header_id", "id");

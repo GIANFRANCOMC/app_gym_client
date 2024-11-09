@@ -14,7 +14,7 @@ class Item extends Model {
     protected $primaryKey          = "id";
     public $incrementing           = true;
     public $timestamps             = true;
-    public static $snakeAttributes = false;
+    public static $snakeAttributes = true;
 
     protected $appends = [
         "formatted_status"
@@ -25,15 +25,21 @@ class Item extends Model {
         "description",
         "price",
         "currency_id",
-        "status"
+        "status",
+        "created_at",
+        "created_by",
+        "updated_at",
+        "updated_by"
     ];
 
+    // Appends
     public function getFormattedStatusAttribute() {
 
         return self::getStatusses("first", $this->attributes["status"])["label"] ?? "";
 
     }
 
+    // Functions
     public static function getStatusses($type = "all", $code = "") {
 
         $statusses = [
@@ -45,6 +51,7 @@ class Item extends Model {
 
     }
 
+    // Relationships
     public function currency() {
 
         return $this->belongsTo(Currency::class, "currency_id", "id");

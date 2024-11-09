@@ -12,10 +12,10 @@ class SaleHeader extends Model {
     protected $primaryKey          = "id";
     public $incrementing           = true;
     public $timestamps             = true;
-    public static $snakeAttributes = false;
+    public static $snakeAttributes = true;
 
     protected $appends = [
-        "formatted_sale_date",
+        "formatted_issue_date",
         "legible_total",
         "formatted_status"
     ];
@@ -26,15 +26,20 @@ class SaleHeader extends Model {
         "holder_id",
         "seller_id",
         "currency_id",
-        "sale_date",
+        "issue_date",
         "total",
         "observation",
-        "status"
+        "status",
+        "created_at",
+        "created_by",
+        "updated_at",
+        "updated_by"
     ];
 
-    public function getFormattedSaleDateAttribute() {
+    // Appends
+    public function getFormattedIssueDateAttribute() {
 
-        return Carbon::createFromFormat("Y-m-d", $this->attributes["sale_date"])->format("d-m-Y");
+        return Carbon::createFromFormat("Y-m-d", $this->attributes["issue_date"])->format("d-m-Y");
 
     }
 
@@ -50,6 +55,7 @@ class SaleHeader extends Model {
 
     }
 
+    // Functions
     public static function getStatusses($type = "all", $code = "") {
 
         $statusses = [
@@ -67,6 +73,7 @@ class SaleHeader extends Model {
 
     }
 
+    // Relationships
     public function serie() {
 
         return $this->belongsTo(Serie::class, "serie_id", "id");

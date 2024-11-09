@@ -11,7 +11,7 @@ class Company extends Model {
     protected $primaryKey          = "id";
     public $incrementing           = true;
     public $timestamps             = true;
-    public static $snakeAttributes = false;
+    public static $snakeAttributes = true;
 
     protected $appends = [
         "formatted_document_type",
@@ -23,33 +23,21 @@ class Company extends Model {
         "document_number",
         "legal_name",
         "commercial_name",
-        "status"
+        "status",
+        "created_at",
+        "created_by",
+        "updated_at",
+        "updated_by"
     ];
 
-    public function getFormattedDocumentTypeAttribute() {
-
-        return self::getDocumentTypes("first", $this->attributes["document_type"])["label"] ?? "";
-
-    }
-
+    // Appends
     public function getFormattedStatusAttribute() {
 
         return self::getStatusses("first", $this->attributes["status"])["label"] ?? "";
 
     }
 
-    public static function getDocumentTypes($type = "all", $code = "") {
-
-        $documentTypes = [
-            ["code" => "dni", "label" => "DNI"],
-            ["code" => "ruc", "label" => "RUC"],
-            ["code" => "none", "label" => "Ninguno"]
-        ];
-
-        return Utilities::getValues($documentTypes, $type, $code);
-
-    }
-
+    // Functions
     public static function getStatusses($type = "all", $code = "") {
 
         $statusses = [
@@ -61,9 +49,17 @@ class Company extends Model {
 
     }
 
+    // Relationships
     public function identityDocumentType() {
 
         return $this->belongsTo(IdentityDocumentType::class, "identity_document_type_id", "id");
+
+    }
+
+    public function branches() {
+
+        return $this->hasMany(Branch::class, "company_id", "id")
+                    ->whereIn("status", ["active"]);
 
     }
 

@@ -11,7 +11,7 @@ class DocumentType extends Model {
     protected $primaryKey          = "id";
     public $incrementing           = true;
     public $timestamps             = true;
-    public static $snakeAttributes = false;
+    public static $snakeAttributes = true;
 
     protected $appends = [
         "formatted_status"
@@ -20,15 +20,21 @@ class DocumentType extends Model {
     protected $fillable = [
         "code",
         "name",
-        "status"
+        "status",
+        "created_at",
+        "created_by",
+        "updated_at",
+        "updated_by"
     ];
 
+    // Appends
     public function getFormattedStatusAttribute() {
 
         return self::getStatusses("first", $this->attributes["status"])["label"] ?? "";
 
     }
 
+    // Functions
     public static function getStatusses($type = "all", $code = "") {
 
         $statusses = [
@@ -40,6 +46,7 @@ class DocumentType extends Model {
 
     }
 
+    // Relationships
     public function series() {
 
         return $this->hasMany(Serie::class, "document_type_id", "id")
