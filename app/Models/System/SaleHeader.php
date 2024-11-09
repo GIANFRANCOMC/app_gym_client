@@ -16,6 +16,7 @@ class SaleHeader extends Model {
     public static $snakeAttributes = true;
 
     protected $appends = [
+        "hash_id",
         "serie_sequential",
         "formatted_issue_date",
         "legible_total",
@@ -39,6 +40,12 @@ class SaleHeader extends Model {
     ];
 
     // Appends
+    public function getHashIdAttribute() {
+
+        return base64_encode($this->attributes["id"]);
+
+    }
+
     public function getSerieSequentialAttribute() {
 
         $serie_sequential = "";

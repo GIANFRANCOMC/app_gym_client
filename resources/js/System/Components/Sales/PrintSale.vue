@@ -91,7 +91,7 @@ export default {
 
             // Requests.getFile({route: Requests.config({entity: "exports", type: "default"}), data: {id: data.id}, config: {responseType: 'blob'}});
 
-            window.open(`${Requests.config({entity: "exports", type: "default"})}?id=${data.id}&type=${type}`, "_blank");
+            window.open(`${Requests.config({entity: "exports", type: "default"})}?document=${data?.hash_id}&type=${type}`, "_blank");
 
         }
     }

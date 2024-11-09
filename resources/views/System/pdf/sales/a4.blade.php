@@ -624,7 +624,7 @@
                 </div>
             </td>
             <td width="30%" class="border-box py-4 px-2">
-                <p class="m-0 font-xlg font-bold text-center">BOLETA DE VENTA</p>
+                <p class="m-0 font-xlg font-bold text-center">{{ $saleHeader->serie->documentType->name }}</p>
                 <p class="m-0 font-lg font-bold text-center">{{ $saleHeader->serie_sequential }}</p>
             </td>
         </tr>

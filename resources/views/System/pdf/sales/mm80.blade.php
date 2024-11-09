@@ -376,12 +376,12 @@
         <table class="table-no-boder fs-0-70">
             <tr>
                 <td class="bold center">
-                    BOLETA DE VENTA
+                    {{ $saleHeader->serie->documentType->name }}
                 </td>
             </tr>
             <tr>
                 <td class="bold center">
-                    {{ $saleHeader->sequential }}
+                    {{ $saleHeader->serie_sequential }}
                 </td>
             </tr>
         </table>
