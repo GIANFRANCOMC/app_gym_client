@@ -86,11 +86,13 @@ export function tooltips({show = true, time = 10}) {
 
     if(show) {
 
+        // time > 0 ? setTimeout(() => $('[data-bs-toggle="tooltip"]').tooltip(), time) : $('[data-bs-toggle="tooltip"]').tooltip();
         time > 0 ? setTimeout(() => $('[data-bs-toggle="tooltip"]').tooltip(), time) : $('[data-bs-toggle="tooltip"]').tooltip();
 
     }else {
 
-        time > 0 ? setTimeout(() => $(".tooltip").tooltip("hide"), time) : $(".tooltip").tooltip("hide");
+        // time > 0 ? setTimeout(() => $(".tooltip").tooltip("hide"), time) : $(".tooltip").tooltip("hide");
+        time > 0 ? setTimeout(() => $(".tooltip").hide(), time) : $(".tooltip").hide();
 
     }
 

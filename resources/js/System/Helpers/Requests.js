@@ -94,6 +94,12 @@ export function post({route = "", data = {}, id = "", formData = null}) {
 		let requestURL  = route,
 			requestData = formData ?? {...data, id};
 
+        if(!Utils.isDefined({value: requestData?.id})) {
+
+            delete requestData.id;
+
+        }
+
 		axios
 		.post(requestURL, requestData)
 		.then(response => {
@@ -134,6 +140,12 @@ export function patch({route = "", data = {}, id = "", formData = null}) {
 
 		let requestURL  = `${route}/${id}`,
 			requestData = formData ?? {...data, id};
+
+        if(!Utils.isDefined({value: requestData?.id})) {
+
+            delete requestData.id;
+
+        }
 
 		axios
 		.patch(requestURL, requestData)

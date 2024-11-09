@@ -119,9 +119,10 @@
                                                 <span v-text="calculateTotal({item: record})" class="ms-1"></span>
                                             </td>
                                             <td>
-                                                <button class="btn btn-danger btn-xs" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">
+                                                <button class="btn btn-danger btn-xs" @click="deleteDetail({record, keyRecord})" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">
                                                     <i class="fa fa-times"></i>
                                                 </button>
+
                                             </td>
                                         </tr>
                                         <tr>
@@ -436,6 +437,51 @@ export default {
                 this.formErrors({functionName, type: "set", errors: validateForm});
 
             }
+
+        },
+        deleteDetail({record, keyRecord}) {
+
+            const functionName = "deleteDetail";
+
+            this.formErrors({functionName, type: "clear"});
+
+            let form = Utils.cloneJson(record);
+
+            const validateForm = this.validateForm({functionName, form});
+
+            if(validateForm?.bool) {
+
+                let el = this;
+
+                Swal.fire({
+                    html: `<span>¿Desea eliminar el/la <b>${form?.name}</b> del detalle de la Venta?</span>`,
+                    icon: "warning",
+                    allowOutsideClick: false,
+                    showCancelButton: true,
+                    confirmButtonText: "Sí, eliminar",
+                    cancelButtonText: "Cancelar",
+                    customClass: {
+                        confirmButton: "btn btn-primary waves-effect",
+                        cancelButton: "btn btn-secondary waves-effect ms-3"
+                    }
+                }).then(function(result) {
+
+                    if(result.isConfirmed) {
+
+                        (el.forms.entity.createUpdate.data.details).splice(keyRecord, 1)
+                        Alerts.toastrs({type: "success", subtitle: "El producto ha sido eliminado del detalle."});
+
+                    }else if(result.isDismissed) {
+
+                        //
+
+                    }
+
+                })
+
+            }
+
+            Alerts.tooltips({show: false});
 
         },
         // Entity forms
