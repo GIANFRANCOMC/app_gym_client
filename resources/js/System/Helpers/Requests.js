@@ -111,11 +111,11 @@ export function post({route = "", data = {}, id = "", formData = null}) {
 
             if([405].includes(error?.response?.status)) {
 
-                resolve({data: {msg: error?.response?.data?.message}, bool: false});
+                resolve({data: {msg: `${error?.response?.data?.message} (Code ${error?.response?.status})`}, bool: false});
 
             }else if([422].includes(error?.response?.status)) {
 
-                resolve({data: {msg: error?.response?.data?.message}, errors: error?.response?.data?.errors, bool: false});
+                resolve({data: {msg: `${error?.response?.data?.message} (Code ${error?.response?.status})`}, errors: error?.response?.data?.errors, bool: false});
 
             }else {
 
@@ -158,11 +158,11 @@ export function patch({route = "", data = {}, id = "", formData = null}) {
 
             if([405].includes(error?.response?.status)) {
 
-                resolve({data: {msg: error?.response?.data?.message}, bool: false});
+                resolve({data: {msg: `${error?.response?.data?.message} (Code ${error?.response?.status})`}, bool: false});
 
             }else if([422].includes(error?.response?.status)) {
 
-                resolve({data: {msg: error?.response?.data?.message}, errors: error?.response?.data?.errors, bool: false});
+                resolve({data: {msg: `${error?.response?.data?.message} (Code ${error?.response?.status})`}, errors: error?.response?.data?.errors, bool: false});
 
             }else {
 

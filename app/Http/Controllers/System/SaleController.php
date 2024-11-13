@@ -77,18 +77,18 @@ class SaleController extends Controller {
 
         DB::transaction(function() use($request, $userAuth, &$saleHeader) {
 
-            $newSequential = SaleHeader::getNewSequential($request->serie["code"]);
+            $newSequential = SaleHeader::getNewSequential($request->serie_id);
 
             if($newSequential > 0) {
 
                 $total = 0;
 
                 $saleHeader = new SaleHeader();
-                $saleHeader->serie_id    = $request->serie["code"];
+                $saleHeader->serie_id    = $request->serie_id;
                 $saleHeader->sequential  = $newSequential;
-                $saleHeader->holder_id   = $request->holder["code"];
+                $saleHeader->holder_id   = $request->holder_id;
                 $saleHeader->seller_id   = $userAuth->id;
-                $saleHeader->currency_id = $request->currency["code"];
+                $saleHeader->currency_id = $request->currency_id;
                 $saleHeader->issue_date  = $request->issue_date;
                 $saleHeader->total       = 0;
                 $saleHeader->observation = $request->observation ?? "";
@@ -101,12 +101,12 @@ class SaleController extends Controller {
 
                     $saleBody = new SaleBody();
                     $saleBody->sale_header_id = $saleHeader->id;
-                    $saleBody->item_id        = $detail["item"]["code"];
-                    $saleBody->currency_id    = $detail["currency"]["id"];
+                    $saleBody->item_id        = $detail["item_id"];
+                    $saleBody->currency_id    = $detail["currency_id"];
                     $saleBody->name           = $detail["name"];
                     $saleBody->quantity       = $detail["quantity"];
                     $saleBody->price          = $detail["price"];
-                    $saleBody->total          = (floatval($saleBody->quantity) * floatval($saleBody->price));
+                    $saleBody->total          = Utilities::round((floatval($saleBody->quantity) * floatval($saleBody->price)));
                     $saleBody->observation    = $detail["observation"] ?? "";
                     $saleBody->status         = "active";
                     $saleBody->created_at     = now();
@@ -130,7 +130,7 @@ class SaleController extends Controller {
         });
 
         $bool = Utilities::isDefined($saleHeader);
-        $msg  = $bool ? "Venta creada correctamente." : "No se ha podido crear la Venta.";
+        $msg  = $bool ? "Venta creada correctamente." : "No se ha podido crear la venta.";
 
         return response()->json(["bool" => $bool, "msg" => $msg, "sale" => $saleHeader], 200);
 

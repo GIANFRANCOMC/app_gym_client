@@ -9,33 +9,31 @@
                 <div class="modal-body">
                     <div class="row g-1">
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 text-start">
-                            <span class="fw-semibold fs-5 ms-2" v-text="'Comprobante:'"></span>
-                            <span class="fw-bold text-uppercase fs-5 ms-2" v-text="data?.serie_sequential"></span>
+                            <span class="fw-semibold fs-5 ms-2" v-text="'Documento:'"></span>
+                            <span class="fw-bold text-uppercase fs-5 ms-2" v-text="title ?? data?.serie_sequential"></span>
                         </div>
                     </div>
-                    <template v-if="bool">
-                        <div class="row justify-content-center g-1 mt-4">
-                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3" v-if="a4">
-                                <div class="text-center cursor-pointer p-1" @click="exportpp({type: 'a4'})">
-                                    <div class="badge bg-primary p-3 rounded mb-2">
-                                        <i class="fa fa-print fs-3"></i>
-                                    </div>
-                                    <br/>
-                                    <span class="fw-semibold">A4</span>
+                    <div class="row justify-content-center g-1 mt-4">
+                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3" v-if="a4">
+                            <div class="text-center cursor-pointer p-1" @click="exportpp({type: 'a4'})">
+                                <div class="badge bg-primary p-3 rounded mb-1">
+                                    <i class="fa fa-print fs-3"></i>
                                 </div>
+                                <br/>
+                                <span class="fw-semibold">A4</span>
                             </div>
-                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3" v-if="mm80">
-                                <div class="text-center cursor-pointer p-1" @click="exportpp({type: 'mm80'})">
-                                    <div class="badge bg-primary p-3 rounded mb-2">
-                                        <i class="fa-solid fa-note-sticky fs-3"></i>
-                                    </div>
-                                    <br/>
-                                    <span class="fw-semibold">80MM</span>
-                                </div>
-                            </div>
-                            <slot name="extraGroupAppend"></slot>
                         </div>
-                    </template>
+                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3" v-if="mm80">
+                            <div class="text-center cursor-pointer p-1" @click="exportpp({type: 'mm80'})">
+                                <div class="badge bg-primary p-3 rounded mb-1">
+                                    <i class="fa-solid fa-note-sticky fs-3"></i>
+                                </div>
+                                <br/>
+                                <span class="fw-semibold">80MM</span>
+                            </div>
+                        </div>
+                        <slot name="extraGroupAppend"></slot>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
@@ -56,15 +54,9 @@ export default {
             type: String,
             required: true
         },
-        bool: {
-            type: Boolean,
-            required: false,
-            default: false
-        },
         title: {
             type: String,
-            required: false,
-            default: "Imprimir"
+            required: false
         },
         a4: {
             type: Boolean,

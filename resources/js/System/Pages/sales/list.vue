@@ -29,7 +29,7 @@
         <table class="table table-hover">
             <thead class="table-light align-middle">
                 <tr class="text-center">
-                    <th class="fw-bold col-1">SECUENCIA</th>
+                    <th class="fw-bold col-1">DOCUMENTO</th>
                     <th class="fw-bold col-1">CLIENTE</th>
                     <th class="fw-bold col-1">FECHA DE EMISIÓN</th>
                     <th class="fw-bold col-1">TOTAL</th>
@@ -89,7 +89,7 @@
         <Paginator :links="lists.entity.records.links" @clickPage="listEntity"/>
     </div>
 
-    <PrintSale modalId="adasdasd" :bool="true" :title="forms.entity.createUpdate.extras.modals.finished.titles.header" :data="forms.entity.createUpdate.extras.modals.finished.data"/>
+    <PrintSale modalId="adasdasd" :data="forms.entity.createUpdate.extras.modals.finished.data"/>
 </template>
 
 <script>

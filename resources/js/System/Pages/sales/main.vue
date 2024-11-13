@@ -1,8 +1,8 @@
 <template>
     <Breadcrumb :list="[config.entity.page, { title: 'Crear' }]"/>
 
-    <div class="row invoice-add">
-        <div class="col-lg-9 col-12 mb-4">
+    <div class="row g-3">
+        <div class="col-lg-9 col-12">
             <div class="card invoice-preview-card">
                 <div class="card-body">
                     <div class="row g-3 mb-4">
@@ -36,7 +36,7 @@
                                     :clearable="false">
                                     <template #option="{ label, data }">
                                         <span v-text="label" class="d-block fw-bold"></span>
-                                        <span v-text="data?.document_type?.name" class="d-block"></span>
+                                        <small v-text="data?.document_type?.name" class="d-block"></small>
                                     </template>
                                 </v-select>
                             </template>
@@ -80,7 +80,7 @@
                                     :clearable="false">
                                     <template #option="{ label, data }">
                                         <span v-text="label" class="d-block fw-bold"></span>
-                                        <span v-text="'('+data?.sign+')'" class="d-block"></span>
+                                        <small v-text="'('+data?.sign+')'" class="d-block"></small>
                                     </template>
                                 </v-select>
                             </template>
@@ -115,7 +115,7 @@
                                                 </InputNumber>
                                             </td>
                                             <td>
-                                                <span v-text="forms.entity.createUpdate.data.currency?.data?.sign ?? ''"></span>
+                                                <span v-text="record.currency?.sign ?? ''"></span>
                                                 <span v-text="calculateTotal({item: record})" class="ms-1"></span>
                                             </td>
                                             <td>
@@ -150,16 +150,25 @@
             </div>
         </div>
         <div class="col-lg-3 col-12 invoice-actions">
-            <div class="card mb-4">
+            <div class="card">
                 <div class="card-body">
-                    <button class="btn btn-primary waves-effect w-100 my-1" @click="modalAddDetail({})">
-                        <i class="fa fa-plus"></i>
-                        <span class="ms-2">Agregar detalle</span>
-                    </button>
-                    <button class="btn btn-success waves-effect w-100 my-1" @click="createUpdateEntity()">
-                        <i class="fa-solid fa-cash-register"></i>
-                        <span class="ms-2">Generar venta</span>
-                    </button>
+                    <div class="row g-3 mb-4">
+                        <InputText
+                            v-model="forms.entity.createUpdate.data.observation"
+                            hasDiv
+                            :divClass="['mb-3', 'p-0']"
+                            title="Observaciones"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.observation"/>
+                        <button class="btn btn-primary waves-effect my-1" @click="modalAddDetail({})">
+                            <i class="fa fa-plus"></i>
+                            <span class="ms-2">Agregar detalle</span>
+                        </button>
+                        <button class="btn btn-success waves-effect my-1" @click="createUpdateEntity()">
+                            <i class="fa-solid fa-cash-register"></i>
+                            <span class="ms-2">Generar venta</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -189,8 +198,8 @@
                                     <template #option="{ label, data }">
                                         <span v-text="label" class="d-block fw-bold"></span>
                                         <div class="d-block">
-                                            <span v-text="data?.currency?.sign"></span>
-                                            <span v-text="data?.price" class="ms-1"></span>
+                                            <small v-text="data?.currency?.sign"></small>
+                                            <small v-text="data?.price" class="ms-1"></small>
                                         </div>
                                     </template>
                                 </v-select>
@@ -249,24 +258,26 @@
         </div>
     </div>
 
-    <PrintSale :modalId="forms.entity.createUpdate.extras.modals.finished.id" :bool="true" :title="forms.entity.createUpdate.extras.modals.finished.titles.header" :data="forms.entity.createUpdate.extras.modals.finished.data">
+    <PrintSale :modalId="forms.entity.createUpdate.extras.modals.finished.id" :data="forms.entity.createUpdate.extras.modals.finished.data">
         <template v-slot:extraGroupAppend>
             <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3">
                 <div class="text-center cursor-pointer p-1" data-bs-dismiss="modal">
-                    <div class="badge bg-success p-3 rounded mb-2">
+                    <div class="badge bg-success p-3 rounded mb-1">
                         <i class="fa-solid fa-cash-register fs-3"></i>
                     </div>
-                    <h5 class="fw-semibold">Nueva venta</h5>
+                    <br/>
+                    <span class="fw-semibold">Nueva venta</span>
                 </div>
             </div>
-            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3">
+            <!-- <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3">
                 <div class="text-center cursor-pointer p-1">
-                    <div class="badge bg-secondary p-3 rounded mb-2">
+                    <div class="badge bg-secondary p-3 rounded mb-1">
                         <i class="fa fa-list fs-3"></i>
                     </div>
-                    <h5 class="fw-semibold">Ir al listado</h5>
+                    <br/>
+                    <span class="fw-semibold">Ir al listado</span>
                 </div>
-            </div>
+            </div> -->
         </template>
     </PrintSale>
 </template>
@@ -321,10 +332,6 @@ export default {
                                 },
                                 finished: {
                                     id: Utils.uuid(),
-                                    titles: {
-                                        header: "",
-                                        bool: false
-                                    },
                                     data: {
                                         id: null
                                     }
@@ -332,12 +339,13 @@ export default {
                             }
                         },
                         data: {
-                            id: "",
+                            id: null,
                             branch: null,
                             serie: null,
                             issue_date: "",
                             holder: null,
                             currency: null,
+                            observation: "",
                             status: "",
                             details: []
                         },
@@ -370,8 +378,8 @@ export default {
             let initParams = await Requests.get({route: this.config.entity.routes.initParams, showAlert: true});
 
             this.options.branches    = initParams.data?.config?.branches;
-            this.options.holders     = initParams.data?.config?.customers;
             this.options.currencies  = initParams.data?.config?.currencies;
+            this.options.holders     = initParams.data?.config?.customers;
             this.options.items       = initParams.data?.config?.items;
             this.options.salesHeader = initParams.data?.config?.salesHeader;
 
@@ -423,10 +431,12 @@ export default {
 
                 if(["store"].includes(mode)) {
 
+                    form.item_id = form?.item?.code;
+                    form.currency_id = currency?.id;
+
                     (this.forms.entity.createUpdate.data.details).push({currency, name, ...form, id: Utils.uuid()});
 
                     Alerts.toastrs({type: "success", subtitle: "El producto ha sido agregado al detalle."});
-                    Alerts.tooltips({});
 
                     this.clearForm({functionName});
 
@@ -437,6 +447,8 @@ export default {
                 this.formErrors({functionName, type: "set", errors: validateForm});
 
             }
+
+            Alerts.tooltips({show: true});
 
         },
         deleteDetail({record, keyRecord}) {
@@ -454,7 +466,7 @@ export default {
                 let el = this;
 
                 Swal.fire({
-                    html: `<span>¿Desea eliminar el/la <b>${form?.name}</b> del detalle de la Venta?</span>`,
+                    html: `<span>¿Desea eliminar el/la <b>${form?.name}</b> del detalle de la venta?</span>`,
                     icon: "warning",
                     allowOutsideClick: false,
                     showCancelButton: true,
@@ -498,15 +510,22 @@ export default {
 
             if(validateForm?.bool) {
 
-                let createUpdate = await (this.isDefined({value: this.forms.entity.createUpdate.data.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: this.forms.entity.createUpdate.data.id}) : Requests.post({route: this.config.entity.routes.store, data: form}));
+                form.serie_id    = form?.serie?.code;
+                form.holder_id   = form?.holder?.code;
+                form.currency_id = form?.currency?.code;
+
+                delete form.branch;
+                delete form.serie;
+                delete form.holder;
+                delete form.currency;
+
+                let createUpdate = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: form.id}) : Requests.post({route: this.config.entity.routes.store, data: form}));
 
                 if(createUpdate?.bool && createUpdate?.data?.bool) {
 
                     Alerts.swals({show: false});
 
-                    this.forms.entity.createUpdate.extras.modals.finished.titles.header = createUpdate?.data?.msg;
-                    this.forms.entity.createUpdate.extras.modals.finished.titles.bool   = createUpdate?.data?.bool;
-                    this.forms.entity.createUpdate.extras.modals.finished.data          = createUpdate?.data?.sale;
+                    this.forms.entity.createUpdate.extras.modals.finished.data = createUpdate?.data?.sale;
 
                     Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.finished.id});
 
@@ -533,12 +552,13 @@ export default {
 
             switch(functionName) {
                 case "addDetail":
+                    this.forms.entity.createUpdate.extras.modals.details.data.id = null;
                     this.forms.entity.createUpdate.extras.modals.details.data.item = null;
                     break;
 
                 case "createUpdateEntity":
                     this.forms.entity.createUpdate.data.id         = null;
-                    this.forms.entity.createUpdate.data.issue_date = Utils.getCurrentDate();
+                    // this.forms.entity.createUpdate.data.issue_date = Utils.getCurrentDate();
                     // this.forms.entity.createUpdate.data.holder     = null;
                     this.forms.entity.createUpdate.data.status     = "";
                     this.forms.entity.createUpdate.data.details    = [];
@@ -592,15 +612,27 @@ export default {
 
                 }
 
+            }else if(["deleteDetail"].includes(functionName)) {
+
+                result.item = [];
+
+                if(!this.isDefined({value: form?.item})) {
+
+                    result.item.push(this.config.forms.errors.labels.required);
+                    result.bool = false;
+
+                }
+
             }else if(["createUpdateEntity"].includes(functionName)) {
 
-                result.branch     = [];
-                result.serie      = [];
-                result.issue_date = [];
-                result.holder     = [];
-                result.currency   = [];
-                result.status     = [];
-                result.details    = [];
+                result.branch      = [];
+                result.serie       = [];
+                result.issue_date  = [];
+                result.holder      = [];
+                result.currency    = [];
+                result.observation = [];
+                result.status      = [];
+                result.details     = [];
 
                 if(!this.isDefined({value: form?.branch})) {
 
@@ -695,7 +727,7 @@ export default {
     computed: {
         branches: function() {
 
-            return this.options?.branches?.records.map(e => ({code: e.id, label: e.name}));
+            return this.options?.branches?.records.map(e => ({code: e.id, label: e.name, data: e}));
 
         },
         series: function() {
@@ -715,7 +747,7 @@ export default {
         },
         holders: function() {
 
-            return this.options?.holders?.records.map(e => ({code: e.id, label: `${e.document_number} - ${e.name}`}));
+            return this.options?.holders?.records.map(e => ({code: e.id, label: `${e.document_number} - ${e.name}`, data: e}));
 
         },
         currencies: function() {

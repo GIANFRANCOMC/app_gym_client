@@ -45,6 +45,12 @@ class Utilities {
 
     }
 
+    public static function round($value, $decimals = 2) {
+
+        return round($value, $decimals);
+
+    }
+
     public static function convertNumberToWords($number) {
 
         $phrase = "";
