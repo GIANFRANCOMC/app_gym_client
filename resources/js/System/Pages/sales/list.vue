@@ -2,33 +2,51 @@
     <Breadcrumb :list="[config.entity.page, { title: 'Listado' }]"/>
 
     <!-- Records -->
-    <div class="d-flex flex-row mb-4">
-        <div class="align-self-start">
-            <InputText
-                v-model="lists.entity.filters.general"
-                @enterKeyPressed="listEntity({})"
-                hasDiv
-                title="Buscar"
-                :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
-                placeholder="Ingrese la búsqueda">
-                <template v-slot:inputGroupAppend>
-                    <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})" data-bs-toggle="tooltip" data-bs-placement="top" title="Búsqueda por: Nombre, Descripción.">
-                        <i class="fa fa-search"></i>
-                    </button>
-                </template>
-            </InputText>
-        </div>
-        <!-- <div class="align-self-end">
-            <button class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})">
-                <i class="fa fa-plus"></i>
-                <span class="ms-1">Agregar</span>
-            </button>
-        </div> -->
+    <div class="row g-3 mb-4">
+        <InputSlot
+            hasDiv
+            title="Cliente"
+            :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+            xl="6"
+            lg="6">
+            <template v-slot:input>
+                <v-select
+                    v-model="lists.entity.filters.holder"
+                    :options="holders"
+                    :class="'bg-white'"
+                    :clearable="true">
+                    <template #option="{ label }">
+                        <span v-text="truncate({value: label, length: 40})" class="d-block"></span>
+                    </template>
+                    <template #selected-option="{ label }">
+                        <span v-text="truncate({value: label, length: 40})"></span>
+                    </template>
+                </v-select>
+            </template>
+        </InputSlot>
+        <InputDate
+            v-model="lists.entity.filters.issue_date"
+            @enterKeyPressed="listEntity({})"
+            hasDiv
+            title="Fecha de emisión"
+            :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+            xl="6"
+            lg="6">
+            <template v-slot:inputGroupAppend>
+                <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar">
+                    <i class="fa fa-search"></i>
+                </button>
+                <button class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})">
+                    <i class="fa-solid fa-cash-register"></i>
+                    <span class="ms-1">Nuevo</span>
+                </button>
+            </template>
+        </InputDate>
     </div>
     <div class="table-responsive">
         <table class="table table-hover">
-            <thead class="table-light align-middle">
-                <tr class="text-center">
+            <thead class="table-light">
+                <tr class="text-center align-middle">
                     <th class="fw-bold col-1">DOCUMENTO</th>
                     <th class="fw-bold col-1">CLIENTE</th>
                     <th class="fw-bold col-1">FECHA DE EMISIÓN</th>
@@ -49,12 +67,12 @@
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td class="text-start">
-                                <span v-text="record.serie_sequential" class="fw-bold"></span><br/>
-                                <small v-text="record.serie?.document_type?.name"></small>
+                                <span v-text="record.serie_sequential" class="fw-bold d-block"></span>
+                                <small v-text="record.serie?.document_type?.name" class="d-block"></small>
                             </td>
                             <td class="text-start">
-                                <span v-text="record.holder?.name" class="fw-bold"></span><br/>
-                                <small v-text="record.holder?.document_number"></small>
+                                <span v-text="record.holder?.name" class="fw-bold d-block"></span>
+                                <small v-text="record.holder?.document_number" class="d-block"></small>
                             </td>
                             <td v-text="record.formatted_issue_date"></td>
                             <td>
@@ -89,7 +107,7 @@
         <Paginator :links="lists.entity.records.links" @clickPage="listEntity"/>
     </div>
 
-    <PrintSale modalId="adasdasd" :data="forms.entity.createUpdate.extras.modals.finished.data"/>
+    <PrintSale :modalId="forms.entity.createUpdate.extras.modals.finished.id" :data="forms.entity.createUpdate.extras.modals.finished.data"/>
 </template>
 
 <script>
@@ -128,7 +146,9 @@ export default {
                         route: Requests.config({entity: "sales", type: "list"})
                     },
                     filters: {
-                        general: ""
+                        issue_date: "",
+                        branch: null,
+                        holder: null
                     },
                     records: {
                         total: 0
@@ -140,32 +160,15 @@ export default {
                     createUpdate: {
                         extras: {
                             modals: {
-                                default: {
-                                    id: "createUpdateEntityModal",
-                                    titles: {
-                                        store: "Agregar",
-                                        update: "Editar"
-                                    }
-                                },
                                 finished: {
-                                    id: "finishedModal",
-                                    titles: {
-                                        header: "Comprobante",
-                                        bool: false
-                                    },
+                                    id: Utils.uuid(),
                                     data: {
-                                        id: ""
+                                        id: null
                                     }
                                 }
                             }
                         },
-                        data: {
-                            id: null,
-                            name: "",
-                            description: "",
-                            price: "",
-                            status: ""
-                        },
+                        data: {},
                         errors: {}
                     }
                 }
@@ -187,13 +190,18 @@ export default {
         };
     },
     methods: {
+        // Init
         async initParams({}) {
 
             let initParams = await Requests.get({route: this.config.entity.routes.initParams, showAlert: true});
 
-            this.options.sales = initParams.data?.config?.sales;
+            this.options.branches    = initParams.data?.config?.branches;
+            this.options.currencies  = initParams.data?.config?.currencies;
+            this.options.holders     = initParams.data?.config?.customers;
+            this.options.items       = initParams.data?.config?.items;
+            this.options.salesHeader = initParams.data?.config?.salesHeader;
 
-            return initParams?.bool && initParams?.data?.bool;
+            return Requests.valid({result: initParams});
 
         },
         async initOthers({}) {
@@ -201,19 +209,15 @@ export default {
             return true;
 
         },
+        // Entity forms
         async listEntity({url = null}) {
 
+            let filters = Utils.cloneJson(this.lists.entity.filters);
+            const filterJson = {branch_id: filters?.branch?.code, holder_id: filters?.holder?.code, issue_date: filters.issue_date};
+
             this.lists.entity.extras.loading = true;
-            this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: this.lists.entity.filters}))?.data;
+            this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: {...filterJson}}))?.data;
             this.lists.entity.extras.loading = false;
-
-        },
-        // Forms
-        modalPrintEntity({record = null}) {
-
-            this.forms.entity.createUpdate.extras.modals.finished.data = record;
-
-            $("#adasdasd").modal("show");
 
         },
         modalCreateUpdateEntity({record = null}) {
@@ -221,16 +225,17 @@ export default {
             window.location.href = this.config.entity.routes.create;
 
         },
-        async createUpdateEntity() {
+        modalPrintEntity({record = null}) {
 
-            //
+            this.forms.entity.createUpdate.extras.modals.finished.data = record;
+
+            Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.finished.id});
 
         },
-        // Forms utils
+        // Utils forms
         clearForm({functionName}) {
 
             switch(functionName) {
-                case "modalCreateUpdateEntity":
                 case "createUpdateEntity":
                     //
                     break;
@@ -239,7 +244,7 @@ export default {
         },
         formErrors({functionName, type = "clear", errors = []}) {
 
-            if(["modalCreateUpdateEntity", "createUpdateEntity"].includes(functionName)) {
+            if(["createUpdateEntity"].includes(functionName)) {
 
                 //
 
@@ -265,6 +270,23 @@ export default {
         isDefined({value}) {
 
             return Utils.isDefined({value});
+
+        },
+        truncate({value, length}) {
+
+            return Utils.truncate({value, length});
+
+        }
+    },
+    computed: {
+        branches: function() {
+
+            return this.options?.branches?.records.map(e => ({code: e.id, label: e.name, data: e}));
+
+        },
+        holders: function() {
+
+            return this.options?.holders?.records.map(e => ({code: e.id, label: `${e.document_number} - ${e.name}`, data: e}));
 
         }
     }

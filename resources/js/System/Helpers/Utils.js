@@ -136,3 +136,10 @@ export function fixedNumber(value) {
     return Number(value).toFixed(generalConfig.forms.inputs.round);
 
 }
+
+export function truncate({value, length = 40}) {
+
+    if(!value) return "";
+    return value.length > length ? value.slice(0, length) + "..." : value;
+
+}
