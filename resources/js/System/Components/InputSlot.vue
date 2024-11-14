@@ -4,7 +4,7 @@
             <slot name="default"></slot>
             <label v-if="!!title" v-text="title" :class="[...titleClass]"></label>
             <label v-if="isRequired" v-text="requiredLabel" :class="[...requiredClass]"></label>
-            <div class="input-group">
+            <div :class="[isInputGroup ? 'input-group' : '', ...divInputClass]">
                 <slot name="inputGroupPrepend"></slot>
                 <slot name="input"></slot>
                 <slot name="inputGroupAppend"></slot>
@@ -18,7 +18,7 @@
         <slot name="default"></slot>
         <label v-if="!!title" v-text="title" :class="[...titleClass]"></label>
         <label v-if="isRequired" v-text="requiredLabel" :class="[...requiredClass]"></label>
-        <div class="input-group">
+        <div :class="[isInputGroup ? 'input-group' : '', ...divInputClass]">
             <slot name="inputGroupPrepend"></slot>
             <slot name="input"></slot>
             <slot name="inputGroupAppend"></slot>
@@ -75,6 +75,16 @@ export default {
             default: ["text-danger", "ms-1", "fw-bold"]
         },
         // Input - Props
+        isInputGroup: {
+            type: Boolean,
+            required: false,
+            default: true
+        },
+        divInputClass:{
+            type: Array,
+            required: false,
+            default: []
+        },
         inputClass:{
             type: Array,
             required: false,

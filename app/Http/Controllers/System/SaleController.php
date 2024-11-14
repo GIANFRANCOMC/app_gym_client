@@ -42,7 +42,17 @@ class SaleController extends Controller {
 
     public function list(Request $request) {
 
-        $list = SaleHeader::when(Utilities::isDefined($request->holder_id), function($query) use($request) {
+        $list = SaleHeader::when(Utilities::isDefined($request->serie_id), function($query) use($request) {
+
+                                $query->where("serie_id", $request->serie_id);
+
+                           })
+                           ->when(Utilities::isDefined($request->sequential), function($query) use($request) {
+
+                                $query->where("sequential", $request->sequential);
+
+                           })
+                           ->when(Utilities::isDefined($request->holder_id), function($query) use($request) {
 
                                 $query->where("holder_id", $request->holder_id);
 

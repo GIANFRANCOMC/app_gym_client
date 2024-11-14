@@ -2,7 +2,46 @@
     <Breadcrumb :list="[config.entity.page, { title: 'Listado' }]"/>
 
     <!-- Records -->
-    <div class="row g-3 mb-4">
+    <div class="row row align-items-end g-3 mb-4">
+        <InputSlot
+            hasDiv
+            title="Serie"
+            :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+            xl="6"
+            lg="6">
+            <template v-slot:input>
+                <v-select
+                    v-model="lists.entity.filters.serie"
+                    :options="series"
+                    :class="'bg-white'"
+                    :clearable="true">
+                    <template #option="{ data }">
+                        <span v-text="`${data?.legible_serie} - ${data?.document_type?.name}`" class="d-block fw-bold"></span>
+                        <small v-text="data?.branch?.name" class="d-block"></small>
+                    </template>
+                    <template #selected-option="{ label }">
+                        <span v-text="truncate({value: label, length: 50})"></span>
+                    </template>
+                </v-select>
+            </template>
+        </InputSlot>
+        <InputText
+            v-model="lists.entity.filters.sequential"
+            @enterKeyPressed="listEntity({})"
+            hasDiv
+            title="Secuencia"
+            :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+            placeholder="Ejemplo: 203"
+            xl="3"
+            lg="6"/>
+        <InputDate
+            v-model="lists.entity.filters.issue_date"
+            @enterKeyPressed="listEntity({})"
+            hasDiv
+            title="Fecha de emisión"
+            :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+            xl="3"
+            lg="6"/>
         <InputSlot
             hasDiv
             title="Cliente"
@@ -16,32 +55,30 @@
                     :class="'bg-white'"
                     :clearable="true">
                     <template #option="{ label }">
-                        <span v-text="truncate({value: label, length: 40})" class="d-block"></span>
+                        <span v-text="truncate({value: label, length: 50})" class="d-block"></span>
                     </template>
                     <template #selected-option="{ label }">
-                        <span v-text="truncate({value: label, length: 40})"></span>
+                        <span v-text="truncate({value: label, length: 50})"></span>
                     </template>
                 </v-select>
             </template>
         </InputSlot>
-        <InputDate
-            v-model="lists.entity.filters.issue_date"
-            @enterKeyPressed="listEntity({})"
+        <InputSlot
             hasDiv
-            title="Fecha de emisión"
-            :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+            :isInputGroup="false"
             xl="6"
             lg="6">
-            <template v-slot:inputGroupAppend>
-                <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar">
+            <template v-slot:input>
+                <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})">
                     <i class="fa fa-search"></i>
+                    <span class="ms-1">Buscar</span>
                 </button>
                 <button class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})">
                     <i class="fa-solid fa-cash-register"></i>
                     <span class="ms-1">Nuevo</span>
                 </button>
             </template>
-        </InputDate>
+        </InputSlot>
     </div>
     <div class="table-responsive">
         <table class="table table-hover">
@@ -86,9 +123,6 @@
                                 <button type="button" class="btn btn-sm rounded-pill btn-success waves-effect m-1" @click="modalPrintEntity({record})" data-bs-toggle="tooltip" data-bs-placement="top" title="Imprimir">
                                     <i class="fa fa-print"></i>
                                 </button>
-                                <!-- <button type="button" class="btn btn-sm rounded-pill btn-warning waves-effect m-1" @click="modalCreateUpdateEntity({record})" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
-                                    <i class="fa fa-pencil"></i>
-                                </button> -->
                             </td>
                         </tr>
                     </template>
@@ -146,8 +180,9 @@ export default {
                         route: Requests.config({entity: "sales", type: "list"})
                     },
                     filters: {
+                        serie: null,
+                        sequential: "",
                         issue_date: "",
-                        branch: null,
                         holder: null
                     },
                     records: {
@@ -213,7 +248,7 @@ export default {
         async listEntity({url = null}) {
 
             let filters = Utils.cloneJson(this.lists.entity.filters);
-            const filterJson = {branch_id: filters?.branch?.code, holder_id: filters?.holder?.code, issue_date: filters.issue_date};
+            const filterJson = {serie_id: filters?.serie?.code, sequential: filters?.sequential, holder_id: filters?.holder?.code, issue_date: filters.issue_date};
 
             this.lists.entity.extras.loading = true;
             this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: {...filterJson}}))?.data;
@@ -279,9 +314,23 @@ export default {
         }
     },
     computed: {
-        branches: function() {
+        series: function() {
 
-            return this.options?.branches?.records.map(e => ({code: e.id, label: e.name, data: e}));
+            let series = [];
+
+            let branches = (this.options?.branches?.records ?? []);
+
+            for(let branch of branches) {
+
+                for(let branchSerie of branch.series) {
+
+                    series.push({code: branchSerie.id, label: `(${branch?.name}) ${branchSerie.legible_serie} - ${branchSerie?.document_type?.name}`, data: {...branchSerie, branch}});
+
+                }
+
+            }
+
+            return series;
 
         },
         holders: function() {
