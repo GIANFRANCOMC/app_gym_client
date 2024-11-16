@@ -33,14 +33,18 @@ class ExportController extends Controller {
 
                     try {
 
-                        $path = public_path("System/assets/img/avatars/1.png");
-                        $logo = "data:image/".pathinfo($path, PATHINFO_EXTENSION).";base64,".base64_encode(file_get_contents($path));
+                        $logoPath = public_path("System/assets/img/avatars/1.png");
+                        $logoImg  = "data:image/".pathinfo($logoPath, PATHINFO_EXTENSION).";base64,".base64_encode(file_get_contents($logoPath));
+
+                        $cancelledPath = public_path("System/assets/img/utils/sales/cancelled.png");
+                        $cancelledImg  = "data:image/".pathinfo($cancelledPath, PATHINFO_EXTENSION).";base64,".base64_encode(file_get_contents($cancelledPath));
 
                         $data = [
-                            "saleHeader" => $saleHeader,
-                            "company"    => $company,
-                            "extras"     => $saleHeader,
-                            "logo"       => $logo
+                            "saleHeader"   => $saleHeader,
+                            "company"      => $company,
+                            "extras"       => $saleHeader,
+                            "logoImg"      => $logoImg,
+                            "cancelledImg" => $cancelledImg
                         ];
 
                         if(in_array($printType, ["a4"])) {

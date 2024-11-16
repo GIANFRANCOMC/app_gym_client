@@ -338,11 +338,14 @@
     </style>
 </head>
 <body>
+    <div class="company_logo_box" style="position: absolute; text-align: center; top:40%;">
+        <img src="{{ $cancelledImg }}" style="opacity: 0.4;" width="45%">
+    </div>
     <div class="div-w-100">
         <table class="table-no-boder fs-0-65">
             <tr>
                 <td class="w-100 center">
-                    <img src="{{ asset('System/assets/img/favicon/favicon.ico') }}" alt="Logo" height="100px">
+                    <img src="{{ $logoImg }}" alt="Logo" class="company_logo" style="max-width: 80px;">
                 </td>
             </tr>
             <tr>

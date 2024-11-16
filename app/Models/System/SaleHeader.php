@@ -19,6 +19,7 @@ class SaleHeader extends Model {
         "hash_id",
         "serie_sequential",
         "formatted_issue_date",
+        "diff_days_issue_date",
         "legible_total",
         "formatted_status"
     ];
@@ -67,6 +68,16 @@ class SaleHeader extends Model {
     public function getFormattedIssueDateAttribute() {
 
         return Carbon::createFromFormat("Y-m-d", $this->attributes["issue_date"])->format("d-m-Y");
+
+    }
+
+    public function getDiffDaysIssueDateAttribute() {
+
+        $issueDateCarbon  = Carbon::parse($this->attributes["issue_date"]);
+        $todayCarbon      = Carbon::now();
+        $differenceInDays = $issueDateCarbon->diffInDays($todayCarbon);
+
+        return $issueDateCarbon->isFuture() ? $differenceInDays : -$differenceInDays;
 
     }
 

@@ -143,3 +143,27 @@ export function truncate({value, length = 40}) {
     return value.length > length ? value.slice(0, length) + "..." : value;
 
 }
+
+export function diffDaysLegible({diff}) {
+
+    let diffDaysLegible = "";
+    let numberDiff = Number(diff);
+
+    if(isNaN(numberDiff)) return "No identificado";
+
+    if(numberDiff === 0) {
+
+        diffDaysLegible = "Hoy";
+
+    }else {
+
+        let absNumberDiff = Math.abs(numberDiff);
+        let daysLegible   = absNumberDiff > 1 ? "días" : "día";
+
+        diffDaysLegible = `${numberDiff > 0 ? "En" : "Hace"} ${absNumberDiff} ${daysLegible}`;
+
+    }
+
+    return diffDaysLegible;
+
+}

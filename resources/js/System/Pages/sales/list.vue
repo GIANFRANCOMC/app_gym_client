@@ -122,7 +122,10 @@
                                 <span v-text="record.holder?.name" class="fw-bold d-block"></span>
                                 <small v-text="record.holder?.document_number" class="d-block"></small>
                             </td>
-                            <td v-text="record.formatted_issue_date"></td>
+                            <td>
+                                <span v-text="record.formatted_issue_date" class="d-block"></span>
+                                <span :class="['badge', 'd-block', 'mt-1',{ 'bg-label-success': record.diff_days_issue_date == 0, 'bg-label-warning': record.diff_days_issue_date != 0 }]" v-text="diffDaysLegible({diff: record.diff_days_issue_date})"></span>
+                            </td>
                             <td>
                                 <span v-text="record.currency?.sign ?? ''"></span>
                                 <span v-text="record.total" class="ms-1"></span>
@@ -317,7 +320,7 @@ export default {
 
                         Alerts.swals({});
 
-                        let cancel = await Requests.patch({route: el.config.entity.routes.cancel, data: form, id: form.id});
+                        let cancel = await Requests.patch({route: el.config.entity.routes.cancel, id: form.id});
 
                         if(cancel?.bool && cancel?.data?.bool) {
 
@@ -389,6 +392,11 @@ export default {
         truncate({value, length}) {
 
             return Utils.truncate({value, length});
+
+        },
+        diffDaysLegible({diff}) {
+
+            return Utils.diffDaysLegible({diff});
 
         }
     },

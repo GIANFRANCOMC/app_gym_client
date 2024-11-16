@@ -22,14 +22,14 @@
         }
 
         .company_logo {
-        max-height: 100px;
+            max-height: 100px;
         }
         .company_logo_box {
-        height: 100px;
+            height: 100px;
         }
         .company_logo_ticket {
-        max-width: 200px;
-        max-height: 80px
+            max-width: 200px;
+            max-height: 80px
         }
         .contain {object-fit: cover;}
 
@@ -607,11 +607,14 @@
     </style>
 </head>
 <body>
+    <div class="company_logo_box" style="position: absolute; text-align: center; top:20%;">
+        <img src="{{ $cancelledImg }}" style="opacity: 0.4;" width="30%">
+    </div>
     <table class="full-width">
         <tr>
             <td width="20%">
                 <div class="company_logo_box">
-                    <img src="{{ $logo }}" alt="Logo" class="company_logo" style="max-width: 150px;">
+                    <img src="{{ $logoImg }}" alt="Logo" class="company_logo" style="max-width: 150px;">
                 </div>
             </td>
             <td width="50%" class="pl-3">
