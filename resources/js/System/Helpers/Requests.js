@@ -189,7 +189,7 @@ export function valid({result}) {
 
 export function generateRoutes({entity, requestRoute}) {
 
-    return {
+    let routes = {
         consult: `${requestRoute}/${entity}`,
         list: `${requestRoute}/${entity}/list`,
         get: `${requestRoute}/${entity}/get`,
@@ -198,5 +198,13 @@ export function generateRoutes({entity, requestRoute}) {
         update: `${requestRoute}/${entity}`,
         initParams: `${requestRoute}/${entity}/initParams`,
     };
+
+    if(["sales"].includes(entity)) {
+
+        routes.cancel = `${requestRoute}/${entity}/cancel`;
+
+    }
+
+    return routes;
 
 }

@@ -65,17 +65,28 @@
         </InputSlot>
         <InputSlot
             hasDiv
+            title="Estado"
+            :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+            xl="3"
+            lg="6">
+            <template v-slot:input>
+                <v-select
+                    v-model="lists.entity.filters.status"
+                    :options="statusses"
+                    :class="'bg-white'"
+                    :clearable="true">
+                </v-select>
+            </template>
+        </InputSlot>
+        <InputSlot
+            hasDiv
             :isInputGroup="false"
-            xl="6"
+            xl="3"
             lg="6">
             <template v-slot:input>
                 <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})">
                     <i class="fa fa-search"></i>
                     <span class="ms-1">Buscar</span>
-                </button>
-                <button class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})">
-                    <i class="fa-solid fa-cash-register"></i>
-                    <span class="ms-1">Nuevo</span>
                 </button>
             </template>
         </InputSlot>
@@ -117,11 +128,11 @@
                                 <span v-text="record.total" class="ms-1"></span>
                             </td>
                             <td>
-                                <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
+                                <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive', 'cancelled'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-sm rounded-pill btn-success waves-effect m-1" @click="modalPrintEntity({record})" data-bs-toggle="tooltip" data-bs-placement="top" title="Imprimir">
-                                    <i class="fa fa-print"></i>
+                                <button type="button" class="btn btn-sm rounded-pill btn-primary waves-effect m-1" @click="modalActionsEntity({record})" data-bs-toggle="tooltip" data-bs-placement="top" title="Acciones">
+                                    <i class="fa fa-gear"></i>
                                 </button>
                             </td>
                         </tr>
@@ -141,7 +152,19 @@
         <Paginator :links="lists.entity.records.links" @clickPage="listEntity"/>
     </div>
 
-    <PrintSale :modalId="forms.entity.createUpdate.extras.modals.finished.id" :data="forms.entity.createUpdate.extras.modals.finished.data"/>
+    <PrintSale :modalId="forms.entity.createUpdate.extras.modals.finished.id" :data="forms.entity.createUpdate.extras.modals.finished.data">
+        <template v-slot:extraGroupAppend>
+            <div v-if="['active'].includes(forms.entity.createUpdate.extras.modals.finished.data?.status)" class="col-xl-3 col-lg-3 col-md-3 col-sm-3">
+                <div class="text-center cursor-pointer p-1" @click="cancelEntity({})">
+                    <div class="badge bg-danger p-3 rounded mb-1">
+                        <i class="fa-solid fa-rectangle-xmark fs-3"></i>
+                    </div>
+                    <br/>
+                    <span class="fw-semibold">Anular venta</span>
+                </div>
+            </div>
+        </template>
+    </PrintSale>
 </template>
 
 <script>
@@ -183,7 +206,8 @@ export default {
                         serie: null,
                         sequential: "",
                         issue_date: "",
-                        holder: null
+                        holder: null,
+                        status: null
                     },
                     records: {
                         total: 0
@@ -228,12 +252,10 @@ export default {
         // Init
         async initParams({}) {
 
-            let initParams = await Requests.get({route: this.config.entity.routes.initParams, showAlert: true});
+            let initParams = await Requests.get({route: this.config.entity.routes.initParams, data: {page: "list"}, showAlert: true});
 
             this.options.branches    = initParams.data?.config?.branches;
-            this.options.currencies  = initParams.data?.config?.currencies;
             this.options.holders     = initParams.data?.config?.customers;
-            this.options.items       = initParams.data?.config?.items;
             this.options.salesHeader = initParams.data?.config?.salesHeader;
 
             return Requests.valid({result: initParams});
@@ -248,23 +270,80 @@ export default {
         async listEntity({url = null}) {
 
             let filters = Utils.cloneJson(this.lists.entity.filters);
-            const filterJson = {serie_id: filters?.serie?.code, sequential: filters?.sequential, holder_id: filters?.holder?.code, issue_date: filters.issue_date};
+            const filterJson = {serie_id: filters?.serie?.code, sequential: filters?.sequential, holder_id: filters?.holder?.code, issue_date: filters.issue_date, status: filters?.status?.code};
 
             this.lists.entity.extras.loading = true;
             this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: {...filterJson}}))?.data;
             this.lists.entity.extras.loading = false;
 
         },
-        modalCreateUpdateEntity({record = null}) {
-
-            window.location.href = this.config.entity.routes.create;
-
-        },
-        modalPrintEntity({record = null}) {
+        modalActionsEntity({record = null}) {
 
             this.forms.entity.createUpdate.extras.modals.finished.data = record;
 
             Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.finished.id});
+
+        },
+        cancelEntity({}) {
+
+            const functionName = "cancelEntity";
+
+            this.formErrors({functionName, type: "clear"});
+
+            let form = Utils.cloneJson(this.forms.entity.createUpdate.extras.modals.finished.data);
+
+            const validateForm = this.validateForm({functionName, form});
+
+            if(validateForm?.bool) {
+
+                Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.finished.id});
+
+                let el = this;
+
+                Swal.fire({
+                    html: `<span>¿Desea eliminar la venta con documento <b>${form?.serie_sequential}</b>?</span>`,
+                    icon: "warning",
+                    allowOutsideClick: false,
+                    showCancelButton: true,
+                    confirmButtonText: "Sí, eliminar",
+                    cancelButtonText: "Cancelar",
+                    customClass: {
+                        confirmButton: "btn btn-primary waves-effect",
+                        cancelButton: "btn btn-secondary waves-effect ms-3"
+                    }
+                }).then(async function(result) {
+
+                    if(result.isConfirmed) {
+
+                        Alerts.swals({});
+
+                        let cancel = await Requests.patch({route: el.config.entity.routes.cancel, data: form, id: form.id});
+
+                        if(cancel?.bool && cancel?.data?.bool) {
+
+                            Alerts.toastrs({type: "success", subtitle: cancel?.data?.msg});
+                            Alerts.swals({show: false});
+
+                            el.listEntity({})
+
+                        }else {
+
+                            Alerts.toastrs({type: "error", subtitle: cancel?.data?.msg});
+                            Alerts.swals({show: false});
+
+                        }
+
+                    }else if(result.isDismissed) {
+
+                        //
+
+                    }
+
+                })
+
+            }
+
+            Alerts.tooltips({show: false});
 
         },
         // Utils forms
@@ -336,6 +415,11 @@ export default {
         holders: function() {
 
             return this.options?.holders?.records.map(e => ({code: e.id, label: `${e.document_number} - ${e.name}`, data: e}));
+
+        },
+        statusses: function() {
+
+            return this.options?.salesHeader?.statusses.map(e => ({code: e.code, label: e.label}));
 
         }
     }

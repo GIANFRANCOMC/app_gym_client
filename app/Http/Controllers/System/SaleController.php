@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
-use App\Http\Requests\System\Sales\{StoreSaleRequest, UpdateSaleRequest};
+use App\Http\Requests\System\Sales\{CancelSaleRequest, StoreSaleRequest, UpdateSaleRequest};
 use App\Models\System\{Branch, Currency, Customer, Item, SaleBody, SaleHeader};
 
 class SaleController extends Controller {
@@ -18,20 +18,38 @@ class SaleController extends Controller {
         $initParams = new stdClass();
 
         $config = new stdClass();
-        $config->branches = new stdClass();
-        $config->branches->records = Branch::with(["series.documentType"])->get();
 
-        $config->currencies = new stdClass();
-        $config->currencies->records = Currency::get();
+        $page = $request->page ?? "";
 
-        $config->customers = new stdClass();
-        $config->customers->records = Customer::get();
+        if(in_array($page, ["list"])){
 
-        $config->items = new stdClass();
-        $config->items->records = Item::with(["currency"])->get();
+            $config->branches = new stdClass();
+            $config->branches->records = Branch::with(["series.documentType"])->get();
 
-        $config->salesHeader = new stdClass();
-        $config->salesHeader->statusses = SaleHeader::getStatusses();
+            $config->customers = new stdClass();
+            $config->customers->records = Customer::get();
+
+            $config->salesHeader = new stdClass();
+            $config->salesHeader->statusses = SaleHeader::getStatusses();
+
+        }else if(in_array($page, ["main"])){
+
+            $config->branches = new stdClass();
+            $config->branches->records = Branch::with(["series.documentType"])->get();
+
+            $config->currencies = new stdClass();
+            $config->currencies->records = Currency::get();
+
+            $config->customers = new stdClass();
+            $config->customers->records = Customer::get();
+
+            $config->items = new stdClass();
+            $config->items->records = Item::with(["currency"])->get();
+
+            $config->salesHeader = new stdClass();
+            $config->salesHeader->statusses = SaleHeader::getStatusses();
+
+        }
 
         $initParams->config = $config;
         $initParams->bool   = true;
@@ -60,6 +78,11 @@ class SaleController extends Controller {
                            ->when(Utilities::isDefined($request->issue_date), function($query) use($request) {
 
                                 $query->where("issue_date", $request->issue_date);
+
+                           })
+                           ->when(Utilities::isDefined($request->status), function($query) use($request) {
+
+                                $query->where("status", $request->status);
 
                            })
                            ->orderBy("id", "DESC")
@@ -164,6 +187,28 @@ class SaleController extends Controller {
     public function update(UpdateSaleRequest $request, $id) {
 
         //
+
+    }
+
+    public function cancel(CancelSaleRequest $request, $id) {
+
+        $userAuth = Auth::user();
+
+        $saleHeader = SaleHeader::findOrFail($id);
+
+        if(Utilities::isDefined($saleHeader) && in_array($saleHeader->status, ["active"])) {
+
+            $saleHeader->status     = "cancelled";
+            $saleHeader->updated_at = now();
+            $saleHeader->updated_by = $userAuth->id ?? null;
+            $saleHeader->save();
+
+        }
+
+        $bool = $saleHeader->wasChanged();
+        $msg  = $bool ? "Venta anulada correctamente." : "No se ha podido anular la venta.";
+
+        return response()->json(["bool" => $bool, "msg" => $msg, "sale" => $saleHeader], 200);
 
     }
 

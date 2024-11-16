@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->date("issue_date");
             $table->decimal("total", 10, 2);
             $table->text("observation")->nullable();
-            $table->enum("status", ["active", "inactive"])->default("active");
+            $table->enum("status", ["active", "cancelled", "inactive"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();
             $table->integer("created_by")->nullable();

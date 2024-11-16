@@ -375,7 +375,7 @@ export default {
         // Init
         async initParams({}) {
 
-            let initParams = await Requests.get({route: this.config.entity.routes.initParams, showAlert: true});
+            let initParams = await Requests.get({route: this.config.entity.routes.initParams, data: {page: "main"}, showAlert: true});
 
             this.options.branches    = initParams.data?.config?.branches;
             this.options.currencies  = initParams.data?.config?.currencies;
