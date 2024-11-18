@@ -139,7 +139,7 @@
                             </a>
                         </li>
                         <li class="menu-item" id="menu-item-reports">
-                            <a href="{{ route('users.index') }}" class="menu-link">
+                            <a href="{{ route('reports.index') }}" class="menu-link">
                                 <i class="fa fa-print me-2"></i>
                                 <div data-i18n="Page 1">Reportes</div>
                             </a>

@@ -42,11 +42,18 @@
                         <i class="fa fa-warning text-warning"></i>
                         <span class="ms-1">Page Not Found️</span>
                     </div>
-                    @if ($msg)
+                    @if (isset($msg))
                         <div class="card my-3">
                             <div class="card-body">
                                 <span class="badge bg-label-primary">Mensaje:</span>
                                 <span>{{ $msg ?? "" }}</span>
+                            </div>
+                        </div>
+                    @else
+                        <div class="card my-3">
+                            <div class="card-body">
+                                <span class="badge bg-label-primary">Mensaje:</span>
+                                <span>Recurso no encontrado</span>
                             </div>
                         </div>
                     @endif

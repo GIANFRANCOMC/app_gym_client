@@ -39,7 +39,7 @@ Route::middleware(["web"])
             Route::prefix('/items')->group($rutaDefecto.'/Item.php');
             Route::prefix('/sales')->group($rutaDefecto.'/Sale.php');
             Route::prefix('/users')->group($rutaDefecto.'/User.php');
-            Route::prefix('/exports')->group($rutaDefecto.'/Export.php');
+            Route::prefix('/reports')->group($rutaDefecto.'/Report.php');
 
             Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
                  ->name('logout');
