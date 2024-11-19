@@ -7,6 +7,7 @@ import "vue-select/dist/vue-select.css";
 
 import Breadcrumb   from "../../Components/Breadcrumb.vue";
 import InputDate    from "../../Components/InputDate.vue";
+import InputMonth   from "../../Components/InputMonth.vue";
 import InputNumber  from "../../Components/InputNumber.vue";
 import InputSelect  from "../../Components/InputSelect.vue";
 import InputSlot    from "../../Components/InputSlot.vue";
@@ -21,6 +22,7 @@ createApp(App)
 .component("v-select", VueSelect)
 .component("Breadcrumb", Breadcrumb)
 .component("InputDate", InputDate)
+.component("InputMonth", InputMonth)
 .component("InputNumber", InputNumber)
 .component("InputSelect", InputSelect)
 .component("InputSlot", InputSlot)

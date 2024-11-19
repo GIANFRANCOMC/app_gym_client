@@ -111,3 +111,45 @@ export function modals({type = "show", id = null}) {
     }
 
 }
+
+export function generateAlert({messages = [], type = "warning", headerTitle = null, msgContent = null}) {
+
+	let tableAlertHtml = messages.length > 0 ? this.generateTableAlert({messages, type}) : "";
+
+	Swal.fire({title             : headerTitle ?? "",
+		       type              : type,
+               icon              : "warning",
+		       allowOutsideClick : false,
+		       allowEscapeKey    : false,
+		       html              : `${msgContent ?? ""} ${tableAlertHtml}`,
+               confirmButtonText: "Entendido",
+               customClass: {
+                   confirmButton: "btn btn-primary waves-effect"
+               }});
+
+}
+
+export function generateTableAlert({messages}) {
+
+	let result = messages.length === 0 ? "" : `
+	<table class="table table table-hover table-bordered">
+		<thead class="table-light">
+			<tr class="text-center align-middle">
+				<th class="text-center">N°</th>
+				<th class="text-center">Mensaje</th>
+			</tr>
+		</thead>
+		<tbody class="table-border-bottom-0 bg-white">
+			${messages.reduce((carry, singleMessage, index)=>carry+/*html*/`
+			<tr>
+				<td class="text-center">${index + 1}</td>
+				<td class="text-left">${singleMessage}</td>
+			</tr>
+			`, "")}
+		</tbody>
+	</table>
+	`;
+
+	return result;
+
+}

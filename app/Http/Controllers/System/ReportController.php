@@ -102,33 +102,23 @@ class ReportController extends Controller {
 
     }
 
-    public function items(Request $request) {
-
-        $items = Item::with(["currency"])
-                     ->get();
-
-        $data = collect([]);
-
-        foreach($items as $item) {
-
-            $record = new stdClass;
-            $record->name        = $item->name;
-            $record->description = $item->description;
-            $record->price       = $item->price;
-            $record->currency    = $item->currency->plural_name;
-            $record->status      = $item->formatted_status;
-
-            $data->push($record);
-
-        }
-
-        return Excel::download(new ItemExport($data), "Productos - Servicios.xlsx");
-
-    }
-
     public function customers(Request $request) {
 
-        $customers = Customer::with(["identityDocumentType"])
+        $customers = Customer::when(Utilities::isDefined($request->document_number), function($query) use($request) {
+
+                                $filter = "%".trim($request->document_number)."%";
+
+                                $query->where("document_number", "like", $filter);
+
+                             })
+                             ->when(Utilities::isDefined($request->name), function($query) use($request) {
+
+                                $filter = "%".trim($request->name)."%";
+
+                                $query->where("name", "like", $filter);
+
+                             })
+                             ->with(["identityDocumentType"])
                              ->get();
 
         $data = collect([]);
@@ -150,9 +140,87 @@ class ReportController extends Controller {
 
     }
 
+    public function users(Request $request) {
+
+        $users = User::when(Utilities::isDefined($request->document_number), function($query) use($request) {
+
+                        $filter = "%".trim($request->document_number)."%";
+
+                        $query->where("document_number", "like", $filter);
+
+                     })
+                     ->when(Utilities::isDefined($request->name), function($query) use($request) {
+
+                        $filter = "%".trim($request->name)."%";
+
+                        $query->where("name", "like", $filter);
+
+                     })
+                     ->with(["identityDocumentType"])
+                     ->get();
+
+        $data = collect([]);
+
+        foreach($users as $user) {
+
+            $record = new stdClass;
+            $record->documentType    = $user->identityDocumentType->name;
+            $record->document_number = $user->document_number;
+            $record->name            = $user->name;
+            $record->email           = $user->email;
+            $record->status          = $user->formatted_status;
+
+            $data->push($record);
+
+        }
+
+        return Excel::download(new UserExport($data), "Colaboradores.xlsx");
+
+    }
+
+    public function items(Request $request) {
+
+        $items = Item::when(Utilities::isDefined($request->name), function($query) use($request) {
+
+                        $filter = "%".trim($request->name)."%";
+
+                        $query->where("name", "like", $filter);
+
+                     })
+                     ->with(["currency"])
+                     ->get();
+
+        $data = collect([]);
+
+        foreach($items as $item) {
+
+            $record = new stdClass;
+            $record->name        = $item->name;
+            $record->description = $item->description;
+            $record->price       = $item->price;
+            $record->currency    = $item->currency->plural_name;
+            $record->status      = $item->formatted_status;
+
+            $data->push($record);
+
+        }
+
+        return Excel::download(new ItemExport($data), "Productos - Servicios.xlsx");
+
+    }
+
+
+
     public function branches(Request $request) {
 
-        $branches = Branch::get();
+        $branches = Branch::when(Utilities::isDefined($request->name), function($query) use($request) {
+
+                            $filter = "%".trim($request->name)."%";
+
+                            $query->where("name", "like", $filter);
+
+                          })
+                          ->get();
 
         $data = collect([]);
 
@@ -172,7 +240,51 @@ class ReportController extends Controller {
 
     public function sales(Request $request) {
 
-        $salesHeader = SaleHeader::get();
+        $salesHeader = SaleHeader::when(Utilities::isDefined($request->type), function($query) use($request) {
+
+                                    if(in_array($request->type, ["by_month"])) {
+
+                                        if(Utilities::isDefined($request->start_month)) {
+
+                                            list($year, $month) = explode("-", $request->start_month);
+
+                                            $query->whereYear("issue_date", $year)
+                                                  ->whereMonth("issue_date", $month);
+
+                                        }
+
+                                    }else if(in_array($request->type, ["range_months"])) {
+
+                                        if(Utilities::isDefined($request->start_date) && Utilities::isDefined($request->end_date)) {
+
+                                            dd("pendiente");
+                                            $query->where("issue_date", ">=", $request->start_date."-01")
+                                                  ->where("issue_date", "<=", $request->end_date."-31");
+
+                                        }
+
+                                    }else if(in_array($request->type, ["by_date"])) {
+
+                                        if(Utilities::isDefined($request->start_date)) {
+
+                                            $query->where("issue_date", $request->start_date);
+
+                                        }
+
+                                    }else if(in_array($request->type, ["range_dates"])) {
+
+                                        if(Utilities::isDefined($request->start_date) && Utilities::isDefined($request->end_date)) {
+
+                                            $query->where("issue_date", ">=", $request->start_date)
+                                                  ->where("issue_date", "<=", $request->end_date);
+
+                                        }
+
+                                    }
+
+                                 })
+                                 ->with(["holder", "currency"])
+                                 ->get();
 
         $data = collect([]);
 
@@ -191,30 +303,6 @@ class ReportController extends Controller {
         }
 
         return Excel::download(new SaleExport($data), "Ventas.xlsx");
-
-    }
-
-    public function users(Request $request) {
-
-        $users = User::with(["identityDocumentType"])
-                     ->get();
-
-        $data = collect([]);
-
-        foreach($users as $user) {
-
-            $record = new stdClass;
-            $record->documentType    = $user->identityDocumentType->name;
-            $record->document_number = $user->document_number;
-            $record->name            = $user->name;
-            $record->email           = $user->email;
-            $record->status          = $user->formatted_status;
-
-            $data->push($record);
-
-        }
-
-        return Excel::download(new UserExport($data), "Colaboradores.xlsx");
 
     }
 
