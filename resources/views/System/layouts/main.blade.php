@@ -103,7 +103,7 @@
 
                     <ul class="menu-inner py-1">
                         <li class="menu-item mt-3">
-                            <a href="#" class="menu-link" id="menu-item-home">
+                            <a href="{{ route('home.index') }}" class="menu-link" id="menu-item-home">
                                 <i class="fa fa-home me-2"></i>
                                 <div data-i18n="Inicio">Inicio</div>
                             </a>
@@ -150,11 +150,11 @@
                                 <div data-i18n="Configuración">Configuración</div>
                             </a>
                             <ul class="menu-sub">
-                                <li class="menu-item" id="menu-item-list-sales">
+                                {{-- <li class="menu-item" id="menu-item-list-sales">
                                     <a href="{{ route('sales.index') }}" class="menu-link">
                                         <div data-i18n="Collapsed menu">Mi empresa</div>
                                     </a>
-                                </li>
+                                </li> --}}
                                 <li class="menu-item" id="menu-item-list-brands">
                                     <a href="{{ route('branches.index') }}" class="menu-link">
                                         <div data-i18n="Collapsed menu">Sucursales</div>

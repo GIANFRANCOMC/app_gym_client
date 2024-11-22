@@ -1,7 +1,7 @@
 <template>
     <Breadcrumb :list="[config.entity.page]"/>
 
-    <div class="row row align-items-end g-3 mb-3">
+    <div class="row align-items-end g-3 mb-3">
         <InputSlot
             hasDiv
             title="Reporte"
@@ -18,7 +18,7 @@
             </template>
         </InputSlot>
     </div>
-    <div class="row row align-items-end g-3 mb-3">
+    <div class="row align-items-end g-3 mb-3">
         <template v-if="isDefined({value: forms.entity.createUpdate.data.report?.code})">
             <template v-if="['customers'].includes(forms.entity.createUpdate.data.report?.code)">
                 <InputText

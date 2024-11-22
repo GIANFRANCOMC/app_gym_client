@@ -2,7 +2,7 @@
     <Breadcrumb :list="[config.entity.page, { title: 'Listado' }]"/>
 
     <!-- Records -->
-    <div class="row row align-items-end g-3 mb-4">
+    <div class="row align-items-end g-3 mb-4">
         <InputSlot
             hasDiv
             title="Serie"

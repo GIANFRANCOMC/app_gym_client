@@ -199,7 +199,11 @@ export function generateRoutes({entity, requestRoute}) {
         initParams: `${requestRoute}/${entity}/initParams`,
     };
 
-    if(["sales"].includes(entity)) {
+    if(["home"].includes(entity)) {
+
+        routes.initData = `${requestRoute}/${entity}/initData`;
+
+    }else if(["sales"].includes(entity)) {
 
         routes.cancel = `${requestRoute}/${entity}/cancel`;
 

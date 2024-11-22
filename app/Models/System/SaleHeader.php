@@ -98,7 +98,7 @@ class SaleHeader extends Model {
 
         $statusses = [
             ["code" => "active", "label" => "Activo"],
-            ["code" => "inactive", "label" => "Inactivo"],
+            // ["code" => "inactive", "label" => "Inactivo"],
             ["code" => "cancelled", "label" => "Anulado"]
         ];
 
