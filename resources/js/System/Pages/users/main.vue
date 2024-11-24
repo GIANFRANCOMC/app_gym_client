@@ -29,6 +29,8 @@
         <table class="table table-hover">
             <thead class="table-light">
                 <tr class="text-center">
+                    <th class="fw-bold col-1">TIPO DE<br/>DOCUMENTO</th>
+                    <th class="fw-bold col-1">NÚMERO DE<br/>DOCUMENTO</th>
                     <th class="fw-bold col-1">NOMBRE</th>
                     <th class="fw-bold col-1">CORREO ELECTRÓNICO</th>
                     <th class="fw-bold col-1">ESTADO</th>
@@ -46,6 +48,8 @@
                 <template v-else>
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
+                            <td v-text="record.identity_document_type?.name"></td>
+                            <td v-text="record.document_number"></td>
                             <td v-text="record.name"></td>
                             <td v-text="record.email"></td>
                             <td>
@@ -83,6 +87,21 @@
                 </div>
                 <div class="modal-body">
                     <div class="row g-2 mb-3">
+                        <InputSlot
+                            hasDiv
+                            title="Sucursal"
+                            isRequired
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.branch"
+                            xl="5"
+                            lg="6">
+                            <template v-slot:input>
+                                <v-select
+                                    v-model="forms.entity.createUpdate.data.branch"
+                                    :options="identityDocumentTypes"
+                                    :clearable="false"/>
+                            </template>
+                        </InputSlot>
                         <InputText
                             v-model="forms.entity.createUpdate.data.name"
                             hasDiv
@@ -147,6 +166,11 @@
 </template>
 
 <script>
+import * as Alerts    from "../../Helpers/Alerts.js";
+import * as Constants from "../../Helpers/Constants.js";
+import * as Requests  from "../../Helpers/Requests.js";
+import * as Utils     from "../../Helpers/Utils.js";
+
 export default {
     components: {
         //
@@ -227,6 +251,7 @@ export default {
 
             let initParams = await Requests.get({route: this.config.entity.routes.initParams, showAlert: true});
 
+            this.options.identityDocumentTypes = initParams.data?.config?.identityDocumentTypes;
             this.options.users = initParams.data?.config?.users;
 
             return initParams?.bool && initParams?.data?.bool;
@@ -383,6 +408,13 @@ export default {
         isDefined({value}) {
 
             return Utils.isDefined({value});
+
+        }
+    },
+    computed: {
+        identityDocumentTypes: function() {
+
+            return this.options?.identityDocumentTypes?.records.map(e => ({code: e.id, label: e.name}));
 
         }
     }

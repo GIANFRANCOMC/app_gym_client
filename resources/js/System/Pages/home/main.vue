@@ -5,7 +5,7 @@
         <div class="col-lg-3 col-sm-6">
             <div class="card card-border-shadow-success h-100">
                 <div class="card-body">
-                    <div class="d-flex align-items-center mb-2">
+                    <div class="d-flex align-items-center mb-3">
                         <div class="avatar me-3">
                             <span class="avatar-initial rounded bg-label-success">
                                 <i class="fa-solid fa-cash-register"></i>
@@ -13,18 +13,17 @@
                         </div>
                         <h4 class="mb-0" v-text="'S/ '+fixedNumber(forms.entity.home.data.sales?.all?.total ?? 0)"></h4>
                     </div>
-                    <p class="mb-1 fw-semibold">VENTAS EN TOTAL</p>
-                    <p class="mb-0">
-                        <small class="text-muted me-2">Hoy</small>
-                        <span class="text-heading fw-medium me-2" v-text="forms.entity.home.data.sales?.all?.count ?? 0"></span>
-                    </p>
+                    <span class="fw-semibold">
+                        VENTAS EN TOTAL
+                        <small class="text-muted">| Hoy</small>
+                    </span>
                 </div>
             </div>
         </div>
         <div class="col-lg-3 col-sm-6">
             <div class="card card-border-shadow-danger h-100">
                 <div class="card-body">
-                    <div class="d-flex align-items-center mb-2">
+                    <div class="d-flex align-items-center mb-3">
                         <div class="avatar me-3">
                             <span class="avatar-initial rounded bg-label-danger">
                                 <i class="fa-solid fa-rectangle-xmark"></i>
@@ -32,18 +31,17 @@
                         </div>
                         <h4 class="mb-0" v-text="'S/ '+fixedNumber(forms.entity.home.data.sales?.cancelled?.total ?? 0)"></h4>
                     </div>
-                    <p class="mb-1 fw-semibold">VENTAS ANULADAS</p>
-                    <p class="mb-0">
-                        <small class="text-muted me-2">Hoy</small>
-                        <span class="text-heading fw-medium me-2" v-text="forms.entity.home.data.sales?.cancelled?.count ?? 0"></span>
-                    </p>
+                    <span class="fw-semibold">
+                        VENTAS ANULADAS
+                        <small class="text-muted">| Hoy</small>
+                    </span>
                 </div>
             </div>
         </div>
         <div class="col-lg-3 col-sm-6">
             <div class="card card-border-shadow-info h-100">
                 <div class="card-body">
-                    <div class="d-flex align-items-center mb-2">
+                    <div class="d-flex align-items-center mb-3">
                         <div class="avatar me-3">
                             <span class="avatar-initial rounded bg-label-info">
                                 <i class="ti ti-git-fork ti-md"></i>
@@ -51,17 +49,14 @@
                         </div>
                         <h4 class="mb-0" v-text="forms.entity.home.data.branches?.valid?.count ?? 0"></h4>
                     </div>
-                    <p class="mb-1 fw-semibold">SUCURSALES</p>
-                    <p class="mb-0">
-                        <small class="text-muted">Total</small>
-                    </p>
+                    <span class="fw-semibold">SUCURSALES</span>
                 </div>
             </div>
         </div>
         <div class="col-lg-3 col-sm-6">
             <div class="card card-border-shadow-secondary h-100">
                 <div class="card-body">
-                    <div class="d-flex align-items-center mb-2">
+                    <div class="d-flex align-items-center mb-3">
                         <div class="avatar me-3">
                             <span class="avatar-initial rounded bg-label-secondary">
                                 <i class="fa-solid fa-users"></i>
@@ -69,10 +64,7 @@
                         </div>
                         <h4 class="mb-0" v-text="forms.entity.home.data.users?.valid?.count ?? 0"></h4>
                     </div>
-                    <p class="mb-1 fw-semibold">COLABORADORES</p>
-                    <p class="mb-0">
-                        <small class="text-muted">Total</small>
-                    </p>
+                    <span class="fw-semibold">COLABORADORES</span>
                 </div>
             </div>
         </div>
@@ -144,7 +136,7 @@ export default {
     },
     mounted: async function() {
 
-        Utils.navbarItem(this.config.entity.page.menu.id, {addClass: "open"});
+        Utils.navbarItem(this.config.entity.page.menu.id, {});
         Alerts.swals({type: "initParams"});
 
         let initParams = await this.initParams({}),

@@ -47,7 +47,7 @@
                 <template v-else>
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
-                            <td v-text="record.identityDocumentType?.name"></td>
+                            <td v-text="record.identity_document_type?.name"></td>
                             <td v-text="record.document_number"></td>
                             <td v-text="record.name"></td>
                             <td>

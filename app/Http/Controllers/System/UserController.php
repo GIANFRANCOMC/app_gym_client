@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\Users\{StoreUserRequest, UpdateUserRequest};
-use App\Models\System\{User};
+use App\Models\System\{IdentityDocumentType, User};
 
 class UserController extends Controller {
 
@@ -18,6 +18,10 @@ class UserController extends Controller {
         $initParams = new stdClass();
 
         $config = new stdClass();
+
+        $config->identityDocumentTypes = new stdClass();
+        $config->identityDocumentTypes->records = IdentityDocumentType::get();
+
         $config->users = new stdClass();
         $config->users->statusses = User::getStatusses();
 
@@ -38,6 +42,7 @@ class UserController extends Controller {
 
                     })
                     ->orderBy("name", "ASC")
+                    ->with(["identityDocumentType"])
                     ->paginate(10);
 
         return $list;
