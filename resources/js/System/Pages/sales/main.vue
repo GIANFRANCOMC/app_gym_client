@@ -183,7 +183,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row g-3 mb-3">
+                    <div class="row g-3">
                         <InputSlot
                             hasDiv
                             title="Producto"

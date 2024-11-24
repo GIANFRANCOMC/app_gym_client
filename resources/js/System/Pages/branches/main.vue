@@ -2,33 +2,39 @@
     <Breadcrumb :list="[config.entity.page, { title: 'Sucursales' }]"/>
 
     <!-- Records -->
-    <div class="d-flex flex-row mb-4">
-        <div class="align-self-start">
-            <InputText
-                v-model="lists.entity.filters.general"
-                @enterKeyPressed="listEntity({})"
-                hasDiv
-                title="Buscar"
-                :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
-                placeholder="Ingrese la búsqueda">
-                <template v-slot:inputGroupAppend>
-                    <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})" data-bs-toggle="tooltip" data-bs-placement="top" title="Búsqueda por: Nombre.">
-                        <i class="fa fa-search"></i>
-                    </button>
-                </template>
-            </InputText>
-        </div>
-        <div class="align-self-end">
-            <button class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})">
-                <i class="fa fa-plus"></i>
-                <span class="ms-1">Agregar</span>
-            </button>
-        </div>
+    <div class="row align-items-end g-3 mb-4">
+        <InputText
+            v-model="lists.entity.filters.general"
+            @enterKeyPressed="listEntity({})"
+            hasDiv
+            title="Buscar"
+            :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+            placeholder="Ingrese la búsqueda"
+            xl="4"
+            lg="4">
+            <template v-slot:inputGroupAppend>
+                <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})" data-bs-toggle="tooltip" data-bs-placement="top" title="Búsqueda por: Nombre.">
+                    <i class="fa fa-search"></i>
+                </button>
+            </template>
+        </InputText>
+        <InputSlot
+            hasDiv
+            :isInputGroup="false"
+            xl="8"
+            lg="8">
+            <template v-slot:input>
+                <button class="btn btn-primary waves-effect" @click="modalCreateUpdateEntity({})">
+                    <i class="fa fa-plus"></i>
+                    <span class="ms-1">Agregar</span>
+                </button>
+            </template>
+        </InputSlot>
     </div>
     <div class="table-responsive">
         <table class="table table-hover">
             <thead class="table-light">
-                <tr class="text-center">
+                <tr class="text-center align-middle">
                     <th class="fw-bold col-1">NOMBRE</th>
                     <th class="fw-bold col-1">SERIES</th>
                     <th class="fw-bold col-1">ESTADO</th>
@@ -47,7 +53,12 @@
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td v-text="record.name"></td>
-                            <td class="text-start" v-html="record?.series?.map(e => '* '+e?.legible_serie+' - '+e?.document_type?.name).join('<br/>')"></td>
+                            <td class="text-start">
+                                <div v-for="serie in record?.series" :key="serie.id" class="my-2">
+                                    <span v-text="'• '+serie?.document_type?.name+':'" class="badge bg-label-info"></span>
+                                    <span v-text="serie?.legible_serie" class="fw-semibold ms-2"></span>
+                                </div>
+                            </td>
                             <td>
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
@@ -82,7 +93,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row g-2 mb-3">
+                    <div class="row g-3 mb-3">
                         <InputText
                             v-model="forms.entity.createUpdate.data.name"
                             hasDiv
@@ -91,21 +102,22 @@
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.name"
                             xl="6"
-                            lg="6"
-                            md="12"
-                            sm="12"/>
-                        <InputSelect
-                            v-model="forms.entity.createUpdate.data.status"
-                            :options="options?.branches?.statusses"
+                            lg="6"/>
+                        <InputSlot
                             hasDiv
                             title="Estado"
                             isRequired
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.status"
                             xl="6"
-                            lg="6"
-                            md="12"
-                            sm="12"/>
+                            lg="6">
+                            <template v-slot:input>
+                                <v-select
+                                    v-model="forms.entity.createUpdate.data.status"
+                                    :options="statusses"
+                                    :clearable="false"/>
+                            </template>
+                        </InputSlot>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -204,7 +216,7 @@ export default {
     methods: {
         async initParams({}) {
 
-            let initParams = await Requests.get({route: this.config.entity.routes.initParams, showAlert: true});
+            let initParams = await Requests.get({route: this.config.entity.routes.initParams, data: {page: "main"}, showAlert: true});
 
             this.options.branches = initParams.data?.config?.branches;
 
@@ -344,6 +356,13 @@ export default {
         isDefined({value}) {
 
             return Utils.isDefined({value});
+
+        }
+    },
+    computed: {
+        statusses: function() {
+
+            return this.options?.branches?.statusses.map(e => ({code: e.code, label: e.label}));
 
         }
     }

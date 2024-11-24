@@ -2,28 +2,34 @@
     <Breadcrumb :list="[config.entity.page]"/>
 
     <!-- Records -->
-    <div class="d-flex flex-row mb-4">
-        <div class="align-self-start">
-            <InputText
-                v-model="lists.entity.filters.general"
-                @enterKeyPressed="listEntity({})"
-                hasDiv
-                title="Buscar"
-                :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
-                placeholder="Ingrese la búsqueda">
-                <template v-slot:inputGroupAppend>
-                    <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})" data-bs-toggle="tooltip" data-bs-placement="top" title="Búsqueda por: Nombre.">
-                        <i class="fa fa-search"></i>
-                    </button>
-                </template>
-            </InputText>
-        </div>
-        <div class="align-self-end">
-            <button class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})">
-                <i class="fa fa-plus"></i>
-                <span class="ms-1">Agregar</span>
-            </button>
-        </div>
+    <div class="row align-items-end g-3 mb-4">
+        <InputText
+            v-model="lists.entity.filters.general"
+            @enterKeyPressed="listEntity({})"
+            hasDiv
+            title="Buscar"
+            :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+            placeholder="Ingrese la búsqueda"
+            xl="4"
+            lg="4">
+            <template v-slot:inputGroupAppend>
+                <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})" data-bs-toggle="tooltip" data-bs-placement="top" title="Búsqueda por: Nombre.">
+                    <i class="fa fa-search"></i>
+                </button>
+            </template>
+        </InputText>
+        <InputSlot
+            hasDiv
+            :isInputGroup="false"
+            xl="8"
+            lg="8">
+            <template v-slot:input>
+                <button class="btn btn-primary waves-effect" @click="modalCreateUpdateEntity({})">
+                    <i class="fa fa-plus"></i>
+                    <span class="ms-1">Agregar</span>
+                </button>
+            </template>
+        </InputSlot>
     </div>
     <div class="table-responsive">
         <table class="table table-hover">
@@ -86,14 +92,14 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row g-2 mb-3">
+                    <div class="row g-3">
                         <InputSlot
                             hasDiv
-                            title="Sucursal"
+                            title="Tipo de documento"
                             isRequired
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.branch"
-                            xl="5"
+                            xl="6"
                             lg="6">
                             <template v-slot:input>
                                 <v-select
@@ -105,16 +111,21 @@
                         <InputText
                             v-model="forms.entity.createUpdate.data.name"
                             hasDiv
+                            title="Número de documento"
+                            isRequired
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.name"
+                            xl="6"
+                            lg="6"/>
+                        <InputText
+                            v-model="forms.entity.createUpdate.data.name"
+                            hasDiv
                             title="Nombre"
                             isRequired
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.name"
                             xl="12"
-                            lg="12"
-                            md="12"
-                            sm="12"/>
-                    </div>
-                    <div class="row g-2 mb-3">
+                            lg="12"/>
                         <InputText
                             v-model="forms.entity.createUpdate.data.email"
                             hasDiv
@@ -123,9 +134,7 @@
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.email"
                             xl="6"
-                            lg="6"
-                            md="12"
-                            sm="12"/>
+                            lg="6"/>
                         <InputText
                             v-model="forms.entity.createUpdate.data.password"
                             hasDiv
@@ -134,23 +143,22 @@
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.password"
                             xl="6"
-                            lg="6"
-                            md="12"
-                            sm="12"/>
-                    </div>
-                    <div class="row g-2 mb-3">
-                        <InputSelect
-                            v-model="forms.entity.createUpdate.data.status"
-                            :options="options?.users?.statusses"
+                            lg="6"/>
+                        <InputSlot
                             hasDiv
                             title="Estado"
                             isRequired
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.status"
                             xl="6"
-                            lg="6"
-                            md="12"
-                            sm="12"/>
+                            lg="6">
+                            <template v-slot:input>
+                                <v-select
+                                    v-model="forms.entity.createUpdate.data.status"
+                                    :options="statusses"
+                                    :clearable="false"/>
+                            </template>
+                        </InputSlot>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -249,7 +257,7 @@ export default {
     methods: {
         async initParams({}) {
 
-            let initParams = await Requests.get({route: this.config.entity.routes.initParams, showAlert: true});
+            let initParams = await Requests.get({route: this.config.entity.routes.initParams, data: {page: "main"}, showAlert: true});
 
             this.options.identityDocumentTypes = initParams.data?.config?.identityDocumentTypes;
             this.options.users = initParams.data?.config?.users;
@@ -415,6 +423,11 @@ export default {
         identityDocumentTypes: function() {
 
             return this.options?.identityDocumentTypes?.records.map(e => ({code: e.id, label: e.name}));
+
+        },
+        statusses: function() {
+
+            return this.options?.users?.statusses.map(e => ({code: e.code, label: e.label}));
 
         }
     }

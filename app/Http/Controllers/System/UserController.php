@@ -19,11 +19,17 @@ class UserController extends Controller {
 
         $config = new stdClass();
 
-        $config->identityDocumentTypes = new stdClass();
-        $config->identityDocumentTypes->records = IdentityDocumentType::get();
+        $page = $request->page ?? "";
 
-        $config->users = new stdClass();
-        $config->users->statusses = User::getStatusses();
+        if(in_array($page, ["main"])) {
+
+            $config->identityDocumentTypes = new stdClass();
+            $config->identityDocumentTypes->records = IdentityDocumentType::get();
+
+            $config->users = new stdClass();
+            $config->users->statusses = User::getStatusses();
+
+        }
 
         $initParams->config = $config;
         $initParams->bool   = true;

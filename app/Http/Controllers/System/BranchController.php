@@ -18,8 +18,15 @@ class BranchController extends Controller {
         $initParams = new stdClass();
 
         $config = new stdClass();
-        $config->branches = new stdClass();
-        $config->branches->statusses = Branch::getStatusses();
+
+        $page = $request->page ?? "";
+
+        if(in_array($page, ["main"])) {
+
+            $config->branches = new stdClass();
+            $config->branches->statusses = Branch::getStatusses();
+
+        }
 
         $initParams->config = $config;
         $initParams->bool   = true;
