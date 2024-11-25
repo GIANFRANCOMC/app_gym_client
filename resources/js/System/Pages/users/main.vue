@@ -1,32 +1,43 @@
 <template>
     <Breadcrumb :list="[config.entity.page]"/>
 
-    <!-- Records -->
+    <!-- Content -->
     <div class="row align-items-end g-3 mb-4">
+        <InputSlot
+            hasDiv
+            title="Filtrar por"
+            :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+            xl="3"
+            lg="4">
+            <template v-slot:input>
+                <v-select
+                    v-model="lists.entity.filters.filter_by"
+                    :options="filterByOptions"
+                    class="bg-white"
+                    :clearable="false"/>
+            </template>
+        </InputSlot>
         <InputText
-            v-model="lists.entity.filters.general"
+            v-model="lists.entity.filters.word"
             @enterKeyPressed="listEntity({})"
             hasDiv
-            title="Buscar"
+            title="Búsqueda"
             :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
-            placeholder="Ingrese la búsqueda"
             xl="4"
-            lg="4">
-            <template v-slot:inputGroupAppend>
-                <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})" data-bs-toggle="tooltip" data-bs-placement="top" title="Búsqueda por: Nombre.">
-                    <i class="fa fa-search"></i>
-                </button>
-            </template>
-        </InputText>
+            lg="4"/>
         <InputSlot
             hasDiv
             :isInputGroup="false"
-            xl="8"
-            lg="8">
+            xl="5"
+            lg="4">
             <template v-slot:input>
-                <button class="btn btn-primary waves-effect" @click="modalCreateUpdateEntity({})">
+                <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})">
+                    <i class="fa fa-search"></i>
+                    <span class="ms-2">Buscar</span>
+                </button>
+                <button class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})">
                     <i class="fa fa-plus"></i>
-                    <span class="ms-1">Agregar</span>
+                    <span class="ms-2">Agregar</span>
                 </button>
             </template>
         </InputSlot>
@@ -34,11 +45,11 @@
     <div class="table-responsive">
         <table class="table table-hover">
             <thead class="table-light">
-                <tr class="text-center">
-                    <th class="fw-bold col-1">TIPO DE<br/>DOCUMENTO</th>
-                    <th class="fw-bold col-1">NÚMERO DE<br/>DOCUMENTO</th>
-                    <th class="fw-bold col-1">NOMBRE</th>
+                <tr class="text-center align-middle">
                     <th class="fw-bold col-1">CORREO ELECTRÓNICO</th>
+                    <th class="fw-bold col-1">NOMBRE</th>
+                    <th class="fw-bold col-1">TIPO DE DOCUMENTO</th>
+                    <th class="fw-bold col-1">NÚMERO DE DOCUMENTO</th>
                     <th class="fw-bold col-1">ESTADO</th>
                     <th class="fw-bold col-1">ACCIONES</th>
                 </tr>
@@ -54,16 +65,17 @@
                 <template v-else>
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
+                            <td v-text="record.email"></td>
+                            <td v-text="record.name"></td>
                             <td v-text="record.identity_document_type?.name"></td>
                             <td v-text="record.document_number"></td>
-                            <td v-text="record.name"></td>
-                            <td v-text="record.email"></td>
                             <td>
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-sm rounded-pill btn-warning waves-effect" @click="modalCreateUpdateEntity({record})" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
+                                <button type="button" class="btn btn-sm rounded-pill btn-warning waves-effect" @click="modalCreateUpdateEntity({record})">
                                     <i class="fa fa-pencil"></i>
+                                    <span class="ms-2">Editar</span>
                                 </button>
                             </td>
                         </tr>
@@ -79,7 +91,7 @@
             </tbody>
         </table>
     </div>
-    <div class="d-flex justify-content-center" v-if="!lists.entity.extras.loading">
+    <div class="d-flex justify-content-center" v-if="!lists.entity.extras.loading && lists.entity.records?.total > 0">
         <Paginator :links="lists.entity.records.links" @clickPage="listEntity"/>
     </div>
 
@@ -98,23 +110,23 @@
                             title="Tipo de documento"
                             isRequired
                             hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.branch"
+                            :textBottomInfo="forms.entity.createUpdate.errors?.identity_document_type"
                             xl="6"
                             lg="6">
                             <template v-slot:input>
                                 <v-select
-                                    v-model="forms.entity.createUpdate.data.branch"
+                                    v-model="forms.entity.createUpdate.data.identity_document_type"
                                     :options="identityDocumentTypes"
                                     :clearable="false"/>
                             </template>
                         </InputSlot>
                         <InputText
-                            v-model="forms.entity.createUpdate.data.name"
+                            v-model="forms.entity.createUpdate.data.document_number"
                             hasDiv
                             title="Número de documento"
                             isRequired
                             hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.name"
+                            :textBottomInfo="forms.entity.createUpdate.errors?.document_number"
                             xl="6"
                             lg="6"/>
                         <InputText
@@ -165,7 +177,7 @@
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
                     <button type="button" :class="['btn waves-effect', isDefined({value: forms.entity.createUpdate.data?.id}) ? 'btn-warning' : 'btn-primary']" @click="createUpdateEntity()">
                         <i class="fa fa-save"></i>
-                        <span class="ms-1">Guardar</span>
+                        <span class="ms-2">Guardar</span>
                     </button>
                 </div>
             </div>
@@ -194,7 +206,6 @@ export default {
         if(initParams && initOthers) {
 
             Alerts.swals({show: false});
-            await this.listEntity({});
 
         }
 
@@ -208,7 +219,8 @@ export default {
                         route: Requests.config({entity: "users", type: "list"})
                     },
                     filters: {
-                        general: ""
+                        filter_by: null,
+                        word: ""
                     },
                     records: {
                         total: 0
@@ -221,7 +233,7 @@ export default {
                         extras: {
                             modals: {
                                 default: {
-                                    id: "createUpdateEntityModal",
+                                    id: Utils.uuid(),
                                     titles: {
                                         store: "Agregar",
                                         update: "Editar"
@@ -231,8 +243,12 @@ export default {
                         },
                         data: {
                             id: null,
+                            identity_document_type: null,
+                            document_number: "",
                             name: "",
-                            status: ""
+                            email: "",
+                            password: "",
+                            status: null
                         },
                         errors: {}
                     }
@@ -255,25 +271,36 @@ export default {
         };
     },
     methods: {
+        // Init
         async initParams({}) {
 
             let initParams = await Requests.get({route: this.config.entity.routes.initParams, data: {page: "main"}, showAlert: true});
 
             this.options.identityDocumentTypes = initParams.data?.config?.identityDocumentTypes;
-            this.options.users = initParams.data?.config?.users;
+            this.options.users                 = initParams.data?.config?.users;
 
-            return initParams?.bool && initParams?.data?.bool;
+            return Requests.valid({result: initParams});
 
         },
         async initOthers({}) {
 
-            return true;
+            return new Promise(resolve => {
+
+                this.lists.entity.filters.filter_by = this.filterByOptions[0];
+
+                resolve(true);
+
+            });
 
         },
+        // Entity forms
         async listEntity({url = null}) {
 
+            let filters = Utils.cloneJson(this.lists.entity.filters);
+            const filterJson = {filter_by: filters?.filter_by?.code, word: filters.word};
+
             this.lists.entity.extras.loading = true;
-            this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: this.lists.entity.filters}))?.data;
+            this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: {...filterJson}}))?.data;
             this.lists.entity.extras.loading = false;
 
         },
@@ -288,11 +315,16 @@ export default {
 
             if(this.isDefined({value: record})) {
 
-                this.forms.entity.createUpdate.data.id       = record?.id;
-                this.forms.entity.createUpdate.data.name     = record?.name;
-                this.forms.entity.createUpdate.data.email    = record?.email;
-                this.forms.entity.createUpdate.data.password = record?.password;
-                this.forms.entity.createUpdate.data.status   = record?.status;
+                let identityDocumentType = this.identityDocumentTypes.filter(e => e.code === record?.identity_document_type_id)[0],
+                    status               = this.statusses.filter(e => e.code === record?.status)[0];
+
+                this.forms.entity.createUpdate.data.id                     = record?.id;
+                this.forms.entity.createUpdate.data.identity_document_type = identityDocumentType;
+                this.forms.entity.createUpdate.data.document_number        = record?.document_number;
+                this.forms.entity.createUpdate.data.name                   = record?.name;
+                this.forms.entity.createUpdate.data.email                  = record?.email;
+                this.forms.entity.createUpdate.data.password               = "";
+                this.forms.entity.createUpdate.data.status                 = status;
 
             }else {
 
@@ -311,15 +343,20 @@ export default {
             Alerts.swals({});
             this.formErrors({functionName, type: "clear"});
 
-            let form = JSON.parse(JSON.stringify(this.forms.entity.createUpdate.data));
+            let form = Utils.cloneJson(this.forms.entity.createUpdate.data);
 
             const validateForm = this.validateForm({functionName, form});
 
             if(validateForm?.bool) {
 
-                let createUpdate = await (this.isDefined({value: this.forms.entity.createUpdate.data.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: this.forms.entity.createUpdate.data.id}) : Requests.post({route: this.config.entity.routes.store, data: form}));
+                form.identity_document_type_id = form?.identity_document_type?.code;
+                form.status = form?.status?.code;
 
-                if(createUpdate?.bool && createUpdate?.data?.bool) {
+                delete form.identity_document_type;
+
+                let createUpdate = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: form.id}) : Requests.post({route: this.config.entity.routes.store, data: form}));
+
+                if(Requests.valid({result: createUpdate})) {
 
                     Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
                     Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
@@ -350,9 +387,13 @@ export default {
             switch(functionName) {
                 case "modalCreateUpdateEntity":
                 case "createUpdateEntity":
-                    this.forms.entity.createUpdate.data.id          = null;
-                    this.forms.entity.createUpdate.data.name        = "";
-                    this.forms.entity.createUpdate.data.status      = "";
+                    this.forms.entity.createUpdate.data.id                     = null;
+                    this.forms.entity.createUpdate.data.identity_document_type = null;
+                    this.forms.entity.createUpdate.data.document_number        = "";
+                    this.forms.entity.createUpdate.data.name                   = "";
+                    this.forms.entity.createUpdate.data.email                  = "";
+                    this.forms.entity.createUpdate.data.password               = "";
+                    this.forms.entity.createUpdate.data.status                 = null;
                     break;
             }
 
@@ -374,10 +415,26 @@ export default {
 
             if(["createUpdateEntity"].includes(functionName)) {
 
-                result.name     = [];
-                result.email    = [];
-                result.password = [];
-                result.status   = [];
+                result.identity_document_type = [];
+                result.document_number        = [];
+                result.name                   = [];
+                result.email                  = [];
+                result.password               = [];
+                result.status                 = [];
+
+                if(!this.isDefined({value: form?.identity_document_type})) {
+
+                    result.identity_document_type.push(this.config.forms.errors.labels.required);
+                    result.bool = false;
+
+                }
+
+                if(!this.isDefined({value: form?.document_number})) {
+
+                    result.document_number.push(this.config.forms.errors.labels.required);
+                    result.bool = false;
+
+                }
 
                 if(!this.isDefined({value: form?.name})) {
 
@@ -393,10 +450,14 @@ export default {
 
                 }
 
-                if(!this.isDefined({value: form?.password})) {
+                if(!this.isDefined({value: form?.id})) {
 
-                    result.password.push(this.config.forms.errors.labels.required);
-                    result.bool = false;
+                    if(!this.isDefined({value: form?.password})) {
+
+                        result.password.push(this.config.forms.errors.labels.required);
+                        result.bool = false;
+
+                    }
 
                 }
 
@@ -420,6 +481,16 @@ export default {
         }
     },
     computed: {
+        filterByOptions: function() {
+
+            return [
+                {code: "all", label: "Todos"},
+                {code: "email", label: "Correo electrónico"},
+                {code: "name", label: "Nombre"},
+                {code: "document_number", label: "Número de documento"}
+            ];
+
+        },
         identityDocumentTypes: function() {
 
             return this.options?.identityDocumentTypes?.records.map(e => ({code: e.id, label: e.name}));
@@ -428,6 +499,13 @@ export default {
         statusses: function() {
 
             return this.options?.users?.statusses.map(e => ({code: e.code, label: e.label}));
+
+        }
+    },
+    watch: {
+        "lists.entity.filters.filter_by": function(newValue, oldValue) {
+
+            this.listEntity({});
 
         }
     }

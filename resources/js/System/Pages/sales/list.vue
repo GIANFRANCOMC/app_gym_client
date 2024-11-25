@@ -52,7 +52,7 @@
                 <v-select
                     v-model="lists.entity.filters.holder"
                     :options="holders"
-                    :class="'bg-white'"
+                    class="'bg-white'"
                     :clearable="true">
                     <template #option="{ label }">
                         <span v-text="truncate({value: label, length: 50})" class="d-block"></span>
@@ -266,7 +266,11 @@ export default {
         },
         async initOthers({}) {
 
-            return true;
+            return new Promise(resolve => {
+
+                resolve(true);
+
+            });
 
         },
         // Entity forms
