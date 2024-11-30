@@ -18,11 +18,18 @@ class CustomerController extends Controller {
         $initParams = new stdClass();
 
         $config = new stdClass();
-        $config->customers = new stdClass();
-        $config->customers->statusses = Customer::getStatusses();
 
-        $config->identityDocumentTypes = new stdClass();
-        $config->identityDocumentTypes->records = IdentityDocumentType::get();
+        $page = $request->page ?? "";
+
+        if(in_array($page, ["main"])) {
+
+            $config->identityDocumentTypes = new stdClass();
+            $config->identityDocumentTypes->records = IdentityDocumentType::get();
+
+            $config->customers = new stdClass();
+            $config->customers->statusses = Customer::getStatusses();
+
+        }
 
         $initParams->config = $config;
         $initParams->bool   = true;
@@ -33,16 +40,25 @@ class CustomerController extends Controller {
 
     public function list(Request $request) {
 
-        $list = Customer::when(Utilities::isDefined($request->general), function($query) use($request) {
+        $list = Customer::when(Utilities::isDefined($request->filter_by), function($query) use($request) {
 
-                            $filter = "%".trim($request->general)."%";
+                            $filter = "%".trim($request->word ?? "")."%";
 
-                            $query->where("name", "like", $filter);
+                            if(in_array($request->filter_by, ["all"])) {
+
+                                $query->where("document_number", "like", $filter)
+                                    ->orWhere("name", "like", $filter);
+
+                            }else if(in_array($request->filter_by, ["document_number", "name"])) {
+
+                                $query->where($request->filter_by, "like", $filter);
+
+                            }
 
                         })
                         ->orderBy("name", "ASC")
                         ->with(["identityDocumentType"])
-                        ->paginate(10);
+                        ->paginate($request->per_page ?? Utilities::$per_page_default);
 
         return $list;
 
@@ -64,10 +80,11 @@ class CustomerController extends Controller {
 
         $userAuth = Auth::user();
 
-        $customer = new Customer();
+        $customer = null;
 
-        DB::transaction(function() use($request, $userAuth, $customer) {
+        DB::transaction(function() use($request, $userAuth, &$customer) {
 
+            $customer = new Customer();
             $customer->identity_document_type_id = $request->identity_document_type_id;
             $customer->document_number           = $request->document_number;
             $customer->name                      = $request->name;
@@ -78,7 +95,10 @@ class CustomerController extends Controller {
 
         });
 
-        return response()->json(["bool" => true, "msg" => "Cliente creado correctamente.", "customer" => $customer], 200);
+        $bool = Utilities::isDefined($customer);
+        $msg  = $bool ? "Cliente creado correctamente." : "No se ha podido crear el cliente.";
+
+        return response()->json(["bool" => $bool, "msg" => $msg, "customer" => $customer], 200);
 
     }
 
@@ -99,21 +119,28 @@ class CustomerController extends Controller {
         $userAuth = Auth::user();
 
         $customer = Customer::where("id", $id)
-                    ->firstOrFail();
+                            ->first();
 
-        DB::transaction(function() use($request, $userAuth, $customer) {
+        if(Utilities::isDefined($customer)) {
 
-            $customer->identity_document_type_id = $request->identity_document_type_id;
-            $customer->document_number           = $request->document_number;
-            $customer->name                      = $request->name;
-            $customer->status                    = $request->status;
-            $customer->updated_at                = now();
-            $customer->updated_by                = $userAuth->id ?? null;
-            $customer->save();
+            DB::transaction(function() use($request, $userAuth, &$customer) {
 
-        });
+                $customer->identity_document_type_id = $request->identity_document_type_id;
+                $customer->document_number           = $request->document_number;
+                $customer->name                      = $request->name;
+                $customer->status                    = $request->status;
+                $customer->updated_at                = now();
+                $customer->updated_by                = $userAuth->id ?? null;
+                $customer->save();
 
-        return response()->json(["bool" => true, "msg" => "Cliente editado correctamente.", "customer" => $customer], 200);
+            });
+
+        }
+
+        $bool = Utilities::isDefined($customer);
+        $msg  = $bool ? "Cliente editado correctamente." : "No se ha podido editar el cliente.";
+
+        return response()->json(["bool" => $bool, "msg" => $msg, "customer" => $customer], 200);
 
     }
 

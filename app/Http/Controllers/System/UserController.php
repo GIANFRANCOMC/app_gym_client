@@ -50,7 +50,7 @@ class UserController extends Controller {
                                   ->orWhere("name", "like", $filter)
                                   ->orWhere("email", "like", $filter);
 
-                        }else if(in_array($request->filter_by, ["document_number", "name" , "email"])) {
+                        }else if(in_array($request->filter_by, ["document_number", "name", "email"])) {
 
                             $query->where($request->filter_by, "like", $filter);
 
