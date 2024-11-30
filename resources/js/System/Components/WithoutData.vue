@@ -1,7 +1,9 @@
 <template>
     <template v-if="['image'].includes(type)">
         <img :src="image" class="fluid-image" width="40%"/>
-        <h5 class="fw-bold" v-text="text"></h5>
+        <h5>
+            <span class="badge bg-warning text-white fw-semibold px-5" v-text="text"></span>
+        </h5>
     </template>
     <template v-else-if="['text'].includes(type)">
         <span v-text="text"></span>
