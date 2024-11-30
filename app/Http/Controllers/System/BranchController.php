@@ -37,16 +37,24 @@ class BranchController extends Controller {
 
     public function list(Request $request) {
 
-        $list = Branch::when(Utilities::isDefined($request->general), function($query) use($request) {
+        $list = Branch::when(Utilities::isDefined($request->filter_by), function($query) use($request) {
 
-                            $filter = "%".trim($request->general)."%";
+                            $filter = "%".trim($request->word ?? "")."%";
 
-                            $query->where("name", "like", $filter);
+                            if(in_array($request->filter_by, ["all"])) {
+
+                                $query->Where("name", "like", $filter);
+
+                            }else if(in_array($request->filter_by, ["name"])) {
+
+                                $query->where($request->filter_by, "like", $filter);
+
+                            }
 
                         })
                         ->orderBy("name", "ASC")
                         ->with(["series.documentType"])
-                        ->paginate(10);
+                        ->paginate($request->per_page ?? Utilities::$per_page_default);
 
         return $list;
 
@@ -70,7 +78,7 @@ class BranchController extends Controller {
 
         $branch = new Branch();
 
-        DB::transaction(function() use($request, $userAuth, $branch) {
+        DB::transaction(function() use($request, $userAuth, &$branch) {
 
             $branch->company_id = env("COMPANY_ID");
             $branch->name       = $request->name;
@@ -99,7 +107,10 @@ class BranchController extends Controller {
 
         });
 
-        return response()->json(["bool" => true, "msg" => "Sucursal creada correctamente.", "branch" => $branch], 200);
+        $bool = Utilities::isDefined($branch);
+        $msg  = $bool ? "Sucursal creada correctamente." : "No se ha podido crear la sucursal.";
+
+        return response()->json(["bool" => $bool, "msg" => $msg, "branch" => $branch], 200);
 
     }
 
@@ -120,19 +131,26 @@ class BranchController extends Controller {
         $userAuth = Auth::user();
 
         $branch = Branch::where("id", $id)
-                        ->firstOrFail();
+                        ->first();
 
-        DB::transaction(function() use($request, $userAuth, $branch) {
+        if(Utilities::isDefined($branch)) {
 
-            $branch->name       = $request->name;
-            $branch->status     = $request->status;
-            $branch->updated_at = now();
-            $branch->updated_by = $userAuth->id ?? null;
-            $branch->save();
+            DB::transaction(function() use($request, $userAuth, &$branch) {
 
-        });
+                $branch->name       = $request->name;
+                $branch->status     = $request->status;
+                $branch->updated_at = now();
+                $branch->updated_by = $userAuth->id ?? null;
+                $branch->save();
 
-        return response()->json(["bool" => true, "msg" => "Sucursal editada correctamente.", "branch" => $branch], 200);
+            });
+
+        }
+
+        $bool = Utilities::isDefined($branch);
+        $msg  = $bool ? "Sucursal editada correctamente." : "No se ha podido editar la sucursal.";
+
+        return response()->json(["bool" => $bool, "msg" => $msg, "branch" => $branch], 200);
 
     }
 

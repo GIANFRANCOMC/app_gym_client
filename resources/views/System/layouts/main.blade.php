@@ -123,12 +123,6 @@
                                 <div data-i18n="Page 1">Clientes</div>
                             </a>
                         </li>
-                        <li class="menu-item" id="menu-item-reports">
-                            <a href="{{ route('reports.index') }}" class="menu-link">
-                                <i class="fa fa-print me-3"></i>
-                                <div data-i18n="Page 1">Reportes</div>
-                            </a>
-                        </li>
                         <li class="menu-item" id="menu-item-configuration">
                             <a href="javascript:void(0);" class="menu-link menu-toggle">
                                 <i class="fa fa-gear me-3"></i>
@@ -140,7 +134,7 @@
                                         <div data-i18n="Collapsed menu">Mi empresa</div>
                                     </a>
                                 </li> --}}
-                                <li class="menu-item" id="menu-item-list-brands">
+                                <li class="menu-item" id="menu-item-branches">
                                     <a href="{{ route('branches.index') }}" class="menu-link">
                                         <div data-i18n="Collapsed menu">Sucursales</div>
                                     </a>
@@ -151,6 +145,12 @@
                                     </a>
                                 </li>
                             </ul>
+                        </li>
+                        <li class="menu-item" id="menu-item-reports">
+                            <a href="{{ route('reports.index') }}" class="menu-link">
+                                <i class="fa fa-print me-3"></i>
+                                <div data-i18n="Page 1">Reportes</div>
+                            </a>
                         </li>
                         <li class="menu-item">
                             <a href="javascript:void(0)" class="menu-link bg-danger" onclick="$('#logout').submit();">

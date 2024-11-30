@@ -3,6 +3,8 @@
 namespace App\Http\Requests\System\Branches;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateBranchRequest extends FormRequest {
 
@@ -23,9 +25,17 @@ class UpdateBranchRequest extends FormRequest {
     public function rules(): array {
 
         return [
-            'name'   => ['required', 'string', 'min:2', 'max:65'],
-            'status' => 'required|string'
+            "name"   => "required|string|max:100",
+            "status" => "required|string"
         ];
+
+    }
+
+    protected function failedValidation(Validator $validator) {
+
+        $errors = $validator->errors()->toArray();
+
+        throw new HttpResponseException(response()->json(["errors" => $errors, "message" => "Error al validar."], 422));
 
     }
 

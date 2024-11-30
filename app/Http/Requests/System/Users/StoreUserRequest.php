@@ -30,7 +30,7 @@ class StoreUserRequest extends FormRequest {
             "name"                      => "required|string|max:100",
             "email"                     => "required|email|unique:users,email",
             "password"                  => "required|string|max:40",
-            "status"                    => "required|string",
+            "status"                    => "required|string"
         ];
 
     }

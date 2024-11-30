@@ -1,32 +1,43 @@
 <template>
     <Breadcrumb :list="[config.entity.page, { title: 'Sucursales' }]"/>
 
-    <!-- Records -->
+    <!-- Content -->
     <div class="row align-items-end g-3 mb-4">
+        <InputSlot
+            hasDiv
+            title="Filtrar por"
+            :titleClass="[config.forms.classes.title]"
+            xl="3"
+            lg="4">
+            <template v-slot:input>
+                <v-select
+                    v-model="lists.entity.filters.filter_by"
+                    :options="filterByOptions"
+                    :class="config.forms.classes.select2"
+                    :clearable="false"/>
+            </template>
+        </InputSlot>
         <InputText
-            v-model="lists.entity.filters.general"
+            v-model="lists.entity.filters.word"
             @enterKeyPressed="listEntity({})"
             hasDiv
-            title="Buscar"
-            :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
-            placeholder="Ingrese la búsqueda"
+            title="Búsqueda"
+            :titleClass="[config.forms.classes.title]"
             xl="4"
-            lg="4">
-            <template v-slot:inputGroupAppend>
-                <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})" data-bs-toggle="tooltip" data-bs-placement="top" title="Búsqueda por: Nombre.">
-                    <i class="fa fa-search"></i>
-                </button>
-            </template>
-        </InputText>
+            lg="4"/>
         <InputSlot
             hasDiv
             :isInputGroup="false"
-            xl="8"
-            lg="8">
+            xl="5"
+            lg="4">
             <template v-slot:input>
-                <button class="btn btn-primary waves-effect" @click="modalCreateUpdateEntity({})">
+                <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})">
+                    <i class="fa fa-search"></i>
+                    <span class="ms-2">Buscar</span>
+                </button>
+                <button class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})">
                     <i class="fa fa-plus"></i>
-                    <span class="ms-1">Agregar</span>
+                    <span class="ms-2">Agregar</span>
                 </button>
             </template>
         </InputSlot>
@@ -55,16 +66,17 @@
                             <td v-text="record.name"></td>
                             <td class="text-start">
                                 <div v-for="serie in record?.series" :key="serie.id" class="my-2">
-                                    <span v-text="'• '+serie?.document_type?.name+':'" class="badge bg-label-info"></span>
-                                    <span v-text="serie?.legible_serie" class="fw-semibold ms-2"></span>
+                                    <span v-text="serie?.document_type?.name" class="badge bg-label-primary fw-semibold"></span>
+                                    <span v-text="serie?.legible_serie" class="badge bg-label-secondary fw-bold ms-2"></span>
                                 </div>
                             </td>
                             <td>
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-sm rounded-pill btn-warning waves-effect" @click="modalCreateUpdateEntity({record})" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
+                                <button type="button" class="btn btn-sm btn-warning waves-effect" @click="modalCreateUpdateEntity({record})">
                                     <i class="fa fa-pencil"></i>
+                                    <span class="ms-2">Editar</span>
                                 </button>
                             </td>
                         </tr>
@@ -80,7 +92,7 @@
             </tbody>
         </table>
     </div>
-    <div class="d-flex justify-content-center" v-if="!lists.entity.extras.loading">
+    <div class="d-flex justify-content-center" v-if="!lists.entity.extras.loading && lists.entity.records?.total > 0">
         <Paginator :links="lists.entity.records.links" @clickPage="listEntity"/>
     </div>
 
@@ -124,7 +136,7 @@
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
                     <button type="button" :class="['btn waves-effect', isDefined({value: forms.entity.createUpdate.data?.id}) ? 'btn-warning' : 'btn-primary']" @click="createUpdateEntity()">
                         <i class="fa fa-save"></i>
-                        <span class="ms-1">Guardar</span>
+                        <span class="ms-2">Guardar</span>
                     </button>
                 </div>
             </div>
@@ -144,6 +156,7 @@ export default {
     },
     mounted: async function() {
 
+        Utils.navbarItem("menu-item-configuration", {addClass: "open"});
         Utils.navbarItem(this.config.entity.page.menu.id, {});
         Alerts.swals({type: "initParams"});
 
@@ -153,7 +166,7 @@ export default {
         if(initParams && initOthers) {
 
             Alerts.swals({show: false});
-            await this.listEntity({});
+            this.listEntity({});
 
         }
 
@@ -167,7 +180,8 @@ export default {
                         route: Requests.config({entity: "branches", type: "list"})
                     },
                     filters: {
-                        general: ""
+                        filter_by: null,
+                        word: ""
                     },
                     records: {
                         total: 0
@@ -180,7 +194,7 @@ export default {
                         extras: {
                             modals: {
                                 default: {
-                                    id: "createUpdateEntityModal",
+                                    id: Utils.uuid(),
                                     titles: {
                                         store: "Agregar",
                                         update: "Editar"
@@ -191,7 +205,7 @@ export default {
                         data: {
                             id: null,
                             name: "",
-                            status: ""
+                            status: null
                         },
                         errors: {}
                     }
@@ -206,7 +220,7 @@ export default {
                         title: "Configuración",
                         active: true,
                         menu: {
-                            id: "menu-list-branches"
+                            id: "menu-item-branches"
                         }
                     }
                 }
@@ -214,24 +228,35 @@ export default {
         };
     },
     methods: {
+        // Init
         async initParams({}) {
 
             let initParams = await Requests.get({route: this.config.entity.routes.initParams, data: {page: "main"}, showAlert: true});
 
             this.options.branches = initParams.data?.config?.branches;
 
-            return initParams?.bool && initParams?.data?.bool;
+            return Requests.valid({result: initParams});
 
         },
         async initOthers({}) {
 
-            return true;
+            return new Promise(resolve => {
+
+                this.lists.entity.filters.filter_by = this.filterByOptions[0];
+
+                resolve(true);
+
+            });
 
         },
+        // Entity forms
         async listEntity({url = null}) {
 
+            let filters = Utils.cloneJson(this.lists.entity.filters);
+            const filterJson = {filter_by: filters?.filter_by?.code, word: filters.word};
+
             this.lists.entity.extras.loading = true;
-            this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: this.lists.entity.filters}))?.data;
+            this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: {...filterJson}}))?.data;
             this.lists.entity.extras.loading = false;
 
         },
@@ -246,9 +271,11 @@ export default {
 
             if(this.isDefined({value: record})) {
 
-                this.forms.entity.createUpdate.data.id          = record?.id;
-                this.forms.entity.createUpdate.data.name        = record?.name;
-                this.forms.entity.createUpdate.data.status      = record?.status;
+                let status = this.statusses.filter(e => e.code === record?.status)[0];
+
+                this.forms.entity.createUpdate.data.id     = record?.id;
+                this.forms.entity.createUpdate.data.name   = record?.name;
+                this.forms.entity.createUpdate.data.status = status;
 
             }else {
 
@@ -273,9 +300,11 @@ export default {
 
             if(validateForm?.bool) {
 
-                let createUpdate = await (this.isDefined({value: this.forms.entity.createUpdate.data.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: this.forms.entity.createUpdate.data.id}) : Requests.post({route: this.config.entity.routes.store, data: form}));
+                form.status = form?.status?.code;
 
-                if(createUpdate?.bool && createUpdate?.data?.bool) {
+                let createUpdate = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: form.id}) : Requests.post({route: this.config.entity.routes.store, data: form}));
+
+                if(Requests.valid({result: createUpdate})) {
 
                     Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
                     Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
@@ -308,7 +337,7 @@ export default {
                 case "createUpdateEntity":
                     this.forms.entity.createUpdate.data.id     = null;
                     this.forms.entity.createUpdate.data.name   = "";
-                    this.forms.entity.createUpdate.data.status = "";
+                    this.forms.entity.createUpdate.data.status = null;
                     break;
             }
 
@@ -360,9 +389,24 @@ export default {
         }
     },
     computed: {
+        filterByOptions: function() {
+
+            return [
+                {code: "all", label: "Todos"},
+                {code: "name", label: "Nombre"}
+            ];
+
+        },
         statusses: function() {
 
             return this.options?.branches?.statusses.map(e => ({code: e.code, label: e.label}));
+
+        }
+    },
+    watch: {
+        "lists.entity.filters.filter_by": function(newValue, oldValue) {
+
+            // this.listEntity({});
 
         }
     }

@@ -31,7 +31,7 @@ class UpdateUserRequest extends FormRequest {
             "name"                      => "required|string|max:100",
             "email"                     => "required|email|unique:users,email,$this->id,id",
             "password"                  => "nullable|max:40",
-            "status"                    => "required|string",
+            "status"                    => "required|string"
         ];
 
     }

@@ -1,5 +1,5 @@
 <template>
-    <Breadcrumb :list="[config.entity.page]"/>
+    <Breadcrumb :list="[config.entity.page, { title: 'Colaboradores' }]"/>
 
     <!-- Content -->
     <div class="row align-items-end g-3 mb-4">
@@ -262,7 +262,7 @@ export default {
                 entity: {
                     ...Requests.config({entity: "users"}),
                     page: {
-                        title: "Colaboradores",
+                        title: "Configuración",
                         active: true,
                         menu: {
                             id: "menu-item-users"
@@ -372,7 +372,6 @@ export default {
                     this.formErrors({functionName, type: "set", errors: createUpdate?.errors ?? []});
                     Alerts.toastrs({type: "error", subtitle: createUpdate?.data?.msg});
                     Alerts.swals({show: false});
-
 
                 }
 
