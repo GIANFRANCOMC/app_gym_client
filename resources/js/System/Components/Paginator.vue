@@ -3,7 +3,7 @@
         <ul class="pagination d-flex flex-wrap">
             <template v-for="(link, key) in links" :key="key">
                 <li :class="['page-item my-1', link.active ? 'active' : (link.url ? '' : 'disabled')]">
-                    <a class="page-link waves-effect mx-1 px-3" href="javascript:void(0);" @click="handleClickPage({url: link.url})" v-html="link.label"></a>
+                    <a :class="['page-link waves-effect mx-1 px-3', link?.active ? 'disabled' : '']" href="javascript:void(0);" @click="handleClickPage({url: link.url})" v-html="link.label"></a>
                 </li>
             </template>
         </ul>
