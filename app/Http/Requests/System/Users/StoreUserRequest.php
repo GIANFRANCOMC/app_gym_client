@@ -25,12 +25,12 @@ class StoreUserRequest extends FormRequest {
     public function rules(): array {
 
         return [
-            'identity_document_type_id' => 'required|integer',
-            'document_number'           => 'required|string|max:15',
-            'name'                      => 'required|string|max:100',
-            'email'                     => 'required|email',
-            'password'                  => 'required|string|max:30',
-            'status'                    => 'required|string',
+            "identity_document_type_id" => "required|integer",
+            "document_number"           => "required|string|max:20",
+            "name"                      => "required|string|max:100",
+            "email"                     => "required|email|unique:users,email",
+            "password"                  => "required|string|max:40",
+            "status"                    => "required|string",
         ];
 
     }
@@ -39,7 +39,7 @@ class StoreUserRequest extends FormRequest {
 
         $errors = $validator->errors()->toArray();
 
-        throw new HttpResponseException(response()->json(['errors' => $errors, 'message' => 'Error al validar.'], 422));
+        throw new HttpResponseException(response()->json(["errors" => $errors, "message" => "Error al validar."], 422));
 
     }
 

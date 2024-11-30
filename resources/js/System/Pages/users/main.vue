@@ -6,14 +6,14 @@
         <InputSlot
             hasDiv
             title="Filtrar por"
-            :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+            :titleClass="[config.forms.classes.title]"
             xl="3"
             lg="4">
             <template v-slot:input>
                 <v-select
                     v-model="lists.entity.filters.filter_by"
                     :options="filterByOptions"
-                    class="bg-white"
+                    :class="config.forms.classes.select2"
                     :clearable="false"/>
             </template>
         </InputSlot>
@@ -22,7 +22,7 @@
             @enterKeyPressed="listEntity({})"
             hasDiv
             title="Búsqueda"
-            :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+            :titleClass="[config.forms.classes.title]"
             xl="4"
             lg="4"/>
         <InputSlot
@@ -46,10 +46,10 @@
         <table class="table table-hover">
             <thead class="table-light">
                 <tr class="text-center align-middle">
-                    <th class="fw-bold col-1">CORREO ELECTRÓNICO</th>
-                    <th class="fw-bold col-1">NOMBRE</th>
                     <th class="fw-bold col-1">TIPO DE DOCUMENTO</th>
                     <th class="fw-bold col-1">NÚMERO DE DOCUMENTO</th>
+                    <th class="fw-bold col-1">NOMBRE</th>
+                    <th class="fw-bold col-1">CORREO ELECTRÓNICO</th>
                     <th class="fw-bold col-1">ESTADO</th>
                     <th class="fw-bold col-1">ACCIONES</th>
                 </tr>
@@ -65,15 +65,15 @@
                 <template v-else>
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
-                            <td v-text="record.email"></td>
-                            <td v-text="record.name"></td>
                             <td v-text="record.identity_document_type?.name"></td>
                             <td v-text="record.document_number"></td>
+                            <td v-text="record.name"></td>
+                            <td v-text="record.email"></td>
                             <td>
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-sm rounded-pill btn-warning waves-effect" @click="modalCreateUpdateEntity({record})">
+                                <button type="button" class="btn btn-sm btn-warning waves-effect" @click="modalCreateUpdateEntity({record})">
                                     <i class="fa fa-pencil"></i>
                                     <span class="ms-2">Editar</span>
                                 </button>
@@ -150,7 +150,7 @@
                         <InputText
                             v-model="forms.entity.createUpdate.data.password"
                             hasDiv
-                            :title="!isDefined({value: forms.entity.createUpdate.data?.id}) ? 'Contraseña' : 'Cambiar contraseña'"
+                            :title="isDefined({value: forms.entity.createUpdate.data?.id}) ? 'Cambiar contraseña' : 'Contraseña'"
                             :isRequired="!isDefined({value: forms.entity.createUpdate.data?.id})"
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.password"
@@ -197,6 +197,7 @@ export default {
     },
     mounted: async function() {
 
+        Utils.navbarItem("menu-item-configuration", {addClass: "open"});
         Utils.navbarItem(this.config.entity.page.menu.id, {});
         Alerts.swals({type: "initParams"});
 
@@ -206,6 +207,7 @@ export default {
         if(initParams && initOthers) {
 
             Alerts.swals({show: false});
+            this.listEntity({});
 
         }
 
@@ -263,7 +265,7 @@ export default {
                         title: "Colaboradores",
                         active: true,
                         menu: {
-                            id: "menu-list-users"
+                            id: "menu-item-users"
                         }
                     }
                 }
@@ -370,6 +372,7 @@ export default {
                     this.formErrors({functionName, type: "set", errors: createUpdate?.errors ?? []});
                     Alerts.toastrs({type: "error", subtitle: createUpdate?.data?.msg});
                     Alerts.swals({show: false});
+
 
                 }
 
@@ -485,9 +488,9 @@ export default {
 
             return [
                 {code: "all", label: "Todos"},
-                {code: "email", label: "Correo electrónico"},
+                {code: "document_number", label: "Número de documento"},
                 {code: "name", label: "Nombre"},
-                {code: "document_number", label: "Número de documento"}
+                {code: "email", label: "Correo electrónico"}
             ];
 
         },
@@ -505,7 +508,7 @@ export default {
     watch: {
         "lists.entity.filters.filter_by": function(newValue, oldValue) {
 
-            this.listEntity({});
+            // this.listEntity({});
 
         }
     }

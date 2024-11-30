@@ -145,7 +145,7 @@
                                         <div data-i18n="Collapsed menu">Sucursales</div>
                                     </a>
                                 </li>
-                                <li class="menu-item" id="menu-item-list-users">
+                                <li class="menu-item" id="menu-item-users">
                                     <a href="{{ route('users.index') }}" class="menu-link">
                                         <div data-i18n="Collapsed menu">Colaboradores</div>
                                     </a>

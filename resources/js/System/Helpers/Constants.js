@@ -5,6 +5,10 @@ export const generalConfig = {
         withoutResults: "Sin registros"
     },
     forms: {
+        classes: {
+            title: "fw-bold colon-at-end fs-5",
+            select2: "bg-white"
+        },
         inputs: {
             maxlength: 999,
             required: "*",

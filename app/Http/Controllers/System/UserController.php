@@ -59,7 +59,7 @@ class UserController extends Controller {
                     })
                     ->orderBy("name", "ASC")
                     ->with(["identityDocumentType"])
-                    ->paginate(10);
+                    ->paginate($request->per_page ?? Utilities::$per_page_default);
 
         return $list;
 
@@ -124,9 +124,9 @@ class UserController extends Controller {
         $user = User::where("id", $id)
                     ->first();
 
-        DB::transaction(function() use($request, $userAuth, &$user) {
+        if(Utilities::isDefined($user)) {
 
-            if(Utilities::isDefined($user)) {
+            DB::transaction(function() use($request, $userAuth, &$user) {
 
                 $user->identity_document_type_id = $request->identity_document_type_id;
                 $user->document_number           = $request->document_number;
@@ -144,9 +144,9 @@ class UserController extends Controller {
 
                 $user->save();
 
-            }
+            });
 
-        });
+        }
 
         $bool = Utilities::isDefined($user);
         $msg  = $bool ? "Usuario editado correctamente." : "No se ha podido editar el usuario.";
