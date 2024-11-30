@@ -43,7 +43,7 @@ class BranchController extends Controller {
 
                             if(in_array($request->filter_by, ["all"])) {
 
-                                $query->Where("name", "like", $filter);
+                                $query->where("name", "like", $filter);
 
                             }else if(in_array($request->filter_by, ["name"])) {
 
@@ -76,10 +76,11 @@ class BranchController extends Controller {
 
         $userAuth = Auth::user();
 
-        $branch = new Branch();
+        $branch = null;
 
         DB::transaction(function() use($request, $userAuth, &$branch) {
 
+            $branch = new Branch();
             $branch->company_id = env("COMPANY_ID");
             $branch->name       = $request->name;
             $branch->status     = $request->status;
