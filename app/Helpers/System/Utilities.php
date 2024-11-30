@@ -16,7 +16,7 @@ class Utilities {
 
         $result = new stdClass();
 
-        // $result->x = $x;
+        $result->env_company_id = env("COMPANY_ID" ?? null);
 
         return $result;
 

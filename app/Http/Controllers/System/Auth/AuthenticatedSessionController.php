@@ -20,8 +20,23 @@ class AuthenticatedSessionController extends Controller {
 
         $data = Utilities::getDefaultViewData();
 
-        $data->company = Company::with(["socialsMedia"])
-                                ->first();
+        $data->company   = null;
+        $data->companies = [];
+
+        if(Utilities::isDefined($data->env_company_id)) {
+
+            $data->company = Company::where("id", $data->env_company_id)
+                                    ->whereIn("status", ["active"])
+                                    ->with(["socialsMedia"])
+                                    ->first();
+
+        }else {
+
+            $data->companies = Company::whereIn("status", ["active"])
+                                      ->with(["socialsMedia"])
+                                      ->get();
+
+        }
 
         return view("System/auth/login", compact("data"));
 
