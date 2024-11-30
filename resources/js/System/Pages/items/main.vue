@@ -1,29 +1,46 @@
 <template>
-    <Breadcrumb :list="[config.entity.page]"/>
+    <Breadcrumb :list="[config.entity.page, { title: 'Productos' }]"/>
 
-    <!-- Records -->
-    <div class="d-flex flex-row mb-4">
-        <div class="align-self-start">
-            <InputText
-                v-model="lists.entity.filters.general"
-                @enterKeyPressed="listEntity({})"
-                hasDiv
-                title="Buscar"
-                :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
-                placeholder="Ingrese la búsqueda">
-                <template v-slot:inputGroupAppend>
-                    <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})" data-bs-toggle="tooltip" data-bs-placement="top" title="Búsqueda por: Nombre, Descripción.">
-                        <i class="fa fa-search"></i>
-                    </button>
-                </template>
-            </InputText>
-        </div>
-        <div class="align-self-end">
-            <button class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})">
-                <i class="fa fa-plus"></i>
-                <span class="ms-1">Agregar</span>
-            </button>
-        </div>
+    <!-- Content -->
+    <div class="row align-items-end g-3 mb-4">
+        <InputSlot
+            hasDiv
+            title="Filtrar por"
+            :titleClass="[config.forms.classes.title]"
+            xl="3"
+            lg="4">
+            <template v-slot:input>
+                <v-select
+                    v-model="lists.entity.filters.filter_by"
+                    :options="filterByOptions"
+                    :class="config.forms.classes.select2"
+                    :clearable="false"/>
+            </template>
+        </InputSlot>
+        <InputText
+            v-model="lists.entity.filters.word"
+            @enterKeyPressed="listEntity({})"
+            hasDiv
+            title="Búsqueda"
+            :titleClass="[config.forms.classes.title]"
+            xl="4"
+            lg="4"/>
+        <InputSlot
+            hasDiv
+            :isInputGroup="false"
+            xl="5"
+            lg="4">
+            <template v-slot:input>
+                <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})">
+                    <i class="fa fa-search"></i>
+                    <span class="ms-2">Buscar</span>
+                </button>
+                <button class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})">
+                    <i class="fa fa-plus"></i>
+                    <span class="ms-2">Agregar</span>
+                </button>
+            </template>
+        </InputSlot>
     </div>
     <div class="table-responsive">
         <table class="table table-hover">
@@ -54,8 +71,9 @@
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-sm rounded-pill btn-warning waves-effect" @click="modalCreateUpdateEntity({record})" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
+                                <button type="button" class="btn btn-sm btn-warning waves-effect" @click="modalCreateUpdateEntity({record})">
                                     <i class="fa fa-pencil"></i>
+                                    <span class="ms-2">Editar</span>
                                 </button>
                             </td>
                         </tr>
@@ -71,7 +89,7 @@
             </tbody>
         </table>
     </div>
-    <div class="d-flex justify-content-center" v-if="!lists.entity.extras.loading">
+    <div class="d-flex justify-content-center" v-if="!lists.entity.extras.loading && lists.entity.records?.total > 0">
         <Paginator :links="lists.entity.records.links" @clickPage="listEntity"/>
     </div>
 
@@ -84,7 +102,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row g-2 mb-3">
+                    <div class="row g-3">
                         <InputText
                             v-model="forms.entity.createUpdate.data.name"
                             hasDiv
@@ -93,11 +111,7 @@
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.name"
                             xl="12"
-                            lg="12"
-                            md="12"
-                            sm="12"/>
-                    </div>
-                    <div class="row g-2 mb-3">
+                            lg="12"/>
                         <InputText
                             v-model="forms.entity.createUpdate.data.description"
                             hasDiv
@@ -105,11 +119,7 @@
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.description"
                             xl="12"
-                            lg="12"
-                            md="12"
-                            sm="12"/>
-                    </div>
-                    <div class="row g-2 mb-3">
+                            lg="12"/>
                         <InputNumber
                             v-model="forms.entity.createUpdate.data.price"
                             hasDiv
@@ -118,42 +128,44 @@
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.price"
                             xl="6"
-                            lg="6"
-                            md="12"
-                            sm="12"/>
-                        <InputSelect
-                            v-model="forms.entity.createUpdate.data.currency_id"
-                            :options="options?.currencies?.records.map(e=>({code: e.id, label: e.plural_name+' ('+e.sign+')'}))"
+                            lg="6"/>
+                        <InputSlot
                             hasDiv
                             title="Moneda"
                             isRequired
                             hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.currency_id"
+                            :textBottomInfo="forms.entity.createUpdate.errors?.currency"
                             xl="6"
-                            lg="6"
-                            md="12"
-                            sm="12"/>
-                    </div>
-                    <div class="row g-2 mb-3">
-                        <InputSelect
-                            v-model="forms.entity.createUpdate.data.status"
-                            :options="options?.items?.statusses"
+                            lg="6">
+                            <template v-slot:input>
+                                <v-select
+                                    v-model="forms.entity.createUpdate.data.currency"
+                                    :options="currencies"
+                                    :clearable="false"/>
+                            </template>
+                        </InputSlot>
+                        <InputSlot
                             hasDiv
                             title="Estado"
                             isRequired
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.status"
                             xl="6"
-                            lg="6"
-                            md="12"
-                            sm="12"/>
+                            lg="6">
+                            <template v-slot:input>
+                                <v-select
+                                    v-model="forms.entity.createUpdate.data.status"
+                                    :options="statusses"
+                                    :clearable="false"/>
+                            </template>
+                        </InputSlot>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
                     <button type="button" :class="['btn waves-effect', isDefined({value: forms.entity.createUpdate.data?.id}) ? 'btn-warning' : 'btn-primary']" @click="createUpdateEntity()">
                         <i class="fa fa-save"></i>
-                        <span class="ms-1">Guardar</span>
+                        <span class="ms-2">Guardar</span>
                     </button>
                 </div>
             </div>
@@ -173,6 +185,7 @@ export default {
     },
     mounted: async function() {
 
+        Utils.navbarItem("menu-item-catalogs", {addClass: "open"});
         Utils.navbarItem(this.config.entity.page.menu.id, {});
         Alerts.swals({type: "initParams"});
 
@@ -182,7 +195,7 @@ export default {
         if(initParams && initOthers) {
 
             Alerts.swals({show: false});
-            await this.listEntity({});
+            this.listEntity({});
 
         }
 
@@ -209,7 +222,7 @@ export default {
                         extras: {
                             modals: {
                                 default: {
-                                    id: "createUpdateEntityModal",
+                                    id: Utils.uuid(),
                                     titles: {
                                         store: "Agregar",
                                         update: "Editar"
@@ -222,8 +235,8 @@ export default {
                             name: "",
                             description: "",
                             price: "",
-                            currency_id: "",
-                            status: ""
+                            currency: null,
+                            status: null
                         },
                         errors: {}
                     }
@@ -235,10 +248,10 @@ export default {
                 entity: {
                     ...Requests.config({entity: "items"}),
                     page: {
-                        title: "Productos - Servicios",
+                        title: "Catálogo comercial",
                         active: true,
                         menu: {
-                            id: "menu-list-items"
+                            id: "menu-item-products"
                         }
                     }
                 }
@@ -246,25 +259,36 @@ export default {
         };
     },
     methods: {
+        // Init
         async initParams({}) {
 
-            let initParams = await Requests.get({route: this.config.entity.routes.initParams, showAlert: true});
+            let initParams = await Requests.get({route: this.config.entity.routes.initParams, data: {page: "main"}, showAlert: true});
 
             this.options.currencies = initParams.data?.config?.currencies;
             this.options.items      = initParams.data?.config?.items;
 
-            return initParams?.bool && initParams?.data?.bool;
+            return Requests.valid({result: initParams});
 
         },
         async initOthers({}) {
 
-            return true;
+            return new Promise(resolve => {
+
+                this.lists.entity.filters.filter_by = this.filterByOptions[0];
+
+                resolve(true);
+
+            });
 
         },
+        // Entity forms
         async listEntity({url = null}) {
 
+            let filters = Utils.cloneJson(this.lists.entity.filters);
+            const filterJson = {filter_by: filters?.filter_by?.code, word: filters.word};
+
             this.lists.entity.extras.loading = true;
-            this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: this.lists.entity.filters}))?.data;
+            this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: {...filterJson}}))?.data;
             this.lists.entity.extras.loading = false;
 
         },
@@ -279,12 +303,15 @@ export default {
 
             if(this.isDefined({value: record})) {
 
+                let currency = this.currencies.filter(e => e.code === record?.currency_id)[0],
+                    status   = this.statusses.filter(e => e.code === record?.status)[0];
+
                 this.forms.entity.createUpdate.data.id          = record?.id;
                 this.forms.entity.createUpdate.data.name        = record?.name;
                 this.forms.entity.createUpdate.data.description = record?.description;
                 this.forms.entity.createUpdate.data.price       = record?.price;
-                this.forms.entity.createUpdate.data.currency_id = record?.currency_id;
-                this.forms.entity.createUpdate.data.status      = record?.status;
+                this.forms.entity.createUpdate.data.currency    = currency;
+                this.forms.entity.createUpdate.data.status      = status;
 
             }else {
 
@@ -309,9 +336,14 @@ export default {
 
             if(validateForm?.bool) {
 
-                let createUpdate = await (this.isDefined({value: this.forms.entity.createUpdate.data.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: this.forms.entity.createUpdate.data.id}) : Requests.post({route: this.config.entity.routes.store, data: form}));
+                form.currency_id = form?.currency?.code;
+                form.status = form?.status?.code;
 
-                if(createUpdate?.bool && createUpdate?.data?.bool) {
+                delete form.currency;
+
+                let createUpdate = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: form.id}) : Requests.post({route: this.config.entity.routes.store, data: form}));
+
+                if(Requests.valid({result: createUpdate})) {
 
                     Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
                     Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
@@ -346,8 +378,8 @@ export default {
                     this.forms.entity.createUpdate.data.name        = "";
                     this.forms.entity.createUpdate.data.description = "";
                     this.forms.entity.createUpdate.data.price       = "";
-                    this.forms.entity.createUpdate.data.currency_id = "";
-                    this.forms.entity.createUpdate.data.status      = "";
+                    this.forms.entity.createUpdate.data.currency    = null;
+                    this.forms.entity.createUpdate.data.status      = null;
                     break;
             }
 
@@ -372,7 +404,7 @@ export default {
                 result.name        = [];
                 result.description = [];
                 result.price       = [];
-                result.currency_id = [];
+                result.currency    = [];
                 result.status      = [];
 
                 if(!this.isDefined({value: form?.name})) {
@@ -389,9 +421,9 @@ export default {
 
                 }
 
-                if(!this.isDefined({value: form?.currency_id})) {
+                if(!this.isDefined({value: form?.currency})) {
 
-                    result.currency_id.push(this.config.forms.errors.labels.required);
+                    result.currency.push(this.config.forms.errors.labels.required);
                     result.bool = false;
 
                 }
@@ -412,6 +444,34 @@ export default {
         isDefined({value}) {
 
             return Utils.isDefined({value});
+
+        }
+    },
+    computed: {
+        filterByOptions: function() {
+
+            return [
+                {code: "all", label: "Todos"},
+                {code: "name", label: "Nombre"},
+                {code: "description", label: "Descripción"}
+            ];
+
+        },
+        currencies: function() {
+
+            return this.options?.currencies?.records.map(e => ({code: e.id, label: e.plural_name}));
+
+        },
+        statusses: function() {
+
+            return this.options?.items?.statusses.map(e => ({code: e.code, label: e.label}));
+
+        }
+    },
+    watch: {
+        "lists.entity.filters.filter_by": function(newValue, oldValue) {
+
+            // this.listEntity({});
 
         }
     }

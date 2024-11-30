@@ -99,18 +99,18 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="menu-item" id="menu-item-sales">
+                        <li class="menu-item" id="menu-item-catalogs">
                             <a href="javascript:void(0);" class="menu-link menu-toggle">
                                 <i class="fa fa-bottle-water me-3"></i>
-                                <div data-i18n="Page 1">Productos / Servicios</div>
+                                <div data-i18n="Page 1">Catálogo comercial</div>
                             </a>
                             <ul class="menu-sub">
-                                <li class="menu-item" id="menu-item-list-sales">
+                                <li class="menu-item" id="menu-item-products">
                                     <a href="{{ route('items.index') }}" class="menu-link">
                                         <div data-i18n="Collapsed menu">Productos</div>
                                     </a>
                                 </li>
-                                <li class="menu-item" id="menu-item-create-sales">
+                                <li class="menu-item" id="menu-item-services">
                                     <a href="{{ route('items.index') }}" class="menu-link">
                                         <div data-i18n="Collapsed menu">Servicios</div>
                                     </a>

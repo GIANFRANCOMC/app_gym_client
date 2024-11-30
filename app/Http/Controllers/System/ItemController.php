@@ -18,11 +18,18 @@ class ItemController extends Controller {
         $initParams = new stdClass();
 
         $config = new stdClass();
-        $config->items = new stdClass();
-        $config->items->statusses = Item::getStatusses();
 
-        $config->currencies = new stdClass();
-        $config->currencies->records = Currency::get();
+        $page = $request->page ?? "";
+
+        if(in_array($page, ["main"])) {
+
+            $config->items = new stdClass();
+            $config->items->statusses = Item::getStatusses();
+
+            $config->currencies = new stdClass();
+            $config->currencies->records = Currency::get();
+
+        }
 
         $initParams->config = $config;
         $initParams->bool   = true;
@@ -33,17 +40,25 @@ class ItemController extends Controller {
 
     public function list(Request $request) {
 
-        $list = Item::when(Utilities::isDefined($request->general), function($query) use($request) {
+        $list = Item::when(Utilities::isDefined($request->filter_by), function($query) use($request) {
 
-                        $filter = "%".trim($request->general)."%";
+                        $filter = "%".trim($request->word ?? "")."%";
 
-                        $query->where("name", "like", $filter)
-                              ->orwhere("description", "like", $filter);
+                        if(in_array($request->filter_by, ["all"])) {
+
+                            $query->Where("name", "like", $filter)
+                                  ->orWhere("description", "like", $filter);
+
+                        }else if(in_array($request->filter_by, ["name", "description"])) {
+
+                            $query->where($request->filter_by, "like", $filter);
+
+                        }
 
                     })
                     ->orderBy("name", "ASC")
                     ->with(["currency"])
-                    ->paginate(10);
+                    ->paginate($request->per_page ?? Utilities::$per_page_default);
 
         return $list;
 
@@ -65,10 +80,11 @@ class ItemController extends Controller {
 
         $userAuth = Auth::user();
 
-        $item = new Item();
+        $item = null;
 
-        DB::transaction(function() use($request, $userAuth, $item) {
+        DB::transaction(function() use($request, $userAuth, &$item) {
 
+            $item = new Item();
             $item->name        = $request->name;
             $item->description = $request->description;
             $item->price       = $request->price;
@@ -80,7 +96,10 @@ class ItemController extends Controller {
 
         });
 
-        return response()->json(["bool" => true, "msg" => "Producto creado correctamente.", "item" => $item], 200);
+        $bool = Utilities::isDefined($item);
+        $msg  = $bool ? "Producto creado correctamente." : "No se ha podido crear el producto.";
+
+        return response()->json(["bool" => $bool, "msg" => $msg, "item" => $item], 200);
 
     }
 
@@ -101,22 +120,29 @@ class ItemController extends Controller {
         $userAuth = Auth::user();
 
         $item = Item::where("id", $id)
-                    ->firstOrFail();
+                    ->first();
 
-        DB::transaction(function() use($request, $userAuth, $item) {
+        if(Utilities::isDefined($item)) {
 
-            $item->name        = $request->name;
-            $item->description = $request->description;
-            $item->price       = $request->price;
-            $item->currency_id = $request->currency_id;
-            $item->status      = $request->status;
-            $item->updated_at  = now();
-            $item->updated_by  = $userAuth->id ?? null;
-            $item->save();
+            DB::transaction(function() use($request, $userAuth, &$item) {
 
-        });
+                $item->name        = $request->name;
+                $item->description = $request->description;
+                $item->price       = $request->price;
+                $item->currency_id = $request->currency_id;
+                $item->status      = $request->status;
+                $item->updated_at  = now();
+                $item->updated_by  = $userAuth->id ?? null;
+                $item->save();
 
-        return response()->json(["bool" => true, "msg" => "Producto editado correctamente.", "item" => $item], 200);
+            });
+
+        }
+
+        $bool = Utilities::isDefined($item);
+        $msg  = $bool ? "Producto editado correctamente." : "No se ha podido editar el producto.";
+
+        return response()->json(["bool" => $bool, "msg" => $msg, "item" => $item], 200);
 
     }
 

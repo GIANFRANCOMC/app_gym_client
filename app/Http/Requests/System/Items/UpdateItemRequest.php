@@ -3,6 +3,8 @@
 namespace App\Http\Requests\System\Items;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateItemRequest extends FormRequest {
 
@@ -23,11 +25,19 @@ class UpdateItemRequest extends FormRequest {
     public function rules(): array {
 
         return [
-            'name'        => ['required', 'string', 'min:2', 'max:65'],
-            'description' => 'required|string|min:2|max:85',
-            'price'       => 'required|numeric|min:0.1|max:999999999.99|decimal:0,2',
-            'status'      => 'required|string'
+            "name"        => "required|string|max:100",
+            "description" => "required|string|max:200",
+            "price"       => "required|numeric|min:0.1|max:999999999.99|decimal:0,2",
+            "status"      => "required|string"
         ];
+
+    }
+
+    protected function failedValidation(Validator $validator) {
+
+        $errors = $validator->errors()->toArray();
+
+        throw new HttpResponseException(response()->json(["errors" => $errors, "message" => "Error al validar."], 422));
 
     }
 
