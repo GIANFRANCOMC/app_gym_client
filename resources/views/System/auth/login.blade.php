@@ -1,6 +1,6 @@
 <x-system-guest-layout>
     @php
-        $hasCompany = isset($data->company) && !empty($data->company);
+        $hasCompany   = isset($data->company) && !empty($data->company);
         $hasCompanies = isset($data->companies) && !empty($data->companies) && count($data->companies) > 0;
     @endphp
     <div class="d-flex flex-column justify-content-center mb-3">
@@ -17,10 +17,10 @@
             </span>
         @endif
     </div>
-    <form method="POST" action="{{ route('login') }}" class="mb-3">
+    <form method="POST" action="{{ route('login') }}">
         @csrf
         <div>
-            <label for="email" class="form-label colon-at-end">Correo electrónico</label>
+            <label for="email" class="form-label colon-at-end fw-semibold">Correo electrónico</label>
             <input type="text" class="form-control" id="email" name="email" placeholder="usuario@hotmail.com" :value="old('email')" required autofocus autocomplete="username"/>
             @if ($errors->get('email'))
                 @foreach ((array) $errors->get('email') as $message)
@@ -29,7 +29,7 @@
             @endif
         </div>
         <div class="mt-3">
-            <label for="password" class="form-label colon-at-end">Contraseña</label>
+            <label for="password" class="form-label colon-at-end fw-semibold">Contraseña</label>
             <input type="password" class="form-control" id="password" name="password" placeholder="•••••••" required autocomplete="current-password"/>
             @if ($errors->get('password'))
                 @foreach ((array) $errors->get('password') as $message)
@@ -37,10 +37,27 @@
                 @endforeach
             @endif
         </div>
+        @if ($hasCompany)
+            <div class="mt-3 d-none">
+                <label for="company_id" class="form-label colon-at-end fw-semibold">Empresa</label>
+                <select class="form-control" id="company_id" name="company_id" :value="old('company_id')" required>
+                    <option value="{{ $data->company->id }}" selected>{{ $data->company->commercial_name }}</option>
+                </select>
+                @if ($errors->get('company_id'))
+                    @foreach ((array) $errors->get('company_id') as $message)
+                        <small class="text-danger">{{ $message }}</small>
+                    @endforeach
+                @endif
+            </div>
+        @endif
         @if ($hasCompanies)
             <div class="mt-3">
                 <label for="company_id" class="form-label colon-at-end">Empresa</label>
                 <select class="form-control" id="company_id" name="company_id" :value="old('company_id')" required>
+                    <option value="">Seleccione</option>
+                    @foreach ($data->companies as $company)
+                        <option value="{{ $company->id }}">{{ $company->commercial_name }}</option>
+                    @endforeach
                 </select>
                 @if ($errors->get('company_id'))
                     @foreach ((array) $errors->get('company_id') as $message)

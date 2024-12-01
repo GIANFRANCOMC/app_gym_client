@@ -11,22 +11,6 @@ return new class extends Migration {
      */
     public function up(): void {
 
-        Schema::create("companies", function(Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger("identity_document_type_id");
-            $table->string("document_number");
-            $table->string("legal_name");
-            $table->string("commercial_name");
-            $table->enum("status", ["active", "inactive"])->default("active");
-
-            $table->timestamp("created_at")->useCurrent()->nullable();
-            $table->integer("created_by")->nullable();
-            $table->timestamp("updated_at")->nullable();
-            $table->integer("updated_by")->nullable();
-
-            $table->foreign("identity_document_type_id")->references("id")->on("identity_document_types")->onDelete("cascade");
-        });
-
         Schema::create("company_socials_media", function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("company_id");
@@ -107,10 +91,6 @@ return new class extends Migration {
         });
 
         // Inserts
-        DB::table("companies")->insert([
-            ["id" => 1, "identity_document_type_id" => 1, "document_number" => "999999999", "legal_name" => "PAGAPE S.A.", "commercial_name" => "PAGAPE"]
-        ]);
-
         DB::table("company_socials_media")->insert([
             ["company_id" => 1, "type" => "facebook", "link" => "https://www.facebook.com/GianfrancoMC"],
             ["company_id" => 1, "type" => "instagram", "link" => "https://www.instagram.com/gianfrancomc"],
@@ -142,7 +122,6 @@ return new class extends Migration {
         Schema::dropIfExists("series");
         Schema::dropIfExists("branches");
         Schema::dropIfExists("company_socials_media");
-        Schema::dropIfExists("companies");
 
     }
 

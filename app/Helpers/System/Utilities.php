@@ -12,7 +12,7 @@ class Utilities {
 
     public static $per_page_default = 10;
 
-    public static function getDefaultViewData() {
+    public static function getDefaultData() {
 
         $result = new stdClass();
 

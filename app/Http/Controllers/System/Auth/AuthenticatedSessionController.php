@@ -18,7 +18,7 @@ class AuthenticatedSessionController extends Controller {
      */
     public function create(): View {
 
-        $data = Utilities::getDefaultViewData();
+        $data = Utilities::getDefaultData();
 
         $data->company   = null;
         $data->companies = [];
@@ -34,6 +34,7 @@ class AuthenticatedSessionController extends Controller {
 
             $data->companies = Company::whereIn("status", ["active"])
                                       ->with(["socialsMedia"])
+                                      ->orderBy("commercial_name", "ASC")
                                       ->get();
 
         }

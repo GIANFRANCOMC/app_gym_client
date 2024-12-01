@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\System\Auth;
 
+use App\Models\System\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\{Auth, RateLimiter};
+use Illuminate\Support\Facades\{Auth, Hash, RateLimiter};
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -28,7 +29,8 @@ class LoginRequest extends FormRequest {
 
         return [
             "email" => ["required", "string", "email"],
-            "password" => ["required", "string"]
+            "password" => ["required", "string"],
+            "company_id" => ["required", "integer"]
         ];
 
     }
@@ -51,30 +53,25 @@ class LoginRequest extends FormRequest {
         $this->ensureIsNotRateLimited();
 
         $credentials = $this->only("email", "password");
+        $companyId   = $this->input("company_id");
+
+        $user = User::where("email", $credentials["email"])
+                    ->where("company_id", $companyId)
+                    ->whereIn("status", ["active"])
+                    ->first();
 
         // Attempt to authenticate the user
-        if(!Auth::attempt($credentials, $this->boolean("remember"))) {
+        if(!$user || !Hash::check($credentials["password"], $user->password)) {
 
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                "email" => trans("auth.failed"),
+                "email" => trans("auth.failed")
             ]);
 
         }
 
-        // Check if the user is active
-        $user = Auth::user();
-
-        if(!in_array($user->status, ["active"])) {
-
-            Auth::logout();
-
-            throw ValidationException::withMessages([
-                "email" => trans("auth.failed"),
-            ]);
-
-        }
+        Auth::login($user, $this->boolean("remember"));
 
         RateLimiter::clear($this->throttleKey());
 

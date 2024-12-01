@@ -29,6 +29,7 @@ class User extends Authenticatable {
      * @var array<int, string>
      */
     protected $fillable = [
+        "company_id",
         "identity_document_type_id",
         "document_number",
         "name",
@@ -81,6 +82,12 @@ class User extends Authenticatable {
     }
 
     // Relationships
+    public function company() {
+
+        return $this->belongsTo(Company::class, "company_id", "id");
+
+    }
+
     public function identityDocumentType() {
 
         return $this->belongsTo(IdentityDocumentType::class, "identity_document_type_id", "id");
