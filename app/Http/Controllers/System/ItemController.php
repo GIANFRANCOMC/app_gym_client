@@ -46,10 +46,12 @@ class ItemController extends Controller {
 
                         if(in_array($request->filter_by, ["all"])) {
 
-                            $query->Where("name", "like", $filter)
-                                  ->orWhere("description", "like", $filter);
+                            $query->where("internal_code", "like", $filter)
+                                  ->orWhere("name", "like", $filter)
+                                  ->orWhere("description", "like", $filter)
+                                  ->orWhere("price", "like", $filter);
 
-                        }else if(in_array($request->filter_by, ["name", "description"])) {
+                        }else if(in_array($request->filter_by, ["internal_code", "name", "description", "price"])) {
 
                             $query->where($request->filter_by, "like", $filter);
 
@@ -82,16 +84,28 @@ class ItemController extends Controller {
 
         $item = null;
 
+        $internalCodeExists = Item::where("company_id", $userAuth->company_id)
+                                  ->where("internal_code", $request->internal_code)
+                                  ->exists();
+
+        if($internalCodeExists) {
+
+            return response()->json(["bool" => false, "msg" => "El código interno ya ha sido registrado", "item" => null], 200);
+
+        }
+
         DB::transaction(function() use($request, $userAuth, &$item) {
 
             $item = new Item();
-            $item->name        = $request->name;
-            $item->description = $request->description;
-            $item->price       = $request->price;
-            $item->currency_id = $request->currency_id;
-            $item->status      = $request->status;
-            $item->created_at  = now();
-            $item->created_by  = $userAuth->id ?? null;
+            $item->company_id    = $userAuth->company_id;
+            $item->internal_code = $request->internal_code;
+            $item->name          = $request->name;
+            $item->description   = $request->description;
+            $item->price         = $request->price;
+            $item->currency_id   = $request->currency_id;
+            $item->status        = $request->status;
+            $item->created_at    = now();
+            $item->created_by    = $userAuth->id ?? null;
             $item->save();
 
         });
@@ -126,13 +140,14 @@ class ItemController extends Controller {
 
             DB::transaction(function() use($request, $userAuth, &$item) {
 
-                $item->name        = $request->name;
-                $item->description = $request->description;
-                $item->price       = $request->price;
-                $item->currency_id = $request->currency_id;
-                $item->status      = $request->status;
-                $item->updated_at  = now();
-                $item->updated_by  = $userAuth->id ?? null;
+                $item->internal_code = $request->internal_code;
+                $item->name          = $request->name;
+                $item->description   = $request->description;
+                $item->price         = $request->price;
+                $item->currency_id   = $request->currency_id;
+                $item->status        = $request->status;
+                $item->updated_at    = now();
+                $item->updated_by    = $userAuth->id ?? null;
                 $item->save();
 
             });

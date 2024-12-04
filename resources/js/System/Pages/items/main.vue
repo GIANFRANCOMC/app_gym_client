@@ -1,5 +1,5 @@
 <template>
-    <Breadcrumb :list="[config.entity.page, { title: 'Productos' }]"/>
+    <Breadcrumb :list="breadcrumbTitles"/>
 
     <!-- Content -->
     <div class="row align-items-end g-3 mb-4">
@@ -31,11 +31,11 @@
             xl="5"
             lg="4">
             <template v-slot:input>
-                <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})">
+                <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})">
                     <i class="fa fa-search"></i>
                     <span class="ms-2">Buscar</span>
                 </button>
-                <button class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})">
+                <button type="button" class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})">
                     <i class="fa fa-plus"></i>
                     <span class="ms-2">Agregar</span>
                 </button>
@@ -45,7 +45,8 @@
     <div class="table-responsive">
         <table class="table table-hover">
             <thead class="table-light">
-                <tr class="text-center">
+                <tr class="text-center align-middle">
+                    <th class="fw-bold col-1">CÓDIGO INTERNO</th>
                     <th class="fw-bold col-1">NOMBRE</th>
                     <th class="fw-bold col-1">DESCRIPCIÓN</th>
                     <th class="fw-bold col-1">PRECIO</th>
@@ -64,9 +65,13 @@
                 <template v-else>
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
+                            <td v-text="record.internal_code"></td>
                             <td v-text="record.name"></td>
                             <td v-text="record.description"></td>
-                            <td v-text="record.currency?.sign+record.price"></td>
+                            <td>
+                                <span v-text="record.currency?.sign"></span>
+                                <span v-text="record.price" class="ms-2"></span>
+                            </td>
                             <td>
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
@@ -104,14 +109,29 @@
                 <div class="modal-body">
                     <div class="row g-3">
                         <InputText
+                            v-model="forms.entity.createUpdate.data.internal_code"
+                            hasDiv
+                            title="Código interno"
+                            isRequired
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.internal_code"
+                            xl="5"
+                            lg="5">
+                            <template v-slot:inputGroupAppend>
+                                <button type="button" :class="['btn waves-effect', isDefined({value: forms.entity.createUpdate.data?.id}) ? 'btn-warning' : 'btn-primary']" @click="setGenerateCode({length: 12})" data-bs-toggle="tooltip" data-bs-placement="top" title="Generar aleatoriamente">
+                                    <i class="fa fa-rotate"></i>
+                                </button>
+                            </template>
+                        </InputText>
+                        <InputText
                             v-model="forms.entity.createUpdate.data.name"
                             hasDiv
                             title="Nombre"
                             isRequired
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.name"
-                            xl="12"
-                            lg="12"/>
+                            xl="7"
+                            lg="7"/>
                         <InputText
                             v-model="forms.entity.createUpdate.data.description"
                             hasDiv
@@ -209,7 +229,8 @@ export default {
                         route: Requests.config({entity: "items", type: "list"})
                     },
                     filters: {
-                        general: ""
+                        filter_by: null,
+                        word: ""
                     },
                     records: {
                         total: 0
@@ -232,6 +253,7 @@ export default {
                         },
                         data: {
                             id: null,
+                            internal_code: "",
                             name: "",
                             description: "",
                             price: "",
@@ -248,7 +270,7 @@ export default {
                 entity: {
                     ...Requests.config({entity: "items"}),
                     page: {
-                        title: "Catálogo comercial",
+                        title: "Productos",
                         active: true,
                         menu: {
                             id: "menu-item-products"
@@ -293,6 +315,14 @@ export default {
 
         },
         // Forms
+        setGenerateCode({length}) {
+
+            this.forms.entity.createUpdate.data.internal_code = this.generateCode({length});
+
+            Alerts.toastrs({type: "success", subtitle: "Código interno generado correctamente."});
+            Alerts.tooltips({show: false});
+
+        },
         modalCreateUpdateEntity({record = null}) {
 
             const functionName = "modalCreateUpdateEntity";
@@ -306,16 +336,18 @@ export default {
                 let currency = this.currencies.filter(e => e.code === record?.currency_id)[0],
                     status   = this.statusses.filter(e => e.code === record?.status)[0];
 
-                this.forms.entity.createUpdate.data.id          = record?.id;
-                this.forms.entity.createUpdate.data.name        = record?.name;
-                this.forms.entity.createUpdate.data.description = record?.description;
-                this.forms.entity.createUpdate.data.price       = record?.price;
-                this.forms.entity.createUpdate.data.currency    = currency;
-                this.forms.entity.createUpdate.data.status      = status;
+                this.forms.entity.createUpdate.data.id            = record?.id;
+                this.forms.entity.createUpdate.data.internal_code = record?.internal_code;
+                this.forms.entity.createUpdate.data.name          = record?.name;
+                this.forms.entity.createUpdate.data.description   = record?.description;
+                this.forms.entity.createUpdate.data.price         = record?.price;
+                this.forms.entity.createUpdate.data.currency      = currency;
+                this.forms.entity.createUpdate.data.status        = status;
 
             }else {
 
-                //
+                this.forms.entity.createUpdate.data.currency = this.currencies[0];
+                this.forms.entity.createUpdate.data.status   = this.statusses[0];
 
             }
 
@@ -330,7 +362,7 @@ export default {
             Alerts.swals({});
             this.formErrors({functionName, type: "clear"});
 
-            let form = JSON.parse(JSON.stringify(this.forms.entity.createUpdate.data));
+            let form = Utils.cloneJson(this.forms.entity.createUpdate.data);
 
             const validateForm = this.validateForm({functionName, form});
 
@@ -374,12 +406,13 @@ export default {
             switch(functionName) {
                 case "modalCreateUpdateEntity":
                 case "createUpdateEntity":
-                    this.forms.entity.createUpdate.data.id          = null;
-                    this.forms.entity.createUpdate.data.name        = "";
-                    this.forms.entity.createUpdate.data.description = "";
-                    this.forms.entity.createUpdate.data.price       = "";
-                    this.forms.entity.createUpdate.data.currency    = null;
-                    this.forms.entity.createUpdate.data.status      = null;
+                    this.forms.entity.createUpdate.data.id            = null;
+                    this.forms.entity.createUpdate.data.internal_code = "";
+                    this.forms.entity.createUpdate.data.name          = "";
+                    this.forms.entity.createUpdate.data.description   = "";
+                    this.forms.entity.createUpdate.data.price         = "";
+                    this.forms.entity.createUpdate.data.currency      = null;
+                    this.forms.entity.createUpdate.data.status        = null;
                     break;
             }
 
@@ -401,11 +434,19 @@ export default {
 
             if(["createUpdateEntity"].includes(functionName)) {
 
-                result.name        = [];
-                result.description = [];
-                result.price       = [];
-                result.currency    = [];
-                result.status      = [];
+                result.internal_code = [];
+                result.name          = [];
+                result.description   = [];
+                result.price         = [];
+                result.currency      = [];
+                result.status        = [];
+
+                if(!this.isDefined({value: form?.internal_code})) {
+
+                    result.internal_code.push(this.config.forms.errors.labels.required);
+                    result.bool = false;
+
+                }
 
                 if(!this.isDefined({value: form?.name})) {
 
@@ -445,15 +486,27 @@ export default {
 
             return Utils.isDefined({value});
 
+        },
+        generateCode({length}) {
+
+            return Utils.generateCode({length});
+
         }
     },
     computed: {
+        breadcrumbTitles: function() {
+
+            return [{title: "Catálogo comercial"}, this.config.entity.page];
+
+        },
         filterByOptions: function() {
 
             return [
                 {code: "all", label: "Todos"},
+                {code: "internal_code", label: "Código interno"},
                 {code: "name", label: "Nombre"},
-                {code: "description", label: "Descripción"}
+                {code: "description", label: "Descripción"},
+                {code: "price", label: "Precio"}
             ];
 
         },

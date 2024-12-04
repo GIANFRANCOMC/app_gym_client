@@ -21,6 +21,8 @@ class Item extends Model {
     ];
 
     protected $fillable = [
+        "company_id",
+        "internal_code",
         "name",
         "description",
         "price",
@@ -52,6 +54,12 @@ class Item extends Model {
     }
 
     // Relationships
+    public function company() {
+
+        return $this->belongsTo(Company::class, "company_id", "id");
+
+    }
+
     public function currency() {
 
         return $this->belongsTo(Currency::class, "currency_id", "id");
