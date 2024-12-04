@@ -36,10 +36,11 @@ Route::middleware(["web"])
 
             Route::prefix('/products')->group($rutaDefecto.'/Product.php');
             Route::prefix('/services')->group($rutaDefecto.'/Service.php');
+            Route::prefix('/customers')->group($rutaDefecto.'/Customer.php');
+
 
             Route::prefix('/home')->group($rutaDefecto.'/Home.php');
             Route::prefix('/branches')->group($rutaDefecto.'/Branch.php');
-            Route::prefix('/customers')->group($rutaDefecto.'/Customer.php');
             Route::prefix('/sales')->group($rutaDefecto.'/Sale.php');
             Route::prefix('/users')->group($rutaDefecto.'/User.php');
             Route::prefix('/reports')->group($rutaDefecto.'/Report.php');

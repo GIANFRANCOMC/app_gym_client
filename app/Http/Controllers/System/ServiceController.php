@@ -40,6 +40,8 @@ class ServiceController extends Controller {
 
     public function list(Request $request) {
 
+        $userAuth = Auth::user();
+
         $list = Item::when(Utilities::isDefined($request->filter_by), function($query) use($request) {
 
                         $filter = "%".trim($request->word ?? "")."%";
@@ -66,6 +68,7 @@ class ServiceController extends Controller {
                         }
 
                     })
+                    ->where("company_id", $userAuth->company_id)
                     ->whereIn("type", ["service"])
                     ->orderBy("name", "ASC")
                     ->with(["currency"])

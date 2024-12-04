@@ -1,5 +1,5 @@
 <template>
-    <Breadcrumb :list="[config.entity.page]"/>
+    <Breadcrumb :list="breadcrumbTitles"/>
 
     <!-- Content -->
     <div class="row align-items-end g-3 mb-4">
@@ -31,11 +31,11 @@
             xl="5"
             lg="4">
             <template v-slot:input>
-                <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})">
+                <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})">
                     <i class="fa fa-search"></i>
                     <span class="ms-2">Buscar</span>
                 </button>
-                <button class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})">
+                <button type="button" class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})">
                     <i class="fa fa-plus"></i>
                     <span class="ms-2">Agregar</span>
                 </button>
@@ -49,6 +49,7 @@
                     <th class="fw-bold col-1">TIPO DE DOCUMENTO</th>
                     <th class="fw-bold col-1">NÚMERO DE DOCUMENTO</th>
                     <th class="fw-bold col-1">NOMBRE</th>
+                    <th class="fw-bold col-1">CORREO ELECTRÓNICO</th>
                     <th class="fw-bold col-1">ESTADO</th>
                     <th class="fw-bold col-1">ACCIONES</th>
                 </tr>
@@ -67,6 +68,7 @@
                             <td v-text="record.identity_document_type?.name"></td>
                             <td v-text="record.document_number"></td>
                             <td v-text="record.name"></td>
+                            <td v-text="record.email ?? 'N/A'"></td>
                             <td>
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
@@ -136,6 +138,14 @@
                             :textBottomInfo="forms.entity.createUpdate.errors?.name"
                             xl="12"
                             lg="12"/>
+                        <InputText
+                            v-model="forms.entity.createUpdate.data.email"
+                            hasDiv
+                            title="Correo electrónico"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.email"
+                            xl="6"
+                            lg="6"/>
                         <InputSlot
                             hasDiv
                             title="Estado"
@@ -227,6 +237,7 @@ export default {
                             identity_document_type: null,
                             document_number: "",
                             name: "",
+                            email: "",
                             status: null
                         },
                         errors: {}
@@ -258,7 +269,7 @@ export default {
             this.options.identityDocumentTypes = initParams.data?.config?.identityDocumentTypes;
             this.options.customers             = initParams.data?.config?.customers;
 
-            return initParams?.bool && initParams?.data?.bool;
+            return Requests.valid({result: initParams});
 
         },
         async initOthers({}) {
@@ -301,11 +312,12 @@ export default {
                 this.forms.entity.createUpdate.data.identity_document_type = identityDocumentType;
                 this.forms.entity.createUpdate.data.document_number        = record?.document_number;
                 this.forms.entity.createUpdate.data.name                   = record?.name;
+                this.forms.entity.createUpdate.data.email                  = record?.email;
                 this.forms.entity.createUpdate.data.status                 = status;
 
             }else {
 
-                //
+                this.forms.entity.createUpdate.data.status = this.statusses[0];
 
             }
 
@@ -368,6 +380,7 @@ export default {
                     this.forms.entity.createUpdate.data.identity_document_type = null;
                     this.forms.entity.createUpdate.data.document_number        = "";
                     this.forms.entity.createUpdate.data.name                   = "";
+                    this.forms.entity.createUpdate.data.email                  = "";
                     this.forms.entity.createUpdate.data.status                 = null;
                     break;
             }
@@ -393,6 +406,7 @@ export default {
                 result.identity_document_type = [];
                 result.document_number        = [];
                 result.name                   = [];
+                result.email                  = [];
                 result.status                 = [];
 
                 if(!this.isDefined({value: form?.identity_document_type})) {
@@ -416,6 +430,13 @@ export default {
 
                 }
 
+                // if(!this.isDefined({value: form?.email})) {
+
+                    // result.email.push(this.config.forms.errors.labels.required);
+                    // result.bool = false;
+
+                // }
+
                 if(!this.isDefined({value: form?.status})) {
 
                     result.status.push(this.config.forms.errors.labels.required);
@@ -436,12 +457,18 @@ export default {
         }
     },
     computed: {
+        breadcrumbTitles: function() {
+
+            return [this.config.entity.page];
+
+        },
         filterByOptions: function() {
 
             return [
                 {code: "all", label: "Todos"},
                 {code: "document_number", label: "Número de documento"},
-                {code: "name", label: "Nombre"}
+                {code: "name", label: "Nombre"},
+                {code: "email", label: "Correo electrónico"}
             ];
 
         },

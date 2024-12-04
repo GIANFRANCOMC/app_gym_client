@@ -80,6 +80,7 @@ return new class extends Migration {
 
         Schema::create("customers", function(Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger("company_id");
             $table->unsignedBigInteger("identity_document_type_id");
             $table->string("document_number");
             $table->string("name");
@@ -91,6 +92,7 @@ return new class extends Migration {
             $table->timestamp("updated_at")->nullable();
             $table->integer("updated_by")->nullable();
 
+            $table->foreign("company_id")->references("id")->on("companies")->onDelete("cascade");
             $table->foreign("identity_document_type_id")->references("id")->on("identity_document_types")->onDelete("cascade");
         });
 
@@ -111,7 +113,7 @@ return new class extends Migration {
         ]);
 
         DB::table("customers")->insert([
-            ["identity_document_type_id" => 1, "document_number" => "999999999", "name" => "Cliente varios"]
+            ["company_id" => 1, "identity_document_type_id" => 1, "document_number" => "999999999", "name" => "Cliente varios"]
         ]);
 
     }

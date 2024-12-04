@@ -25,8 +25,11 @@ class StoreCustomerRequest extends FormRequest {
     public function rules(): array {
 
         return [
-            "name"   => "required|string|max:100",
-            "status" => "required|string"
+            "identity_document_type_id" => "required|integer",
+            "document_number"           => "required|string|max:20",
+            "name"                      => "required|string|max:100",
+            "email"                     => "nullable|email",
+            "status"                    => "required|string"
         ];
 
     }

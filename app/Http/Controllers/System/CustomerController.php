@@ -40,22 +40,30 @@ class CustomerController extends Controller {
 
     public function list(Request $request) {
 
+        $userAuth = Auth::user();
+
         $list = Customer::when(Utilities::isDefined($request->filter_by), function($query) use($request) {
 
                             $filter = "%".trim($request->word ?? "")."%";
 
                             if(in_array($request->filter_by, ["all"])) {
 
-                                $query->where("document_number", "like", $filter)
-                                    ->orWhere("name", "like", $filter);
+                                $query->where(function($query) use($request, $filter) {
 
-                            }else if(in_array($request->filter_by, ["document_number", "name"])) {
+                                    $query->where("document_number", "like", $filter)
+                                          ->orWhere("name", "like", $filter)
+                                          ->orWhere("email", "like", $filter);
+
+                                });
+
+                            }else if(in_array($request->filter_by, ["document_number", "name", "email"])) {
 
                                 $query->where($request->filter_by, "like", $filter);
 
                             }
 
                         })
+                        ->where("company_id", $userAuth->company_id)
                         ->orderBy("name", "ASC")
                         ->with(["identityDocumentType"])
                         ->paginate($request->per_page ?? Utilities::$per_page_default);
@@ -82,12 +90,25 @@ class CustomerController extends Controller {
 
         $customer = null;
 
+        $customerExists = Customer::where("company_id", $userAuth->company_id)
+                                  ->where("identity_document_type_id", $request->identity_document_type_id)
+                                  ->where("document_number", $request->document_number)
+                                  ->exists();
+
+        if($customerExists) {
+
+            return response()->json(["bool" => false, "msg" => "El cliente ingresado ya ha sido registrado", "item" => null], 200);
+
+        }
+
         DB::transaction(function() use($request, $userAuth, &$customer) {
 
             $customer = new Customer();
+            $customer->company_id                = $userAuth->company_id;
             $customer->identity_document_type_id = $request->identity_document_type_id;
             $customer->document_number           = $request->document_number;
             $customer->name                      = $request->name;
+            $customer->email                     = $request->email;
             $customer->status                    = $request->status;
             $customer->created_at                = now();
             $customer->created_by                = $userAuth->id ?? null;
@@ -123,11 +144,24 @@ class CustomerController extends Controller {
 
         if(Utilities::isDefined($customer)) {
 
+            $customerExists = Customer::where("company_id", $userAuth->company_id)
+                                      ->where("identity_document_type_id", $request->identity_document_type_id)
+                                      ->where("document_number", $request->document_number)
+                                      ->whereNot("id", $customer->id)
+                                      ->exists();
+
+            if($customerExists) {
+
+                return response()->json(["bool" => false, "msg" => "El cliente ingresado ya ha sido registrado", "item" => null], 200);
+
+            }
+
             DB::transaction(function() use($request, $userAuth, &$customer) {
 
                 $customer->identity_document_type_id = $request->identity_document_type_id;
                 $customer->document_number           = $request->document_number;
                 $customer->name                      = $request->name;
+                $customer->email                     = $request->email;
                 $customer->status                    = $request->status;
                 $customer->updated_at                = now();
                 $customer->updated_by                = $userAuth->id ?? null;
