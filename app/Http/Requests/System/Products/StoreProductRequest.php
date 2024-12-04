@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\System\Items;
+namespace App\Http\Requests\System\Products;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UpdateItemRequest extends FormRequest {
+class StoreProductRequest extends FormRequest {
 
     /**
      * Determine if the user is authorized to make this request.

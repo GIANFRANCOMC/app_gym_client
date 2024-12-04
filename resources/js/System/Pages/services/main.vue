@@ -226,7 +226,7 @@ export default {
                 entity: {
                     extras: {
                         loading: false,
-                        route: Requests.config({entity: "items", type: "list"})
+                        route: Requests.config({entity: "services", type: "list"})
                     },
                     filters: {
                         filter_by: null,
@@ -268,12 +268,12 @@ export default {
             config: {
                 ...Constants.generalConfig,
                 entity: {
-                    ...Requests.config({entity: "items"}),
+                    ...Requests.config({entity: "services"}),
                     page: {
-                        title: "Productos",
+                        title: "Servicios",
                         active: true,
                         menu: {
-                            id: "menu-item-products"
+                            id: "menu-item-services"
                         }
                     }
                 }
@@ -287,7 +287,7 @@ export default {
             let initParams = await Requests.get({route: this.config.entity.routes.initParams, data: {page: "main"}, showAlert: true});
 
             this.options.currencies = initParams.data?.config?.currencies;
-            this.options.items      = initParams.data?.config?.items;
+            this.options.services   = initParams.data?.config?.services;
 
             return Requests.valid({result: initParams});
 
@@ -315,12 +315,16 @@ export default {
 
         },
         // Forms
-        setGenerateCode({length}) {
+        setGenerateCode({length, showAlert = true}) {
 
             this.forms.entity.createUpdate.data.internal_code = this.generateCode({length});
 
-            Alerts.toastrs({type: "success", subtitle: "Código interno generado correctamente."});
-            Alerts.tooltips({show: false});
+            if(showAlert) {
+
+                Alerts.toastrs({type: "success", subtitle: "Código interno generado correctamente."});
+                Alerts.tooltips({show: false});
+
+            }
 
         },
         modalCreateUpdateEntity({record = null}) {
@@ -346,6 +350,7 @@ export default {
 
             }else {
 
+                // this.setGenerateCode({showAlert: false});
                 this.forms.entity.createUpdate.data.currency = this.currencies[0];
                 this.forms.entity.createUpdate.data.status   = this.statusses[0];
 
@@ -517,7 +522,7 @@ export default {
         },
         statusses: function() {
 
-            return this.options?.items?.statusses.map(e => ({code: e.code, label: e.label}));
+            return this.options?.services?.statusses.map(e => ({code: e.code, label: e.label}));
 
         }
     },

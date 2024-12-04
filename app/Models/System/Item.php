@@ -27,6 +27,7 @@ class Item extends Model {
         "description",
         "price",
         "currency_id",
+        "type",
         "status",
         "created_at",
         "created_by",

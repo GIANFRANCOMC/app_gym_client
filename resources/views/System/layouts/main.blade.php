@@ -106,12 +106,12 @@
                             </a>
                             <ul class="menu-sub">
                                 <li class="menu-item" id="menu-item-products">
-                                    <a href="{{ route('items.index') }}" class="menu-link">
+                                    <a href="{{ route('products.index') }}" class="menu-link">
                                         <div data-i18n="Collapsed menu">Productos</div>
                                     </a>
                                 </li>
                                 <li class="menu-item" id="menu-item-services">
-                                    <a href="{{ route('items.index') }}" class="menu-link">
+                                    <a href="{{ route('services.index') }}" class="menu-link">
                                         <div data-i18n="Collapsed menu">Servicios</div>
                                     </a>
                                 </li>
