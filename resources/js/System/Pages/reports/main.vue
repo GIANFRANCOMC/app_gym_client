@@ -1,11 +1,11 @@
 <template>
-    <Breadcrumb :list="[config.entity.page]"/>
+    <Breadcrumb :list="breadcrumbTitles"/>
 
     <div class="row align-items-end g-3 mb-3">
         <InputSlot
             hasDiv
             title="Reporte"
-            :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+            :titleClass="[config.forms.classes.title]"
             isRequired
             xl="12"
             lg="12">
@@ -13,26 +13,24 @@
                 <v-select
                     v-model="forms.entity.createUpdate.data.report"
                     :options="reports"
-                    :class="'bg-white'"
+                    :class="config.forms.classes.select2"
                     :clearable="false"/>
             </template>
         </InputSlot>
-    </div>
-    <div class="row align-items-end g-3 mb-3">
         <template v-if="isDefined({value: forms.entity.createUpdate.data.report?.code})">
             <template v-if="['customers'].includes(forms.entity.createUpdate.data.report?.code)">
                 <InputText
                     v-model="forms.entity.createUpdate.data.customers.document_number"
                     hasDiv
                     title="Número de documento"
-                    :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+                    :titleClass="[config.forms.classes.title]"
                     xl="3"
                     lg="6"/>
                 <InputText
                     v-model="forms.entity.createUpdate.data.customers.name"
                     hasDiv
                     title="Nombre"
-                    :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+                    :titleClass="[config.forms.classes.title]"
                     xl="3"
                     lg="6"/>
             </template>
@@ -41,14 +39,14 @@
                     v-model="forms.entity.createUpdate.data.users.document_number"
                     hasDiv
                     title="Número de documento"
-                    :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+                    :titleClass="[config.forms.classes.title]"
                     xl="3"
                     lg="6"/>
                 <InputText
                     v-model="forms.entity.createUpdate.data.users.name"
                     hasDiv
                     title="Nombre"
-                    :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+                    :titleClass="[config.forms.classes.title]"
                     xl="3"
                     lg="6"/>
             </template>
@@ -57,14 +55,14 @@
                     v-model="forms.entity.createUpdate.data.items.name"
                     hasDiv
                     title="Nombre"
-                    :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+                    :titleClass="[config.forms.classes.title]"
                     xl="3"
                     lg="6"/>
                 <InputText
-                    v-model="forms.entity.createUpdate.data.items.name"
+                    v-model="forms.entity.createUpdate.data.items.description"
                     hasDiv
                     title="Descripción"
-                    :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+                    :titleClass="[config.forms.classes.title]"
                     xl="3"
                     lg="6"/>
             </template>
@@ -73,7 +71,7 @@
                     v-model="forms.entity.createUpdate.data.branches.name"
                     hasDiv
                     title="Nombre"
-                    :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+                    :titleClass="[config.forms.classes.title]"
                     xl="3"
                     lg="6"/>
             </template>
@@ -81,7 +79,7 @@
                 <InputSlot
                     hasDiv
                     title="Tipo"
-                    :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+                    :titleClass="[config.forms.classes.title]"
                     isRequired
                     xl="4"
                     lg="4">
@@ -89,7 +87,7 @@
                         <v-select
                             v-model="forms.entity.createUpdate.data.sales.type"
                             :options="salesType"
-                            :class="'bg-white'"
+                            :class="config.forms.classes.select2"
                             :clearable="false"/>
                     </template>
                 </InputSlot>
@@ -98,7 +96,7 @@
                         v-model="forms.entity.createUpdate.data.sales.start_month"
                         hasDiv
                         title="Mes de"
-                        :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+                        :titleClass="[config.forms.classes.title]"
                         isRequired
                         xl="4"
                         lg="4"/>
@@ -108,7 +106,7 @@
                         v-model="forms.entity.createUpdate.data.sales.start_month"
                         hasDiv
                         title="Mes de"
-                        :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+                        :titleClass="[config.forms.classes.title]"
                         isRequired
                         xl="4"
                         lg="4"/>
@@ -116,7 +114,7 @@
                         v-model="forms.entity.createUpdate.data.sales.end_month"
                         hasDiv
                         title="Mes al"
-                        :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+                        :titleClass="[config.forms.classes.title]"
                         isRequired
                         xl="4"
                         lg="4"/>
@@ -126,7 +124,7 @@
                         v-model="forms.entity.createUpdate.data.sales.start_date"
                         hasDiv
                         title="Fecha del"
-                        :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+                        :titleClass="[config.forms.classes.title]"
                         isRequired
                         xl="4"
                         lg="4"/>
@@ -136,7 +134,7 @@
                         v-model="forms.entity.createUpdate.data.sales.start_date"
                         hasDiv
                         title="Fecha del"
-                        :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+                        :titleClass="[config.forms.classes.title]"
                         isRequired
                         xl="4"
                         lg="4"/>
@@ -144,7 +142,7 @@
                         v-model="forms.entity.createUpdate.data.sales.end_date"
                         hasDiv
                         title="Fecha al"
-                        :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+                        :titleClass="[config.forms.classes.title]"
                         isRequired
                         xl="4"
                         lg="4"/>
@@ -246,20 +244,19 @@ export default {
     methods: {
         async initParams({}) {
 
-            let initParams = await Requests.get({route: this.config.entity.routes.initParams, showAlert: true});
+            let initParams = await Requests.get({route: this.config.entity.routes.initParams, data: {page: "main"}, showAlert: true});
 
-            this.options.customers             = initParams.data?.config?.customers;
-            this.options.identityDocumentTypes = initParams.data?.config?.identityDocumentTypes;
+            // this.options.customers = initParams.data?.config?.customers;
 
-            return initParams?.bool && initParams?.data?.bool;
+            return Requests.valid({result: initParams});
 
         },
         async initOthers({}) {
 
             return new Promise(resolve => {
 
-                this.forms.entity.createUpdate.data.report = (this.reports).length > 0 ? this.reports[0] : null;
-                this.forms.entity.createUpdate.data.sales.type = (this.salesType).length > 0 ? this.salesType[0] : null;
+                this.forms.entity.createUpdate.data.report     = this.reports[0];
+                this.forms.entity.createUpdate.data.sales.type = this.salesType[0];
 
                 resolve(true);
 
@@ -276,7 +273,7 @@ export default {
 
             let report = this.forms.entity.createUpdate.data.report;
 
-            let form = JSON.parse(JSON.stringify(this.forms.entity.createUpdate.data[report?.code]));
+            let form = Utils.cloneJson(this.forms.entity.createUpdate.data[report?.code]);
 
             const validateForm = this.validateForm({functionName, form: {...form, report}});
 
@@ -294,23 +291,25 @@ export default {
 
                     }
 
-                    const response = await axios.get(this.config.entity.routes.consult+`/${report?.code}`, {
-                    responseType: 'blob', // Importante para manejar archivos
-                    params: {...form}
-                    });
+                    const response = await axios.get(this.config.entity.routes.consult+`/${report?.code}`, {responseType: "blob", params: {...form}});
 
-                    // Crear un enlace temporal para descargar el archivo
                     const url = window.URL.createObjectURL(new Blob([response.data]));
                     const link = document.createElement('a');
+
                     link.href = url;
-                    link.setAttribute('download', 'reporte.xlsx'); // Nombre del archivo
+                    link.setAttribute('download', `${report.label}.xlsx`);
                     document.body.appendChild(link);
+
                     link.click();
                     document.body.removeChild(link);
+
                     Alerts.swals({show: false});
-                } catch (error) {
-                    console.error("Error descargando el archivo:", error);
+
+                }catch(error) {
+
+                    console.log(error);
                     Alerts.swals({show: false});
+
                 }
 
             }else {
@@ -350,7 +349,7 @@ export default {
 
                 result.msg = [];
 
-                if(["sales"].includes(form.report.code)) {
+                if(["sales"].includes(form.report?.code)) {
 
                     if(!this.isDefined({value: form?.type})) {
 
@@ -426,12 +425,17 @@ export default {
         }
     },
     computed: {
+        breadcrumbTitles: function() {
+
+            return [this.config.entity.page];
+
+        },
         reports: function() {
 
             return [
                 {code: "customers", label: "Clientes"},
                 {code: "users", label: "Colaboradores"},
-                {code: "items", label: "Productos - Servicios"},
+                {code: "items", label: "Catálogo comercial"},
                 {code: "branches", label: "Sucursales"},
                 {code: "sales", label: "Ventas"}
             ];

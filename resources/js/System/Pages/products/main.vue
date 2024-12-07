@@ -310,7 +310,7 @@ export default {
             const filterJson = {filter_by: filters?.filter_by?.code, word: filters.word};
 
             this.lists.entity.extras.loading = true;
-            this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: {...filterJson}}))?.data;
+            this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: filterJson}))?.data;
             this.lists.entity.extras.loading = false;
 
         },
@@ -378,7 +378,8 @@ export default {
 
                 delete form.currency;
 
-                let createUpdate = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: form.id}) : Requests.post({route: this.config.entity.routes.store, data: form}));
+                let createUpdate = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: form.id}) :
+                                                                             Requests.post({route: this.config.entity.routes.store, data: form}));
 
                 if(Requests.valid({result: createUpdate})) {
 

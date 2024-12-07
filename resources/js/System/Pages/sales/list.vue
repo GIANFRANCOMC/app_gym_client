@@ -13,7 +13,7 @@
                 <v-select
                     v-model="lists.entity.filters.serie"
                     :options="series"
-                    :class="'bg-white'"
+                    :class="config.forms.classes.select2"
                     :clearable="true">
                     <template #option="{ data }">
                         <span v-text="`${data?.legible_serie} - ${data?.document_type?.name}`" class="d-block fw-bold"></span>
@@ -52,7 +52,7 @@
                 <v-select
                     v-model="lists.entity.filters.holder"
                     :options="holders"
-                    class="'bg-white'"
+                    :class="config.forms.classes.select2"
                     :clearable="true">
                     <template #option="{ label }">
                         <span v-text="truncate({value: label, length: 50})" class="d-block"></span>
@@ -73,7 +73,7 @@
                 <v-select
                     v-model="lists.entity.filters.status"
                     :options="statusses"
-                    :class="'bg-white'"
+                    :class="config.forms.classes.select2"
                     :clearable="true">
                 </v-select>
             </template>

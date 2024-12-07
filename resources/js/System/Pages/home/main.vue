@@ -1,6 +1,7 @@
 <template>
-    <Breadcrumb :list="[config.entity.page]"/>
+    <Breadcrumb :list="breadcrumbTitles"/>
 
+    <!-- Content -->
     <div class="row g-3 mb-4">
         <div class="col-lg-3 col-sm-6">
             <div class="card card-border-shadow-success h-100">

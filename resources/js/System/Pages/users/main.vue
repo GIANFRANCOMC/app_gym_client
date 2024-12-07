@@ -1,5 +1,5 @@
 <template>
-    <Breadcrumb :list="[config.entity.page, { title: 'Colaboradores' }]"/>
+    <Breadcrumb :list="breadcrumbTitles"/>
 
     <!-- Content -->
     <div class="row align-items-end g-3 mb-4">
@@ -31,11 +31,11 @@
             xl="5"
             lg="4">
             <template v-slot:input>
-                <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})">
+                <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})">
                     <i class="fa fa-search"></i>
                     <span class="ms-2">Buscar</span>
                 </button>
-                <button class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})">
+                <button type="button" class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})">
                     <i class="fa fa-plus"></i>
                     <span class="ms-2">Agregar</span>
                 </button>
@@ -262,7 +262,7 @@ export default {
                 entity: {
                     ...Requests.config({entity: "users"}),
                     page: {
-                        title: "Configuración",
+                        title: "Colaboradores",
                         active: true,
                         menu: {
                             id: "menu-item-users"
@@ -302,7 +302,7 @@ export default {
             const filterJson = {filter_by: filters?.filter_by?.code, word: filters.word};
 
             this.lists.entity.extras.loading = true;
-            this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: {...filterJson}}))?.data;
+            this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: filterJson}))?.data;
             this.lists.entity.extras.loading = false;
 
         },
@@ -330,7 +330,7 @@ export default {
 
             }else {
 
-                //
+                this.forms.entity.createUpdate.data.status = this.statusses[0];
 
             }
 
@@ -356,7 +356,8 @@ export default {
 
                 delete form.identity_document_type;
 
-                let createUpdate = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: form.id}) : Requests.post({route: this.config.entity.routes.store, data: form}));
+                let createUpdate = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: form.id}) :
+                                                                             Requests.post({route: this.config.entity.routes.store, data: form}));
 
                 if(Requests.valid({result: createUpdate})) {
 
@@ -483,6 +484,11 @@ export default {
         }
     },
     computed: {
+        breadcrumbTitles: function() {
+
+            return [{title: "Configuración"}, this.config.entity.page];
+
+        },
         filterByOptions: function() {
 
             return [

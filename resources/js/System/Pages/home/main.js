@@ -31,4 +31,4 @@ createApp(App)
 .component("Loader", Loader)
 .component("WithoutData", WithoutData)
 .component("PrintSale", PrintSale)
-.mount("#app")
+.mount("#app");

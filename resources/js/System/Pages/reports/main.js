@@ -31,4 +31,4 @@ createApp(App)
 .component("Paginator", Paginator)
 .component("Loader", Loader)
 .component("WithoutData", WithoutData)
-.mount("#app")
+.mount("#app");

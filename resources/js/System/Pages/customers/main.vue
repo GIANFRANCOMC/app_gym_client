@@ -68,7 +68,7 @@
                             <td v-text="record.identity_document_type?.name"></td>
                             <td v-text="record.document_number"></td>
                             <td v-text="record.name"></td>
-                            <td v-text="record.email ?? 'N/A'"></td>
+                            <td v-text="isDefined({value: record.email}) ? record.email : 'N/A'"></td>
                             <td>
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
@@ -290,7 +290,7 @@ export default {
             const filterJson = {filter_by: filters?.filter_by?.code, word: filters.word};
 
             this.lists.entity.extras.loading = true;
-            this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: {...filterJson}}))?.data;
+            this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: filterJson}))?.data;
             this.lists.entity.extras.loading = false;
 
         },
@@ -343,7 +343,8 @@ export default {
 
                 delete form.identity_document_type;
 
-                let createUpdate = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: form.id}) : Requests.post({route: this.config.entity.routes.store, data: form}));
+                let createUpdate = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: form.id}) :
+                                                                             Requests.post({route: this.config.entity.routes.store, data: form}));
 
                 if(Requests.valid({result: createUpdate})) {
 
