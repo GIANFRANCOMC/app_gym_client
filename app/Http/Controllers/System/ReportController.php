@@ -21,8 +21,14 @@ class ReportController extends Controller {
         $initParams = new stdClass();
 
         $config = new stdClass();
-        // $config->customers = new stdClass();
-        // $config->customers->statusses = Customer::getStatusses();
+
+        $page = $request->page ?? "";
+
+        if(in_array($page, ["main"])) {
+
+            //
+
+        }
 
         $initParams->config = $config;
         $initParams->bool   = true;

@@ -2,7 +2,8 @@ export const requestRoute = `${window.location.protocol}//${window.location.host
 
 export const generalConfig = {
     messages: {
-        withoutResults: "Sin registros"
+        withoutResults: "Sin registros",
+        errorValidate: "Error al validar, revisar el formulario."
     },
     forms: {
         classes: {

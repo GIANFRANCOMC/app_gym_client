@@ -69,7 +69,7 @@ class ProductController extends Controller {
 
                     })
                     ->where("company_id", $userAuth->company_id)
-                    ->whereIn("type", ["service"])
+                    ->whereIn("type", ["product"])
                     ->orderBy("name", "ASC")
                     ->with(["currency"])
                     ->paginate($request->per_page ?? Utilities::$per_page_default);
@@ -102,7 +102,7 @@ class ProductController extends Controller {
 
         if($internalCodeExists) {
 
-            return response()->json(["bool" => false, "msg" => "El código interno ya ha sido registrado", "item" => null], 200);
+            return response()->json(["bool" => false, "msg" => "El código interno ya ha sido registrado"], 200);
 
         }
 
@@ -112,7 +112,7 @@ class ProductController extends Controller {
             $item->company_id    = $userAuth->company_id;
             $item->internal_code = $request->internal_code;
             $item->name          = $request->name;
-            $item->description   = $request->description;
+            $item->description   = $request->description ?? "";
             $item->price         = $request->price;
             $item->currency_id   = $request->currency_id;
             $item->type          = "product";
@@ -158,7 +158,7 @@ class ProductController extends Controller {
 
             if($internalCodeExists) {
 
-                return response()->json(["bool" => false, "msg" => "El código interno ya ha sido registrado", "item" => null], 200);
+                return response()->json(["bool" => false, "msg" => "El código interno ya ha sido registrado"], 200);
 
             }
 
@@ -166,7 +166,7 @@ class ProductController extends Controller {
 
                 $item->internal_code = $request->internal_code;
                 $item->name          = $request->name;
-                $item->description   = $request->description;
+                $item->description   = $request->description ?? "";
                 $item->price         = $request->price;
                 $item->currency_id   = $request->currency_id;
                 $item->status        = $request->status;

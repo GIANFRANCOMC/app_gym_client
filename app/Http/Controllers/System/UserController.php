@@ -40,6 +40,8 @@ class UserController extends Controller {
 
     public function list(Request $request) {
 
+        $userAuth = Auth::user();
+
         $list = User::when(Utilities::isDefined($request->filter_by), function($query) use($request) {
 
                         $filter = "%".trim($request->word ?? "")."%";
@@ -52,11 +54,16 @@ class UserController extends Controller {
 
                         }else if(in_array($request->filter_by, ["document_number", "name", "email"])) {
 
-                            $query->where($request->filter_by, "like", $filter);
+                            $query->where(function($query) use($request, $filter) {
+
+                                $query->where($request->filter_by, "like", $filter);
+
+                            });
 
                         }
 
                     })
+                    ->where("company_id", $userAuth->company_id)
                     ->orderBy("name", "ASC")
                     ->with(["identityDocumentType"])
                     ->paginate($request->per_page ?? Utilities::$per_page_default);
@@ -83,9 +90,21 @@ class UserController extends Controller {
 
         $user = null;
 
+        $userExists = User::where("company_id", $userAuth->company_id)
+                          ->where("identity_document_type_id", $request->identity_document_type_id)
+                          ->where("document_number", $request->document_number)
+                          ->exists();
+
+        if($userExists) {
+
+            return response()->json(["bool" => false, "msg" => "El colaborador ingresado ya ha sido registrado"], 200);
+
+        }
+
         DB::transaction(function() use($request, $userAuth, &$user) {
 
             $user = new User();
+            $user->company_id                = $userAuth->company_id;
             $user->identity_document_type_id = $request->identity_document_type_id;
             $user->document_number           = $request->document_number;
             $user->name                      = $request->name;
@@ -99,7 +118,7 @@ class UserController extends Controller {
         });
 
         $bool = Utilities::isDefined($user);
-        $msg  = $bool ? "Usuario creado correctamente." : "No se ha podido crear el usuario.";
+        $msg  = $bool ? "Colaborador creado correctamente." : "No se ha podido crear el colaborador.";
 
         return response()->json(["bool" => $bool, "msg" => $msg, "user" => $user], 200);
 
@@ -126,6 +145,18 @@ class UserController extends Controller {
 
         if(Utilities::isDefined($user)) {
 
+            $userExists = User::where("company_id", $userAuth->company_id)
+                              ->where("identity_document_type_id", $request->identity_document_type_id)
+                              ->where("document_number", $request->document_number)
+                              ->whereNot("id", $user->id)
+                              ->exists();
+
+            if($userExists) {
+
+                return response()->json(["bool" => false, "msg" => "El colaborador ingresado ya ha sido registrado"], 200);
+
+            }
+
             DB::transaction(function() use($request, $userAuth, &$user) {
 
                 $user->identity_document_type_id = $request->identity_document_type_id;
@@ -149,7 +180,7 @@ class UserController extends Controller {
         }
 
         $bool = Utilities::isDefined($user);
-        $msg  = $bool ? "Usuario editado correctamente." : "No se ha podido editar el usuario.";
+        $msg  = $bool ? "Colaborador editado correctamente." : "No se ha podido editar el colaborador.";
 
         return response()->json(["bool" => $bool, "msg" => $msg, "user" => $user], 200);
 

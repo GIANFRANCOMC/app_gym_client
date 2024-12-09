@@ -27,8 +27,9 @@ class StoreServiceRequest extends FormRequest {
         return [
             "internal_code" => "required|string|max:100",
             "name"          => "required|string|max:100",
-            "description"   => "required|string|max:200",
+            "description"   => "nullable|string|max:300",
             "price"         => "required|numeric|min:0.1|max:999999999.99|decimal:0,2",
+            "currency_id"   => "required|integer",
             "status"        => "required|string"
         ];
 

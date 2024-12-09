@@ -37,21 +37,32 @@ class BranchController extends Controller {
 
     public function list(Request $request) {
 
+        $userAuth = Auth::user();
+
         $list = Branch::when(Utilities::isDefined($request->filter_by), function($query) use($request) {
 
                             $filter = "%".trim($request->word ?? "")."%";
 
                             if(in_array($request->filter_by, ["all"])) {
 
-                                $query->where("name", "like", $filter);
+                                $query->where(function($query) use($request, $filter) {
+
+                                    $query->where("name", "like", $filter);
+
+                                });
 
                             }else if(in_array($request->filter_by, ["name"])) {
 
-                                $query->where($request->filter_by, "like", $filter);
+                                $query->where(function($query) use($request, $filter) {
+
+                                    $query->where($request->filter_by, "like", $filter);
+
+                                });
 
                             }
 
                         })
+                        ->where("company_id", $userAuth->company_id)
                         ->orderBy("name", "ASC")
                         ->with(["series.documentType"])
                         ->paginate($request->per_page ?? Utilities::$per_page_default);
@@ -88,7 +99,7 @@ class BranchController extends Controller {
             $branch->created_by = $userAuth->id ?? null;
             $branch->save();
 
-            $documentTypes = DocumentType::where("status", ["active"])
+            $documentTypes = DocumentType::whereIn("status", ["active"])
                                          ->get();
 
             foreach($documentTypes as $documentType) {

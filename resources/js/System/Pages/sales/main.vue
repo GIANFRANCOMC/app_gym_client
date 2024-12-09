@@ -445,6 +445,7 @@ export default {
             }else {
 
                 this.formErrors({functionName, type: "set", errors: validateForm});
+                Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
 
             }
 
@@ -542,6 +543,7 @@ export default {
             }else {
 
                 this.formErrors({functionName, type: "set", errors: validateForm});
+                Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
                 Alerts.swals({show: false});
 
             }

@@ -58,7 +58,11 @@ class CustomerController extends Controller {
 
                             }else if(in_array($request->filter_by, ["document_number", "name", "email"])) {
 
-                                $query->where($request->filter_by, "like", $filter);
+                                $query->where(function($query) use($request, $filter) {
+
+                                    $query->where($request->filter_by, "like", $filter);
+
+                                });
 
                             }
 
@@ -97,7 +101,7 @@ class CustomerController extends Controller {
 
         if($customerExists) {
 
-            return response()->json(["bool" => false, "msg" => "El cliente ingresado ya ha sido registrado", "item" => null], 200);
+            return response()->json(["bool" => false, "msg" => "El cliente ingresado ya ha sido registrado"], 200);
 
         }
 
@@ -152,7 +156,7 @@ class CustomerController extends Controller {
 
             if($customerExists) {
 
-                return response()->json(["bool" => false, "msg" => "El cliente ingresado ya ha sido registrado", "item" => null], 200);
+                return response()->json(["bool" => false, "msg" => "El cliente ingresado ya ha sido registrado"], 200);
 
             }
 

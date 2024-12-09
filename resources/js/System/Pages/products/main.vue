@@ -67,7 +67,7 @@
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td v-text="record.internal_code"></td>
                             <td v-text="record.name"></td>
-                            <td v-text="record.description"></td>
+                            <td v-text="isDefined({value: record.description}) ? record.description : 'N/A'"></td>
                             <td>
                                 <span v-text="record.currency?.sign"></span>
                                 <span v-text="record.price" class="ms-2"></span>
@@ -401,6 +401,7 @@ export default {
             }else {
 
                 this.formErrors({functionName, type: "set", errors: validateForm});
+                Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
                 Alerts.swals({show: false});
 
             }

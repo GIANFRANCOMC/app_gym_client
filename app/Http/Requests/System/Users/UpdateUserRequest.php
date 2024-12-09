@@ -25,7 +25,6 @@ class UpdateUserRequest extends FormRequest {
     public function rules(): array {
 
         return [
-            "id"                        => "required|integer",
             "identity_document_type_id" => "required|integer",
             "document_number"           => "required|string|max:20",
             "name"                      => "required|string|max:100",

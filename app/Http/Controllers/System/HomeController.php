@@ -19,6 +19,14 @@ class HomeController extends Controller {
 
         $config = new stdClass();
 
+        $page = $request->page ?? "";
+
+        if(in_array($page, ["main"])) {
+
+            //
+
+        }
+
         $initParams->config = $config;
         $initParams->bool   = true;
 
@@ -34,7 +42,17 @@ class HomeController extends Controller {
 
     public function initData(Request $request) {
 
+        $userAuth = Auth::user();
+
+        $branches = Branch::where("company_id", $userAuth->company_id)
+                          ->whereIn("status", ["active"])
+                          ->with(["series"])
+                          ->get();
+
+        $serieIds = $branches->pluck("series.*.id")->flatten();
+
         $sales = SaleHeader::whereDate("created_at", date("Y-m-d"))
+                           ->whereIn("serie_id", $serieIds)
                            ->orderBy("created_at", "DESC")
                            ->with(["serie.documentType", "holder", "currency"])
                            ->get();
@@ -42,11 +60,9 @@ class HomeController extends Controller {
         $cancelledSales = $sales->whereIn("status", ["cancelled"])
                                 ->values();
 
-        $branches = Branch::whereIn("status", ["active"])
-                          ->get();
-
-        $users = User::whereIn("status", ["active"])
-                     ->get();
+        $users = User::where("company_id", $userAuth->company_id)
+                      ->whereIn("status", ["active"])
+                      ->get();
 
         $data = [
             "sales" => [
