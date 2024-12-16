@@ -4,6 +4,7 @@ namespace App\Models\System;
 
 use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Branch extends Model {
 
@@ -43,6 +44,16 @@ class Branch extends Model {
         ];
 
         return Utilities::getValues($statusses, $type, $code);
+
+    }
+
+    public static function getAll() {
+
+        $userAuth = Auth::user();
+
+        return Branch::where("company_id", $userAuth->company_id)
+                     ->with(["series.documentType"])
+                     ->get();
 
     }
 

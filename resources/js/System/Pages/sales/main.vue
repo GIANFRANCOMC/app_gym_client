@@ -1,6 +1,7 @@
 <template>
-    <Breadcrumb :list="[config.entity.page, { title: 'Crear' }]"/>
+    <Breadcrumb :list="breadcrumbTitles"/>
 
+    <!-- Content -->
     <div class="row g-3">
         <div class="col-lg-9 col-12">
             <div class="card invoice-preview-card">
@@ -116,20 +117,19 @@
                                             </td>
                                             <td>
                                                 <span v-text="record.currency?.sign ?? ''"></span>
-                                                <span v-text="calculateTotal({item: record})" class="ms-1"></span>
+                                                <span v-text="calculateTotal({item: record})" class="ms-2"></span>
                                             </td>
                                             <td>
                                                 <button class="btn btn-danger btn-xs" @click="deleteDetail({record, keyRecord})" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">
                                                     <i class="fa fa-times"></i>
                                                 </button>
-
                                             </td>
                                         </tr>
                                         <tr>
                                             <td colspan="4" class="fw-bold text-end">TOTAL:</td>
                                             <td colspan="1" class="fw-bold text-center">
                                                 <span v-text="forms.entity.createUpdate.data.currency?.data?.sign ?? ''"></span>
-                                                <span v-text="total" class="ms-1"></span>
+                                                <span v-text="total" class="ms-2"></span>
                                             </td>
                                             <td colspan="1" class="fw-bold text-center"></td>
                                         </tr>
@@ -251,7 +251,7 @@
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
                     <button type="button" :class="['btn waves-effect', ['store'].includes(forms.entity.createUpdate.extras.modals.details.data?.mode) ? 'btn-primary' : 'btn-warning']" @click="addDetail()">
                         <i class="fa fa-save"></i>
-                        <span class="ms-1">Guardar</span>
+                        <span class="ms-2">Guardar</span>
                     </button>
                 </div>
             </div>
@@ -269,15 +269,6 @@
                     <span class="fw-semibold">Nueva venta</span>
                 </div>
             </div>
-            <!-- <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3">
-                <div class="text-center cursor-pointer p-1">
-                    <div class="badge bg-secondary p-3 rounded mb-1">
-                        <i class="fa fa-list fs-3"></i>
-                    </div>
-                    <br/>
-                    <span class="fw-semibold">Ir al listado</span>
-                </div>
-            </div> -->
         </template>
     </PrintSale>
 </template>
@@ -294,8 +285,8 @@ export default {
     },
     mounted: async function() {
 
-        Utils.navbarItem(this.config.entity.page.menu.id, {addClass: "open"});
-        Utils.navbarItem("menu-item-create-sales", {});
+        Utils.navbarItem("menu-item-sales", {addClass: "open"});
+        Utils.navbarItem(this.config.entity.page.menu.id, {});
         Alerts.swals({type: "initParams"});
 
         let initParams = await this.initParams({}),
@@ -361,10 +352,10 @@ export default {
                 entity: {
                     ...Requests.config({entity: "sales"}),
                     page: {
-                        title: "Ventas",
+                        title: "Nuevo",
                         active: true,
                         menu: {
-                            id: "menu-item-sales"
+                            id: "menu-item-create-sales"
                         }
                     }
                 }
@@ -424,6 +415,7 @@ export default {
 
                 const currency = form?.item?.data?.currency,
                       name     = form?.item?.data?.name,
+                      type     = form?.item?.data?.type,
                       mode     = form.mode;
 
                 delete form.mode;
@@ -434,9 +426,9 @@ export default {
                     form.item_id = form?.item?.code;
                     form.currency_id = currency?.id;
 
-                    (this.forms.entity.createUpdate.data.details).push({currency, name, ...form, id: Utils.uuid()});
+                    (this.forms.entity.createUpdate.data.details).push({currency, name, type, ...form, id: Utils.uuid()});
 
-                    Alerts.toastrs({type: "success", subtitle: "El producto ha sido agregado al detalle."});
+                    Alerts.toastrs({type: "success", subtitle: `Se ha agregado <b>(${form?.quantity}) ${name}</b> al detalle.`});
 
                     this.clearForm({functionName});
 
@@ -467,7 +459,7 @@ export default {
                 let el = this;
 
                 Swal.fire({
-                    html: `<span>¿Desea eliminar el/la <b>${form?.name}</b> del detalle de la venta?</span>`,
+                    html: `<span>¿Desea eliminar <b>${form?.name}</b> del detalle de la venta?</span>`,
                     icon: "warning",
                     allowOutsideClick: false,
                     showCancelButton: true,
@@ -477,12 +469,13 @@ export default {
                         confirmButton: "btn btn-primary waves-effect",
                         cancelButton: "btn btn-secondary waves-effect ms-3"
                     }
-                }).then(function(result) {
+                })
+                .then(function(result) {
 
                     if(result.isConfirmed) {
 
                         (el.forms.entity.createUpdate.data.details).splice(keyRecord, 1)
-                        Alerts.toastrs({type: "success", subtitle: "El producto ha sido eliminado del detalle."});
+                        Alerts.toastrs({type: "success", subtitle: `Se ha sido eliminado <b>${form?.name}</b> del detalle.`});
 
                     }else if(result.isDismissed) {
 
@@ -554,7 +547,7 @@ export default {
 
             switch(functionName) {
                 case "addDetail":
-                    this.forms.entity.createUpdate.extras.modals.details.data.id = null;
+                    this.forms.entity.createUpdate.extras.modals.details.data.id   = null;
                     this.forms.entity.createUpdate.extras.modals.details.data.item = null;
                     break;
 
@@ -727,6 +720,11 @@ export default {
         }
     },
     computed: {
+        breadcrumbTitles: function() {
+
+            return [{title: "Ventas"}, this.config.entity.page];
+
+        },
         branches: function() {
 
             return this.options?.branches?.records.map(e => ({code: e.id, label: e.name, data: e}));

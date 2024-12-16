@@ -102,4 +102,10 @@ class Utilities {
 
     }
 
+    public static function getWordSearch($word, $type = "like") {
+
+        return "%".trim($word ?? "")."%";
+
+    }
+
 }

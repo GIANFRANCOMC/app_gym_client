@@ -5,6 +5,7 @@ namespace App\Models\System;
 use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Auth;
 
 class Item extends Model {
 
@@ -51,6 +52,16 @@ class Item extends Model {
         ];
 
         return Utilities::getValues($statusses, $type, $code);
+
+    }
+
+    public static function getAll() {
+
+        $userAuth = Auth::user();
+
+        return Item::where("company_id", $userAuth->company_id)
+                   ->with(["currency"])
+                   ->get();
 
     }
 

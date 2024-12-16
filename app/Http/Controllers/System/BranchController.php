@@ -41,7 +41,7 @@ class BranchController extends Controller {
 
         $list = Branch::when(Utilities::isDefined($request->filter_by), function($query) use($request) {
 
-                            $filter = "%".trim($request->word ?? "")."%";
+                            $filter = Utilities::getWordSearch($request->word);
 
                             if(in_array($request->filter_by, ["all"])) {
 
@@ -143,6 +143,7 @@ class BranchController extends Controller {
         $userAuth = Auth::user();
 
         $branch = Branch::where("id", $id)
+                        ->where("company_id", $userAuth->company_id)
                         ->first();
 
         if(Utilities::isDefined($branch)) {

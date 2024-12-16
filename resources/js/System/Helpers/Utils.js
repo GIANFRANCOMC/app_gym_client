@@ -184,3 +184,21 @@ export function diffDaysLegible({diff}) {
     return diffDaysLegible;
 
 }
+
+export function getItemType(type) {
+
+    let response = "";
+
+    switch(type) {
+        case "product":
+            response = "PRODUCTO";
+            break;
+
+        case "service":
+            response = "SERVICIO";
+            break;
+    }
+
+    return response;
+
+}

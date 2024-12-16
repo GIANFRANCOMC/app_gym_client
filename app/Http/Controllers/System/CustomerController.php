@@ -44,7 +44,7 @@ class CustomerController extends Controller {
 
         $list = Customer::when(Utilities::isDefined($request->filter_by), function($query) use($request) {
 
-                            $filter = "%".trim($request->word ?? "")."%";
+                            $filter = Utilities::getWordSearch($request->word);
 
                             if(in_array($request->filter_by, ["all"])) {
 
@@ -101,7 +101,7 @@ class CustomerController extends Controller {
 
         if($customerExists) {
 
-            return response()->json(["bool" => false, "msg" => "El cliente ingresado ya ha sido registrado"], 200);
+            return response()->json(["bool" => false, "msg" => "El cliente ingresado ya ha sido registrado."], 200);
 
         }
 
@@ -144,6 +144,7 @@ class CustomerController extends Controller {
         $userAuth = Auth::user();
 
         $customer = Customer::where("id", $id)
+                            ->where("company_id", $userAuth->company_id)
                             ->first();
 
         if(Utilities::isDefined($customer)) {
@@ -156,7 +157,7 @@ class CustomerController extends Controller {
 
             if($customerExists) {
 
-                return response()->json(["bool" => false, "msg" => "El cliente ingresado ya ha sido registrado"], 200);
+                return response()->json(["bool" => false, "msg" => "El cliente ingresado ya ha sido registrado."], 200);
 
             }
 

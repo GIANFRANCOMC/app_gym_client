@@ -44,7 +44,7 @@ class ServiceController extends Controller {
 
         $list = Item::when(Utilities::isDefined($request->filter_by), function($query) use($request) {
 
-                        $filter = "%".trim($request->word ?? "")."%";
+                        $filter = Utilities::getWordSearch($request->word);
 
                         if(in_array($request->filter_by, ["all"])) {
 
@@ -96,13 +96,13 @@ class ServiceController extends Controller {
 
         $item = null;
 
-        $internalCodeExists = Item::where("company_id", $userAuth->company_id)
-                                  ->where("internal_code", $request->internal_code)
-                                  ->exists();
+        $itemExists = Item::where("company_id", $userAuth->company_id)
+                          ->where("internal_code", $request->internal_code)
+                          ->exists();
 
-        if($internalCodeExists) {
+        if($itemExists) {
 
-            return response()->json(["bool" => false, "msg" => "El código interno ya ha sido registrado"], 200);
+            return response()->json(["bool" => false, "msg" => "El código interno ya ha sido registrado."], 200);
 
         }
 
@@ -147,18 +147,19 @@ class ServiceController extends Controller {
         $userAuth = Auth::user();
 
         $item = Item::where("id", $id)
+                    ->where("company_id", $userAuth->company_id)
                     ->first();
 
         if(Utilities::isDefined($item)) {
 
-            $internalCodeExists = Item::where("company_id", $userAuth->company_id)
-                                      ->where("internal_code", $request->internal_code)
-                                      ->whereNot("id", $item->id)
-                                      ->exists();
+            $itemExists = Item::where("company_id", $userAuth->company_id)
+                              ->where("internal_code", $request->internal_code)
+                              ->whereNot("id", $item->id)
+                              ->exists();
 
-            if($internalCodeExists) {
+            if($itemExists) {
 
-                return response()->json(["bool" => false, "msg" => "El código interno ya ha sido registrado"], 200);
+                return response()->json(["bool" => false, "msg" => "El código interno ya ha sido registrado."], 200);
 
             }
 

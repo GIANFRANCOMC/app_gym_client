@@ -4,6 +4,7 @@ namespace App\Models\System;
 
 use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Customer extends Model {
 
@@ -46,6 +47,15 @@ class Customer extends Model {
         ];
 
         return Utilities::getValues($statusses, $type, $code);
+
+    }
+
+    public static function getAll() {
+
+        $userAuth = Auth::user();
+
+        return Customer::where("company_id", $userAuth->company_id)
+                       ->get();
 
     }
 

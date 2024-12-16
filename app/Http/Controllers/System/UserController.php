@@ -44,13 +44,17 @@ class UserController extends Controller {
 
         $list = User::when(Utilities::isDefined($request->filter_by), function($query) use($request) {
 
-                        $filter = "%".trim($request->word ?? "")."%";
+                        $filter = Utilities::getWordSearch($request->word);
 
                         if(in_array($request->filter_by, ["all"])) {
 
-                            $query->where("document_number", "like", $filter)
-                                  ->orWhere("name", "like", $filter)
-                                  ->orWhere("email", "like", $filter);
+                            $query->where(function($query) use($request, $filter) {
+
+                                $query->where("document_number", "like", $filter)
+                                      ->orWhere("name", "like", $filter)
+                                      ->orWhere("email", "like", $filter);
+
+                            });
 
                         }else if(in_array($request->filter_by, ["document_number", "name", "email"])) {
 
@@ -97,7 +101,7 @@ class UserController extends Controller {
 
         if($userExists) {
 
-            return response()->json(["bool" => false, "msg" => "El colaborador ingresado ya ha sido registrado"], 200);
+            return response()->json(["bool" => false, "msg" => "El colaborador ingresado ya ha sido registrado."], 200);
 
         }
 
@@ -141,6 +145,7 @@ class UserController extends Controller {
         $userAuth = Auth::user();
 
         $user = User::where("id", $id)
+                    ->where("company_id", $userAuth->company_id)
                     ->first();
 
         if(Utilities::isDefined($user)) {
@@ -153,7 +158,7 @@ class UserController extends Controller {
 
             if($userExists) {
 
-                return response()->json(["bool" => false, "msg" => "El colaborador ingresado ya ha sido registrado"], 200);
+                return response()->json(["bool" => false, "msg" => "El colaborador ingresado ya ha sido registrado."], 200);
 
             }
 

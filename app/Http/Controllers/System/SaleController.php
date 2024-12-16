@@ -24,10 +24,10 @@ class SaleController extends Controller {
         if(in_array($page, ["list"])){
 
             $config->branches = new stdClass();
-            $config->branches->records = Branch::with(["series.documentType"])->get();
+            $config->branches->records = Branch::getAll();
 
             $config->customers = new stdClass();
-            $config->customers->records = Customer::get();
+            $config->customers->records = Customer::getAll();
 
             $config->salesHeader = new stdClass();
             $config->salesHeader->statusses = SaleHeader::getStatusses();
@@ -35,16 +35,16 @@ class SaleController extends Controller {
         }else if(in_array($page, ["main"])){
 
             $config->branches = new stdClass();
-            $config->branches->records = Branch::with(["series.documentType"])->get();
+            $config->branches->records = Branch::getAll();
 
             $config->currencies = new stdClass();
             $config->currencies->records = Currency::get();
 
             $config->customers = new stdClass();
-            $config->customers->records = Customer::get();
+            $config->customers->records = Customer::getAll();
 
             $config->items = new stdClass();
-            $config->items->records = Item::with(["currency"])->get();
+            $config->items->records = Item::getAll();
 
             $config->salesHeader = new stdClass();
             $config->salesHeader->statusses = SaleHeader::getStatusses();
@@ -194,6 +194,7 @@ class SaleController extends Controller {
 
         $userAuth = Auth::user();
 
+        // Cambiar condicional - y agregar company_id si le pertenece
         $saleHeader = SaleHeader::findOrFail($id);
 
         if(Utilities::isDefined($saleHeader) && in_array($saleHeader->status, ["active"])) {
