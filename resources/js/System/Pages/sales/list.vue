@@ -372,7 +372,7 @@ export default {
             }
 
         },
-        validateForm({functionName, form = null}) {
+        validateForm({functionName, form = null, extras = null}) {
 
             let result = {
                 bool: true

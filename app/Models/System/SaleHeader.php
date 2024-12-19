@@ -122,7 +122,6 @@ class SaleHeader extends Model {
             }else {
 
                 $serie = Serie::where("id", $serie_id)
-                              ->whereIn("status", ["active"])
                               ->first();
 
                 if(Utilities::isDefined($serie)) {

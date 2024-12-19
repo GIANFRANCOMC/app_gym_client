@@ -3,7 +3,9 @@
 namespace App\Models\System;
 
 use App\Helpers\System\Utilities;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Serie extends Model {
 
@@ -53,6 +55,29 @@ class Serie extends Model {
         ];
 
         return Utilities::getValues($statusses, $type, $code);
+
+    }
+
+    public static function getNewSequential() {
+
+        $userAuth = Auth::user();
+
+        $newSequential = 0;
+
+        try {
+
+            $maxSequential = Branch::where("company_id", $userAuth->company_id)
+                                   ->count();
+
+            $newSequential = intval($maxSequential) + 1;
+
+        }catch(Exception $e) {
+
+            $newSequential = 0;
+
+        }
+
+        return $newSequential;
 
     }
 

@@ -143,7 +143,7 @@ export function generateTableAlert({messages}) {
 			${messages.reduce((carry, singleMessage, index)=>carry+/*html*/`
 			<tr>
 				<td class="text-center">${index + 1}</td>
-				<td class="text-left">${singleMessage}</td>
+				<td class="text-start">${singleMessage}</td>
 			</tr>
 			`, "")}
 		</tbody>

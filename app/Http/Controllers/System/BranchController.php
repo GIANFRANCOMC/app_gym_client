@@ -91,6 +91,8 @@ class BranchController extends Controller {
 
         DB::transaction(function() use($request, $userAuth, &$branch) {
 
+            $newSequential = Serie::getNewSequential();
+
             $branch = new Branch();
             $branch->company_id = $userAuth->company_id;
             $branch->name       = $request->name;
@@ -108,7 +110,7 @@ class BranchController extends Controller {
                 $serie->branch_id        = $branch->id;
                 $serie->document_type_id = $documentType->id;
                 $serie->code             = $documentType->code;
-                $serie->number           = $branch->id;
+                $serie->number           = $newSequential;
                 $serie->init             = 1;
                 $serie->status           = "active";
                 $serie->created_at       = now();

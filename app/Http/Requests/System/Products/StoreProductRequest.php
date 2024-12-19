@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\System\Products;
 
+use App\Helpers\System\Utilities;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -39,7 +40,7 @@ class StoreProductRequest extends FormRequest {
 
         $errors = $validator->errors()->toArray();
 
-        throw new HttpResponseException(response()->json(["errors" => $errors, "message" => "Error al validar."], 422));
+        throw new HttpResponseException(response()->json(["errors" => $errors, "message" => Utilities::$messages["422"]], 422));
 
     }
 

@@ -185,20 +185,14 @@ export function diffDaysLegible({diff}) {
 
 }
 
-export function getItemType(type) {
+export function getErrors({errors}) {
 
-    let response = "";
+    let propsValidate = Object.values(errors).filter(valueValidate => {
 
-    switch(type) {
-        case "product":
-            response = "PRODUCTO";
-            break;
+        return this.isDefined({value: valueValidate}) && Array.isArray(valueValidate) && valueValidate.length > 0;
 
-        case "service":
-            response = "SERVICIO";
-            break;
-    }
+    });
 
-    return response;
+    return propsValidate;
 
 }

@@ -107,6 +107,10 @@
                                             <td class="text-start fw-bold" v-text="record.name"></td>
                                             <td>
                                                 <InputNumber v-model="record.quantity"/>
+                                                <div class="d-block mt-1">
+                                                    <button class="btn btn-danger btn-xs waves-effect" type="button" @click="changeQuantityDetail({record, keyRecord, type: 'subtract'})">-</button>
+                                                    <button class="btn btn-info btn-xs waves-effect ms-2" type="button" @click="changeQuantityDetail({record, keyRecord, type: 'add'})">+</button>
+                                                </div>
                                             </td>
                                             <td>
                                                 <InputNumber v-model="record.price">
@@ -120,8 +124,13 @@
                                                 <span v-text="calculateTotal({item: record})" class="ms-2"></span>
                                             </td>
                                             <td>
-                                                <button class="btn btn-danger btn-xs" @click="deleteDetail({record, keyRecord})" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">
+                                                <button class="btn btn-danger btn-xs waves-effect" type="button" @click="deleteDetail({record, keyRecord})">
                                                     <i class="fa fa-times"></i>
+                                                    <span class="ms-1">Eliminar</span>
+                                                </button>
+                                                <button class="btn btn-info btn-xs waves-effect mt-1" type="button" @click="duplicateDetail({record, keyRecord})">
+                                                    <i class="fa fa-copy"></i>
+                                                    <span class="ms-1">Duplicar</span>
                                                 </button>
                                             </td>
                                         </tr>
@@ -144,7 +153,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <small :class="config.forms.errors.styles.default" v-text="isDefined({value: forms.entity.createUpdate.errors?.details}) ? forms.entity.createUpdate.errors?.details[0] : ''"></small>
+                        <!-- <small :class="config.forms.errors.styles.default" v-html="isDefined({value: forms.entity.createUpdate.errors?.details}) ? forms.entity.createUpdate.errors?.details[0] : ''"></small> -->
                     </div>
                 </div>
             </div>
@@ -186,7 +195,7 @@
                     <div class="row g-3">
                         <InputSlot
                             hasDiv
-                            title="Producto"
+                            title="Catálogo comercial"
                             isRequired
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.item">
@@ -198,7 +207,8 @@
                                     <template #option="{ label, data }">
                                         <span v-text="label" class="d-block fw-bold"></span>
                                         <div class="d-block">
-                                            <small v-text="data?.currency?.sign"></small>
+                                            <small v-text="data?.formatted_type" class="text-decoration-underline"></small>
+                                            <small v-text="data?.currency?.sign" class="ms-2"></small>
                                             <small v-text="data?.price" class="ms-1"></small>
                                         </div>
                                     </template>
@@ -428,7 +438,7 @@ export default {
 
                     (this.forms.entity.createUpdate.data.details).push({currency, name, type, ...form, id: Utils.uuid()});
 
-                    Alerts.toastrs({type: "success", subtitle: `Se ha agregado <b>(${form?.quantity}) ${name}</b> al detalle.`});
+                    Alerts.toastrs({type: "success", subtitle: `Se ha agregado <b><small>(${form?.quantity})</small> ${name}</b> al detalle de la venta.`});
 
                     this.clearForm({functionName});
 
@@ -442,6 +452,33 @@ export default {
             }
 
             Alerts.tooltips({show: true});
+
+        },
+        changeQuantityDetail({record, keyRecord, type = "add"}) {
+
+            let operation = 0;
+
+            const quantity = record?.quantity ?? 0;
+
+            if(["add"].includes(type)) {
+
+                operation = Number(quantity) + 1;
+
+            }else if(["subtract"].includes(type)) {
+
+                operation = Number(quantity) - 1;
+
+            }
+
+            if(Number(operation) >= 0) {
+
+                record.quantity = operation;
+
+            }else {
+
+                Alerts.toastrs({type: "error", subtitle: this.config.forms.errors.labels.min_number_0});
+
+            }
 
         },
         deleteDetail({record, keyRecord}) {
@@ -466,7 +503,7 @@ export default {
                     confirmButtonText: "Sí, eliminar",
                     cancelButtonText: "Cancelar",
                     customClass: {
-                        confirmButton: "btn btn-primary waves-effect",
+                        confirmButton: "btn btn-danger waves-effect",
                         cancelButton: "btn btn-secondary waves-effect ms-3"
                     }
                 })
@@ -474,8 +511,9 @@ export default {
 
                     if(result.isConfirmed) {
 
-                        (el.forms.entity.createUpdate.data.details).splice(keyRecord, 1)
-                        Alerts.toastrs({type: "success", subtitle: `Se ha sido eliminado <b>${form?.name}</b> del detalle.`});
+                        (el.forms.entity.createUpdate.data.details).splice(keyRecord, 1);
+
+                        Alerts.toastrs({type: "success", subtitle: `<b>${form?.name}</b> ha sido eliminado del detalle de la venta.`});
 
                     }else if(result.isDismissed) {
 
@@ -483,11 +521,56 @@ export default {
 
                     }
 
-                })
+                });
 
             }
 
-            Alerts.tooltips({show: false});
+        },
+        duplicateDetail({record, keyRecord}) {
+
+            const functionName = "duplicateDetail";
+
+            this.formErrors({functionName, type: "clear"});
+
+            let form = Utils.cloneJson(record);
+
+            const validateForm = this.validateForm({functionName, form});
+
+            if(validateForm?.bool) {
+
+                let el = this;
+
+                Swal.fire({
+                    html: `<span>¿Desea duplicar <b>${form?.name}</b> al detalle de la venta?</span>`,
+                    icon: "question",
+                    allowOutsideClick: false,
+                    showCancelButton: true,
+                    confirmButtonText: "Sí, duplicar",
+                    cancelButtonText: "Cancelar",
+                    customClass: {
+                        confirmButton: "btn btn-info waves-effect",
+                        cancelButton: "btn btn-secondary waves-effect ms-3"
+                    }
+                })
+                .then(function(result) {
+
+                    if(result.isConfirmed) {
+
+                        form.id = Utils.uuid();
+
+                        (el.forms.entity.createUpdate.data.details).push(form);
+
+                        Alerts.toastrs({type: "success", subtitle: `<b>${form?.name}</b> ha sido duplicado al detalle de la venta.`});
+
+                    }else if(result.isDismissed) {
+
+                        //
+
+                    }
+
+                });
+
+            }
 
         },
         // Entity forms
@@ -500,7 +583,7 @@ export default {
 
             let form = Utils.cloneJson(this.forms.entity.createUpdate.data);
 
-            const validateForm = this.validateForm({functionName, form});
+            const validateForm = this.validateForm({functionName, form, extras: {type: "descriptive"}});
 
             if(validateForm?.bool) {
 
@@ -513,9 +596,10 @@ export default {
                 delete form.holder;
                 delete form.currency;
 
-                let createUpdate = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: form.id}) : Requests.post({route: this.config.entity.routes.store, data: form}));
+                let createUpdate = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: form.id}) :
+                                                                             Requests.post({route: this.config.entity.routes.store, data: form}));
 
-                if(createUpdate?.bool && createUpdate?.data?.bool) {
+                if(Requests.valid({result: createUpdate})) {
 
                     Alerts.swals({show: false});
 
@@ -535,9 +619,9 @@ export default {
 
             }else {
 
-                this.formErrors({functionName, type: "set", errors: validateForm});
-                Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
-                Alerts.swals({show: false});
+                // this.formErrors({functionName, type: "set", errors: validateForm});
+                // Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
+                Alerts.generateAlert({messages: Utils.getErrors({errors: validateForm})});
 
             }
 
@@ -574,7 +658,7 @@ export default {
             }
 
         },
-        validateForm({functionName, form = null}) {
+        validateForm({functionName, form = null, extras = null}) {
 
             let result = {
                 bool: true
@@ -586,23 +670,25 @@ export default {
                 result.quantity = [];
                 result.price    = [];
 
+                const isDescriptive = ["descriptive"].includes(extras?.type);
+
                 if(!this.isDefined({value: form?.item})) {
 
-                    result.item.push(this.config.forms.errors.labels.required);
+                    result.item.push(`${isDescriptive ? "Detalle:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }
 
                 if(!this.isDefined({value: form?.quantity}) || Number(form?.quantity) <= 0) {
 
-                    result.quantity.push(this.config.forms.errors.labels.min_number_0);
+                    result.quantity.push(`${isDescriptive ? "Cantidad:" : ""} ${this.config.forms.errors.labels.min_number_0}`);
                     result.bool = false;
 
                 }
 
                 if(!this.isDefined({value: form?.price}) || Number(form?.price) <= 0) {
 
-                    result.price.push(this.config.forms.errors.labels.min_number_0);
+                    result.price.push(`${isDescriptive ? "Precio:" : ""} ${this.config.forms.errors.labels.min_number_0}`);
                     result.bool = false;
 
                 }
@@ -629,37 +715,39 @@ export default {
                 result.status      = [];
                 result.details     = [];
 
+                const isDescriptive = ["descriptive"].includes(extras?.type);
+
                 if(!this.isDefined({value: form?.branch})) {
 
-                    result.branch.push(this.config.forms.errors.labels.required);
+                    result.branch.push(`${isDescriptive ? "Sucursal:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }
 
                 if(!this.isDefined({value: form?.serie})) {
 
-                    result.serie.push(this.config.forms.errors.labels.required);
+                    result.serie.push(`${isDescriptive ? "Tipo de comprobante:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }
 
                 if(!this.isDefined({value: form?.issue_date})) {
 
-                    result.issue_date.push(this.config.forms.errors.labels.required);
+                    result.issue_date.push(`${isDescriptive ? "Fecha de emisión:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }
 
                 if(!this.isDefined({value: form?.holder})) {
 
-                    result.holder.push(this.config.forms.errors.labels.required);
+                    result.holder.push(`${isDescriptive ? "Cliente:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }
 
                 if(!this.isDefined({value: form?.currency})) {
 
-                    result.currency.push(this.config.forms.errors.labels.required);
+                    result.currency.push(`${isDescriptive ? "Moneda:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }
@@ -669,6 +757,8 @@ export default {
                     if(!this.isDefined({value: form?.status})) {
 
                         result.status.push(this.config.forms.errors.labels.required);
+
+                        result.status.push(`${isDescriptive ? "Estado:" : ""} ${this.config.forms.errors.labels.required}`);
                         result.bool = false;
 
                     }
@@ -677,23 +767,29 @@ export default {
 
                 if(!this.isDefined({value: form?.details}) || (form?.details).length === 0) {
 
-                    result.details.push(this.config.forms.errors.labels.required);
+                    result.details.push(`${isDescriptive ? "Detalle de la venta:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }else {
 
+                    let errorDetails = [];
+
                     for(let [keyDetail, detail] of Object.entries(form?.details)) {
 
-                        let validateDetail = this.validateForm({functionName: "addDetail", form: detail});
+                        let validateDetail = this.validateForm({functionName: "addDetail", form: detail, extras: {type: "descriptive"}});
 
                         if(!validateDetail?.bool) {
 
-                            result.details.push("Revisar registros");
+                            let propsValidate = Utils.getErrors({errors: validateDetail});
+
+                            errorDetails.push(`<p class="mb-1">Detalle de la venta <b>${parseInt(keyDetail) + 1}</b>:</p>`+propsValidate.flat().map(e => `<li>${e}</li>`).join(""));
                             result.bool = false;
 
                         }
 
                     }
+
+                    result.details = [errorDetails.join("<br/>")];
 
                 }
 

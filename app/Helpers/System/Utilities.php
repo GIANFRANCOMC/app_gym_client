@@ -4,7 +4,6 @@ namespace App\Helpers\System;
 
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use stdClass;
 
@@ -12,11 +11,15 @@ class Utilities {
 
     public static $per_page_default = 10;
 
+    public static $messages = [
+        "422" => "Error al validar."
+    ];
+
     public static function getDefaultData() {
 
         $result = new stdClass();
 
-        $result->env_company_id = env("COMPANY_ID" ?? null);
+        $result->env_company_id = env("COMPANY_ID") ?? null;
 
         return $result;
 

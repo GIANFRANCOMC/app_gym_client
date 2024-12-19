@@ -12,7 +12,7 @@
                 {{ $data->company->commercial_name }}
             </span>
         @else
-            <span class="h5 text-center fw-semibold mb-2">
+            <span class="h4 text-center fw-semibold mb-2">
                 Bienvenido
             </span>
         @endif

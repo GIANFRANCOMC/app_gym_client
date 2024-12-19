@@ -220,6 +220,13 @@ export default {
             return Utils.fixedNumber(value);
 
         }
+    },
+    computed: {
+        breadcrumbTitles: function() {
+
+            return [this.config.entity.page];
+
+        }
     }
 };
 </script>

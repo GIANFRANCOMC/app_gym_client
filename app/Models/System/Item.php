@@ -18,6 +18,7 @@ class Item extends Model {
     public static $snakeAttributes = true;
 
     protected $appends = [
+        "formatted_type",
         "formatted_status"
     ];
 
@@ -37,6 +38,12 @@ class Item extends Model {
     ];
 
     // Appends
+    public function getFormattedTypeAttribute() {
+
+        return self::getTypes("first", $this->attributes["type"])["label"] ?? "";
+
+    }
+
     public function getFormattedStatusAttribute() {
 
         return self::getStatusses("first", $this->attributes["status"])["label"] ?? "";
@@ -44,6 +51,17 @@ class Item extends Model {
     }
 
     // Functions
+    public static function getTypes($type = "all", $code = "") {
+
+        $types = [
+            ["code" => "product", "label" => "Producto"],
+            ["code" => "service", "label" => "Servicio"]
+        ];
+
+        return Utilities::getValues($types, $type, $code);
+
+    }
+
     public static function getStatusses($type = "all", $code = "") {
 
         $statusses = [
