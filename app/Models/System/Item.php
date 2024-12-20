@@ -73,11 +73,16 @@ class Item extends Model {
 
     }
 
-    public static function getAll() {
+    public static function getAll($type = "default") {
 
         $userAuth = Auth::user();
 
         return Item::where("company_id", $userAuth->company_id)
+                   ->when(in_array($type, ["sale"]), function($query) {
+
+                        $query->whereIn("status", ["active"]);
+
+                   })
                    ->with(["currency"])
                    ->get();
 

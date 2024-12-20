@@ -607,9 +607,11 @@
     </style>
 </head>
 <body>
-    <div class="company_logo_box" style="position: absolute; text-align: center; top:20%;">
-        <img src="{{ $cancelledImg }}" style="opacity: 0.4;" width="30%">
-    </div>
+    @if(in_array($saleHeader->status, ["cancelled"]))
+        <div class="company_logo_box" style="position: absolute; text-align: center; top:20%;">
+            <img src="{{ $cancelledImg }}" style="opacity: 0.4;" width="30%">
+        </div>
+    @endif
     <table class="full-width">
         <tr>
             <td width="20%">

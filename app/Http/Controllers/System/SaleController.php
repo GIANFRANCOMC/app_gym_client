@@ -35,16 +35,16 @@ class SaleController extends Controller {
         }else if(in_array($page, ["main"])){
 
             $config->branches = new stdClass();
-            $config->branches->records = Branch::getAll();
+            $config->branches->records = Branch::getAll("sale");
 
             $config->currencies = new stdClass();
             $config->currencies->records = Currency::get();
 
             $config->customers = new stdClass();
-            $config->customers->records = Customer::getAll();
+            $config->customers->records = Customer::getAll("sale");
 
             $config->items = new stdClass();
-            $config->items->records = Item::getAll();
+            $config->items->records = Item::getAll("sale");
 
             $config->salesHeader = new stdClass();
             $config->salesHeader->statusses = SaleHeader::getStatusses();
@@ -87,7 +87,7 @@ class SaleController extends Controller {
                            })
                            ->orderBy("id", "DESC")
                            ->with(["serie.documentType", "holder", "currency"])
-                           ->paginate(10);
+                           ->paginate($request->per_page ?? Utilities::$per_page_default);
 
         return $list;
 

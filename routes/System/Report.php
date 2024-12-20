@@ -7,6 +7,7 @@ $entity = "reports";
 
 Route::get('',            [ReportController::class, 'index'])->name("$entity.index");
 Route::get('/initParams', [ReportController::class, 'initParams'])->name("$entity.initParams");
+Route::get('/sale',       [ReportController::class, 'sale'])->name("$entity.sale");
 
 Route::get('/customers',  [ReportController::class, 'customers'])->name("$entity.customers");
 Route::get('/items',      [ReportController::class, 'items'])->name("$entity.items");

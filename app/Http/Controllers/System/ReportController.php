@@ -43,7 +43,7 @@ class ReportController extends Controller {
 
     }
 
-    public function indexz(Request $request) {
+    public function sale(Request $request) {
 
         if(Utilities::isDefined($request->document)) {
 
@@ -64,6 +64,14 @@ class ReportController extends Controller {
 
                         $logoPath = public_path("System/assets/img/avatars/1.png");
                         $logoImg  = "data:image/".pathinfo($logoPath, PATHINFO_EXTENSION).";base64,".base64_encode(file_get_contents($logoPath));
+
+                    }catch(Exception $e) {
+
+                        $logoImg = null;
+
+                    }
+
+                    try {
 
                         $cancelledPath = public_path("System/assets/img/utils/sales/cancelled.png");
                         $cancelledImg  = "data:image/".pathinfo($cancelledPath, PATHINFO_EXTENSION).";base64,".base64_encode(file_get_contents($cancelledPath));
@@ -214,8 +222,6 @@ class ReportController extends Controller {
         return Excel::download(new ItemExport($data), "Productos - Servicios.xlsx");
 
     }
-
-
 
     public function branches(Request $request) {
 

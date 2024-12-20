@@ -2,7 +2,7 @@
     <Breadcrumb :list="breadcrumbTitles"/>
 
     <!-- Content -->
-    <div class="row g-3">
+    <div class="row g-4">
         <div class="col-lg-9 col-12">
             <div class="card invoice-preview-card">
                 <div class="card-body">
@@ -24,7 +24,7 @@
                         </InputSlot>
                         <InputSlot
                             hasDiv
-                            title="Tipo de comprobante"
+                            title="Serie"
                             isRequired
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.serie"
@@ -92,55 +92,64 @@
                             <table class="table table-hover">
                                 <thead class="table-light">
                                     <tr class="text-center align-middle">
-                                        <th class="fw-bold col-1">#</th>
-                                        <th class="fw-bold col-3">DESCRIPCIÓN</th>
-                                        <th class="fw-bold col-2">CANTIDAD</th>
+                                        <th class="fw-bold col-auto">#</th>
+                                        <th class="fw-bold col-1">DESCRIPCIÓN</th>
+                                        <th class="fw-bold col-3">CANTIDAD</th>
                                         <th class="fw-bold col-4">PRECIO UNITARIO</th>
                                         <th class="fw-bold col-3">TOTAL</th>
-                                        <th class="fw-bold col-1"></th>
+                                        <th class="fw-bold col-auto"></th>
                                     </tr>
                                 </thead>
                                 <tbody class="table-border-bottom-0 bg-white">
                                     <template v-if="(forms.entity.createUpdate.data.details).length > 0">
                                         <tr v-for="(record, keyRecord) in forms.entity.createUpdate.data.details" :key="record.id" class="text-center">
-                                            <td class="fw-bold" v-text="keyRecord + 1"></td>
-                                            <td class="text-start fw-bold" v-text="record.name"></td>
+                                            <td class="fw-semibold" v-text="keyRecord + 1"></td>
+                                            <td class="fw-bold text-start">
+                                                <span class="text-break" v-text="record.name"></span>
+                                            </td>
                                             <td>
                                                 <InputNumber v-model="record.quantity"/>
                                                 <div class="d-block mt-1">
-                                                    <button class="btn btn-danger btn-xs waves-effect" type="button" @click="changeQuantityDetail({record, keyRecord, type: 'subtract'})">-</button>
-                                                    <button class="btn btn-info btn-xs waves-effect ms-2" type="button" @click="changeQuantityDetail({record, keyRecord, type: 'add'})">+</button>
+                                                    <button class="btn btn-danger btn-xs waves-effect" type="button" @click="changeQuantityDetail({record, keyRecord, type: 'subtract'})">
+                                                        <i class="fa fa-minus"></i>
+                                                    </button>
+                                                    <button class="btn btn-info btn-xs waves-effect ms-md-2" type="button" @click="changeQuantityDetail({record, keyRecord, type: 'add'})">
+                                                        <i class="fa fa-plus"></i>
+                                                    </button>
                                                 </div>
                                             </td>
                                             <td>
                                                 <InputNumber v-model="record.price">
                                                     <template v-slot:inputGroupPrepend v-if="isDefined({value: record?.currency})">
-                                                        <button class="btn btn-primary waves-effect" type="button" v-text="record?.currency?.sign"></button>
+                                                        <button class="btn btn-primary waves-effect ps-1 pe-1 pe-none" type="button" v-text="record?.currency?.sign"></button>
                                                     </template>
                                                 </InputNumber>
                                             </td>
                                             <td>
-                                                <span v-text="record.currency?.sign ?? ''"></span>
-                                                <span v-text="calculateTotal({item: record})" class="ms-2"></span>
+                                                <span class="text-break">
+                                                    <span v-text="record.currency?.sign ?? ''"></span>
+                                                    <span v-text="separatorNumber(calculateTotal({item: record}))" class="ms-2"></span>
+                                                </span>
                                             </td>
                                             <td>
                                                 <button class="btn btn-danger btn-xs waves-effect" type="button" @click="deleteDetail({record, keyRecord})">
                                                     <i class="fa fa-times"></i>
-                                                    <span class="ms-1">Eliminar</span>
+                                                    <span class="ms-1 fw-semibold">Eliminar</span>
                                                 </button>
                                                 <button class="btn btn-info btn-xs waves-effect mt-1" type="button" @click="duplicateDetail({record, keyRecord})">
                                                     <i class="fa fa-copy"></i>
-                                                    <span class="ms-1">Duplicar</span>
+                                                    <span class="ms-1 fw-semibold">Duplicar</span>
                                                 </button>
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <td colspan="4" class="fw-bold text-end">TOTAL:</td>
-                                            <td colspan="1" class="fw-bold text-center">
-                                                <span v-text="forms.entity.createUpdate.data.currency?.data?.sign ?? ''"></span>
-                                                <span v-text="total" class="ms-2"></span>
+                                        <tr class="fs-5">
+                                            <td colspan="4" class="fw-bold text-end">TOTAL :</td>
+                                            <td colspan="2" class="fw-bold text-start">
+                                                <span class="text-break">
+                                                    <span v-text="forms.entity.createUpdate.data.currency?.data?.sign ?? ''"></span>
+                                                    <span v-text="separatorNumber(total)" class="ms-2"></span>
+                                                </span>
                                             </td>
-                                            <td colspan="1" class="fw-bold text-center"></td>
                                         </tr>
                                     </template>
                                     <template v-else>
@@ -153,12 +162,12 @@
                                 </tbody>
                             </table>
                         </div>
-                        <!-- <small :class="config.forms.errors.styles.default" v-html="isDefined({value: forms.entity.createUpdate.errors?.details}) ? forms.entity.createUpdate.errors?.details[0] : ''"></small> -->
+                        <!-- <small :class="config.forms.errors.styles.default" v-html="isDefined({value: forms.entity.createUpdate.errors?.details}) ? forms.entity.createUpdate.errors?.details : ''"></small> -->
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-3 col-12 invoice-actions">
+        <div class="col-lg-3 col-12">
             <div class="card">
                 <div class="card-body">
                     <div class="row g-3 mb-4">
@@ -209,7 +218,7 @@
                                         <div class="d-block">
                                             <small v-text="data?.formatted_type" class="text-decoration-underline"></small>
                                             <small v-text="data?.currency?.sign" class="ms-2"></small>
-                                            <small v-text="data?.price" class="ms-1"></small>
+                                            <small v-text="separatorNumber(data?.price)" class="ms-1"></small>
                                         </div>
                                     </template>
                                 </v-select>
@@ -235,7 +244,7 @@
                             lg="6">
                             <template v-slot:inputGroupPrepend>
                                 <template v-if="isDefined({value: forms.entity.createUpdate.extras.modals.details.data.item?.data?.currency})">
-                                    <button class="btn btn-primary waves-effect" type="button" v-text="forms.entity.createUpdate.extras.modals.details.data.item?.data?.currency?.sign"></button>
+                                    <button class="btn btn-primary waves-effect pe-none" type="button" v-text="forms.entity.createUpdate.extras.modals.details.data.item?.data?.currency?.sign"></button>
                                 </template>
                             </template>
                         </InputNumber>
@@ -248,11 +257,11 @@
                             lg="6">
                             <template v-slot:inputGroupPrepend>
                                 <template v-if="isDefined({value: forms.entity.createUpdate.data.currency?.data})">
-                                    <button class="btn btn-primary waves-effect" type="button" v-text="forms.entity.createUpdate.data.currency?.data?.sign"></button>
+                                    <button class="btn btn-primary waves-effect pe-none" type="button" v-text="forms.entity.createUpdate.data.currency?.data?.sign"></button>
                                 </template>
                             </template>
                             <template v-slot:input>
-                                <input class="form-control" disabled :value="totalModalDetail"/>
+                                <input class="form-control" disabled :value="separatorNumber(totalModalDetail)"/>
                             </template>
                         </InputSlot>
                     </div>
@@ -269,9 +278,25 @@
     </div>
 
     <PrintSale :modalId="forms.entity.createUpdate.extras.modals.finished.id" :data="forms.entity.createUpdate.extras.modals.finished.data">
+        <template v-slot:messageAppend>
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 text-center mb-2">
+                <template v-if="forms.entity.createUpdate.extras.modals.finished.data?.extras?.bool">
+                    <div class="alert alert-success">
+                        <i class="fa fa-check-circle text-success fs-4"></i>
+                        <span class="fw-semibold fs-5 ms-2" v-text="forms.entity.createUpdate.extras.modals.finished.data?.extras?.msg"></span>
+                    </div>
+                </template>
+                <template v-else>
+                    <div class="alert alert-danger">
+                        <i class="fa fa-check-circle text-danger fs-4"></i>
+                        <span class="fw-semibold fs-5 ms-2" v-text="forms.entity.createUpdate.extras.modals.finished.data?.extras?.msg"></span>
+                    </div>
+                </template>
+            </div>
+        </template>
         <template v-slot:extraGroupAppend>
-            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3">
-                <div class="text-center cursor-pointer p-1" data-bs-dismiss="modal">
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mx-2">
+                <div class="text-center cursor-pointer" data-bs-dismiss="modal">
                     <div class="badge bg-success p-3 rounded mb-1">
                         <i class="fa-solid fa-cash-register fs-3"></i>
                     </div>
@@ -334,7 +359,8 @@ export default {
                                 finished: {
                                     id: Utils.uuid(),
                                     data: {
-                                        id: null
+                                        id: null,
+                                        extras: {}
                                     }
                                 }
                             }
@@ -450,8 +476,6 @@ export default {
                 Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
 
             }
-
-            Alerts.tooltips({show: true});
 
         },
         changeQuantityDetail({record, keyRecord, type = "add"}) {
@@ -601,10 +625,11 @@ export default {
 
                 if(Requests.valid({result: createUpdate})) {
 
+                    const {sale, ...extras } = createUpdate.data;
+
+                    this.forms.entity.createUpdate.extras.modals.finished.data = {...sale, extras};
+
                     Alerts.swals({show: false});
-
-                    this.forms.entity.createUpdate.extras.modals.finished.data = createUpdate?.data?.sale;
-
                     Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.finished.id});
 
                     this.clearForm({functionName});
@@ -621,7 +646,8 @@ export default {
 
                 // this.formErrors({functionName, type: "set", errors: validateForm});
                 // Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
-                Alerts.generateAlert({messages: Utils.getErrors({errors: validateForm})});
+                // Alerts.swals({show: false});
+                Alerts.generateAlert({messages: Utils.getErrors({errors: validateForm}), msgContent: `<div class="fw-semibold mb-2">${this.config.messages.errorValidate}</div>`});
 
             }
 
@@ -636,11 +662,12 @@ export default {
                     break;
 
                 case "createUpdateEntity":
-                    this.forms.entity.createUpdate.data.id         = null;
-                    // this.forms.entity.createUpdate.data.issue_date = Utils.getCurrentDate();
-                    // this.forms.entity.createUpdate.data.holder     = null;
-                    this.forms.entity.createUpdate.data.status     = "";
-                    this.forms.entity.createUpdate.data.details    = [];
+                    this.forms.entity.createUpdate.data.id          = null;
+                    // this.forms.entity.createUpdate.data.issue_date  = Utils.getCurrentDate();
+                    // this.forms.entity.createUpdate.data.holder      = null;
+                    this.forms.entity.createUpdate.data.status      = "";
+                    this.forms.entity.createUpdate.data.observation = "";
+                    this.forms.entity.createUpdate.data.details     = [];
                     break;
             }
 
@@ -704,6 +731,17 @@ export default {
 
                 }
 
+            }else if(["duplicateDetail"].includes(functionName)) {
+
+                result.item = [];
+
+                if(!this.isDefined({value: form?.item})) {
+
+                    result.item.push(this.config.forms.errors.labels.required);
+                    result.bool = false;
+
+                }
+
             }else if(["createUpdateEntity"].includes(functionName)) {
 
                 result.branch      = [];
@@ -726,7 +764,7 @@ export default {
 
                 if(!this.isDefined({value: form?.serie})) {
 
-                    result.serie.push(`${isDescriptive ? "Tipo de comprobante:" : ""} ${this.config.forms.errors.labels.required}`);
+                    result.serie.push(`${isDescriptive ? "Serie:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }
@@ -812,6 +850,11 @@ export default {
         fixedNumber(value) {
 
             return Utils.fixedNumber(value);
+
+        },
+        separatorNumber(value) {
+
+            return Utils.separatorNumber(value);
 
         }
     },

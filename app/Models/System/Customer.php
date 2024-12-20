@@ -50,11 +50,16 @@ class Customer extends Model {
 
     }
 
-    public static function getAll() {
+    public static function getAll($type = "default") {
 
         $userAuth = Auth::user();
 
         return Customer::where("company_id", $userAuth->company_id)
+                       ->when(in_array($type, ["sale"]), function($query) {
+
+                            $query->whereIn("status", ["active"]);
+
+                       })
                        ->get();
 
     }

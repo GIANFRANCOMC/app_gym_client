@@ -17,16 +17,6 @@ export function config({entity = "", type = ""}) {
         routes: this.generateRoutes({entity, requestRoute})
     };
 
-    if(entity === "exports") {
-
-        config = {
-            routes: {
-                default: `${requestRoute}/exports`
-            }
-        };
-
-    }
-
     if(Utils.isDefined({value: type})) {
 
         return config?.routes[type];
@@ -206,6 +196,10 @@ export function generateRoutes({entity, requestRoute}) {
     }else if(["sales"].includes(entity)) {
 
         routes.cancel = `${requestRoute}/${entity}/cancel`;
+
+    }else if(["reports"].includes(entity)) {
+
+        routes.sale = `${requestRoute}/${entity}/sale`;
 
     }
 

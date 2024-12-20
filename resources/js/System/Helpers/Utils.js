@@ -154,6 +154,12 @@ export function fixedNumber(value) {
 
 }
 
+export function separatorNumber(value) {
+
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+}
+
 export function truncate({value, length = 40}) {
 
     if(!value) return "";

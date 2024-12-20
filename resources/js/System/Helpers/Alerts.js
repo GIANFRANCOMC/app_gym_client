@@ -116,12 +116,11 @@ export function generateAlert({messages = [], type = "warning", headerTitle = nu
 
 	let tableAlertHtml = messages.length > 0 ? this.generateTableAlert({messages, type}) : "";
 
-	Swal.fire({title             : headerTitle ?? "",
-		       type              : type,
-               icon              : "warning",
+	Swal.fire({title             : headerTitle,
+               icon              : type,
 		       allowOutsideClick : false,
 		       allowEscapeKey    : false,
-		       html              : `${msgContent ?? ""} ${tableAlertHtml}`,
+		       html              : `${msgContent ?? ""} <div>${tableAlertHtml}</div>`,
                confirmButtonText: "Entendido",
                customClass: {
                    confirmButton: "btn btn-primary waves-effect"
