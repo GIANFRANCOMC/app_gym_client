@@ -1,5 +1,8 @@
 <html>
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>{{ $saleHeader->serie_sequential }}</title>
+
     <style>
         body {
             font-family: sans-serif;
@@ -608,8 +611,8 @@
 </head>
 <body>
     @if(in_array($saleHeader->status, ["cancelled"]))
-        <div class="company_logo_box" style="position: absolute; text-align: center; top:20%;">
-            <img src="{{ $cancelledImg }}" style="opacity: 0.4;" width="30%">
+        <div style="position: absolute; text-align: center; top:7%;">
+            <img src="{{ $cancelledImg }}" style="opacity: 0.25;" width="60%">
         </div>
     @endif
     <table class="full-width">
@@ -623,9 +626,9 @@
                 <div class="text-left">
                     <p class="m-0 font-xlg font-bold">{{ $company->commercial_name }}</p>
                     <p class="m-0 font-lg font-bold">{{ $company->identityDocumentType->name }} {{ $company->document_number }}</p>
-                    <p class="m-0" style="text-transform: uppercase">Dirección: Av. Alto Cayalti #313</p>
-                    <p class="m-0" style="text-transform: uppercase">Central telefónica: 879098778</p>
-                    <p class="m-0" style="text-transform: uppercase">Correo electrónico: gian@hotmail.com</p>
+                    <p class="m-0" style="text-transform: uppercase">Dirección: {{ $company->address ?? "N/A" }}</p>
+                    <p class="m-0" style="text-transform: uppercase">Central telefónica: {{ $company->telephone ?? "N/A" }}</p>
+                    <p class="m-0" style="text-transform: uppercase">Correo electrónico: {{ $company->email ?? "N/A" }}</p>
                 </div>
             </td>
             <td width="30%" class="border-box py-4 px-2">
@@ -638,7 +641,7 @@
         <tr>
             <td width="120px">FECHA DE EMISIÓN</td>
             <td width="8px">:</td>
-            <td>{{$saleHeader->formatted_issue_date}}</td>
+            <td>{{ $saleHeader->formatted_issue_date }}</td>
         </tr>
         <tr>
             <td style="vertical-align: top;">CLIENTE:</td>
@@ -662,8 +665,8 @@
                     <td class="text-center align-top">{{ $position->name }}</td>
                     <td class="text-center align-top">{{ $position->quantity }}</td>
                     <td class="text-center align-top">UND</td>
-                    <td class="text-right align-top">S/ {{ $position->price }}</td>
-                    <td class="text-right align-top">S/ {{ $position->total }}</td>
+                    <td class="text-right align-top">S/ {{ number_format(($position->price), 2) }}</td>
+                    <td class="text-right align-top">S/ {{ number_format(($position->total), 2) }}</td>
                 </tr>
             @endforeach
             <tr>
@@ -674,17 +677,6 @@
                 <td colspan="1" class="text-right font-bold">S/ {{ number_format(($saleHeader->total), 2) }}</td>
             </tr>
         </tbody>
-    </table>
-    <table class="full-width">
-        <tr>
-            <td width="65%" style="text-align: top; vertical-align: top;">
-                <span>Son:</span>
-                <span class="font-bold">{{ $saleHeader->legible_total }}</span>
-            </td>
-            <td width="35%" class="text-right">
-
-            </td>
-        </tr>
     </table>
 </body>
 

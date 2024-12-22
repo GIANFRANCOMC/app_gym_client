@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>80MM</title>
+    <title>{{ $saleHeader->serie_sequential }}</title>
 
     <style>
         .c-white{
@@ -338,9 +338,11 @@
     </style>
 </head>
 <body>
-    <div class="company_logo_box" style="position: absolute; text-align: center; top:40%;">
-        <img src="{{ $cancelledImg }}" style="opacity: 0.4;" width="45%">
-    </div>
+    @if(in_array($saleHeader->status, ["cancelled"]))
+        <div style="position: absolute; text-align: center; top:20%;">
+            <img src="{{ $cancelledImg }}" style="opacity: 0.3;" width="60%">
+        </div>
+    @endif
     <div class="div-w-100">
         <table class="table-no-boder fs-0-65">
             <tr>
@@ -360,17 +362,17 @@
             </tr>
             <tr>
                 <td class="w-100 center">
-                    Dirección: Av. Alto Cayalti #313
+                    Dirección: {{ $company->address ?? "N/A" }}
                 </td>
             </tr>
             <tr>
                 <td class="w-100 center">
-                    Central telefónica: 879098778
+                    Central telefónica: {{ $company->telephone ?? "N/A" }}
                 </td>
             </tr>
             <tr>
                 <td class="w-100 center">
-                    Correo electrónico: gian@hotmail.com
+                    Correo electrónico: {{ $company->email ?? "N/A" }}
                 </td>
             </tr>
         </table>
@@ -421,27 +423,17 @@
                             <td class="w-40 left">{{ $position->name }}</td>
                             <td class="w-10 center">{{ $position->quantity }}</td>
                             <td class="w-10 center">UND</td>
-                            <td class="w-20 center">S/ {{ $position->price }}</td>
-                            <td class="w-20 center">S/ {{ floatval($position->quantity) * floatval($position->price) }}</td>
+                            <td class="w-20 center">S/ {{ number_format(($position->price), 2) }}</td>
+                            <td class="w-20 center">S/ {{ number_format(($position->total), 2) }}</td>
                         </tr>
                     @endforeach
                     <tr>
-                        <td colspan="4" class="right bold">TOTAL A PAGAR</td>
-                        <td colspan="1" class="bold">S/ {{ $saleHeader->total }}</td>
+                        <td colspan="3" class="right bold">TOTAL A PAGAR</td>
+                        <td colspan="2" class="center bold">S/ {{ number_format(($saleHeader->total), 2) }}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
-    </div>
-    <div class="div-w-100">
-        <table class="table-no-boder arial fs-0-60">
-            <tr>
-                <td>
-                    <span>Son:</span>
-                    <span class="bold">{{ $saleHeader->legible_total }}</span>
-                </td>
-            </tr>
-        </table>
     </div>
 </body>
 

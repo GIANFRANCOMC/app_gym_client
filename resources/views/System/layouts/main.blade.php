@@ -83,11 +83,11 @@
                                 <div data-i18n="Configuración">Configuración</div>
                             </a>
                             <ul class="menu-sub">
-                                {{-- <li class="menu-item" id="menu-item-list-sales">
-                                    <a href="{{ route('sales.index') }}" class="menu-link">
+                                <li class="menu-item" id="menu-item-companies">
+                                    <a href="{{ route('companies.index') }}" class="menu-link">
                                         <div data-i18n="Collapsed menu">Mi empresa</div>
                                     </a>
-                                </li> --}}
+                                </li>
                                 <li class="menu-item" id="menu-item-branches">
                                     <a href="{{ route('branches.index') }}" class="menu-link">
                                         <div data-i18n="Collapsed menu">Sucursales</div>

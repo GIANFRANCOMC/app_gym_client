@@ -55,6 +55,9 @@ return new class extends Migration {
             $table->string("document_number");
             $table->string("legal_name");
             $table->string("commercial_name");
+            $table->string("address")->nullable();
+            $table->string("telephone")->nullable();
+            $table->string("email")->nullable();
             $table->enum("status", ["active", "inactive"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();
@@ -106,7 +109,7 @@ return new class extends Migration {
         ]);
 
         DB::table("companies")->insert([
-            ["id" => 1, "identity_document_type_id" => 1, "document_number" => "999999999", "legal_name" => "PAGAPE S.A.", "commercial_name" => "PAGAPE"]
+            ["id" => 1, "identity_document_type_id" => 1, "document_number" => "999999999", "legal_name" => "PAGAPE S.A.", "commercial_name" => "PAGAPE", "address" => "-", "telephone" => "-", "email" => "-"]
         ]);
 
         DB::table("users")->insert([

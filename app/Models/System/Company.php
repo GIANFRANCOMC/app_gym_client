@@ -14,7 +14,6 @@ class Company extends Model {
     public static $snakeAttributes = true;
 
     protected $appends = [
-        "formatted_document_type",
         "formatted_status"
     ];
 
@@ -23,6 +22,9 @@ class Company extends Model {
         "document_number",
         "legal_name",
         "commercial_name",
+        "address",
+        "telephone",
+        "email",
         "status",
         "created_at",
         "created_by",

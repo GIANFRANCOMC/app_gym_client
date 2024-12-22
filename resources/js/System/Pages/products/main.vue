@@ -388,7 +388,7 @@ export default {
                     Alerts.swals({show: false});
 
                     this.clearForm({functionName});
-                    this.listEntity({url: `${this.lists.entity.extras.route}?page=${this.lists.entity.records?.current_page ?? 1}`})
+                    this.listEntity({url: `${this.lists.entity.extras.route}?page=${this.lists.entity.records?.current_page ?? 1}`});
 
                 }else {
 

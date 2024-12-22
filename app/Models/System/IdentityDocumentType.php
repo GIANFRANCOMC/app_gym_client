@@ -45,6 +45,18 @@ class IdentityDocumentType extends Model {
 
     }
 
+    public static function getAll($type = "default") {
+
+        return IdentityDocumentType::when(in_array($type, ["company"]), function($query) {
+
+                                        $query->whereIn("id", ["1", "4"])
+                                              ->whereIn("status", ["active"]);
+
+                                   })
+                                   ->get();
+
+    }
+
     // Relationships
     public function companies() {
 
