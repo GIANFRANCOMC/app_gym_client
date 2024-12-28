@@ -1,5 +1,5 @@
 <template>
-    <Breadcrumb :list="breadcrumbTitles"/>
+    <!-- <Breadcrumb :list="breadcrumbTitles"/> -->
 
     <!-- Content -->
     <div class="row g-3 mb-4">

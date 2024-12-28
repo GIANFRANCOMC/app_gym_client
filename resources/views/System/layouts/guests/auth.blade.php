@@ -18,7 +18,7 @@
             <div class="authentication-inner row m-0">
                 <div class="d-none d-lg-flex col-lg-8 p-0">
                     <div class="auth-cover-bg auth-cover-bg-color d-flex justify-content-center align-items-center">
-                    <img src="{{ asset('System/assets/img/utils/login/background.png') }}" alt="auth-login-cover" class="my-5 img-fluid">
+                    <img src="{{ asset('System/assets/img/utils/login/background.png') }}" alt="auth-login-cover" class="my-5 img-fluid w-50">
                     </div>
                 </div>
                 <div class="d-flex col-12 col-lg-4 align-items-center authentication-bg p-sm-12 p-6">

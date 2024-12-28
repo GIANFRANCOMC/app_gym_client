@@ -1,6 +1,6 @@
 <template>
     <template v-if="['image'].includes(type)">
-        <img :src="image" class="fluid-image" width="40%"/>
+        <img :src="image" class="fluid-image" width="25%"/>
         <h5>
             <span class="badge bg-warning text-white fw-semibold px-5" v-text="text"></span>
         </h5>
