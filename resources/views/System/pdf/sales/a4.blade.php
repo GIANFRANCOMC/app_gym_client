@@ -1,7 +1,20 @@
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <title>{{ $saleHeader->serie_sequential }}</title>
+
+        <style>
+            @page {
+                margin: 0;
+            }
+            body {
+                margin: 15px;
+            }
+
+            .uppercase {
+                text-transform: uppercase;
+            }
+        </style>
 
         <style>
             body {
@@ -633,42 +646,29 @@
                 margin-left: auto !important;
             }
         </style>
-
-        <style>
-            .uppercase {
-                text-transform: uppercase;
-            }
-        </style>
     </head>
     <body>
-        @if(in_array($saleHeader->status, ["cancelled"]))
-            <div style="position: absolute; text-align: center; top:7%;">
-                <img src="{{ $cancelledImg }}" style="opacity: 0.25;" width="60%">
+        @if (in_array($saleHeader->status, ["cancelled"]))
+            <div style="position: absolute; text-align: center; top:4%;">
+                <img src="{{ $cancelledImg }}" style="opacity: 0.20;" width="60%">
             </div>
         @endif
-        <table class="full-width">
+        <table class="full-width mt-3">
             <tr>
-                {{-- <td width="20%">
-                    <div class="company_logo_box">
-                        <img src="{{ $logoImg }}" alt="Logo" class="company_logo" style="max-width: 150px;">
-                    </div>
-                </td> --}}
-                <td width="70%" class="pl-3">
-                    <div class="text-left">
-                        <p class="m-0 font-xlg font-bold">{{ $company->commercial_name }}</p>
-                        <p class="m-0 font-lg font-bold">{{ $company->identityDocumentType->name }} {{ $company->document_number }}</p>
-                        <p class="m-0 uppercase">Dirección: {{ $company->address ?? "N/A" }}</p>
-                        <p class="m-0 uppercase">Central telefónica: {{ $company->telephone ?? "N/A" }}</p>
-                        <p class="m-0 uppercase">Correo electrónico: {{ $company->email ?? "N/A" }}</p>
-                    </div>
+                <td width="70%">
+                    <p class="m-0 font-xlg font-bold">{{ $company->commercial_name }}</p>
+                    <p class="m-0 font-lg font-bold">{{ $company->identityDocumentType->name }} {{ $company->document_number }}</p>
+                    <p class="m-0 uppercase">Dirección: {{ $company->address ?? "N/A" }}</p>
+                    <p class="m-0 uppercase">Teléfono: {{ $company->telephone ?? "N/A" }}</p>
+                    <p class="m-0 uppercase">Correo electrónico: {{ $company->email ?? "N/A" }}</p>
                 </td>
-                <td width="30%" class="border-box">
-                    <p class="m-0 font-xlg font-bold text-center">{{ $saleHeader->serie->documentType->name }}</p>
-                    <p class="m-0 font-lg font-bold text-center">{{ $saleHeader->serie_sequential }}</p>
+                <td width="30%" class="border-box text-center">
+                    <p class="m-0 font-xlg font-bold">{{ $saleHeader->serie->documentType->name }}</p>
+                    <p class="m-0 font-lg font-bold">{{ $saleHeader->serie_sequential }}</p>
                 </td>
             </tr>
         </table>
-        <table class="full-width mt-5">
+        <table class="full-width mt-4">
             <tr>
                 <td width="120px">FECHA DE EMISIÓN</td>
                 <td width="8px">:</td>
@@ -680,32 +680,29 @@
                 <td>{{ $saleHeader->holder->name }}</td>
             </tr>
         </table>
-        <table class="full-width mt-10 mb-10">
+        <table class="full-width mt-10">
             <thead>
-                <tr class="bg-grey">
-                    <th class="border-top-bottom text-center py-2">DESCRIPCIÓN</th>
-                    <th class="border-top-bottom text-center py-2">CANTIDAD</th>
-                    <th class="border-top-bottom text-center py-2">UNIDAD</th>
-                    <th class="border-top-bottom text-right py-2">P. UNITARIO</th>
-                    <th class="border-top-bottom text-right py-2">TOTAL</th>
+                <tr class="bg-grey border-top-bottom">
+                    <th class="text-center py-2">DESCRIPCIÓN</th>
+                    <th class="text-center py-2">CANTIDAD</th>
+                    <th class="text-center py-2">UNIDAD</th>
+                    <th class="text-right py-2">P. UNITARIO</th>
+                    <th class="text-right py-2">TOTAL</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($saleHeader->positions as $position)
                     <tr>
-                        <td class="text-center align-top">{{ $position->name }}</td>
-                        <td class="text-center align-top">{{ $position->quantity }}</td>
-                        <td class="text-center align-top">UND</td>
-                        <td class="text-right align-top">S/ {{ number_format(($position->price), 2) }}</td>
-                        <td class="text-right align-top">S/ {{ number_format(($position->total), 2) }}</td>
+                        <td class="text-center">{{ $position->name }}</td>
+                        <td class="text-center">{{ $position->quantity }}</td>
+                        <td class="text-center">UND</td>
+                        <td class="text-right">S/ {{ number_format(($position->price), 2) }}</td>
+                        <td class="text-right">S/ {{ number_format(($position->total), 2) }}</td>
                     </tr>
                 @endforeach
-                <tr>
-                    <td colspan="5" class="border-bottom"></td>
-                </tr>
-                <tr>
-                    <td colspan="4" class="text-right font-bold py-2">TOTAL A PAGAR:</td>
-                    <td colspan="1" class="text-right font-bold py-2">S/ {{ number_format(($saleHeader->total), 2) }}</td>
+                <tr class="border-top">
+                    <td colspan="4" class="text-right font-bold">TOTAL A PAGAR:</td>
+                    <td colspan="1" class="text-right font-bold">S/ {{ number_format(($saleHeader->total), 2) }}</td>
                 </tr>
             </tbody>
         </table>

@@ -62,8 +62,9 @@ class ReportController extends Controller {
 
                     try {
 
-                        $logoPath = public_path("System/assets/img/avatars/1.png");
-                        $logoImg  = "data:image/".pathinfo($logoPath, PATHINFO_EXTENSION).";base64,".base64_encode(file_get_contents($logoPath));
+                        $logoImg = null;
+                        // $logoPath = public_path("System/assets/img/avatars/1.png");
+                        // $logoImg  = "data:image/".pathinfo($logoPath, PATHINFO_EXTENSION).";base64,".base64_encode(file_get_contents($logoPath));
 
                     }catch(Exception $e) {
 
