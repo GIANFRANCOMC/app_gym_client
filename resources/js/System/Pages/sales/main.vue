@@ -311,9 +311,9 @@
                                 <input class="form-control" disabled :value="separatorNumber(totalModalDetail)"/>
                             </template>
                         </InputSlot>
-                        <template v-if="['subscription'].includes(forms.entity.createUpdate.extras.modals.details.data.item?.data?.type)">
+                        <template v-if="['subscription'].includes(forms.entity.createUpdate.extras.modals.details.data.type)">
                             <InputText
-                                v-model="forms.entity.createUpdate.extras.modals.details.data.item.data.formatted_duration"
+                                v-model="forms.entity.createUpdate.extras.modals.details.data.extras.formatted_duration"
                                 hasDiv
                                 title="Duración"
                                 isRequired
@@ -321,22 +321,20 @@
                                 xl="4"
                                 lg="6"/>
                             <InputDate
-                                v-model="forms.entity.createUpdate.extras.modals.details.data.start_date"
+                                v-model="forms.entity.createUpdate.extras.modals.details.data.extras.start_date"
                                 hasDiv
                                 title="Fecha de inicio"
                                 isRequired
                                 hasTextBottom
-                                :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.start_date"
+                                :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.extras_start_date"
                                 xl="4"
                                 lg="6"/>
                             <InputDate
-                                v-model="forms.entity.createUpdate.extras.modals.details.data.end_date"
+                                v-model="endDateModalDetail"
                                 hasDiv
                                 title="Fecha de finalización"
                                 isRequired
                                 disabled
-                                hasTextBottom
-                                :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.end_date"
                                 xl="4"
                                 lg="6"/>
                         </template>
@@ -426,10 +424,19 @@ export default {
                                     data: {
                                         id: null,
                                         item: null,
+                                        type: "",
                                         quantity: 1,
                                         price: 0,
-                                        start_date: "",
-                                        end_date: "",
+                                        observation: "",
+                                        extras: {
+                                            duration_type: "",
+                                            duration_value: "",
+                                            start_date: "",
+                                            end_date: "",
+                                            observation: "",
+                                            formatted_duration: "",
+                                            formatted_type: "",
+                                        },
                                         mode: "store"
                                     },
                                     errors: {}
@@ -1022,6 +1029,21 @@ export default {
 
             return this.calculateTotal({item: this.forms.entity.createUpdate.extras.modals.details.data});
 
+        },
+        endDateModalDetail: function() {
+
+            let data = this.forms.entity.createUpdate.extras.modals.details.data;
+
+            let startDate     = data?.extras?.start_date,
+                durationType  = data?.extras?.duration_type,
+                durationValue = Number(data?.extras?.duration_value),
+                quantity      = Number(this.forms.entity.createUpdate.extras.modals.details.data.quantity);
+
+            let durationTotal = isNaN(durationValue) || isNaN(quantity) ? 0 : (durationValue * quantity);
+
+            const end_date = Utils.addDuration({startDate, type: durationType, quantity: durationTotal});
+
+            return end_date;
         }
     },
     watch: {
@@ -1032,7 +1054,26 @@ export default {
         },
         "forms.entity.createUpdate.extras.modals.details.data.item": function(newValue, oldValue) {
 
-            this.forms.entity.createUpdate.extras.modals.details.data.price = Number(newValue?.data?.price ?? 0);
+            let data = newValue?.data;
+
+            this.forms.entity.createUpdate.extras.modals.details.data.type  = data?.type;
+            this.forms.entity.createUpdate.extras.modals.details.data.price = Number(data?.price ?? 0);
+
+            if(["subscription"].includes(data?.type)) {
+
+                let start_date = Utils.getCurrentDate();
+
+                this.forms.entity.createUpdate.extras.modals.details.data.extras = {
+                    duration_type: data?.duration_type,
+                    duration_value: data?.duration_value,
+                    start_date,
+                    end_date: "",
+                    observation: "",
+                    formatted_duration: data?.formatted_duration,
+                    formatted_type: data?.formatted_type
+                };
+
+            }
 
         }
     }

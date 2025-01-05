@@ -202,3 +202,33 @@ export function getErrors({errors}) {
     return propsValidate;
 
 }
+
+export function addDuration({startDate, type, quantity}) {
+
+    const fecha = new Date(startDate);
+
+    try {
+
+        switch (type) {
+            case 'day':
+                fecha.setDate(fecha.getDate() + quantity);
+                break;
+
+            case 'month':
+                fecha.setMonth(fecha.getMonth() + quantity);
+                break;
+
+            case 'year':
+                fecha.setFullYear(fecha.getFullYear() + quantity);
+                break;
+        }
+
+    }catch(e) {
+
+        fecha.setDate(fecha.getDate());
+
+    }
+
+    return fecha.toISOString().split("T")[0];
+
+}
