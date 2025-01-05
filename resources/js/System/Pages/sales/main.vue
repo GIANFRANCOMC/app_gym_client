@@ -102,46 +102,81 @@
                                 </thead>
                                 <tbody class="table-border-bottom-0 bg-white">
                                     <template v-if="(forms.entity.createUpdate.data.details).length > 0">
-                                        <tr v-for="(record, keyRecord) in forms.entity.createUpdate.data.details" :key="record.id" class="text-center">
-                                            <td class="fw-semibold" v-text="keyRecord + 1"></td>
-                                            <td class="fw-bold text-start">
-                                                <span class="text-break" v-text="record.name"></span>
-                                            </td>
-                                            <td>
-                                                <InputNumber v-model="record.quantity"/>
-                                                <div class="d-block mt-1">
-                                                    <button class="btn btn-danger btn-xs waves-effect" type="button" @click="changeQuantityDetail({record, keyRecord, type: 'subtract'})">
-                                                        <i class="fa fa-minus"></i>
+                                        <template v-for="(record, keyRecord) in forms.entity.createUpdate.data.details" :key="record.id">
+                                            <tr class="text-center">
+                                                <td class="fw-semibold" v-text="keyRecord + 1"></td>
+                                                <td class="fw-bold text-start">
+                                                    <span class="text-break" v-text="record.name"></span>
+                                                </td>
+                                                <td>
+                                                    <InputNumber v-model="record.quantity"/>
+                                                    <div class="d-block mt-1">
+                                                        <button class="btn btn-danger btn-xs waves-effect" type="button" @click="changeQuantityDetail({record, keyRecord, type: 'subtract'})">
+                                                            <i class="fa fa-minus"></i>
+                                                        </button>
+                                                        <button class="btn btn-info btn-xs waves-effect ms-md-2" type="button" @click="changeQuantityDetail({record, keyRecord, type: 'add'})">
+                                                            <i class="fa fa-plus"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <InputNumber v-model="record.price">
+                                                        <template v-slot:inputGroupPrepend v-if="isDefined({value: record?.currency})">
+                                                            <button class="btn btn-primary waves-effect ps-1 pe-1 pe-none" type="button" v-text="record?.currency?.sign"></button>
+                                                        </template>
+                                                    </InputNumber>
+                                                </td>
+                                                <td>
+                                                    <span class="text-break">
+                                                        <span v-text="record.currency?.sign ?? ''"></span>
+                                                        <span v-text="separatorNumber(calculateTotal({item: record}))" class="ms-2"></span>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-danger btn-xs waves-effect" type="button" @click="deleteDetail({record, keyRecord})">
+                                                        <i class="fa fa-times"></i>
+                                                        <span class="ms-1 fw-semibold">Eliminar</span>
                                                     </button>
-                                                    <button class="btn btn-info btn-xs waves-effect ms-md-2" type="button" @click="changeQuantityDetail({record, keyRecord, type: 'add'})">
-                                                        <i class="fa fa-plus"></i>
+                                                    <button class="btn btn-info btn-xs waves-effect mt-1" type="button" @click="duplicateDetail({record, keyRecord})">
+                                                        <i class="fa fa-copy"></i>
+                                                        <span class="ms-1 fw-semibold">Duplicar</span>
                                                     </button>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <InputNumber v-model="record.price">
-                                                    <template v-slot:inputGroupPrepend v-if="isDefined({value: record?.currency})">
-                                                        <button class="btn btn-primary waves-effect ps-1 pe-1 pe-none" type="button" v-text="record?.currency?.sign"></button>
-                                                    </template>
-                                                </InputNumber>
-                                            </td>
-                                            <td>
-                                                <span class="text-break">
-                                                    <span v-text="record.currency?.sign ?? ''"></span>
-                                                    <span v-text="separatorNumber(calculateTotal({item: record}))" class="ms-2"></span>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-danger btn-xs waves-effect" type="button" @click="deleteDetail({record, keyRecord})">
-                                                    <i class="fa fa-times"></i>
-                                                    <span class="ms-1 fw-semibold">Eliminar</span>
-                                                </button>
-                                                <button class="btn btn-info btn-xs waves-effect mt-1" type="button" @click="duplicateDetail({record, keyRecord})">
-                                                    <i class="fa fa-copy"></i>
-                                                    <span class="ms-1 fw-semibold">Duplicar</span>
-                                                </button>
-                                            </td>
-                                        </tr>
+                                                </td>
+                                            </tr>
+                                            <tr class="text-center" v-if="['subscription'].includes(record?.type)">
+                                                <td colspan="6">
+                                                    <div class="row g-3">
+                                                        <div class="col-3">
+                                                            <InputText
+                                                                title="Tipo"
+                                                                v-model="record.formatted_type"
+                                                                isRequired
+                                                                disabled/>
+                                                        </div>
+                                                        <div class="col-3">
+                                                            <InputText
+                                                                title="Duración"
+                                                                v-model="record.formatted_duration"
+                                                                isRequired
+                                                                disabled/>
+                                                        </div>
+                                                        <div class="col-3">
+                                                            <InputDate
+                                                                title="Fecha de inicio"
+                                                                v-model="record.start_date"
+                                                                isRequired/>
+                                                        </div>
+                                                        <div class="col-3">
+                                                            <InputDate
+                                                                title="Fecha de finalización"
+                                                                v-model="record.end_date"
+                                                                isRequired
+                                                                disabled/>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </template>
                                         <tr class="fs-5">
                                             <td colspan="4" class="fw-bold text-end">TOTAL :</td>
                                             <td colspan="2" class="fw-bold text-start">
@@ -216,10 +251,22 @@
                                     <template #option="{ label, data }">
                                         <span v-text="label" class="d-block fw-bold"></span>
                                         <div class="d-block">
-                                            <small v-text="data?.formatted_type" class="text-decoration-underline"></small>
+                                            <small>
+                                                <i class="fa fa-star"></i>
+                                            </small>
+                                            <small v-text="data?.formatted_type" class="ms-1"></small>
                                             <small v-text="data?.currency?.sign" class="ms-2"></small>
                                             <small v-text="separatorNumber(data?.price)" class="ms-1"></small>
                                         </div>
+                                        <template v-if="['subscription'].includes(data?.type)">
+                                            <div class="d-block">
+                                                <small>
+                                                    <i class="fa fa-clock"></i>
+                                                </small>
+                                                <small class="ms-1">Duración:</small>
+                                                <small v-text="data?.formatted_duration" class="ms-2"></small>
+                                            </div>
+                                        </template>
                                     </template>
                                 </v-select>
                             </template>
@@ -264,6 +311,35 @@
                                 <input class="form-control" disabled :value="separatorNumber(totalModalDetail)"/>
                             </template>
                         </InputSlot>
+                        <template v-if="['subscription'].includes(forms.entity.createUpdate.extras.modals.details.data.item?.data?.type)">
+                            <InputText
+                                v-model="forms.entity.createUpdate.extras.modals.details.data.item.data.formatted_duration"
+                                hasDiv
+                                title="Duración"
+                                isRequired
+                                disabled
+                                xl="4"
+                                lg="6"/>
+                            <InputDate
+                                v-model="forms.entity.createUpdate.extras.modals.details.data.start_date"
+                                hasDiv
+                                title="Fecha de inicio"
+                                isRequired
+                                hasTextBottom
+                                :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.start_date"
+                                xl="4"
+                                lg="6"/>
+                            <InputDate
+                                v-model="forms.entity.createUpdate.extras.modals.details.data.end_date"
+                                hasDiv
+                                title="Fecha de finalización"
+                                isRequired
+                                disabled
+                                hasTextBottom
+                                :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.end_date"
+                                xl="4"
+                                lg="6"/>
+                        </template>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -352,6 +428,8 @@ export default {
                                         item: null,
                                         quantity: 1,
                                         price: 0,
+                                        start_date: "",
+                                        end_date: "",
                                         mode: "store"
                                     },
                                     errors: {}
@@ -454,6 +532,12 @@ export default {
                       type     = form?.item?.data?.type,
                       mode     = form.mode;
 
+                const formatted_type     = form?.item?.data?.formatted_type,
+                      formatted_duration = form?.item?.data?.formatted_duration;
+
+                const duration_type = form?.item?.data?.duration_type,
+                      duration_value = form?.item?.data?.duration_value;
+
                 delete form.mode;
                 delete form.item.data;
 
@@ -462,7 +546,7 @@ export default {
                     form.item_id = form?.item?.code;
                     form.currency_id = currency?.id;
 
-                    (this.forms.entity.createUpdate.data.details).push({currency, name, type, ...form, id: Utils.uuid()});
+                    (this.forms.entity.createUpdate.data.details).push({currency, name, type, formatted_type, duration_type, duration_value, formatted_duration, ...form, id: Utils.uuid()});
 
                     Alerts.toastrs({type: "success", subtitle: `Se ha agregado <b><small>(${form?.quantity})</small> ${name}</b> al detalle de la venta.`});
 
@@ -667,7 +751,7 @@ export default {
                     // this.forms.entity.createUpdate.data.holder      = null;
                     this.forms.entity.createUpdate.data.status      = "";
                     this.forms.entity.createUpdate.data.observation = "";
-                    this.forms.entity.createUpdate.data.details     = [];
+                    // this.forms.entity.createUpdate.data.details     = [];
                     break;
             }
 
@@ -693,9 +777,11 @@ export default {
 
             if(["addDetail"].includes(functionName)) {
 
-                result.item     = [];
-                result.quantity = [];
-                result.price    = [];
+                result.item       = [];
+                result.quantity   = [];
+                result.price      = [];
+                result.start_date = [];
+                result.end_date   = [];
 
                 const isDescriptive = ["descriptive"].includes(extras?.type);
 
@@ -703,6 +789,26 @@ export default {
 
                     result.item.push(`${isDescriptive ? "Detalle:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
+
+                }else {
+
+                    if(["subscription"].includes(form?.item?.data?.type)) {
+
+                        if(!this.isDefined({value: form?.start_date})) {
+
+                            result.start_date.push(`${isDescriptive ? "Fecha de inicio:" : ""} ${this.config.forms.errors.labels.required}`);
+                            result.bool = false;
+
+                        }
+
+                        if(!this.isDefined({value: form?.end_date})) {
+
+                            // result.end_date.push(`${isDescriptive ? "Fecha de finalización:" : ""} ${this.config.forms.errors.labels.required}`);
+                            // result.bool = false;
+
+                        }
+
+                    }
 
                 }
 

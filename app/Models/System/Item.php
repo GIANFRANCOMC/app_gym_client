@@ -19,6 +19,7 @@ class Item extends Model {
 
     protected $appends = [
         "formatted_type",
+        "formatted_duration",
         "formatted_status"
     ];
 
@@ -30,6 +31,8 @@ class Item extends Model {
         "price",
         "currency_id",
         "type",
+        "duration_type",
+        "duration_value",
         "status",
         "created_at",
         "created_by",
@@ -44,6 +47,12 @@ class Item extends Model {
 
     }
 
+    public function getFormattedDurationAttribute() {
+
+        return Utilities::isDefined($this->duration_type) && Utilities::isDefined($this->duration_value) ? "{$this->duration_value} {$this->duration_type}" : "";
+
+    }
+
     public function getFormattedStatusAttribute() {
 
         return self::getStatusses("first", $this->attributes["status"])["label"] ?? "";
@@ -55,7 +64,8 @@ class Item extends Model {
 
         $types = [
             ["code" => "product", "label" => "Producto"],
-            ["code" => "service", "label" => "Servicio"]
+            ["code" => "service", "label" => "Servicio"],
+            ["code" => "subscription", "label" => "Suscripción"]
         ];
 
         return Utilities::getValues($types, $type, $code);

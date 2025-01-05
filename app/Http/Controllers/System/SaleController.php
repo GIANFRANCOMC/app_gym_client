@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\Sales\{CancelSaleRequest, StoreSaleRequest, UpdateSaleRequest};
-use App\Models\System\{Branch, Currency, Customer, Item, SaleBody, SaleHeader};
+use App\Models\System\{Branch, Currency, Customer, Item, SaleBody, SaleHeader, Subscription};
 
 class SaleController extends Controller {
 
@@ -150,6 +150,22 @@ class SaleController extends Controller {
                     $saleBody->save();
 
                     $total += floatval($saleBody->total);
+
+                    if(in_array($detail["type"], ["subscription"])) {
+
+                        $subscription = new Subscription();
+                        $subscription->sale_body_id = $saleBody->id;
+                        $subscription->customer_id  = $saleHeader->holder_id;
+                        $subscription->start_date   = $detail["start_date"];
+                        $subscription->end_date     = $detail["start_date"];
+                        $subscription->observation  = $detail["observation"] ?? "";
+                        $subscription->type         = "sale";
+                        $subscription->status       = "active";
+                        $subscription->created_at   = now();
+                        $subscription->created_by   = $userAuth->id ?? null;
+                        $subscription->save();
+
+                    }
 
                 }
 

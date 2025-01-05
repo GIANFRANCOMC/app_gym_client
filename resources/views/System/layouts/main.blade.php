@@ -17,7 +17,7 @@
                     <div class="app-brand demo">
                         <a href="#" class="app-brand-link">
                             <div class="app-brand-text demo menu-text fw-bold">
-                                {{ App\Models\System\Company::first()->commercial_name }}
+                                {{ config('app.name', 'NombreSistema') }}
                             </div>
                         </a>
                         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
@@ -67,6 +67,11 @@
                                 <li class="menu-item" id="menu-item-services">
                                     <a href="{{ route('services.index') }}" class="menu-link">
                                         <div data-i18n="Collapsed menu">Servicios</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item" id="menu-item-subscriptions">
+                                    <a href="{{ route('subscriptions.index') }}" class="menu-link">
+                                        <div data-i18n="Collapsed menu">Suscripciones</div>
                                     </a>
                                 </li>
                             </ul>
@@ -150,7 +155,8 @@
                                                 </div>
                                             </div>
                                             <div class="flex-grow-1">
-                                                <span class="fw-medium d-block">{{ Auth::user()->name }}</span>
+                                                <span class="fw-bold d-block">{{ Auth::user()->name }}</span>
+                                                <span class="fw-medium d-block">{{ App\Models\System\Company::first()->commercial_name }}</span>
                                                 <small class="text-muted">Usuario</small>
                                             </div>
                                         </div>
