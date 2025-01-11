@@ -109,12 +109,14 @@
                                                     <span class="text-break" v-text="record.name"></span>
                                                 </td>
                                                 <td>
-                                                    <InputNumber v-model="record.quantity"/>
+                                                    <InputNumber
+                                                        v-model="record.quantity"
+                                                        @change="calculateDuration({record})"/>
                                                     <div class="d-block mt-1">
                                                         <button class="btn btn-danger btn-xs waves-effect" type="button" @click="changeQuantityDetail({record, keyRecord, type: 'subtract'})">
                                                             <i class="fa fa-minus"></i>
                                                         </button>
-                                                        <button class="btn btn-info btn-xs waves-effect ms-md-2" type="button" @click="changeQuantityDetail({record, keyRecord, type: 'add'})">
+                                                        <button class="btn btn-info btn-xs waves-effect ms-xs-2" type="button" @click="changeQuantityDetail({record, keyRecord, type: 'add'})">
                                                             <i class="fa fa-plus"></i>
                                                         </button>
                                                     </div>
@@ -149,27 +151,28 @@
                                                         <div class="col-3">
                                                             <InputText
                                                                 title="Tipo"
-                                                                v-model="record.formatted_type"
+                                                                v-model="record.extras.formatted_type"
                                                                 isRequired
                                                                 disabled/>
                                                         </div>
                                                         <div class="col-3">
                                                             <InputText
                                                                 title="Duración"
-                                                                v-model="record.formatted_duration"
+                                                                v-model="record.extras.formatted_duration"
                                                                 isRequired
                                                                 disabled/>
                                                         </div>
                                                         <div class="col-3">
                                                             <InputDate
                                                                 title="Fecha de inicio"
-                                                                v-model="record.start_date"
+                                                                v-model="record.extras.start_date"
+                                                                @change="calculateDuration({record})"
                                                                 isRequired/>
                                                         </div>
                                                         <div class="col-3">
                                                             <InputDate
                                                                 title="Fecha de finalización"
-                                                                v-model="record.end_date"
+                                                                v-model="record.extras.end_date"
                                                                 isRequired
                                                                 disabled/>
                                                         </div>
@@ -273,6 +276,7 @@
                         </InputSlot>
                         <InputNumber
                             v-model="forms.entity.createUpdate.extras.modals.details.data.quantity"
+                            @change="calculateDuration({record: forms.entity.createUpdate.extras.modals.details.data})"
                             hasDiv
                             title="Cantidad"
                             isRequired
@@ -322,6 +326,7 @@
                                 lg="6"/>
                             <InputDate
                                 v-model="forms.entity.createUpdate.extras.modals.details.data.extras.start_date"
+                                @change="calculateDuration({record: forms.entity.createUpdate.extras.modals.details.data})"
                                 hasDiv
                                 title="Fecha de inicio"
                                 isRequired
@@ -330,11 +335,13 @@
                                 xl="4"
                                 lg="6"/>
                             <InputDate
-                                v-model="endDateModalDetail"
+                                v-model="forms.entity.createUpdate.extras.modals.details.data.extras.end_date"
                                 hasDiv
                                 title="Fecha de finalización"
                                 isRequired
                                 disabled
+                                hasTextBottom
+                                :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.extras_end_date"
                                 xl="4"
                                 lg="6"/>
                         </template>
@@ -425,6 +432,8 @@ export default {
                                         id: null,
                                         item: null,
                                         type: "",
+                                        currency: null,
+                                        name: "",
                                         quantity: 1,
                                         price: 0,
                                         observation: "",
@@ -534,28 +543,13 @@ export default {
 
             if(validateForm?.bool) {
 
-                const currency = form?.item?.data?.currency,
-                      name     = form?.item?.data?.name,
-                      type     = form?.item?.data?.type,
-                      mode     = form.mode;
-
-                const formatted_type     = form?.item?.data?.formatted_type,
-                      formatted_duration = form?.item?.data?.formatted_duration;
-
-                const duration_type = form?.item?.data?.duration_type,
-                      duration_value = form?.item?.data?.duration_value;
-
-                delete form.mode;
                 delete form.item.data;
 
-                if(["store"].includes(mode)) {
+                if(["store"].includes(form.mode)) {
 
-                    form.item_id = form?.item?.code;
-                    form.currency_id = currency?.id;
+                    (this.forms.entity.createUpdate.data.details).push({...form, id: Utils.uuid()});
 
-                    (this.forms.entity.createUpdate.data.details).push({currency, name, type, formatted_type, duration_type, duration_value, formatted_duration, ...form, id: Utils.uuid()});
-
-                    Alerts.toastrs({type: "success", subtitle: `Se ha agregado <b><small>(${form?.quantity})</small> ${name}</b> al detalle de la venta.`});
+                    Alerts.toastrs({type: "success", subtitle: `Se ha agregado <b><small>(${form?.quantity})</small> ${form?.name}</b> al detalle de la venta.`});
 
                     this.clearForm({functionName});
 
@@ -594,6 +588,8 @@ export default {
                 Alerts.toastrs({type: "error", subtitle: this.config.forms.errors.labels.min_number_0});
 
             }
+
+            this.calculateDuration({record});
 
         },
         deleteDetail({record, keyRecord}) {
@@ -787,8 +783,8 @@ export default {
                 result.item       = [];
                 result.quantity   = [];
                 result.price      = [];
-                result.start_date = [];
-                result.end_date   = [];
+                result.extras_start_date = [];
+                result.extras_end_date   = [];
 
                 const isDescriptive = ["descriptive"].includes(extras?.type);
 
@@ -799,19 +795,34 @@ export default {
 
                 }else {
 
-                    if(["subscription"].includes(form?.item?.data?.type)) {
+                    if(["subscription"].includes(form?.type)) {
 
-                        if(!this.isDefined({value: form?.start_date})) {
+                        if(!this.isDefined({value: form?.extras?.start_date})) {
 
-                            result.start_date.push(`${isDescriptive ? "Fecha de inicio:" : ""} ${this.config.forms.errors.labels.required}`);
+                            result.extras_start_date.push(`${isDescriptive ? "Fecha de inicio:" : ""} ${this.config.forms.errors.labels.required}`);
                             result.bool = false;
 
                         }
 
-                        if(!this.isDefined({value: form?.end_date})) {
+                        if(!this.isDefined({value: form?.extras?.end_date})) {
 
-                            // result.end_date.push(`${isDescriptive ? "Fecha de finalización:" : ""} ${this.config.forms.errors.labels.required}`);
-                            // result.bool = false;
+                            result.extras_end_date.push(`${isDescriptive ? "Fecha de finalización:" : ""} ${this.config.forms.errors.labels.required}`);
+                            result.bool = false;
+
+                        }else {
+
+                            let today = new Date();
+                            let endDate = new Date(form?.extras?.end_date);
+
+                            today.setHours(0, 0, 0, 0);
+                            endDate.setHours(0, 0, 0, 0);
+
+                            if(today > endDate) {
+
+                                result.extras_end_date.push(`${isDescriptive ? "Fecha de finalización:" : ""} Debe ser mayor a la fecha de hoy.`);
+                                result.bool = false;
+
+                            }
 
                         }
 
@@ -960,6 +971,34 @@ export default {
             return Utils.calculateTotal({item});
 
         },
+        calculateDuration({mode = "record", record = null}) {
+
+            let data = record;
+
+            if(["subscription"].includes(data?.type)) {
+
+                let startDate     = data?.extras?.start_date,
+                    durationType  = data?.extras?.duration_type,
+                    durationValue = Number(data?.extras?.duration_value),
+                    quantity      = Number(data.quantity);
+
+                let durationTotal = isNaN(durationValue) || isNaN(quantity) ? 0 : (durationValue * quantity);
+
+                const endDate = Utils.addDuration({startDate, type: durationType, quantity: durationTotal});
+
+                if(["record"].includes(mode)) {
+
+                    record.extras.end_date = endDate;
+
+                }else if(["result"].includes(mode)) {
+
+                    return endDate;
+
+                }
+
+            }
+
+        },
         fixedNumber(value) {
 
             return Utils.fixedNumber(value);
@@ -1029,21 +1068,6 @@ export default {
 
             return this.calculateTotal({item: this.forms.entity.createUpdate.extras.modals.details.data});
 
-        },
-        endDateModalDetail: function() {
-
-            let data = this.forms.entity.createUpdate.extras.modals.details.data;
-
-            let startDate     = data?.extras?.start_date,
-                durationType  = data?.extras?.duration_type,
-                durationValue = Number(data?.extras?.duration_value),
-                quantity      = Number(this.forms.entity.createUpdate.extras.modals.details.data.quantity);
-
-            let durationTotal = isNaN(durationValue) || isNaN(quantity) ? 0 : (durationValue * quantity);
-
-            const end_date = Utils.addDuration({startDate, type: durationType, quantity: durationTotal});
-
-            return end_date;
         }
     },
     watch: {
@@ -1056,8 +1080,10 @@ export default {
 
             let data = newValue?.data;
 
-            this.forms.entity.createUpdate.extras.modals.details.data.type  = data?.type;
-            this.forms.entity.createUpdate.extras.modals.details.data.price = Number(data?.price ?? 0);
+            this.forms.entity.createUpdate.extras.modals.details.data.type     = data?.type;
+            this.forms.entity.createUpdate.extras.modals.details.data.currency = data?.currency;
+            this.forms.entity.createUpdate.extras.modals.details.data.name     = data?.name;
+            this.forms.entity.createUpdate.extras.modals.details.data.price    = Number(data?.price ?? 0);
 
             if(["subscription"].includes(data?.type)) {
 
@@ -1072,6 +1098,8 @@ export default {
                     formatted_duration: data?.formatted_duration,
                     formatted_type: data?.formatted_type
                 };
+
+                this.calculateDuration({record: this.forms.entity.createUpdate.extras.modals.details.data});
 
             }
 

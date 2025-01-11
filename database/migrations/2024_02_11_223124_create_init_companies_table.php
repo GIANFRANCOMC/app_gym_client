@@ -67,7 +67,7 @@ return new class extends Migration {
             $table->decimal("price", 10, 2);
             $table->unsignedBigInteger("currency_id");
             $table->enum("type", ["product", "service", "subscription"])->default("product");
-            $table->enum("duration_type", ["hour", "day", "month", "year"])->nullable();
+            $table->enum("duration_type", ["hour", "day", "today", "month", "year"])->nullable();
             $table->integer("duration_value")->nullable();
             $table->enum("status", ["active", "inactive"])->default("active");
 

@@ -50,7 +50,7 @@ import { generalConfig } from "../Helpers/Constants.js";
 
 export default {
     name: "InputDate",
-    emits: ["enterKeyPressed", "update:modelValue"],
+    emits: ["enterKeyPressed", "update:modelValue", "input", "change"],
     props: {
         modelValue: {
             type: [String, Number],
@@ -182,6 +182,8 @@ export default {
         updateValue(value) {
 
             this.$emit("update:modelValue", value);
+            this.$emit("input", value);
+            this.$emit("change", value);
 
         },
         handleEnterKey() {
