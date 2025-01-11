@@ -49,7 +49,16 @@ class Item extends Model {
 
     public function getFormattedDurationAttribute() {
 
-        return Utilities::isDefined($this->duration_type) && Utilities::isDefined($this->duration_value) ? "{$this->duration_value} {$this->duration_type}" : "";
+        if(Utilities::isDefined($this->duration_type) && Utilities::isDefined($this->duration_value)) {
+
+            $prop = $this->duration_value > 1 ? "plural" : "label";
+            $durationType = self::getDurationTypes("first", $this->attributes["duration_type"])[$prop] ?? "";
+
+            return "{$this->duration_value} {$durationType}";
+
+        }
+
+        return "";
 
     }
 
@@ -66,6 +75,20 @@ class Item extends Model {
             ["code" => "product", "label" => "Producto"],
             ["code" => "service", "label" => "Servicio"],
             ["code" => "subscription", "label" => "Suscripción"]
+        ];
+
+        return Utilities::getValues($types, $type, $code);
+
+    }
+
+    public static function getDurationTypes($type = "all", $code = "") {
+
+        $types = [
+            ["code" => "hour", "label" => "Hora", "plural" => "Horas"],
+            ["code" => "day", "label" => "Día", "plural" => "Días"],
+            ["code" => "today", "label" => "Hoy", "plural" => "Hoy"],
+            ["code" => "month", "label" => "Mes", "plural" => "Meses"],
+            ["code" => "year", "label" => "Año", "plural" => "Años"]
         ];
 
         return Utilities::getValues($types, $type, $code);

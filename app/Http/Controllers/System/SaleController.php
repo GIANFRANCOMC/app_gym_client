@@ -156,9 +156,9 @@ class SaleController extends Controller {
                         $subscription = new Subscription();
                         $subscription->sale_body_id = $saleBody->id;
                         $subscription->customer_id  = $saleHeader->holder_id;
-                        $subscription->start_date   = $detail["start_date"];
-                        $subscription->end_date     = $detail["start_date"];
-                        $subscription->observation  = $detail["observation"] ?? "";
+                        $subscription->start_date   = $detail["extras"]["start_date"];
+                        $subscription->end_date     = $detail["extras"]["start_date"];
+                        $subscription->observation  = $detail["extras"]["observation"] ?? "";
                         $subscription->type         = "sale";
                         $subscription->status       = "active";
                         $subscription->created_at   = now();

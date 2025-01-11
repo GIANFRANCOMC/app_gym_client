@@ -104,7 +104,9 @@
                                     <template v-if="(forms.entity.createUpdate.data.details).length > 0">
                                         <template v-for="(record, keyRecord) in forms.entity.createUpdate.data.details" :key="record.id">
                                             <tr class="text-center">
-                                                <td class="fw-semibold" v-text="keyRecord + 1"></td>
+                                                <td>
+                                                    <span v-text="keyRecord + 1" class="badge rounded-pill bg-info"></span>
+                                                </td>
                                                 <td class="fw-bold text-start">
                                                     <span class="text-break" v-text="record.name"></span>
                                                 </td>
@@ -116,7 +118,7 @@
                                                         <button class="btn btn-danger btn-xs waves-effect" type="button" @click="changeQuantityDetail({record, keyRecord, type: 'subtract'})">
                                                             <i class="fa fa-minus"></i>
                                                         </button>
-                                                        <button class="btn btn-info btn-xs waves-effect ms-xs-2" type="button" @click="changeQuantityDetail({record, keyRecord, type: 'add'})">
+                                                        <button class="btn btn-info btn-xs waves-effect" type="button" @click="changeQuantityDetail({record, keyRecord, type: 'add'})">
                                                             <i class="fa fa-plus"></i>
                                                         </button>
                                                     </div>
@@ -124,7 +126,7 @@
                                                 <td>
                                                     <InputNumber v-model="record.price">
                                                         <template v-slot:inputGroupPrepend v-if="isDefined({value: record?.currency})">
-                                                            <button class="btn btn-primary waves-effect ps-1 pe-1 pe-none" type="button" v-text="record?.currency?.sign"></button>
+                                                            <button class="btn btn-primary waves-effect px-1" type="button" v-text="record?.currency?.sign"></button>
                                                         </template>
                                                     </InputNumber>
                                                 </td>
@@ -135,50 +137,66 @@
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <button class="btn btn-danger btn-xs waves-effect" type="button" @click="deleteDetail({record, keyRecord})">
+                                                    <button class="btn btn-danger btn-xs waves-effect my-1" type="button" @click="deleteDetail({record, keyRecord})">
                                                         <i class="fa fa-times"></i>
                                                         <span class="ms-1 fw-semibold">Eliminar</span>
                                                     </button>
-                                                    <button class="btn btn-info btn-xs waves-effect mt-1" type="button" @click="duplicateDetail({record, keyRecord})">
+                                                    <button class="btn btn-info btn-xs waves-effect my-1" type="button" @click="duplicateDetail({record, keyRecord})">
                                                         <i class="fa fa-copy"></i>
                                                         <span class="ms-1 fw-semibold">Duplicar</span>
                                                     </button>
+                                                    <template v-if="['subscription'].includes(record?.type)">
+                                                        <button class="btn btn-success btn-xs waves-effect my-1" type="button" @click="viewDetail({record, keyRecord})">
+                                                            <i :class="record?.extras?.showDetail ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
+                                                            <span class="ms-1 fw-semibold" v-text="record?.extras?.showDetail ? 'Ocultar detalle' : 'Mostar detalle'"></span>
+                                                        </button>
+                                                    </template>
                                                 </td>
                                             </tr>
-                                            <tr class="text-center" v-if="['subscription'].includes(record?.type)">
-                                                <td colspan="6">
-                                                    <div class="row g-3">
-                                                        <div class="col-3">
-                                                            <InputText
-                                                                title="Tipo"
-                                                                v-model="record.extras.formatted_type"
-                                                                isRequired
-                                                                disabled/>
+                                            <template v-if="record?.extras?.showDetail">
+                                                <tr class="text-center" v-if="['subscription'].includes(record?.type)" style="border-color: transparent;">
+                                                    <td colspan="6">
+                                                        <div class="row g-2 my-1">
+                                                            <div class="col-3">
+                                                                <InputText
+                                                                    title="Tipo"
+                                                                    v-model="record.extras.formatted_type"
+                                                                    isRequired
+                                                                    disabled/>
+                                                            </div>
+                                                            <div class="col-3">
+                                                                <InputText
+                                                                    title="Duración"
+                                                                    v-model="record.extras.formatted_duration"
+                                                                    isRequired
+                                                                    disabled/>
+                                                            </div>
+                                                            <div class="col-3">
+                                                                <InputDate
+                                                                    title="Fecha de inicio"
+                                                                    v-model="record.extras.start_date"
+                                                                    @change="calculateDuration({record})"
+                                                                    isRequired/>
+                                                            </div>
+                                                            <div class="col-3">
+                                                                <InputDate
+                                                                    title="Fecha de finalización"
+                                                                    v-model="record.extras.end_date"
+                                                                    isRequired
+                                                                    disabled/>
+                                                            </div>
+                                                            <div class="divider text-center divider-info">
+                                                                <div class="divider-text">
+                                                                    <div class="badge rounded-pill bg-label-info px-5 py-1">
+                                                                        <i class="fa fa-info-circle"></i>
+                                                                        <span class="ms-2 fw-bold h6 text-info" v-text="'Detalle #'+(keyRecord + 1)"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                        <div class="col-3">
-                                                            <InputText
-                                                                title="Duración"
-                                                                v-model="record.extras.formatted_duration"
-                                                                isRequired
-                                                                disabled/>
-                                                        </div>
-                                                        <div class="col-3">
-                                                            <InputDate
-                                                                title="Fecha de inicio"
-                                                                v-model="record.extras.start_date"
-                                                                @change="calculateDuration({record})"
-                                                                isRequired/>
-                                                        </div>
-                                                        <div class="col-3">
-                                                            <InputDate
-                                                                title="Fecha de finalización"
-                                                                v-model="record.extras.end_date"
-                                                                isRequired
-                                                                disabled/>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
+                                                    </td>
+                                                </tr>
+                                            </template>
                                         </template>
                                         <tr class="fs-5">
                                             <td colspan="4" class="fw-bold text-end">TOTAL :</td>
@@ -445,6 +463,7 @@ export default {
                                             observation: "",
                                             formatted_duration: "",
                                             formatted_type: "",
+                                            showDetail: true
                                         },
                                         mode: "store"
                                     },
@@ -684,6 +703,11 @@ export default {
             }
 
         },
+        viewDetail({record, keyRecord}) {
+
+            record.extras.showDetail = !record.extras.showDetail;
+
+        },
         // Entity forms
         async createUpdateEntity() {
 
@@ -707,12 +731,22 @@ export default {
                 delete form.holder;
                 delete form.currency;
 
+                form.details.forEach(detail => {
+
+                    detail.item_id = detail?.item?.code;
+                    detail.currency_id = detail?.currency?.id;
+
+                    delete detail.item;
+                    delete detail.currency;
+
+                });
+
                 let createUpdate = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: form.id}) :
                                                                              Requests.post({route: this.config.entity.routes.store, data: form}));
 
                 if(Requests.valid({result: createUpdate})) {
 
-                    const {sale, ...extras } = createUpdate.data;
+                    const {sale, ...extras} = createUpdate.data;
 
                     this.forms.entity.createUpdate.extras.modals.finished.data = {...sale, extras};
 
@@ -1096,7 +1130,8 @@ export default {
                     end_date: "",
                     observation: "",
                     formatted_duration: data?.formatted_duration,
-                    formatted_type: data?.formatted_type
+                    formatted_type: data?.formatted_type,
+                    showDetail: true
                 };
 
                 this.calculateDuration({record: this.forms.entity.createUpdate.extras.modals.details.data});

@@ -114,6 +114,14 @@ return new class extends Migration {
             ["branch_id" => 1, "document_type_id" => 2, "code" => "FA", "number" => 1, "init" => 1]
         ]);
 
+        DB::table("items")->insert([
+            ["company_id" => 1, "internal_code" => "ABCD", "name" => "Diario", "description" => "", "price" => 5, "currency_id" => 1, "type" => "subscription", "duration_type" => "day", "duration_value" => 1],
+            ["company_id" => 1, "internal_code" => "EFGH", "name" => "Mensual", "description" => "", "price" => 50, "currency_id" => 1, "type" => "subscription", "duration_type" => "month", "duration_value" => 1],
+            ["company_id" => 1, "internal_code" => "IJKL", "name" => "Anual", "description" => "", "price" => 500, "currency_id" => 1, "type" => "subscription", "duration_type" => "year", "duration_value" => 1],
+            ["company_id" => 1, "internal_code" => "MNOP", "name" => "Quincena diario", "description" => "", "price" => 24, "currency_id" => 1, "type" => "subscription", "duration_type" => "day", "duration_value" => 15],
+            ["company_id" => 1, "internal_code" => "QRST", "name" => "Medio año", "description" => "", "price" => 250, "currency_id" => 1, "type" => "subscription", "duration_type" => "month", "duration_value" => 6],
+        ]);
+
         DB::table("customers")->insert([
             ["company_id" => 1, "identity_document_type_id" => 1, "document_number" => "999999999", "name" => "Cliente varios"]
         ]);
