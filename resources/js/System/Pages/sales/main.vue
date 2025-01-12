@@ -298,7 +298,7 @@
                             hasDiv
                             title="Cantidad"
                             isRequired
-                            :decimals="0"
+                            :decimals="isSubscription(forms.entity.createUpdate.extras.modals.details.data.type) ? 0 : config.forms.inputs.round"
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.quantity"
                             xl="4"
@@ -1001,6 +1001,11 @@ export default {
             return Utils.isDefined({value});
 
         },
+        isSubscription(type) {
+
+            return ["subscription"].includes(type);
+
+        },
         calculateTotal({item}) {
 
             return Utils.calculateTotal({item});
@@ -1121,6 +1126,8 @@ export default {
             this.forms.entity.createUpdate.extras.modals.details.data.price    = Number(data?.price ?? 0);
 
             if(["subscription"].includes(data?.type)) {
+
+                this.forms.entity.createUpdate.extras.modals.details.data.quantity = Number((this.forms.entity.createUpdate.extras.modals.details.data.quantity).toFixed(this.isSubscription(this.forms.entity.createUpdate.extras.modals.details.data.type) ? 0 : this.config.forms.inputs.round));
 
                 let start_date = Utils.getCurrentDate();
 

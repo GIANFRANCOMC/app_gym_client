@@ -156,7 +156,9 @@ export function fixedNumber(value, decimals = null) {
 
 export function separatorNumber(value) {
 
-    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    let number = value == "" ? 0 : value;
+
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
 }
 

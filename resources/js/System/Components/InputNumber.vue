@@ -208,49 +208,54 @@ export default {
 
             let valueString = String(value).trim();
 
-            if(valueString == "") {
+            if(valueString === "") {
 
-                this.emitValue({reset: true, result: valueString});
+                this.emitValue({result: valueString});
 
             }else {
 
-                const hasFormattedNumber = /^\d+(\.\d+)?$/.test(valueString); // 1  2  3.1  5.67  0.329
-                const hasDecimalInitNumber = /^\d+\.$/.test(valueString); // 12. 34. 61.
-                const isDecimalInitNumber = this.decimals > 0 && hasDecimalInitNumber;
+                const hasFormattedNumber = /^\d+(\.\d+)?$/.test(valueString); // Case: 1  2  3.1  5.67  0.329
+                const hasDecimalInitNumber = this.decimals > 0 && /^\d+\.$/.test(valueString); // Case: With decimals (Input: 12. 3134. 23461.)
 
-                if(hasFormattedNumber || isDecimalInitNumber) {
+                if(hasFormattedNumber || hasDecimalInitNumber) {
 
                     let numericValue = Number(value);
 
                     if(isNaN(numericValue) || numericValue < this.minValue) {
 
-                        this.emitValue({reset: true, result: this.minValue});
+                        this.emitValue({result: this.minValue});
 
                     }else if(numericValue > this.maxValue) {
 
-                        this.emitValue({reset: true, result: this.maxValue});
+                        this.emitValue({result: this.maxValue});
 
                     }else {
 
-                        let regexDecimals = this.decimals > 0 ? /^\d+(\.\d{1,2})?$/ : /^-?\d+$/;
-
+                        const regexDecimals = this.decimals > 0 ? new RegExp(`^\\d+(\\.\\d{1,${this.decimals}})?$`) : /^-?\d+$/;
                         const hasFormattedDecimal = regexDecimals.test(valueString);
 
-                        hasFormattedDecimal || isDecimalInitNumber ? this.emitValue({reset: false, result: numericValue}) :
-                                                                     this.emitValue({reset: true, result: Number(numericValue.toFixed(this.decimals))});
+                        if(this.decimals > 0) {
+
+                            hasFormattedDecimal || hasDecimalInitNumber ? this.emitValue({reset: false, result: numericValue}) : this.emitValue({result: Number(numericValue.toFixed(this.decimals))});
+
+                        }else {
+
+                            hasFormattedDecimal ? this.emitValue({reset: false, result: numericValue}) : this.emitValue({result: Number(numericValue.toFixed(this.decimals))});
+
+                        }
 
                     }
 
                 }else {
 
-                    this.emitValue({reset: true, result: this.minValue});
+                    this.emitValue({result: this.minValue});
 
                 }
 
             }
 
         },
-        emitValue({reset, result}) {
+        emitValue({reset = true, result}) {
 
             if(reset) {
 
