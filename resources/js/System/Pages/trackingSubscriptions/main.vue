@@ -69,6 +69,7 @@
                             </td>
                             <td>
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive', 'cancelled'].includes(record.status) }]" v-text="record.formatted_status"></span>
+                                <span v-if="isDefined({value: record.motive})" v-text="'Motivo: '+record.motive" class="d-block text-start fw-semibold mt-2"></span>
                             </td>
                         </tr>
                     </template>

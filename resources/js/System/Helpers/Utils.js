@@ -148,9 +148,9 @@ export function calculateTotal({item}) {
 
 }
 
-export function fixedNumber(value) {
+export function fixedNumber(value, decimals = null) {
 
-    return Number(value).toFixed(generalConfig.forms.inputs.round);
+    return Number(value).toFixed(decimals ?? generalConfig.forms.inputs.round);
 
 }
 
@@ -229,6 +229,6 @@ export function addDuration({startDate, type, quantity}) {
 
     }
 
-    return fecha.toISOString().split("T")[0];
+    return isNaN(fecha.getTime()) ? "" : fecha.toISOString().split("T")[0];
 
 }

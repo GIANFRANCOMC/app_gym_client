@@ -19,7 +19,8 @@ return new class extends Migration {
             $table->unsignedBigInteger("customer_id");
             $table->dateTime("start_date");
             $table->dateTime("end_date");
-            $table->text("observation");
+            $table->text("observation")->nullable();
+            $table->text("motive")->nullable();
             $table->enum("type", ["sale", "manual"])->default("sale");
             $table->enum("status", ["active", "cancelled", "inactive"])->default("active");
 

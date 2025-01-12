@@ -298,6 +298,7 @@
                             hasDiv
                             title="Cantidad"
                             isRequired
+                            :decimals="0"
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.quantity"
                             xl="4"

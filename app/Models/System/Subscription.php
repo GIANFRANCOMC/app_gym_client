@@ -26,6 +26,7 @@ class Subscription extends Model {
         "start_date",
         "end_date",
         "observation",
+        "motive",
         "type",
         "status",
         "created_at",

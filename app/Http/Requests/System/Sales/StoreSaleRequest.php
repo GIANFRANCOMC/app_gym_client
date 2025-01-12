@@ -37,8 +37,9 @@ class StoreSaleRequest extends FormRequest {
             'details.*.item_id' => 'required|integer',
             'details.*.currency_id' => 'required|integer',
             'details.*.name' => 'required|string|max:255',
-            'details.*.quantity' => 'required|numeric|min:0',
-            'details.*.price' => 'required|numeric|min:0',
+            'details.*.quantity' => 'required|numeric|min:0|max:999999999',
+            'details.*.price' => 'required|numeric|min:0|max:999999999',
+            // 'details.*.total' => 'required|numeric|min:0|max:999999999',
             'details.*.observation' => 'nullable|string|max:300'
         ];
 

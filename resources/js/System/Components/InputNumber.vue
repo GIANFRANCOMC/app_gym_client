@@ -7,9 +7,12 @@
             <div class="input-group">
                 <slot name="inputGroupPrepend"></slot>
                 <input
-                    type="number"
-                    :value="modelValue"
+                    type="text"
+                    :value="isEditing ? modelValue : formattedValue"
+                    @focus="handleFocus"
+                    @blur="handleBlur"
                     @input="updateValue($event.target.value)"
+                    @keydown="handleKeyDown"
                     :class="[...inputClass]"
                     :placeholder="placeholder"
                     :disabled="disabled"
@@ -28,9 +31,12 @@
         <div class="input-group">
             <slot name="inputGroupPrepend"></slot>
             <input
-                type="number"
-                :value="modelValue"
+                type="text"
+                :value="isEditing ? modelValue : formattedValue"
+                @focus="handleFocus"
+                @blur="handleBlur"
                 @input="updateValue($event.target.value)"
+                @keydown="handleKeyDown"
                 :class="[...inputClass]"
                 :placeholder="placeholder"
                 :disabled="disabled"
@@ -45,6 +51,7 @@
 
 <script>
 import { generalConfig } from "../Helpers/Constants.js";
+import { separatorNumber } from "../Helpers/Utils.js";
 
 export default {
     name: "InputNumber",
@@ -97,6 +104,21 @@ export default {
             type: Array,
             required: false,
             default: ["form-control"]
+        },
+        minValue: {
+            type: [String, Number],
+            required: false,
+            default: generalConfig.forms.inputs.minValue
+        },
+        maxValue: {
+            type: [String, Number],
+            required: false,
+            default: generalConfig.forms.inputs.maxValue
+        },
+        decimals: {
+            type: [String, Number],
+            required: false,
+            default: generalConfig.forms.inputs.round
         },
         placeholder: {
             type: String,
@@ -151,7 +173,17 @@ export default {
             default: "12"
         }
     },
+    data() {
+        return {
+            isEditing: false
+        };
+    },
     computed: {
+        formattedValue() {
+
+            return separatorNumber(this.modelValue);
+
+        },
         textBottom() {
 
             try {
@@ -174,9 +206,96 @@ export default {
     methods: {
         updateValue(value) {
 
-            this.$emit("update:modelValue", value);
-            this.$emit("input", value);
-            this.$emit("change", value);
+            let valueString = String(value).trim();
+
+            if(valueString == "") {
+
+                this.emitValue({reset: true, result: valueString});
+
+            }else {
+
+                const hasFormattedNumber = /^\d+(\.\d+)?$/.test(valueString); // 1  2  3.1  5.67  0.329
+                const hasDecimalInitNumber = /^\d+\.$/.test(valueString); // 12. 34. 61.
+                const isDecimalInitNumber = this.decimals > 0 && hasDecimalInitNumber;
+
+                if(hasFormattedNumber || isDecimalInitNumber) {
+
+                    let numericValue = Number(value);
+
+                    if(isNaN(numericValue) || numericValue < this.minValue) {
+
+                        this.emitValue({reset: true, result: this.minValue});
+
+                    }else if(numericValue > this.maxValue) {
+
+                        this.emitValue({reset: true, result: this.maxValue});
+
+                    }else {
+
+                        let regexDecimals = this.decimals > 0 ? /^\d+(\.\d{1,2})?$/ : /^-?\d+$/;
+
+                        const hasFormattedDecimal = regexDecimals.test(valueString);
+
+                        hasFormattedDecimal || isDecimalInitNumber ? this.emitValue({reset: false, result: numericValue}) :
+                                                                     this.emitValue({reset: true, result: Number(numericValue.toFixed(this.decimals))});
+
+                    }
+
+                }else {
+
+                    this.emitValue({reset: true, result: this.minValue});
+
+                }
+
+            }
+
+        },
+        emitValue({reset, result}) {
+
+            if(reset) {
+
+                this.$emit("update:modelValue", null);
+
+                this.$nextTick(() => {
+                    this.$emit("update:modelValue", result);
+                    this.$emit("input", result);
+                    this.$emit("change", result);
+                });
+
+            }else {
+
+                this.$emit("update:modelValue", result);
+                this.$emit("input", result);
+                this.$emit("change", result);
+
+            }
+
+        },
+        handleFocus() {
+
+            this.isEditing = true;
+
+        },
+        handleBlur() {
+
+            this.isEditing = false;
+
+        },
+        handleKeyDown(event) {
+
+            let allowedKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "ArrowLeft", "ArrowRight", "Backspace", "Tab"];
+
+            if(this.decimals > 0) {
+
+                allowedKeys.push(".");
+
+            }
+
+            if(!allowedKeys.includes(event.key)) {
+
+                event.preventDefault();
+
+            }
 
         },
         handleEnterKey() {

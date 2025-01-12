@@ -222,9 +222,13 @@ class SaleController extends Controller {
             $saleHeader->updated_by = $userAuth->id ?? null;
             $saleHeader->save();
 
+            $motive = "Por la anulación de la venta.";
+
             Subscription::where("company_id", $userAuth->company_id)
                         ->where("sale_header_id", $saleHeader->id)
-                        ->update(["status" => "cancelled", "updated_at" => now(), "updated_by" => $userAuth->id ?? null]);
+                        ->whereIn("type", ["sale"])
+                        ->whereIn("status", ["active"])
+                        ->update(["motive" => $motive, "status" => "cancelled", "updated_at" => now(), "updated_by" => $userAuth->id ?? null]);
 
         }
 
