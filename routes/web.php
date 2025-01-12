@@ -37,6 +37,7 @@ Route::middleware(["web"])
             Route::prefix('/companies')->group($rutaDefecto.'/Company.php');
             Route::prefix('/products')->group($rutaDefecto.'/Product.php');
             Route::prefix('/services')->group($rutaDefecto.'/Service.php');
+            Route::prefix('/trackingSubscriptions')->group($rutaDefecto.'/TrackingSubscription.php');
             Route::prefix('/subscriptions')->group($rutaDefecto.'/Subscription.php');
             Route::prefix('/customers')->group($rutaDefecto.'/Customer.php');
 

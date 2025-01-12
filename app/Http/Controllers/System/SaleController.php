@@ -154,15 +154,17 @@ class SaleController extends Controller {
                     if(in_array($detail["type"], ["subscription"])) {
 
                         $subscription = new Subscription();
-                        $subscription->sale_body_id = $saleBody->id;
-                        $subscription->customer_id  = $saleHeader->holder_id;
-                        $subscription->start_date   = $detail["extras"]["start_date"];
-                        $subscription->end_date     = $detail["extras"]["start_date"];
-                        $subscription->observation  = $detail["extras"]["observation"] ?? "";
-                        $subscription->type         = "sale";
-                        $subscription->status       = "active";
-                        $subscription->created_at   = now();
-                        $subscription->created_by   = $userAuth->id ?? null;
+                        $subscription->company_id     = $userAuth->company_id;
+                        $subscription->sale_header_id = $saleHeader->id;
+                        $subscription->sale_body_id   = $saleBody->id;
+                        $subscription->customer_id    = $saleHeader->holder_id;
+                        $subscription->start_date     = $detail["extras"]["start_date"]." 00>00:00";
+                        $subscription->end_date       = $detail["extras"]["end_date"]." 23:59:59";
+                        $subscription->observation    = $detail["extras"]["observation"] ?? "";
+                        $subscription->type           = "sale";
+                        $subscription->status         = "active";
+                        $subscription->created_at     = now();
+                        $subscription->created_by     = $userAuth->id ?? null;
                         $subscription->save();
 
                     }
@@ -219,6 +221,10 @@ class SaleController extends Controller {
             $saleHeader->updated_at = now();
             $saleHeader->updated_by = $userAuth->id ?? null;
             $saleHeader->save();
+
+            Subscription::where("company_id", $userAuth->company_id)
+                        ->where("sale_header_id", $saleHeader->id)
+                        ->update(["status" => "cancelled", "updated_at" => now(), "updated_by" => $userAuth->id ?? null]);
 
         }
 

@@ -13,6 +13,8 @@ return new class extends Migration {
 
         Schema::create("subscriptions", function(Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger("company_id");
+            $table->unsignedBigInteger("sale_header_id");
             $table->unsignedBigInteger("sale_body_id");
             $table->unsignedBigInteger("customer_id");
             $table->dateTime("start_date");
@@ -26,6 +28,8 @@ return new class extends Migration {
             $table->timestamp("updated_at")->nullable();
             $table->integer("updated_by")->nullable();
 
+            $table->foreign("company_id")->references("id")->on("companies")->onDelete("cascade");
+            $table->foreign("sale_header_id")->references("id")->on("sales_header")->onDelete("cascade");
             $table->foreign("sale_body_id")->references("id")->on("sales_body")->onDelete("cascade");
             $table->foreign("customer_id")->references("id")->on("customers")->onDelete("cascade");
         });

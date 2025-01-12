@@ -308,11 +308,12 @@ export default {
                 let el = this;
 
                 Swal.fire({
-                    html: `<span>¿Desea eliminar la venta con documento <b>${form?.serie_sequential}</b>?</span>`,
+                    html: `<span class="d-block my-1">¿Desea anular la venta con documento <b>${form?.serie_sequential}</b>?</span>
+                           <span class="d-block my-1">Nota: Si en el detalle de la venta tiene susbscripciones asociados serán anulados.</span>`,
                     icon: "warning",
                     allowOutsideClick: false,
                     showCancelButton: true,
-                    confirmButtonText: "Sí, eliminar",
+                    confirmButtonText: "Sí, anular",
                     cancelButtonText: "Cancelar",
                     customClass: {
                         confirmButton: "btn btn-primary waves-effect",

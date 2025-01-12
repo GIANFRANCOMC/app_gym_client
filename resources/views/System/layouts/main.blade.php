@@ -53,6 +53,19 @@
                                 </li>
                             </ul>
                         </li>
+                        <li class="menu-item" id="menu-item-tracking">
+                            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                                <i class="fa-solid fa-binoculars me-3"></i>
+                                <div data-i18n="Ventas">Seguimiento</div>
+                            </a>
+                            <ul class="menu-sub">
+                                <li class="menu-item" id="menu-item-tracking-subscriptions">
+                                    <a href="{{ route('trackingSubscriptions.index') }}" class="menu-link">
+                                        <div data-i18n="Collapsed menu">Suscripciones</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                         <li class="menu-item" id="menu-item-catalogs">
                             <a href="javascript:void(0);" class="menu-link menu-toggle">
                                 <i class="fa fa-book me-3"></i>

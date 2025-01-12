@@ -19,6 +19,8 @@ class Subscription extends Model {
     ];
 
     protected $fillable = [
+        "company_id",
+        "sale_header_id",
         "sale_body_id",
         "customer_id",
         "start_date",
@@ -70,6 +72,18 @@ class Subscription extends Model {
     }
 
     // Relationships
+    public function company() {
+
+        return $this->belongsTo(Company::class, "company_id", "id");
+
+    }
+
+    public function saleHeader() {
+
+        return $this->belongsTo(SaleHeader::class, "sale_header_id", "id");
+
+    }
+
     public function saleBody() {
 
         return $this->belongsTo(SaleBody::class, "sale_body_id", "id");
