@@ -24,7 +24,8 @@ class SubscriptionController extends Controller {
         if(in_array($page, ["main"])) {
 
             $config->subscriptions = new stdClass();
-            $config->subscriptions->statusses = Item::getStatusses();
+            $config->subscriptions->durationTypes = Item::getDurationTypes();
+            $config->subscriptions->statusses     = Item::getStatusses();
 
             $config->currencies = new stdClass();
             $config->currencies->records = Currency::get();
@@ -109,16 +110,18 @@ class SubscriptionController extends Controller {
         DB::transaction(function() use($request, $userAuth, &$item) {
 
             $item = new Item();
-            $item->company_id    = $userAuth->company_id;
-            $item->internal_code = $request->internal_code;
-            $item->name          = $request->name;
-            $item->description   = $request->description ?? "";
-            $item->price         = $request->price;
-            $item->currency_id   = $request->currency_id;
-            $item->type          = "subscription";
-            $item->status        = $request->status;
-            $item->created_at    = now();
-            $item->created_by    = $userAuth->id ?? null;
+            $item->company_id     = $userAuth->company_id;
+            $item->internal_code  = $request->internal_code;
+            $item->name           = $request->name;
+            $item->description    = $request->description ?? "";
+            $item->price          = $request->price;
+            $item->currency_id    = $request->currency_id;
+            $item->type           = "subscription";
+            $item->duration_type  = $request->duration_type;
+            $item->duration_value = $request->duration_value;
+            $item->status         = $request->status;
+            $item->created_at     = now();
+            $item->created_by     = $userAuth->id ?? null;
             $item->save();
 
         });
@@ -148,6 +151,7 @@ class SubscriptionController extends Controller {
 
         $item = Item::where("id", $id)
                     ->where("company_id", $userAuth->company_id)
+                    ->whereIn("type", ["subscription"])
                     ->first();
 
         if(Utilities::isDefined($item)) {
@@ -165,14 +169,16 @@ class SubscriptionController extends Controller {
 
             DB::transaction(function() use($request, $userAuth, &$item) {
 
-                $item->internal_code = $request->internal_code;
-                $item->name          = $request->name;
-                $item->description   = $request->description ?? "";
-                $item->price         = $request->price;
-                $item->currency_id   = $request->currency_id;
-                $item->status        = $request->status;
-                $item->updated_at    = now();
-                $item->updated_by    = $userAuth->id ?? null;
+                $item->internal_code  = $request->internal_code;
+                $item->name           = $request->name;
+                $item->description    = $request->description ?? "";
+                $item->price          = $request->price;
+                $item->currency_id    = $request->currency_id;
+                $item->duration_type  = $request->duration_type;
+                $item->duration_value = $request->duration_value;
+                $item->status         = $request->status;
+                $item->updated_at     = now();
+                $item->updated_by     = $userAuth->id ?? null;
                 $item->save();
 
             });

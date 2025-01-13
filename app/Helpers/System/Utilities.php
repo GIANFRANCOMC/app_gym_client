@@ -15,6 +15,13 @@ class Utilities {
         "422" => "Error al validar."
     ];
 
+    public static $inputs = [
+        "maxlength" => 999,
+        "round" => 2,
+        "minValue" => 0,
+        "maxValue" => 99999999
+    ];
+
     public static function getDefaultData() {
 
         $result = new stdClass();

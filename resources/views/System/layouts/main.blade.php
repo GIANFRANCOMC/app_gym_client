@@ -72,17 +72,17 @@
                                 <div data-i18n="Page 1">Catálogo comercial</div>
                             </a>
                             <ul class="menu-sub">
-                                <li class="menu-item" id="menu-item-products">
+                                <li class="menu-item" id="menu-item-catalogs-products">
                                     <a href="{{ route('products.index') }}" class="menu-link">
                                         <div data-i18n="Collapsed menu">Productos</div>
                                     </a>
                                 </li>
-                                <li class="menu-item" id="menu-item-services">
+                                <li class="menu-item" id="menu-item-catalogs-services">
                                     <a href="{{ route('services.index') }}" class="menu-link">
                                         <div data-i18n="Collapsed menu">Servicios</div>
                                     </a>
                                 </li>
-                                <li class="menu-item" id="menu-item-subscriptions">
+                                <li class="menu-item" id="menu-item-catalogs-subscriptions">
                                     <a href="{{ route('subscriptions.index') }}" class="menu-link">
                                         <div data-i18n="Collapsed menu">Suscripciones</div>
                                     </a>

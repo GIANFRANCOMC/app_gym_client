@@ -48,7 +48,7 @@
                 <tr class="text-center align-middle">
                     <th class="fw-bold col-1">CÓDIGO INTERNO</th>
                     <th class="fw-bold col-1">NOMBRE</th>
-                    <th class="fw-bold col-1">DESCRIPCIÓN</th>
+                    <th class="fw-bold col-1">DURACIÓN</th>
                     <th class="fw-bold col-1">PRECIO</th>
                     <th class="fw-bold col-1">ESTADO</th>
                     <th class="fw-bold col-1">ACCIONES</th>
@@ -67,10 +67,12 @@
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td v-text="record.internal_code"></td>
                             <td v-text="record.name"></td>
-                            <td v-text="isDefined({value: record.description}) ? record.description : 'N/A'"></td>
+                            <td>
+                                <span v-text="record.formatted_duration" class="badge bg-label-primary fw-bold"></span>
+                            </td>
                             <td>
                                 <span v-text="record.currency?.sign"></span>
-                                <span v-text="record.price" class="ms-2"></span>
+                                <span v-text="separatorNumber(record.price)" class="ms-2"></span>
                             </td>
                             <td>
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
@@ -140,6 +142,31 @@
                             :textBottomInfo="forms.entity.createUpdate.errors?.description"
                             xl="12"
                             lg="12"/>
+                        <InputSlot
+                            hasDiv
+                            title="Tipo"
+                            isRequired
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.duration_type"
+                            xl="6"
+                            lg="6">
+                            <template v-slot:input>
+                                <v-select
+                                    v-model="forms.entity.createUpdate.data.duration_type"
+                                    :options="durationTypes"
+                                    :clearable="false"/>
+                            </template>
+                        </InputSlot>
+                        <InputNumber
+                            v-model="forms.entity.createUpdate.data.duration_value"
+                            hasDiv
+                            title="Duración"
+                            isRequired
+                            :decimals="0"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.duration_value"
+                            xl="6"
+                            lg="6"/>
                         <InputNumber
                             v-model="forms.entity.createUpdate.data.price"
                             hasDiv
@@ -256,6 +283,8 @@ export default {
                             internal_code: "",
                             name: "",
                             description: "",
+                            duration_type: null,
+                            duration_value: "",
                             price: "",
                             currency: null,
                             status: null
@@ -273,7 +302,7 @@ export default {
                         title: "Suscripciones",
                         active: true,
                         menu: {
-                            id: "menu-item-subscriptions"
+                            id: "menu-item-catalogs-subscriptions"
                         }
                     }
                 }
@@ -337,16 +366,19 @@ export default {
 
             if(this.isDefined({value: record})) {
 
-                let currency = this.currencies.filter(e => e.code === record?.currency_id)[0],
-                    status   = this.statusses.filter(e => e.code === record?.status)[0];
+                let currency     = this.currencies.filter(e => e.code === record?.currency_id)[0],
+                    durationType = this.durationTypes.filter(e => e.code === record?.duration_type)[0],
+                    status       = this.statusses.filter(e => e.code === record?.status)[0];
 
-                this.forms.entity.createUpdate.data.id            = record?.id;
-                this.forms.entity.createUpdate.data.internal_code = record?.internal_code;
-                this.forms.entity.createUpdate.data.name          = record?.name;
-                this.forms.entity.createUpdate.data.description   = record?.description;
-                this.forms.entity.createUpdate.data.price         = record?.price;
-                this.forms.entity.createUpdate.data.currency      = currency;
-                this.forms.entity.createUpdate.data.status        = status;
+                this.forms.entity.createUpdate.data.id             = record?.id;
+                this.forms.entity.createUpdate.data.internal_code  = record?.internal_code;
+                this.forms.entity.createUpdate.data.name           = record?.name;
+                this.forms.entity.createUpdate.data.description    = record?.description;
+                this.forms.entity.createUpdate.data.duration_type  = durationType;
+                this.forms.entity.createUpdate.data.duration_value = record?.duration_value;
+                this.forms.entity.createUpdate.data.price          = record?.price;
+                this.forms.entity.createUpdate.data.currency       = currency;
+                this.forms.entity.createUpdate.data.status         = status;
 
             }else {
 
@@ -373,8 +405,9 @@ export default {
 
             if(validateForm?.bool) {
 
-                form.currency_id = form?.currency?.code;
-                form.status = form?.status?.code;
+                form.currency_id   = form?.currency?.code;
+                form.duration_type = form?.duration_type?.code;
+                form.status        = form?.status?.code;
 
                 delete form.currency;
 
@@ -413,13 +446,15 @@ export default {
             switch(functionName) {
                 case "modalCreateUpdateEntity":
                 case "createUpdateEntity":
-                    this.forms.entity.createUpdate.data.id            = null;
-                    this.forms.entity.createUpdate.data.internal_code = "";
-                    this.forms.entity.createUpdate.data.name          = "";
-                    this.forms.entity.createUpdate.data.description   = "";
-                    this.forms.entity.createUpdate.data.price         = "";
-                    this.forms.entity.createUpdate.data.currency      = null;
-                    this.forms.entity.createUpdate.data.status        = null;
+                    this.forms.entity.createUpdate.data.id             = null;
+                    this.forms.entity.createUpdate.data.internal_code  = "";
+                    this.forms.entity.createUpdate.data.name           = "";
+                    this.forms.entity.createUpdate.data.description    = "";
+                    this.forms.entity.createUpdate.data.duration_type  = null;
+                    this.forms.entity.createUpdate.data.duration_value = "";
+                    this.forms.entity.createUpdate.data.price          = "";
+                    this.forms.entity.createUpdate.data.currency       = null;
+                    this.forms.entity.createUpdate.data.status         = null;
                     break;
             }
 
@@ -441,12 +476,14 @@ export default {
 
             if(["createUpdateEntity"].includes(functionName)) {
 
-                result.internal_code = [];
-                result.name          = [];
-                result.description   = [];
-                result.price         = [];
-                result.currency      = [];
-                result.status        = [];
+                result.internal_code  = [];
+                result.name           = [];
+                result.description    = [];
+                result.duration_type  = [];
+                result.duration_value = [];
+                result.price          = [];
+                result.currency       = [];
+                result.status         = [];
 
                 if(!this.isDefined({value: form?.internal_code})) {
 
@@ -462,9 +499,33 @@ export default {
 
                 }
 
+                if(!this.isDefined({value: form?.duration_type})) {
+
+                    result.duration_type.push(this.config.forms.errors.labels.required);
+                    result.bool = false;
+
+                }
+
+                if(!this.isDefined({value: form?.duration_value})) {
+
+                    result.duration_value.push(this.config.forms.errors.labels.required);
+                    result.bool = false;
+
+                }else if(!Utils.isNumber({value: form?.duration_value})) {
+
+                    result.duration_value.push(this.config.forms.errors.labels.min_number_0);
+                    result.bool = false;
+
+                }
+
                 if(!this.isDefined({value: form?.price})) {
 
                     result.price.push(this.config.forms.errors.labels.required);
+                    result.bool = false;
+
+                }else if(!Utils.isNumber({value: form?.price})) {
+
+                    result.price.push(this.config.forms.errors.labels.min_number_0);
                     result.bool = false;
 
                 }
@@ -498,6 +559,11 @@ export default {
 
             return Utils.generateCode({length});
 
+        },
+        separatorNumber(value) {
+
+            return Utils.separatorNumber(value);
+
         }
     },
     computed: {
@@ -520,6 +586,11 @@ export default {
         currencies: function() {
 
             return this.options?.currencies?.records.map(e => ({code: e.id, label: e.plural_name}));
+
+        },
+        durationTypes: function() {
+
+            return this.options?.subscriptions?.durationTypes.map(e => ({code: e.code, label: e.label}));
 
         },
         statusses: function() {

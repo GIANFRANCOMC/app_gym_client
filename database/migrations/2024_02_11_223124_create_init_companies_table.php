@@ -63,7 +63,7 @@ return new class extends Migration {
             $table->unsignedBigInteger("company_id");
             $table->string("internal_code");
             $table->string("name");
-            $table->text("description");
+            $table->text("description")->nullable();
             $table->decimal("price", 10, 2);
             $table->unsignedBigInteger("currency_id");
             $table->enum("type", ["product", "service", "subscription"])->default("product");

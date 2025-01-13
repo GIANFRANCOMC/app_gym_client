@@ -27,6 +27,14 @@ export function isDefined({value}) {
 
 }
 
+export function isNumber({value, minValue = 0}) {
+
+    let number = Number(value);
+
+    return !isNaN(number) && Number(number) >= minValue;
+
+}
+
 export function generateCode({length = 12}) {
 
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
