@@ -28,7 +28,7 @@ class StoreCompanyRequest extends FormRequest {
         return [
             "identity_document_type_id" => "required|integer",
             "document_number"           => "required|string|max:20",
-            "email"                     => "required|email",
+            "email"                     => "nullable|email",
             "status"                    => "required|string"
         ];
 

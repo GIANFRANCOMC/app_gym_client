@@ -58,9 +58,9 @@ class Serie extends Model {
 
     }
 
-    public static function getNewSequential() {
+    public static function getNewSequential($user = null) {
 
-        $userAuth = Auth::user();
+        $userAuth = $user ?? Auth::user();
 
         $newSequential = 0;
 

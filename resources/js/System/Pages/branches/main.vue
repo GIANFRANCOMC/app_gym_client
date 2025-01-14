@@ -66,8 +66,8 @@
                             <td v-text="record.name"></td>
                             <td class="text-start">
                                 <div v-for="serie in record?.series" :key="serie.id" class="my-2">
-                                    <span v-text="serie?.document_type?.name" class="badge bg-label-primary fw-semibold"></span>
-                                    <span v-text="serie?.legible_serie" class="badge bg-label-secondary fw-bold ms-2"></span>
+                                    <span v-text="serie?.document_type?.name" class="badge bg-label-primary fw-bold"></span>
+                                    <span v-text="serie?.legible_serie" class="badge bg-label-dark fw-bold ms-2"></span>
                                 </div>
                             </td>
                             <td>
@@ -220,7 +220,7 @@ export default {
                         title: "Sucursales",
                         active: true,
                         menu: {
-                            id: "menu-item-branches"
+                            id: "menu-item-configuration-branches"
                         }
                     }
                 }

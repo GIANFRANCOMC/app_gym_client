@@ -148,6 +148,7 @@ class ServiceController extends Controller {
 
         $item = Item::where("id", $id)
                     ->where("company_id", $userAuth->company_id)
+                    ->whereIn("type", ["service"])
                     ->first();
 
         if(Utilities::isDefined($item)) {

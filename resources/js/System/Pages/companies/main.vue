@@ -69,7 +69,6 @@
                     v-model="forms.entity.createUpdate.data.email"
                     hasDiv
                     title="Correo electrónico"
-                    isRequired
                     hasTextBottom
                     :textBottomInfo="forms.entity.createUpdate.errors?.email"
                     xl="6"
@@ -169,7 +168,7 @@ export default {
                         title: "Mi empresa",
                         active: true,
                         menu: {
-                            id: "menu-item-companies"
+                            id: "menu-item-configuration-companies"
                         }
                     }
                 }
@@ -339,12 +338,12 @@ export default {
 
                 }
 
-                if(!this.isDefined({value: form?.email})) {
+                /* if(!this.isDefined({value: form?.email})) {
 
                     result.email.push(this.config.forms.errors.labels.required);
                     result.bool = false;
 
-                }
+                } */
 
                 if(!this.isDefined({value: form?.status})) {
 

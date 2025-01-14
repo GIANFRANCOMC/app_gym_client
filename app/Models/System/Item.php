@@ -113,7 +113,9 @@ class Item extends Model {
         return Item::where("company_id", $userAuth->company_id)
                    ->when(in_array($type, ["sale"]), function($query) {
 
-                        $query->whereIn("status", ["active"]);
+                        $query->whereIn("status", ["active"])
+                              ->orderBy("type", "ASC")
+                              ->orderBy("name", "ASC");
 
                    })
                    ->with(["currency"])

@@ -43,6 +43,7 @@
             <thead class="table-light">
                 <tr class="text-center align-middle">
                     <th class="fw-bold col-1">CLIENTE</th>
+                    <th class="fw-bold col-1">DURACIÓN</th>
                     <th class="fw-bold col-2">FECHA DE INICIO</th>
                     <th class="fw-bold col-2">FECHA DE FINALIZACIÓN</th>
                     <th class="fw-bold col-1">TIPO</th>
@@ -61,6 +62,9 @@
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td v-text="record.customer?.name"></td>
+                            <td>
+                                <span v-text="record.formatted_duration" class="badge bg-label-primary fw-bold"></span>
+                            </td>
                             <td v-text="record.start_date"></td>
                             <td v-text="record.end_date"></td>
                             <td>

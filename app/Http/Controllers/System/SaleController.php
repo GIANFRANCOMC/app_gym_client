@@ -158,6 +158,8 @@ class SaleController extends Controller {
                         $subscription->sale_header_id = $saleHeader->id;
                         $subscription->sale_body_id   = $saleBody->id;
                         $subscription->customer_id    = $saleHeader->holder_id;
+                        $subscription->duration_type  = $detail["extras"]["duration_type"];
+                        $subscription->duration_value = $detail["extras"]["duration_value"];
                         $subscription->start_date     = $detail["extras"]["start_date"]." 00>00:00";
                         $subscription->end_date       = $detail["extras"]["end_date"]." 23:59:59";
                         $subscription->observation    = $detail["extras"]["observation"] ?? "";

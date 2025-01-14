@@ -63,7 +63,7 @@ class BranchController extends Controller {
 
                         })
                         ->where("company_id", $userAuth->company_id)
-                        ->orderBy("name", "ASC")
+                        ->orderBy("id", "ASC")
                         ->with(["series.documentType"])
                         ->paginate($request->per_page ?? Utilities::$per_page_default);
 

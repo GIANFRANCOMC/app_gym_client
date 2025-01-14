@@ -48,7 +48,6 @@
                 <tr class="text-center align-middle">
                     <th class="fw-bold col-1">CÓDIGO INTERNO</th>
                     <th class="fw-bold col-1">NOMBRE</th>
-                    <th class="fw-bold col-1">DESCRIPCIÓN</th>
                     <th class="fw-bold col-1">PRECIO</th>
                     <th class="fw-bold col-1">ESTADO</th>
                     <th class="fw-bold col-1">ACCIONES</th>
@@ -67,10 +66,9 @@
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td v-text="record.internal_code"></td>
                             <td v-text="record.name"></td>
-                            <td v-text="isDefined({value: record.description}) ? record.description : 'N/A'"></td>
                             <td>
                                 <span v-text="record.currency?.sign"></span>
-                                <span v-text="record.price" class="ms-2"></span>
+                                <span v-text="separatorNumber(record.price)" class="ms-2"></span>
                             </td>
                             <td>
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
@@ -273,7 +271,7 @@ export default {
                         title: "Servicios",
                         active: true,
                         menu: {
-                            id: "menu-item-services"
+                            id: "menu-item-catalogs-services"
                         }
                     }
                 }
@@ -497,6 +495,11 @@ export default {
         generateCode({length}) {
 
             return Utils.generateCode({length});
+
+        },
+        separatorNumber(value) {
+
+            return Utils.separatorNumber(value);
 
         }
     },

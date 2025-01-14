@@ -25,11 +25,14 @@ class UpdateProductRequest extends FormRequest {
      */
     public function rules(): array {
 
+        $round    = Utilities::$inputs["round"];
+        $maxValue = Utilities::$inputs["maxValue"];
+
         return [
             "internal_code" => "required|string|max:100",
             "name"          => "required|string|max:100",
             "description"   => "nullable|string|max:300",
-            "price"         => "required|numeric|min:0.1|max:999999999.99|decimal:0,2",
+            "price"         => "required|numeric|min:0.1|max:$maxValue|decimal:0,$round",
             "currency_id"   => "required|integer",
             "status"        => "required|string"
         ];

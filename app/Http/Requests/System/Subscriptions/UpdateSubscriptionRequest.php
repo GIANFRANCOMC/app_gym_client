@@ -26,17 +26,16 @@ class UpdateSubscriptionRequest extends FormRequest {
     public function rules(): array {
 
         $round    = Utilities::$inputs["round"];
-        $minValue = Utilities::$inputs["minValue"];
         $maxValue = Utilities::$inputs["maxValue"];
 
         return [
             "internal_code"  => "required|string|max:100",
             "name"           => "required|string|max:100",
             "description"    => "nullable|string|max:300",
-            "price"          => "required|numeric|min:$minValue|max:$maxValue|decimal:0,$round",
+            "price"          => "required|numeric|min:0.1|max:$maxValue|decimal:0,$round",
             "currency_id"    => "required|integer",
             "duration_type"  => "required|string",
-            "duration_value" => "required|integer|min:$minValue|max:$maxValue|decimal:0",
+            "duration_value" => "required|integer|min:1|max:$maxValue|decimal:0",
             "status"         => "required|string"
         ];
 

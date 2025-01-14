@@ -101,17 +101,17 @@
                                 <div data-i18n="Configuración">Configuración</div>
                             </a>
                             <ul class="menu-sub">
-                                <li class="menu-item" id="menu-item-companies">
+                                <li class="menu-item" id="menu-item-configuration-companies">
                                     <a href="{{ route('companies.index') }}" class="menu-link">
                                         <div data-i18n="Collapsed menu">Mi empresa</div>
                                     </a>
                                 </li>
-                                <li class="menu-item" id="menu-item-branches">
+                                <li class="menu-item" id="menu-item-configuration-branches">
                                     <a href="{{ route('branches.index') }}" class="menu-link">
                                         <div data-i18n="Collapsed menu">Sucursales</div>
                                     </a>
                                 </li>
-                                <li class="menu-item" id="menu-item-users">
+                                <li class="menu-item" id="menu-item-configuration-users">
                                     <a href="{{ route('users.index') }}" class="menu-link">
                                         <div data-i18n="Collapsed menu">Colaboradores</div>
                                     </a>

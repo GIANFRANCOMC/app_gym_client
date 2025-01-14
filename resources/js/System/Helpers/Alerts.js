@@ -1,6 +1,6 @@
 import { requestRoute } from "./Constants.js";
 
-export function swals({show = true, type = "default"}) {
+export function swals({show = true, type = "default", timeout = 0}) {
 
     if(show) {
 
@@ -37,7 +37,7 @@ export function swals({show = true, type = "default"}) {
 
     }else {
 
-        Swal.close();
+        timeout > 0 ? setTimeout(() => Swal.close(), timeout) : Swal.close();
 
     }
 
@@ -98,15 +98,16 @@ export function tooltips({show = true, time = 10}) {
 
 }
 
-export function modals({type = "show", id = null}) {
+export function modals({type = "show", id = null, timeout = 0}) {
 
     if(["show"].includes(type)) {
 
-        $(`#${id}`).modal("show");
+        timeout > 0 ? setTimeout(() => $(`#${id}`).modal("show"), timeout) : $(`#${id}`).modal("show");
+
 
     }else if(["hide"].includes(type)) {
 
-        $(`#${id}`).modal("hide");
+        timeout > 0 ? setTimeout(() => $(`#${id}`).modal("hide"), timeout) : $(`#${id}`).modal("hide");
 
     }
 

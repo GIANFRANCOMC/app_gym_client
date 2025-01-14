@@ -46,7 +46,6 @@
         <table class="table table-hover">
             <thead class="table-light">
                 <tr class="text-center align-middle">
-                    <th class="fw-bold col-1">TIPO DE DOCUMENTO</th>
                     <th class="fw-bold col-1">NÚMERO DE DOCUMENTO</th>
                     <th class="fw-bold col-1">NOMBRE</th>
                     <th class="fw-bold col-1">CORREO ELECTRÓNICO</th>
@@ -65,8 +64,10 @@
                 <template v-else>
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
-                            <td v-text="record.identity_document_type?.name"></td>
-                            <td v-text="record.document_number"></td>
+                            <td>
+                                <span v-text="record.document_number" class="d-block fw-bold"></span>
+                                <span v-text="record.identity_document_type?.name" class="d-block badge bg-label-primary fw-bold mt-1"></span>
+                            </td>
                             <td v-text="record.name"></td>
                             <td v-text="isDefined({value: record.email}) ? record.email : 'N/A'"></td>
                             <td>

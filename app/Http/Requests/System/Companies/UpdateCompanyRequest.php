@@ -32,7 +32,7 @@ class UpdateCompanyRequest extends FormRequest {
             "commercial_name"           => "required|string|max:100",
             "address"                   => "required|string|max:100",
             "telephone"                 => "required|string|max:50",
-            "email"                     => "required|email",
+            "email"                     => "nullable|email",
             "status"                    => "required|string"
         ];
 

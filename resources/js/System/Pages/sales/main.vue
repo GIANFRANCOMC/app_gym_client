@@ -113,7 +113,8 @@
                                                 <td>
                                                     <InputNumber
                                                         v-model="record.quantity"
-                                                        @change="calculateDuration({record})"/>
+                                                        @change="calculateDuration({record})"
+                                                        :decimals="getItemDecimals({mode: 'result', record})"/>
                                                     <div class="d-block mt-1">
                                                         <button class="btn btn-danger btn-xs waves-effect" type="button" @click="changeQuantityDetail({record, keyRecord, type: 'subtract'})">
                                                             <i class="fa fa-minus"></i>
@@ -298,7 +299,7 @@
                             hasDiv
                             title="Cantidad"
                             isRequired
-                            :decimals="isSubscription(forms.entity.createUpdate.extras.modals.details.data.type) ? 0 : config.forms.inputs.round"
+                            :decimals="getItemDecimals({mode: 'result', record: forms.entity.createUpdate.extras.modals.details.data})"
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.quantity"
                             xl="4"
@@ -752,7 +753,7 @@ export default {
                     this.forms.entity.createUpdate.extras.modals.finished.data = {...sale, extras};
 
                     Alerts.swals({show: false});
-                    Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.finished.id});
+                    Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.finished.id, timeout: 300});
 
                     this.clearForm({functionName});
 
@@ -1039,9 +1040,24 @@ export default {
             }
 
         },
-        fixedNumber(value) {
+        getItemDecimals({mode = "record", record = null}) {
 
-            return Utils.fixedNumber(value);
+            const decimals = this.isSubscription(record?.type) ? 0 : this.config.forms.inputs.round;
+
+            if(["record"].includes(mode)) {
+
+                record.decimals = decimals;
+
+            }else if(["result"].includes(mode)) {
+
+                return decimals;
+
+            }
+
+        },
+        fixedNumber(value, decimals = null) {
+
+            return Utils.fixedNumber(value, decimals);
 
         },
         separatorNumber(value) {
@@ -1127,7 +1143,9 @@ export default {
 
             if(["subscription"].includes(data?.type)) {
 
-                this.forms.entity.createUpdate.extras.modals.details.data.quantity = Number((this.forms.entity.createUpdate.extras.modals.details.data.quantity).toFixed(this.isSubscription(this.forms.entity.createUpdate.extras.modals.details.data.type) ? 0 : this.config.forms.inputs.round));
+                const decimals = this.getItemDecimals({mode: "result", record: this.forms.entity.createUpdate.extras.modals.details.data});
+
+                this.forms.entity.createUpdate.extras.modals.details.data.quantity = Number(this.fixedNumber(this.forms.entity.createUpdate.extras.modals.details.data.quantity, decimals));
 
                 let start_date = Utils.getCurrentDate();
 

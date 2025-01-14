@@ -17,6 +17,8 @@ return new class extends Migration {
             $table->unsignedBigInteger("sale_header_id");
             $table->unsignedBigInteger("sale_body_id");
             $table->unsignedBigInteger("customer_id");
+            $table->enum("duration_type", ["hour", "day", "today", "month", "year"])->nullable();
+            $table->integer("duration_value")->nullable();
             $table->dateTime("start_date");
             $table->dateTime("end_date");
             $table->text("observation")->nullable();
