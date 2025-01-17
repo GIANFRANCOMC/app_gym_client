@@ -1,4 +1,5 @@
 import { requestRoute, generalConfig } from "./Constants.js";
+import * as Requests from "./Requests.js";
 import { toastrs } from "./Alerts.js";
 
 import axios from "axios";
@@ -240,5 +241,72 @@ export function addDuration({startDate, type, quantity}) {
     }
 
     return isNaN(fecha.getTime()) ? "" : fecha.toISOString().split("T")[0];
+
+}
+
+
+export function getSubscriptions({customer}) {
+
+    let route = Requests.config({entity: "customers", type: "getSubscriptions"});
+
+    return Requests.get({route: `${route}/${customer?.id}`, data: {}});
+
+}
+
+export function findOverlaps(sale, subscriptions) {
+
+    const parseDate = (date) => new Date(date.replace(" ", "T"));
+    const saleStart = parseDate(sale.start_date);
+    const saleEnd = parseDate(sale.end_date);
+
+    const overlappingPositions = subscriptions
+        .map((subscription, index) => {
+            const subscriptionStart = parseDate(subscription.start_date);
+            const subscriptionEnd = parseDate(subscription.end_date);
+
+            // Check if dates overlap
+            if (
+                (saleStart <= subscriptionEnd && saleStart >= subscriptionStart) || // Start is within an active subscription
+                (saleEnd <= subscriptionEnd && saleEnd >= subscriptionStart) ||     // End is within an active subscription
+                (saleStart <= subscriptionStart && saleEnd >= subscriptionEnd)      // Sale fully overlaps an active subscription
+            ) {
+                return {...subscription, keyArray: index};
+            }
+            return null;
+        })
+        .filter(index => index !== null); // Filter only positions with overlaps
+
+    return {
+        hasOverlap: overlappingPositions.length > 0,
+        positions: overlappingPositions
+    };
+
+};
+
+export function legibleFormatDate({dateString = null, type = "datetime"}) {
+
+    // Convert the string to a Date object
+    const date = new Date(dateString);
+
+    // Validate if the date is valid
+    if (isNaN(date.getTime())) {
+        throw new Error("Invalid date. Make sure it follows the 'YYYY-MM-DD HH:mm:ss' format.");
+    }
+
+    // Extract date components
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
+    const year = date.getFullYear();
+
+    // Extract time components
+    let hours = date.getHours();
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+
+    // Determine AM/PM
+    const ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12 || 12; // Convert to 12-hour format
+
+    // Format the final string
+    return `${day}-${month}-${year} ${hours}:${minutes} ${ampm}`;
 
 }

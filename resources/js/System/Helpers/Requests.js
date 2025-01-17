@@ -197,6 +197,10 @@ export function generateRoutes({entity, requestRoute}) {
 
         routes.cancel = `${requestRoute}/${entity}/cancel`;
 
+    }else if(["customers"].includes(entity)) {
+
+        routes.getSubscriptions = `${requestRoute}/${entity}/getSubscriptions`;
+
     }else if(["reports"].includes(entity)) {
 
         routes.sale = `${requestRoute}/${entity}/sale`;

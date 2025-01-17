@@ -21,7 +21,7 @@ class SaleController extends Controller {
 
         $page = $request->page ?? "";
 
-        if(in_array($page, ["list"])){
+        if(in_array($page, ["list"])) {
 
             $config->branches = new stdClass();
             $config->branches->records = Branch::getAll();
@@ -32,7 +32,7 @@ class SaleController extends Controller {
             $config->salesHeader = new stdClass();
             $config->salesHeader->statusses = SaleHeader::getStatusses();
 
-        }else if(in_array($page, ["main"])){
+        }else if(in_array($page, ["main"])) {
 
             $config->branches = new stdClass();
             $config->branches->records = Branch::getAll("sale");

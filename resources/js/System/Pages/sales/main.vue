@@ -158,14 +158,21 @@
                                                 <tr class="text-center" v-if="['subscription'].includes(record?.type)" style="border-color: transparent;">
                                                     <td colspan="6">
                                                         <div class="row g-2 my-1">
-                                                            <div class="col-3">
+                                                            <div class="col-2">
                                                                 <InputText
                                                                     title="Tipo"
                                                                     v-model="record.extras.formatted_type"
                                                                     isRequired
                                                                     disabled/>
                                                             </div>
-                                                            <div class="col-3">
+                                                            <div class="col-2" v-if="isDefined({value: record.extras?.force}) && isDefined({value: record.extras?.force?.label})">
+                                                                <InputText
+                                                                    title="Forzar"
+                                                                    v-model="record.extras.force.label"
+                                                                    isRequired
+                                                                    disabled/>
+                                                            </div>
+                                                            <div class="col-2">
                                                                 <InputText
                                                                     title="Duración"
                                                                     v-model="record.extras.formatted_duration"
@@ -251,7 +258,7 @@
 
     <!-- Modals -->
     <div class="modal fade" :id="forms.entity.createUpdate.extras.modals.details.id" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.createUpdate.extras.modals.details.titles[forms.entity.createUpdate.extras.modals.details.data?.mode]"></h5>
@@ -335,14 +342,29 @@
                                 <input class="form-control" disabled :value="separatorNumber(totalModalDetail)"/>
                             </template>
                         </InputSlot>
-                        <template v-if="['subscription'].includes(forms.entity.createUpdate.extras.modals.details.data.type)">
+                        <template v-if="isSubscription(forms.entity.createUpdate.extras.modals.details.data.type)">
+                            <InputSlot
+                                hasDiv
+                                title="Forzar"
+                                isRequired
+                                hasTextBottom
+                                :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.extras_force"
+                                xl="3"
+                                lg="6">
+                                <template v-slot:input>
+                                    <v-select
+                                        v-model="forms.entity.createUpdate.extras.modals.details.data.extras.force"
+                                        :options="forceOptions"
+                                        :clearable="false"/>
+                                </template>
+                            </InputSlot>
                             <InputText
                                 v-model="forms.entity.createUpdate.extras.modals.details.data.extras.formatted_duration"
                                 hasDiv
                                 title="Duración"
                                 isRequired
                                 disabled
-                                xl="4"
+                                xl="3"
                                 lg="6"/>
                             <InputDate
                                 v-model="forms.entity.createUpdate.extras.modals.details.data.extras.start_date"
@@ -352,7 +374,7 @@
                                 isRequired
                                 hasTextBottom
                                 :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.extras_start_date"
-                                xl="4"
+                                xl="3"
                                 lg="6"/>
                             <InputDate
                                 v-model="forms.entity.createUpdate.extras.modals.details.data.extras.end_date"
@@ -362,9 +384,47 @@
                                 disabled
                                 hasTextBottom
                                 :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.extras_end_date"
-                                xl="4"
+                                xl="3"
                                 lg="6"/>
                         </template>
+                    </div>
+                    <div class="row mt-3 g-3" v-if="isDefined({value: forms.entity.createUpdate.data.holder?.data?.id}) && isSubscription(forms.entity.createUpdate.extras.modals.details.data.type)">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover">
+                                <thead>
+                                    <tr class="text-center align-middle table-light">
+                                        <th class="fw-bold col-1" colspan="4">SUSCRIPCIONES ACTIVAS</th>
+                                    </tr>
+                                    <tr class="text-center align-middle table-info">
+                                        <th class="fw-bold col-1">#</th>
+                                        <th class="fw-bold col-2">FECHA DE INICIO</th>
+                                        <th class="fw-bold col-2">FECHA DE FINALIZACIÓN</th>
+                                        <th class="fw-bold col-1">TIPO</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-border-bottom-0 bg-white">
+                                    <template v-if="(options?.holders?.subscriptions[forms.entity.createUpdate.data.holder?.data?.id] ?? []).length > 0">
+                                        <template v-for="(record, keyRecord) in options?.holders?.subscriptions[forms.entity.createUpdate.data.holder?.data?.id]" :key="record.id">
+                                            <tr class="text-center">
+                                                <td v-text="keyRecord + 1"></td>
+                                                <td v-text="legibleFormatDate({dateString: record.start_date})"></td>
+                                                <td v-text="legibleFormatDate({dateString: record.end_date})"></td>
+                                                <td>
+                                                    <span v-text="record.formatted_type" class="badge bg-label-primary fw-bold"></span>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </template>
+                                    <template v-else>
+                                        <tr>
+                                            <td class="text-center" colspan="99">
+                                                <WithoutData type="text"/>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -458,6 +518,7 @@ export default {
                                         price: 0,
                                         observation: "",
                                         extras: {
+                                            force: null,
                                             duration_type: "",
                                             duration_value: "",
                                             start_date: "",
@@ -521,7 +582,7 @@ export default {
 
             this.options.branches    = initParams.data?.config?.branches;
             this.options.currencies  = initParams.data?.config?.currencies;
-            this.options.holders     = initParams.data?.config?.customers;
+            this.options.holders     = {subscriptions: {}, ...initParams.data?.config?.customers};
             this.options.items       = initParams.data?.config?.items;
             this.options.salesHeader = initParams.data?.config?.salesHeader;
 
@@ -560,7 +621,7 @@ export default {
 
             let form = Utils.cloneJson(this.forms.entity.createUpdate.extras.modals.details.data);
 
-            const validateForm = this.validateForm({functionName, form});
+            const validateForm = this.validateForm({functionName, form, extras: {type: "descriptive"}});
 
             if(validateForm?.bool) {
 
@@ -578,8 +639,9 @@ export default {
 
             }else {
 
-                this.formErrors({functionName, type: "set", errors: validateForm});
-                Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
+                // this.formErrors({functionName, type: "set", errors: validateForm});
+                // Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
+                Alerts.generateAlert({messages: Utils.getErrors({errors: validateForm}), msgContent: `<div class="fw-semibold mb-2">${this.config.messages.errorValidate}</div>`});
 
             }
 
@@ -826,7 +888,7 @@ export default {
 
                 if(!this.isDefined({value: form?.item})) {
 
-                    result.item.push(`${isDescriptive ? "Detalle:" : ""} ${this.config.forms.errors.labels.required}`);
+                    result.item.push(`${isDescriptive ? "Catálogo comercial:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }else {
@@ -847,7 +909,7 @@ export default {
 
                         }else {
 
-                            let today = new Date();
+                            /* let today = new Date();
                             let endDate = new Date(form?.extras?.end_date);
 
                             today.setHours(0, 0, 0, 0);
@@ -858,7 +920,46 @@ export default {
                                 result.extras_end_date.push(`${isDescriptive ? "Fecha de finalización:" : ""} Debe ser mayor a la fecha de hoy.`);
                                 result.bool = false;
 
+                            } */
+
+                        }
+
+                        if(["yes"].includes(form?.extras?.force?.code)) {
+
+                            //
+
+                        }else if(["no"].includes(form?.extras?.force?.code)) {
+
+                            const subscriptions = Utils.cloneJson(this.options?.holders?.subscriptions[this.forms.entity.createUpdate.data.holder?.data?.id]);
+
+                            let findOverlaps = Utils.findOverlaps({start_date: form?.extras?.start_date, end_date: form?.extras?.end_date}, subscriptions);
+
+                            if(findOverlaps.hasOverlap) {
+
+                                let messages = findOverlaps.positions.map(e =>
+                                    `<div class="mt-3">
+                                        <span class="d-block fw-bold">Suscripción activa #${parseInt(e?.keyArray) + 1}</span>
+                                        <div class="d-block mt-1">
+                                            <i class="fa-regular fa-calendar"></i>
+                                            <span class="fw-semibold ms-1">F. inicio:</span>
+                                            <span class="badge bg-label-primary fw-bold">${this.legibleFormatDate({dateString: e?.start_date})}</span>
+                                        </div>
+                                        <div class="d-block mt-1">
+                                            <i class="fa-regular fa-calendar"></i>
+                                            <span class="fw-semibold ms-1">F. final.:</span>
+                                            <span class="badge bg-label-success fw-bold">${this.legibleFormatDate({dateString: e?.end_date})}</span>
+                                        </div>
+                                    </div>`
+                                );
+
+                                result.extras_end_date = [`El rango de fechas ingresadas se cruzan con las siguientes SUSCRIPCIONES ACTIVAS: `+messages.join("")];
+                                result.bool = false;
+
                             }
+
+                        }else {
+
+                            result.bool = false;
 
                         }
 
@@ -1064,6 +1165,11 @@ export default {
 
             return Utils.separatorNumber(value);
 
+        },
+        legibleFormatDate({dateString = null, type = "datetime"}) {
+
+            return Utils.legibleFormatDate({dateString, type});
+
         }
     },
     computed: {
@@ -1107,6 +1213,14 @@ export default {
             return this.options?.items?.records.map(e => ({code: e.id, label: e.name, data: e}));
 
         },
+        forceOptions: function() {
+
+            return [
+                {code: "yes", label: "Sí"},
+                {code: "no", label: "No"}
+            ];
+
+        },
         total: function() {
 
             let total = 0;
@@ -1132,6 +1246,13 @@ export default {
             this.forms.entity.createUpdate.data.serie = (this.series).length > 0 ? this.series[0] : null;
 
         },
+        "forms.entity.createUpdate.data.holder": async function(newValue, oldValue) {
+
+            let getSubscriptions = await Utils.getSubscriptions({customer: newValue?.data});
+
+            this.options.holders.subscriptions[newValue?.data?.id] = Requests.valid({result: getSubscriptions}) ? getSubscriptions?.data?.subscriptions : false;
+
+        },
         "forms.entity.createUpdate.extras.modals.details.data.item": function(newValue, oldValue) {
 
             let data = newValue?.data;
@@ -1149,7 +1270,10 @@ export default {
 
                 let start_date = Utils.getCurrentDate();
 
+                const force = this.forms.entity.createUpdate.extras.modals.details.data.extras.force;
+
                 this.forms.entity.createUpdate.extras.modals.details.data.extras = {
+                    force: Utils.isDefined({value: force}) ? force : this.forceOptions[1],
                     duration_type: data?.duration_type,
                     duration_value: data?.duration_value,
                     start_date,

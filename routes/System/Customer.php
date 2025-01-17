@@ -13,4 +13,4 @@ Route::post('',           [CustomerController::class, 'store'])->name("$entity.s
 Route::get('/{id}/edit',  [CustomerController::class, 'edit'])->name("$entity.edit");
 Route::get('/{id}',       [CustomerController::class, 'show'])->name("$entity.show");
 Route::patch('/{id}',     [CustomerController::class, 'update'])->name("$entity.update");
-
+Route::get('/getSubscriptions/{id}', [CustomerController::class, 'getSubscriptions'])->name("$entity.getSubscriptions");

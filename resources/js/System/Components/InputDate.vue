@@ -18,7 +18,7 @@
                 <slot name="inputGroupAppend"></slot>
             </div>
             <div v-if="hasTextBottom">
-                <small v-if="textBottomType === 'first'" :class="[...textBottomClass]" v-text="textBottom"></small>
+                <small v-if="textBottomType === 'first'" :class="[...textBottomClass]" v-html="textBottom"></small>
             </div>
         </div>
     </template>
@@ -40,7 +40,7 @@
             <slot name="inputGroupAppend"></slot>
         </div>
         <div v-if="hasTextBottom">
-            <small v-if="textBottomType === 'first'" :class="[...textBottomClass]" v-text="textBottom"></small>
+            <small v-if="textBottomType === 'first'" :class="[...textBottomClass]" v-html="textBottom"></small>
         </div>
     </template>
 </template>

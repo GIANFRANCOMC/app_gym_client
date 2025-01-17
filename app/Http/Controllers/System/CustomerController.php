@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\Customers\{StoreCustomerRequest, UpdateCustomerRequest};
-use App\Models\System\{Customer, IdentityDocumentType};
+use App\Models\System\{Customer, IdentityDocumentType, Subscription};
 
 class CustomerController extends Controller {
 
@@ -186,6 +186,32 @@ class CustomerController extends Controller {
     public function destroy(Customer $record) {
 
         //
+
+    }
+
+    public function getSubscriptions($id) {
+
+        $userAuth = Auth::user();
+
+        $customer = Customer::where("id", $id)
+                            ->where("company_id", $userAuth->company_id)
+                            ->first();
+
+        $subscriptions = [];
+
+        if(Utilities::isDefined($customer)) {
+
+            $subscriptions = Subscription::where("company_id", $userAuth->company_id)
+                                         ->where("customer_id", $customer->id)
+                                         ->whereIn("status", ["active"])
+                                         ->get();
+
+        }
+
+        $bool = Utilities::isDefined($customer);
+        $msg  = $bool ? "Suscripciones encontradas." : "No se ha podido identificar el cliente.";
+
+        return response()->json(["bool" => $bool, "msg" => $msg, "subscriptions" => $subscriptions], 200);
 
     }
 
