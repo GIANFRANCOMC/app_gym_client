@@ -84,9 +84,9 @@ class Item extends Model {
     public static function getDurationTypes($type = "all", $code = "") {
 
         $types = [
-            // ["code" => "hour", "label" => "Hora", "plural" => "Horas"],
+            ["code" => "hour", "label" => "Hora", "plural" => "Horas"],
             ["code" => "day", "label" => "Día", "plural" => "Días"],
-            // ["code" => "today", "label" => "Hoy", "plural" => "Hoy"],
+            ["code" => "today", "label" => "Día de hoy", "plural" => "Días de hoy"],
             ["code" => "month", "label" => "Mes", "plural" => "Meses"],
             ["code" => "year", "label" => "Año", "plural" => "Años"]
         ];

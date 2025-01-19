@@ -13,8 +13,8 @@
                             isRequired
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.branch"
-                            xl="5"
-                            lg="6">
+                            xl="7"
+                            lg="12">
                             <template v-slot:input>
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.branch"
@@ -24,21 +24,17 @@
                         </InputSlot>
                         <InputSlot
                             hasDiv
-                            title="Serie"
+                            title="Tipo de comprobante"
                             isRequired
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.serie"
-                            xl="4"
+                            xl="5"
                             lg="6">
                             <template v-slot:input>
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.serie"
                                     :options="series"
                                     :clearable="false">
-                                    <template #option="{ label, data }">
-                                        <span v-text="label" class="d-block fw-bold"></span>
-                                        <small v-text="data?.document_type?.name" class="d-block"></small>
-                                    </template>
                                 </v-select>
                             </template>
                         </InputSlot>
@@ -58,7 +54,7 @@
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.holder"
                             xl="9"
-                            lg="6">
+                            lg="12">
                             <template v-slot:input>
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.holder"
@@ -66,9 +62,9 @@
                                     :clearable="false"/>
                             </template>
                         </InputSlot>
-                        <InputSlot
+                        <!-- <InputSlot
                             hasDiv
-                            title="Moneda"
+                            title="Tipo de moneda"
                             isRequired
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.currency"
@@ -85,7 +81,7 @@
                                     </template>
                                 </v-select>
                             </template>
-                        </InputSlot>
+                        </InputSlot> -->
                     </div>
                     <div class="row g-3">
                         <div class="table-responsive">
@@ -155,50 +151,68 @@
                                                 </td>
                                             </tr>
                                             <template v-if="record?.extras?.showDetail">
-                                                <tr class="text-center" v-if="['subscription'].includes(record?.type)" style="border-color: transparent;">
-                                                    <td colspan="6">
+                                                <tr class="border-transparent text-center" v-if="['subscription'].includes(record?.type)">
+                                                    <td colspan="1"></td>
+                                                    <td colspan="5">
                                                         <div class="row g-2 my-1">
-                                                            <div class="col-2">
-                                                                <InputText
-                                                                    title="Tipo"
-                                                                    v-model="record.extras.formatted_type"
-                                                                    isRequired
-                                                                    disabled/>
-                                                            </div>
-                                                            <div class="col-2" v-if="isDefined({value: record.extras?.force}) && isDefined({value: record.extras?.force?.label})">
-                                                                <InputText
-                                                                    title="Forzar"
-                                                                    v-model="record.extras.force.label"
-                                                                    isRequired
-                                                                    disabled/>
-                                                            </div>
-                                                            <div class="col-2">
+                                                            <div class="col-4">
                                                                 <InputText
                                                                     title="Duración"
                                                                     v-model="record.extras.formatted_duration"
                                                                     isRequired
                                                                     disabled/>
                                                             </div>
-                                                            <div class="col-3">
-                                                                <InputDate
+                                                            <div class="col-4">
+                                                                <InputDatetime
                                                                     title="Fecha de inicio"
                                                                     v-model="record.extras.start_date"
                                                                     @change="calculateDuration({record})"
                                                                     isRequired/>
                                                             </div>
-                                                            <div class="col-3">
-                                                                <InputDate
+                                                            <div class="col-4">
+                                                                <InputDatetime
                                                                     title="Fecha de finalización"
                                                                     v-model="record.extras.end_date"
                                                                     isRequired
                                                                     disabled/>
                                                             </div>
-                                                            <div class="divider text-center divider-info">
-                                                                <div class="divider-text">
-                                                                    <div class="badge rounded-pill bg-label-info px-5 py-1">
-                                                                        <i class="fa fa-info-circle"></i>
-                                                                        <span class="ms-2 fw-bold h6 text-info" v-text="'Detalle #'+(keyRecord + 1)"></span>
+                                                            <InputSlot
+                                                                :isInputGroup="false"
+                                                                :divInputClass="['text-start', 'mt-3']"
+                                                                xl="12"
+                                                                lg="12">
+                                                                <template v-slot:input>
+                                                                    <div v-if="['today', 'day', 'month', 'year'].includes(record.extras?.duration_type)" class="form-check form-check-primary my-2">
+                                                                        <label class="form-check-label">
+                                                                            <input
+                                                                                class="form-check-input"
+                                                                                type="checkbox"
+                                                                                v-model="record.extras.set_end_of_day"
+                                                                                @change="calculateDuration({record})"/>
+                                                                            Ajustar la hora de la Fecha de finalización al final del día (23:59 = 11:59 PM)
+                                                                        </label>
                                                                     </div>
+                                                                    <div class="form-check form-check-primary my-2">
+                                                                        <label class="form-check-label">
+                                                                            <input
+                                                                                class="form-check-input"
+                                                                                type="checkbox"
+                                                                                v-model="record.extras.force"/>
+                                                                            Tomar en cuenta la suscripciones activas
+                                                                        </label>
+                                                                    </div>
+                                                                </template>
+                                                            </InputSlot>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="border-transparent">
+                                                    <td colspan="6">
+                                                        <div class="divider text-center divider-info">
+                                                            <div class="divider-text">
+                                                                <div class="badge rounded-pill bg-label-info px-5 py-1">
+                                                                    <i class="fa fa-info-circle"></i>
+                                                                    <span class="ms-2 fw-bold h6 text-info" v-text="'Detalle #'+(keyRecord + 1)"></span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -310,7 +324,7 @@
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.quantity"
                             xl="4"
-                            lg="6"/>
+                            lg="4"/>
                         <InputNumber
                             v-model="forms.entity.createUpdate.extras.modals.details.data.price"
                             hasDiv
@@ -319,7 +333,7 @@
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.price"
                             xl="4"
-                            lg="6">
+                            lg="4">
                             <template v-slot:inputGroupPrepend>
                                 <template v-if="isDefined({value: forms.entity.createUpdate.extras.modals.details.data.item?.data?.currency})">
                                     <button class="btn btn-primary waves-effect pe-none" type="button" v-text="forms.entity.createUpdate.extras.modals.details.data.item?.data?.currency?.sign"></button>
@@ -332,7 +346,7 @@
                             isRequired
                             disabled
                             xl="4"
-                            lg="6">
+                            lg="4">
                             <template v-slot:inputGroupPrepend>
                                 <template v-if="isDefined({value: forms.entity.createUpdate.data.currency?.data})">
                                     <button class="btn btn-primary waves-effect pe-none" type="button" v-text="forms.entity.createUpdate.data.currency?.data?.sign"></button>
@@ -342,90 +356,128 @@
                                 <input class="form-control" disabled :value="separatorNumber(totalModalDetail)"/>
                             </template>
                         </InputSlot>
-                        <template v-if="isSubscription(forms.entity.createUpdate.extras.modals.details.data.type)">
-                            <InputSlot
-                                hasDiv
-                                title="Forzar"
-                                isRequired
-                                hasTextBottom
-                                :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.extras_force"
-                                xl="3"
-                                lg="6">
-                                <template v-slot:input>
-                                    <v-select
-                                        v-model="forms.entity.createUpdate.extras.modals.details.data.extras.force"
-                                        :options="forceOptions"
-                                        :clearable="false"/>
-                                </template>
-                            </InputSlot>
-                            <InputText
-                                v-model="forms.entity.createUpdate.extras.modals.details.data.extras.formatted_duration"
-                                hasDiv
-                                title="Duración"
-                                isRequired
-                                disabled
-                                xl="3"
-                                lg="6"/>
-                            <InputDate
-                                v-model="forms.entity.createUpdate.extras.modals.details.data.extras.start_date"
-                                @change="calculateDuration({record: forms.entity.createUpdate.extras.modals.details.data})"
-                                hasDiv
-                                title="Fecha de inicio"
-                                isRequired
-                                hasTextBottom
-                                :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.extras_start_date"
-                                xl="3"
-                                lg="6"/>
-                            <InputDate
-                                v-model="forms.entity.createUpdate.extras.modals.details.data.extras.end_date"
-                                hasDiv
-                                title="Fecha de finalización"
-                                isRequired
-                                disabled
-                                hasTextBottom
-                                :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.extras_end_date"
-                                xl="3"
-                                lg="6"/>
-                        </template>
                     </div>
-                    <div class="row mt-3 g-3" v-if="isDefined({value: forms.entity.createUpdate.data.holder?.data?.id}) && isSubscription(forms.entity.createUpdate.extras.modals.details.data.type)">
-                        <div class="table-responsive">
-                            <table class="table table-sm table-hover">
-                                <thead>
-                                    <tr class="text-center align-middle table-light">
-                                        <th class="fw-bold col-1" colspan="4">SUSCRIPCIONES ACTIVAS</th>
-                                    </tr>
-                                    <tr class="text-center align-middle table-info">
-                                        <th class="fw-bold col-1">#</th>
-                                        <th class="fw-bold col-2">FECHA DE INICIO</th>
-                                        <th class="fw-bold col-2">FECHA DE FINALIZACIÓN</th>
-                                        <th class="fw-bold col-1">TIPO</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="table-border-bottom-0 bg-white">
-                                    <template v-if="(options?.holders?.subscriptions[forms.entity.createUpdate.data.holder?.data?.id] ?? []).length > 0">
-                                        <template v-for="(record, keyRecord) in options?.holders?.subscriptions[forms.entity.createUpdate.data.holder?.data?.id]" :key="record.id">
-                                            <tr class="text-center">
-                                                <td v-text="keyRecord + 1"></td>
-                                                <td v-text="legibleFormatDate({dateString: record.start_date})"></td>
-                                                <td v-text="legibleFormatDate({dateString: record.end_date})"></td>
-                                                <td>
-                                                    <span v-text="record.formatted_type" class="badge bg-label-primary fw-bold"></span>
-                                                </td>
-                                            </tr>
-                                        </template>
-                                    </template>
-                                    <template v-else>
-                                        <tr>
-                                            <td class="text-center" colspan="99">
-                                                <WithoutData type="text"/>
-                                            </td>
-                                        </tr>
-                                    </template>
-                                </tbody>
-                            </table>
+                    <template v-if="isSubscription(forms.entity.createUpdate.extras.modals.details.data.type)">
+                        <div class="accordion mt-4" id="accordionConfigSubscription">
+                            <div class="card accordion-item">
+                                <h2 class="accordion-header d-flex align-items-center border">
+                                    <button type="button" class="accordion-button fw-bold" data-bs-toggle="collapse" data-bs-target="#accordionConfigSubscription-1" aria-expanded="true">
+                                        <i class="fa fa-info-circle"></i>
+                                        <span class="ms-2">Detalle de la suscripción</span>
+                                    </button>
+                                </h2>
+                                <div id="accordionConfigSubscription-1" class="accordion-collapse collapse show">
+                                    <div class="accordion-body">
+                                        <div class="row g-3 my-3">
+                                            <InputText
+                                                v-model="forms.entity.createUpdate.extras.modals.details.data.extras.formatted_duration"
+                                                hasDiv
+                                                title="Duración"
+                                                isRequired
+                                                disabled
+                                                xl="4"
+                                                lg="12"/>
+                                            <InputDatetime
+                                                v-model="forms.entity.createUpdate.extras.modals.details.data.extras.start_date"
+                                                @change="calculateDuration({record: forms.entity.createUpdate.extras.modals.details.data})"
+                                                hasDiv
+                                                title="Fecha de inicio"
+                                                isRequired
+                                                hasTextBottom
+                                                :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.extras_start_date"
+                                                xl="4"
+                                                lg="6"/>
+                                            <InputDatetime
+                                                v-model="forms.entity.createUpdate.extras.modals.details.data.extras.end_date"
+                                                hasDiv
+                                                title="Fecha de finalización"
+                                                isRequired
+                                                disabled
+                                                hasTextBottom
+                                                :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.extras_end_date"
+                                                xl="4"
+                                                lg="6"/>
+                                            <InputSlot
+                                                :isInputGroup="false"
+                                                :divInputClass="['mt-2']"
+                                                xl="12"
+                                                lg="12">
+                                                <template v-slot:input>
+                                                    <div v-if="['today', 'day', 'month', 'year'].includes(forms.entity.createUpdate.extras.modals.details.data.extras?.duration_type)" class="form-check form-check-primary my-2">
+                                                        <label class="form-check-label">
+                                                            <input
+                                                                class="form-check-input"
+                                                                type="checkbox"
+                                                                v-model="forms.entity.createUpdate.extras.modals.details.data.extras.set_end_of_day"
+                                                                @change="calculateDuration({record: forms.entity.createUpdate.extras.modals.details.data})"/>
+                                                            Ajustar la hora de la Fecha de finalización al final del día (23:59 = 11:59 PM)
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check form-check-primary my-2">
+                                                        <label class="form-check-label">
+                                                            <input
+                                                                class="form-check-input"
+                                                                type="checkbox"
+                                                                v-model="forms.entity.createUpdate.extras.modals.details.data.extras.force"/>
+                                                            Tomar en cuenta la suscripciones activas
+                                                        </label>
+                                                    </div>
+                                                </template>
+                                            </InputSlot>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                        <div class="accordion mt-3" id="accordionSubscriptions" v-if="isDefined({value: forms.entity.createUpdate.data.holder?.data?.id})">
+                            <div class="card accordion-item">
+                                <h2 class="accordion-header d-flex align-items-center border">
+                                    <button type="button" class="accordion-button fw-bold collapsed" data-bs-toggle="collapse" data-bs-target="#accordionSubscriptions-1" aria-expanded="false">
+                                        <i class="fa-solid fa-binoculars"></i>
+                                        <span class="ms-2">Suscripciones activas</span>
+                                        <span class="badge badge-center rounded-pill bg-primary ms-2" v-text="(options?.holders?.subscriptions[forms.entity.createUpdate.data.holder?.data?.id] ?? []).length"></span>
+                                    </button>
+                                </h2>
+                                <div id="accordionSubscriptions-1" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <div class="table-responsive my-2">
+                                            <table class="table table-sm table-hover">
+                                                <thead class="table-light">
+                                                    <tr class="text-center align-middle">
+                                                        <th class="fw-bold col-1">#</th>
+                                                        <th class="fw-bold col-2">FECHA DE INICIO</th>
+                                                        <th class="fw-bold col-2">FECHA DE FINALIZACIÓN</th>
+                                                        <th class="fw-bold col-1">TIPO</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="table-border-bottom-0 bg-white">
+                                                    <template v-if="(options?.holders?.subscriptions[forms.entity.createUpdate.data.holder?.data?.id] ?? []).length > 0">
+                                                        <template v-for="(record, keyRecord) in options?.holders?.subscriptions[forms.entity.createUpdate.data.holder?.data?.id]" :key="record.id">
+                                                            <tr class="text-center">
+                                                                <td v-text="keyRecord + 1"></td>
+                                                                <td v-text="legibleFormatDate({dateString: record.start_date})"></td>
+                                                                <td v-text="legibleFormatDate({dateString: record.end_date})"></td>
+                                                                <td>
+                                                                    <span v-text="record.formatted_type" class="badge bg-label-primary fw-bold"></span>
+                                                                </td>
+                                                            </tr>
+                                                        </template>
+                                                    </template>
+                                                    <template v-else>
+                                                        <tr>
+                                                            <td class="text-center" colspan="99">
+                                                                <WithoutData type="text"/>
+                                                            </td>
+                                                        </tr>
+                                                    </template>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
@@ -518,7 +570,8 @@ export default {
                                         price: 0,
                                         observation: "",
                                         extras: {
-                                            force: null,
+                                            set_end_of_day: false,
+                                            force: false,
                                             duration_type: "",
                                             duration_value: "",
                                             start_date: "",
@@ -924,11 +977,7 @@ export default {
 
                         }
 
-                        if(["yes"].includes(form?.extras?.force?.code)) {
-
-                            //
-
-                        }else if(["no"].includes(form?.extras?.force?.code)) {
+                        if(!form?.extras?.force) {
 
                             const subscriptions = Utils.cloneJson(this.options?.holders?.subscriptions[this.forms.entity.createUpdate.data.holder?.data?.id]);
 
@@ -956,10 +1005,6 @@ export default {
                                 result.bool = false;
 
                             }
-
-                        }else {
-
-                            result.bool = false;
 
                         }
 
@@ -1025,7 +1070,7 @@ export default {
 
                 if(!this.isDefined({value: form?.serie})) {
 
-                    result.serie.push(`${isDescriptive ? "Serie:" : ""} ${this.config.forms.errors.labels.required}`);
+                    result.serie.push(`${isDescriptive ? "Tipo de comprobante:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }
@@ -1046,7 +1091,7 @@ export default {
 
                 if(!this.isDefined({value: form?.currency})) {
 
-                    result.currency.push(`${isDescriptive ? "Moneda:" : ""} ${this.config.forms.errors.labels.required}`);
+                    result.currency.push(`${isDescriptive ? "Tipo de moneda:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }
@@ -1119,14 +1164,15 @@ export default {
 
             if(["subscription"].includes(data?.type)) {
 
-                let startDate     = data?.extras?.start_date,
+                let setEndOfDay   = data?.extras?.set_end_of_day,
+                    startDate     = data?.extras?.start_date,
                     durationType  = data?.extras?.duration_type,
                     durationValue = Number(data?.extras?.duration_value),
                     quantity      = Number(data.quantity);
 
                 let durationTotal = isNaN(durationValue) || isNaN(quantity) ? 0 : (durationValue * quantity);
 
-                const endDate = Utils.addDuration({startDate, type: durationType, quantity: durationTotal});
+                const endDate = Utils.addDuration({startDate, type: durationType, quantity: durationTotal, setEndOfDay});
 
                 if(["record"].includes(mode)) {
 
@@ -1191,7 +1237,7 @@ export default {
 
                 let series = branch[0].series;
 
-                return series.map(e => ({code: e.id, label: e.legible_serie, data: e}));
+                return series.map(e => ({code: e.id, label: `${e.legible_serie} - ${e?.document_type?.name}`, data: e}));
 
             }
 
@@ -1264,16 +1310,17 @@ export default {
 
             if(["subscription"].includes(data?.type)) {
 
-                const decimals = this.getItemDecimals({mode: "result", record: this.forms.entity.createUpdate.extras.modals.details.data});
+                let modalData = this.forms.entity.createUpdate.extras.modals.details.data;
 
-                this.forms.entity.createUpdate.extras.modals.details.data.quantity = Number(this.fixedNumber(this.forms.entity.createUpdate.extras.modals.details.data.quantity, decimals));
+                const decimals = this.getItemDecimals({mode: "result", record: modalData});
 
-                let start_date = Utils.getCurrentDate();
+                this.forms.entity.createUpdate.extras.modals.details.data.quantity = Number(this.fixedNumber(modalData.quantity, decimals));
 
-                const force = this.forms.entity.createUpdate.extras.modals.details.data.extras.force;
+                let start_date = Utils.isDefined({value: modalData.extras.start_date}) ? modalData.extras.start_date : Utils.getCurrentDate("datetime");
 
                 this.forms.entity.createUpdate.extras.modals.details.data.extras = {
-                    force: Utils.isDefined({value: force}) ? force : this.forceOptions[1],
+                    set_end_of_day: ["today"].includes(data?.duration_type),
+                    force: true,
                     duration_type: data?.duration_type,
                     duration_value: data?.duration_value,
                     start_date,

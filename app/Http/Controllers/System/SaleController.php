@@ -160,8 +160,8 @@ class SaleController extends Controller {
                         $subscription->customer_id    = $saleHeader->holder_id;
                         $subscription->duration_type  = $detail["extras"]["duration_type"];
                         $subscription->duration_value = $detail["extras"]["duration_value"];
-                        $subscription->start_date     = $detail["extras"]["start_date"]." 00>00:00";
-                        $subscription->end_date       = $detail["extras"]["end_date"]." 23:59:59";
+                        $subscription->start_date     = str_replace("T", " ", $detail["extras"]["start_date"]);
+                        $subscription->end_date       = str_replace("T", " ", $detail["extras"]["end_date"]);
                         $subscription->observation    = $detail["extras"]["observation"] ?? "";
                         $subscription->type           = "sale";
                         $subscription->status         = "active";

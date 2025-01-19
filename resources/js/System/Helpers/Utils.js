@@ -119,7 +119,7 @@ export function uuid(length = 36) {
 
 }
 
-export function getCurrentDate() {
+export function getCurrentDate(type = "date") {
 
     // Obtener la fecha actual
     const currentDate = new Date();
@@ -133,10 +133,40 @@ export function getCurrentDate() {
     // Obtener el día del mes actual (agregando un cero adelante si es necesario)
     const currentDay = ('0' + currentDate.getDate()).slice(-2);
 
+    const currentHour = currentDate.getHours().toString().padStart(2, '0');
+    const currentMinute = currentDate.getMinutes().toString().padStart(2, '0');
+
     // Construir la fecha en formato "YYYY-MM-DD"
-    const formattedDate = `${currentYear}-${currentMonth}-${currentDay}`;
+    let formattedDate = "";
+
+    if(type == "date") {
+
+        formattedDate = `${currentYear}-${currentMonth}-${currentDay}`;
+
+    }else if(type = "datetime") {
+
+        formattedDate = `${currentYear}-${currentMonth}-${currentDay}T${currentHour}:${currentMinute}`;
+
+    }
 
     return formattedDate;
+
+}
+
+export function parseISOToDatetimeLocal(isoString) {
+
+    // Crear un objeto Date a partir del string ISO
+    const date = new Date(isoString);
+
+    // Extraer los componentes de la fecha
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Mes (0-11) a (1-12)
+    const day = String(date.getDate()).padStart(2, '0'); // Día del mes
+    const hours = String(date.getHours()).padStart(2, '0'); // Hora
+    const minutes = String(date.getMinutes()).padStart(2, '0'); // Minutos
+
+    // Formatear como "YYYY-MM-DDTHH:MM"
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
 
 }
 
@@ -214,13 +244,22 @@ export function getErrors({errors}) {
 
 }
 
-export function addDuration({startDate, type, quantity}) {
+export function addDuration({startDate, type, quantity, setEndOfDay = false}) {
 
     const fecha = new Date(startDate);
 
     try {
 
-        switch (type) {
+        switch(type) {
+            case 'hour':
+                fecha.setHours(fecha.getHours() + quantity);
+                break;
+
+            case 'today':
+                fecha.setDate(fecha.getDate() + (quantity <= 0 ? 0 : (quantity - 1)));
+                fecha.setHours(23, 59, 59, 999);
+                break;
+
             case 'day':
                 fecha.setDate(fecha.getDate() + quantity);
                 break;
@@ -234,13 +273,19 @@ export function addDuration({startDate, type, quantity}) {
                 break;
         }
 
+        if(setEndOfDay && ["today", "day", "month", "year"].includes(type)) {
+
+            fecha.setHours(23, 59, 59, 999);
+
+        }
+
     }catch(e) {
 
         fecha.setDate(fecha.getDate());
 
     }
 
-    return isNaN(fecha.getTime()) ? "" : fecha.toISOString().split("T")[0];
+    return isNaN(fecha.getTime()) ? "" : this.parseISOToDatetimeLocal(fecha.toString());
 
 }
 

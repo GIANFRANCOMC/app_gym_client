@@ -115,15 +115,20 @@ return new class extends Migration {
         ]);
 
         DB::table("items")->insert([
-            ["company_id" => 1, "internal_code" => "ABCD", "name" => "Diario", "description" => "", "price" => 5, "currency_id" => 1, "type" => "subscription", "duration_type" => "day", "duration_value" => 1],
-            ["company_id" => 1, "internal_code" => "EFGH", "name" => "Mensual", "description" => "", "price" => 50, "currency_id" => 1, "type" => "subscription", "duration_type" => "month", "duration_value" => 1],
-            ["company_id" => 1, "internal_code" => "IJKL", "name" => "Anual", "description" => "", "price" => 500, "currency_id" => 1, "type" => "subscription", "duration_type" => "year", "duration_value" => 1],
-            ["company_id" => 1, "internal_code" => "MNOP", "name" => "Quincena diario", "description" => "", "price" => 24, "currency_id" => 1, "type" => "subscription", "duration_type" => "day", "duration_value" => 15],
-            ["company_id" => 1, "internal_code" => "QRST", "name" => "Medio año", "description" => "", "price" => 250, "currency_id" => 1, "type" => "subscription", "duration_type" => "month", "duration_value" => 6],
+            ["company_id" => 1, "internal_code" => "NDWI", "name" => "Agua", "description" => "", "price" => 1, "currency_id" => 1, "type" => "product", "duration_type" => null, "duration_value" => null],
+            ["company_id" => 1, "internal_code" => "LQMW", "name" => "Proteina", "description" => "", "price" => 120, "currency_id" => 1, "type" => "product", "duration_type" => null, "duration_value" => null],
+            ["company_id" => 1, "internal_code" => "ZXCE", "name" => "Tomatodo", "description" => "", "price" => 20, "currency_id" => 1, "type" => "product", "duration_type" => null, "duration_value" => null],
+            ["company_id" => 1, "internal_code" => "WERK", "name" => "Una hora", "description" => "", "price" => 2, "currency_id" => 1, "type" => "subscription", "duration_type" => "hour", "duration_value" => 1],
+            ["company_id" => 1, "internal_code" => "ABCD", "name" => "Un dia", "description" => "", "price" => 10, "currency_id" => 1, "type" => "subscription", "duration_type" => "day", "duration_value" => 1],
+            ["company_id" => 1, "internal_code" => "PLDK", "name" => "Solamente hoy", "description" => "", "price" => 5, "currency_id" => 1, "type" => "subscription", "duration_type" => "today", "duration_value" => 1],
+            ["company_id" => 1, "internal_code" => "EFGH", "name" => "Mes", "description" => "", "price" => 60, "currency_id" => 1, "type" => "subscription", "duration_type" => "month", "duration_value" => 1],
+            ["company_id" => 1, "internal_code" => "IJKL", "name" => "Año", "description" => "", "price" => 400, "currency_id" => 1, "type" => "subscription", "duration_type" => "year", "duration_value" => 1]
         ]);
 
         DB::table("customers")->insert([
-            ["company_id" => 1, "identity_document_type_id" => 1, "document_number" => "999999999", "name" => "Cliente varios"]
+            ["company_id" => 1, "identity_document_type_id" => 1, "document_number" => "999999999", "name" => "Cliente varios"],
+            ["company_id" => 1, "identity_document_type_id" => 2, "document_number" => "71883137", "name" => "Gianfranco Mejia Carhuajulca"],
+            ["company_id" => 1, "identity_document_type_id" => 2, "document_number" => "71883136", "name" => "Andy Paolo Mejia Carhuajulca"]
         ]);
 
     }
