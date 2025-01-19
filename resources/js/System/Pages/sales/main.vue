@@ -318,7 +318,7 @@
                             v-model="forms.entity.createUpdate.extras.modals.details.data.quantity"
                             @change="calculateDuration({record: forms.entity.createUpdate.extras.modals.details.data})"
                             hasDiv
-                            title="Cantidad"
+                            :title="isSubscription(forms.entity.createUpdate.extras.modals.details.data.type) ? 'Cantidad de Periodos' : 'Cantidad'"
                             isRequired
                             :decimals="getItemDecimals({mode: 'result', record: forms.entity.createUpdate.extras.modals.details.data})"
                             hasTextBottom
@@ -368,15 +368,7 @@
                                 </h2>
                                 <div id="accordionConfigSubscription-1" class="accordion-collapse collapse show">
                                     <div class="accordion-body">
-                                        <div class="row g-3 my-3">
-                                            <InputText
-                                                v-model="forms.entity.createUpdate.extras.modals.details.data.extras.formatted_duration"
-                                                hasDiv
-                                                title="Duración"
-                                                isRequired
-                                                disabled
-                                                xl="4"
-                                                lg="12"/>
+                                        <div class="row g-3 mt-1 mb-3">
                                             <InputDatetime
                                                 v-model="forms.entity.createUpdate.extras.modals.details.data.extras.start_date"
                                                 @change="calculateDuration({record: forms.entity.createUpdate.extras.modals.details.data})"
@@ -385,7 +377,7 @@
                                                 isRequired
                                                 hasTextBottom
                                                 :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.extras_start_date"
-                                                xl="4"
+                                                xl="6"
                                                 lg="6"/>
                                             <InputDatetime
                                                 v-model="forms.entity.createUpdate.extras.modals.details.data.extras.end_date"
@@ -395,16 +387,26 @@
                                                 disabled
                                                 hasTextBottom
                                                 :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.extras_end_date"
-                                                xl="4"
+                                                xl="6"
                                                 lg="6"/>
                                             <InputSlot
                                                 :isInputGroup="false"
-                                                :divInputClass="['mt-2']"
+                                                :divInputClass="['mt-3']"
                                                 xl="12"
                                                 lg="12">
                                                 <template v-slot:input>
-                                                    <div v-if="['today', 'day', 'month', 'year'].includes(forms.entity.createUpdate.extras.modals.details.data.extras?.duration_type)" class="form-check form-check-primary my-2">
-                                                        <label class="form-check-label">
+                                                    <div class="d-block my-1">
+                                                        <i class="fa fa-calendar ms-1"></i>
+                                                        <span class="ms-2">Duración base:</span>
+                                                        <span v-text="forms.entity.createUpdate.extras.modals.details.data.extras.formatted_duration" class="fw-bold ms-1"></span>
+                                                    </div>
+                                                    <div class="d-block mt-1 mb-2">
+                                                        <i class="fa fa-calculator ms-1"></i>
+                                                        <span class="ms-2">Duración total calculada:</span>
+                                                        <span v-text="forms.entity.createUpdate.extras.modals.details.data.extras.formatted_total_duration" class="fw-bold ms-1"></span>
+                                                    </div>
+                                                    <div v-if="['day', 'month', 'year'].includes(forms.entity.createUpdate.extras.modals.details.data.extras?.duration_type)" class="form-check form-check-primary my-1">
+                                                        <label class="form-check-label fw-semibold">
                                                             <input
                                                                 class="form-check-input"
                                                                 type="checkbox"
@@ -413,7 +415,7 @@
                                                             Ajustar la hora de la Fecha de finalización al final del día (23:59 = 11:59 PM)
                                                         </label>
                                                     </div>
-                                                    <div class="form-check form-check-primary my-2">
+                                                    <div class="form-check form-check-primary fw-semibold my-1">
                                                         <label class="form-check-label">
                                                             <input
                                                                 class="form-check-input"
@@ -440,20 +442,20 @@
                                 </h2>
                                 <div id="accordionSubscriptions-1" class="accordion-collapse collapse">
                                     <div class="accordion-body">
-                                        <div class="table-responsive my-2">
+                                        <div class="table-responsive my-3">
                                             <table class="table table-sm table-hover">
                                                 <thead class="table-light">
                                                     <tr class="text-center align-middle">
                                                         <th class="fw-bold col-1">#</th>
-                                                        <th class="fw-bold col-2">FECHA DE INICIO</th>
-                                                        <th class="fw-bold col-2">FECHA DE FINALIZACIÓN</th>
+                                                        <th class="fw-bold text-nowrap col-2">FECHA DE INICIO</th>
+                                                        <th class="fw-bold text-nowrap col-2">FECHA DE FINALIZACIÓN</th>
                                                         <th class="fw-bold col-1">TIPO</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody class="table-border-bottom-0 bg-white">
                                                     <template v-if="(options?.holders?.subscriptions[forms.entity.createUpdate.data.holder?.data?.id] ?? []).length > 0">
                                                         <template v-for="(record, keyRecord) in options?.holders?.subscriptions[forms.entity.createUpdate.data.holder?.data?.id]" :key="record.id">
-                                                            <tr class="text-center">
+                                                            <tr class="text-nowrap text-center">
                                                                 <td v-text="keyRecord + 1"></td>
                                                                 <td v-text="legibleFormatDate({dateString: record.start_date})"></td>
                                                                 <td v-text="legibleFormatDate({dateString: record.end_date})"></td>
@@ -578,6 +580,7 @@ export default {
                                             end_date: "",
                                             observation: "",
                                             formatted_duration: "",
+                                            formatted_total_duration: "",
                                             formatted_type: "",
                                             showDetail: true
                                         },
@@ -1174,9 +1177,13 @@ export default {
 
                 const endDate = Utils.addDuration({startDate, type: durationType, quantity: durationTotal, setEndOfDay});
 
+                const durationTypeLegible = this.options.items.durationTypes.filter(e => e.code === durationType)[0];
+
                 if(["record"].includes(mode)) {
 
                     record.extras.end_date = endDate;
+
+                    record.extras.formatted_total_duration = `${durationTotal} `+(durationTotal > 1 ? durationTypeLegible?.plural : durationTypeLegible?.label);
 
                 }else if(["result"].includes(mode)) {
 
@@ -1259,14 +1266,6 @@ export default {
             return this.options?.items?.records.map(e => ({code: e.id, label: e.name, data: e}));
 
         },
-        forceOptions: function() {
-
-            return [
-                {code: "yes", label: "Sí"},
-                {code: "no", label: "No"}
-            ];
-
-        },
         total: function() {
 
             let total = 0;
@@ -1327,6 +1326,7 @@ export default {
                     end_date: "",
                     observation: "",
                     formatted_duration: data?.formatted_duration,
+                    formatted_total_duration: "",
                     formatted_type: data?.formatted_type,
                     showDetail: true
                 };

@@ -44,6 +44,7 @@ class SaleController extends Controller {
             $config->customers->records = Customer::getAll("sale");
 
             $config->items = new stdClass();
+            $config->items->durationTypes = Item::getDurationTypes();
             $config->items->records = Item::getAll("sale");
 
             $config->salesHeader = new stdClass();
