@@ -29,7 +29,6 @@ export function config({entity = "", type = ""}) {
 
 }
 
-
 export function get({route = "", data = {}, showAlert = false}) {
 
 	return new Promise((resolve, reject) => {
@@ -208,5 +207,11 @@ export function generateRoutes({entity, requestRoute}) {
     }
 
     return routes;
+
+}
+
+export function routeReport({entity = "sale", type = "a4", data = null}) {
+
+    return `${this.config({entity: "reports", type: entity})}?document=${data?.hash_id}&type=${type}`;
 
 }

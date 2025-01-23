@@ -355,3 +355,13 @@ export function legibleFormatDate({dateString = null, type = "datetime"}) {
     return `${day}-${month}-${year} ${hours}:${minutes} ${ampm}`;
 
 }
+
+export function sendWhatsapp({phoneNumber, message}) {
+
+    let encodedMessage = encodeURIComponent(message);
+
+    let link = "https://wa.me/"+phoneNumber+"?text="+encodedMessage;
+
+    window.open(link, "_blank");
+
+}

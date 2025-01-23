@@ -87,6 +87,7 @@ return new class extends Migration {
             $table->string("document_number");
             $table->string("name");
             $table->string("email")->nullable();
+            $table->string("phone_number")->nullable();
             $table->enum("status", ["active", "inactive"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();
@@ -126,9 +127,9 @@ return new class extends Migration {
         ]);
 
         DB::table("customers")->insert([
-            ["company_id" => 1, "identity_document_type_id" => 1, "document_number" => "999999999", "name" => "Cliente varios"],
-            ["company_id" => 1, "identity_document_type_id" => 2, "document_number" => "71883137", "name" => "Gianfranco Mejia Carhuajulca"],
-            ["company_id" => 1, "identity_document_type_id" => 2, "document_number" => "71883136", "name" => "Andy Paolo Mejia Carhuajulca"]
+            ["company_id" => 1, "identity_document_type_id" => 1, "document_number" => "999999999", "name" => "Cliente varios", "phone_number" => ""],
+            ["company_id" => 1, "identity_document_type_id" => 2, "document_number" => "71883137", "name" => "Gianfranco Mejia Carhuajulca", "phone_number" => "51987057624"],
+            ["company_id" => 1, "identity_document_type_id" => 2, "document_number" => "71883136", "name" => "Andy Paolo Mejia Carhuajulca", "phone_number" => "51987634253"]
         ]);
 
     }

@@ -519,6 +519,17 @@
                     <span class="fw-semibold">Nueva venta</span>
                 </div>
             </div>
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mt-5 mb-3">
+                <InputText
+                    v-model="forms.entity.createUpdate.extras.modals.finished.data.whatsapp">
+                    <template v-slot:inputGroupAppend>
+                        <button class="btn btn-success waves-effect" type="button" @click="sendWhatsapp({data: forms.entity.createUpdate.extras.modals.finished.data})">
+                            <i class="ti ti-brand-whatsapp"></i>
+                            <span class="ms-2">Enviar a Whatsapp</span>
+                        </button>
+                    </template>
+                </InputText>
+            </div>
         </template>
     </PrintSale>
 </template>
@@ -592,7 +603,8 @@ export default {
                                     id: Utils.uuid(),
                                     data: {
                                         id: null,
-                                        extras: {}
+                                        extras: {},
+                                        whatsapp: ""
                                     }
                                 }
                             }
@@ -868,7 +880,10 @@ export default {
 
                     const {sale, ...extras} = createUpdate.data;
 
-                    this.forms.entity.createUpdate.extras.modals.finished.data = {...sale, extras};
+                    let phoneNumber = this.forms.entity.createUpdate.data.holder?.data?.phone_number;
+                    let whatsapp = this.isDefined({value: phoneNumber}) ? phoneNumber : ""; // this.forms.entity.createUpdate.extras.modals.finished.data.whatsapp;
+
+                    this.forms.entity.createUpdate.extras.modals.finished.data = {...sale, extras, whatsapp};
 
                     Alerts.swals({show: false});
                     Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.finished.id, timeout: 300});
@@ -1222,6 +1237,13 @@ export default {
         legibleFormatDate({dateString = null, type = "datetime"}) {
 
             return Utils.legibleFormatDate({dateString, type});
+
+        },
+        sendWhatsapp({data = null}) {
+
+            let phoneNumber = this.forms.entity.createUpdate.extras.modals.finished.data.whatsapp;
+
+            Utils.sendWhatsapp({phoneNumber, message: Requests.routeReport({entity: "sale", type: "a4", data})});
 
         }
     },

@@ -24,6 +24,7 @@ class Customer extends Model {
         "document_number",
         "name",
         "email",
+        "phone_number",
         "status",
         "created_at",
         "created_by",

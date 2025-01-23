@@ -81,7 +81,7 @@ export default {
 
             let data = this.data;
 
-            window.open(`${Requests.config({entity: "reports", type: "sale"})}?document=${data?.hash_id}&type=${type}`, "_blank");
+            window.open(Requests.routeReport({entity: "sale", type, data}), "_blank");
 
         }
     }

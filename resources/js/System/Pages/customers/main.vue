@@ -49,6 +49,7 @@
                     <th class="fw-bold col-1">NÚMERO DE DOCUMENTO</th>
                     <th class="fw-bold col-1">NOMBRE</th>
                     <th class="fw-bold col-1">CORREO ELECTRÓNICO</th>
+                    <th class="fw-bold col-1">CELULAR</th>
                     <th class="fw-bold col-1">ESTADO</th>
                     <th class="fw-bold col-1">ACCIONES</th>
                 </tr>
@@ -70,6 +71,7 @@
                             </td>
                             <td v-text="record.name"></td>
                             <td v-text="isDefined({value: record.email}) ? record.email : 'N/A'"></td>
+                            <td v-text="isDefined({value: record.phone_number}) ? record.phone_number : 'N/A'"></td>
                             <td>
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
@@ -145,6 +147,14 @@
                             title="Correo electrónico"
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.email"
+                            xl="6"
+                            lg="6"/>
+                        <InputText
+                            v-model="forms.entity.createUpdate.data.phone_number"
+                            hasDiv
+                            title="Celular"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.phone_number"
                             xl="6"
                             lg="6"/>
                         <InputSlot
@@ -239,6 +249,7 @@ export default {
                             document_number: "",
                             name: "",
                             email: "",
+                            phone_number: "",
                             status: null
                         },
                         errors: {}
@@ -314,6 +325,7 @@ export default {
                 this.forms.entity.createUpdate.data.document_number        = record?.document_number;
                 this.forms.entity.createUpdate.data.name                   = record?.name;
                 this.forms.entity.createUpdate.data.email                  = record?.email;
+                this.forms.entity.createUpdate.data.phone_number           = record?.phone_number;
                 this.forms.entity.createUpdate.data.status                 = status;
 
             }else {
@@ -384,6 +396,7 @@ export default {
                     this.forms.entity.createUpdate.data.document_number        = "";
                     this.forms.entity.createUpdate.data.name                   = "";
                     this.forms.entity.createUpdate.data.email                  = "";
+                    this.forms.entity.createUpdate.data.phone_number           = "";
                     this.forms.entity.createUpdate.data.status                 = null;
                     break;
             }
@@ -410,6 +423,7 @@ export default {
                 result.document_number        = [];
                 result.name                   = [];
                 result.email                  = [];
+                result.phone_number           = [];
                 result.status                 = [];
 
                 if(!this.isDefined({value: form?.identity_document_type})) {
@@ -436,6 +450,13 @@ export default {
                 // if(!this.isDefined({value: form?.email})) {
 
                     // result.email.push(this.config.forms.errors.labels.required);
+                    // result.bool = false;
+
+                // }
+
+                // if(!this.isDefined({value: form?.phone_number})) {
+
+                    // result.phone_number.push(this.config.forms.errors.labels.required);
                     // result.bool = false;
 
                 // }
@@ -471,7 +492,8 @@ export default {
                 {code: "all", label: "Todos"},
                 {code: "document_number", label: "Número de documento"},
                 {code: "name", label: "Nombre"},
-                {code: "email", label: "Correo electrónico"}
+                {code: "email", label: "Correo electrónico"},
+                {code: "phone_number", label: "Celular"}
             ];
 
         },

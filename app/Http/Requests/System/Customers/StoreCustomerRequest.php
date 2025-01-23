@@ -30,6 +30,7 @@ class StoreCustomerRequest extends FormRequest {
             "document_number"           => "required|string|max:20",
             "name"                      => "required|string|max:100",
             "email"                     => "nullable|email",
+            "phone_number"              => "nullable|integer",
             "status"                    => "required|string"
         ];
 

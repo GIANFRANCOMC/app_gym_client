@@ -52,11 +52,12 @@ class CustomerController extends Controller {
 
                                     $query->where("document_number", "like", $filter)
                                           ->orWhere("name", "like", $filter)
-                                          ->orWhere("email", "like", $filter);
+                                          ->orWhere("email", "like", $filter)
+                                          ->orWhere("phone_number", "like", $filter);
 
                                 });
 
-                            }else if(in_array($request->filter_by, ["document_number", "name", "email"])) {
+                            }else if(in_array($request->filter_by, ["document_number", "name", "email", "phone_number"])) {
 
                                 $query->where(function($query) use($request, $filter) {
 
@@ -113,6 +114,7 @@ class CustomerController extends Controller {
             $customer->document_number           = $request->document_number;
             $customer->name                      = $request->name;
             $customer->email                     = $request->email;
+            $customer->phone_number              = $request->phone_number;
             $customer->status                    = $request->status;
             $customer->created_at                = now();
             $customer->created_by                = $userAuth->id ?? null;
@@ -167,6 +169,7 @@ class CustomerController extends Controller {
                 $customer->document_number           = $request->document_number;
                 $customer->name                      = $request->name;
                 $customer->email                     = $request->email;
+                $customer->phone_number              = $request->phone_number;
                 $customer->status                    = $request->status;
                 $customer->updated_at                = now();
                 $customer->updated_by                = $userAuth->id ?? null;

@@ -44,8 +44,8 @@
                                         </div>
                                     </div>
                                     <div class="col col-auto">
-                                        <span class="d-block fw-bold">{{ $user->name }}</span>
-                                        <small class="d-block fw-semibold">{{ $company->commercial_name }}</small>
+                                        <span class="d-block fw-bold text-break">{{ Str::limit($user->name, 16) }}</span>
+                                        <small class="d-block fw-semibold">{{ Str::limit($company->commercial_name, 16) }}</small>
                                         <small class="d-block fw-semibold">{{ $role->name }}</small>
                                     </div>
                                 </div>
@@ -190,8 +190,8 @@
                                                 </div>
                                             </div>
                                             <div class="flex-grow-1">
-                                                <span class="fw-bold d-block">{{ $user->name }}</span>
-                                                <span class="fw-medium d-block">{{ $company->commercial_name }}</span>
+                                                <span class="fw-bold d-block text-break">{{ Str::limit($user->name, 16) }}</span>
+                                                <span class="fw-medium d-block">{{ Str::limit($company->commercial_name, 16) }}</span>
                                                 <small class="text-muted">{{ $role->name }}</small>
                                             </div>
                                         </div>
