@@ -10,3 +10,10 @@
 .border-transparent {
     border-color: transparent !important;
 }
+
+.menu-link.no-hover:hover {
+    color: inherit;
+    background-color: transparent;
+    text-decoration: none;
+    cursor: default;
+}

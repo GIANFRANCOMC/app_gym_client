@@ -30,6 +30,7 @@ class User extends Authenticatable {
      */
     protected $fillable = [
         "company_id",
+        "role_id",
         "identity_document_type_id",
         "document_number",
         "name",
@@ -85,6 +86,12 @@ class User extends Authenticatable {
     public function company() {
 
         return $this->belongsTo(Company::class, "company_id", "id");
+
+    }
+
+    public function role() {
+
+        return $this->belongsTo(Role::class, "role_id", "id");
 
     }
 

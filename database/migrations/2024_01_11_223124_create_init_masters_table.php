@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\System\Utilities;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\{DB, Hash, Schema};
@@ -68,9 +69,25 @@ return new class extends Migration {
             $table->foreign("identity_document_type_id")->references("id")->on("identity_document_types")->onDelete("cascade");
         });
 
+        Schema::create("roles", function(Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger("company_id");
+            $table->string("slug");
+            $table->string("name");
+            $table->enum("status", ["active", "inactive"])->default("active");
+
+            $table->timestamp("created_at")->useCurrent()->nullable();
+            $table->integer("created_by")->nullable();
+            $table->timestamp("updated_at")->nullable();
+            $table->integer("updated_by")->nullable();
+
+            $table->foreign("company_id")->references("id")->on("companies")->onDelete("cascade");
+        });
+
         Schema::create("users", function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("company_id");
+            $table->unsignedBigInteger("role_id")->nullable();
             $table->unsignedBigInteger("identity_document_type_id");
             $table->string("document_number");
             $table->string("name");
@@ -86,6 +103,7 @@ return new class extends Migration {
             $table->integer("updated_by")->nullable();
 
             $table->foreign("company_id")->references("id")->on("companies")->onDelete("cascade");
+            $table->foreign("role_id")->references("id")->on("roles")->onDelete("cascade");
             $table->foreign("identity_document_type_id")->references("id")->on("identity_document_types")->onDelete("cascade");
             $table->unique(["email", "company_id"]);
         });
@@ -112,9 +130,14 @@ return new class extends Migration {
             ["id" => 1, "identity_document_type_id" => 1, "document_number" => "999999999", "legal_name" => "PAGAPE S.A.", "commercial_name" => "PAGAPE", "address" => "-", "telephone" => "-", "email" => ""]
         ]);
 
+        DB::table("roles")->insert([
+            ["id" => 1, "company_id" => 1, "slug" => Utilities::generateCode(), "name" => "Administrador"],
+            ["id" => 2, "company_id" => 1, "slug" => Utilities::generateCode(), "name" => "Vendedor"]
+        ]);
+
         DB::table("users")->insert([
-            ["company_id" => 1, "identity_document_type_id" => 1, "document_number" => "999999999", "name" => "Usuario demo", "email" => "demo@pagape.com", "password" => Hash::make("1")],
-            ["company_id" => 1, "identity_document_type_id" => 2, "document_number" => "71883137", "name" => "Gianfranco", "email" => "gmc@pagape.com", "password" => Hash::make("1")]
+            ["company_id" => 1, "role_id" => 1, "identity_document_type_id" => 1, "document_number" => "999999999", "name" => "Usuario demo", "email" => "demo@pagape.com", "password" => Hash::make("1")],
+            ["company_id" => 1, "role_id" => 2, "identity_document_type_id" => 2, "document_number" => "71883137", "name" => "Gianfranco", "email" => "gmc@pagape.com", "password" => Hash::make("1")]
         ]);
 
     }
@@ -125,6 +148,7 @@ return new class extends Migration {
     public function down(): void {
 
         Schema::dropIfExists("users");
+        Schema::dropIfExists("roles");
         Schema::dropIfExists("companies");
         Schema::dropIfExists("currencies");
         Schema::dropIfExists("document_types");

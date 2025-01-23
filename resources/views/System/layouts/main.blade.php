@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 
+@php
+    $user = Auth::user();
+    $company = $user->company;
+    $role = $user->role;
+@endphp
+
 <html
     lang="en"
     class="light-style layout-navbar-fixed layout-menu-fixed layout-compact"
@@ -29,7 +35,23 @@
                     <div class="menu-inner-shadow"></div>
 
                     <ul class="menu-inner py-1">
-                        <li class="menu-item mt-4" id="menu-item-home">
+                        <li class="menu-header mb-4">
+                            <span class="menu-header-text" data-i18n="Profile">
+                                <div class="row">
+                                    <div class="col col-auto">
+                                        <div class="avatar avatar-online mt-2">
+                                            <span class="avatar-initial rounded-circle bg-label-success">{{ substr($user->name, 0, 2) }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col col-auto">
+                                        <span class="d-block fw-bold">{{ $user->name }}</span>
+                                        <small class="d-block fw-semibold">{{ $company->commercial_name }}</small>
+                                        <small class="d-block fw-semibold">{{ $role->name }}</small>
+                                    </div>
+                                </div>
+                            </span>
+                        </li>
+                        <li class="menu-item" id="menu-item-home">
                             <a href="{{ route('home.index') }}" class="menu-link">
                                 <i class="fa fa-home me-3"></i>
                                 <div data-i18n="Inicio">Inicio</div>
@@ -154,23 +176,23 @@
                             <ul class="navbar-nav flex-row align-items-center ms-auto">
                                 <li class="nav-item navbar-dropdown dropdown-user dropdown">
                                     <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
-                                        <div class="avatar">
-                                            <img src="{{ asset('System/assets/img/utils/avatars/1.png') }}" alt class="h-auto rounded-circle" />
+                                        <div class="avatar avatar-online">
+                                            <span class="avatar-initial rounded-circle bg-label-success">{{ substr($user->name, 0, 2) }}</span>
                                         </div>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
-                                        <a class="dropdown-item" href="#">
+                                        <a class="dropdown-item" href="javascript:void(0)">
                                         <div class="d-flex">
                                             <div class="flex-shrink-0 me-3">
-                                                <div class="avatar">
-                                                    <img src="{{ asset('System/assets/img/utils/avatars/1.png') }}" alt class="h-auto rounded-circle" />
+                                                <div class="avatar avatar-online">
+                                                    <span class="avatar-initial rounded-circle bg-label-success">{{ substr($user->name, 0, 2) }}</span>
                                                 </div>
                                             </div>
                                             <div class="flex-grow-1">
-                                                <span class="fw-bold d-block">{{ Auth::user()->name }}</span>
-                                                <span class="fw-medium d-block">{{ App\Models\System\Company::first()->commercial_name }}</span>
-                                                <small class="text-muted">Usuario</small>
+                                                <span class="fw-bold d-block">{{ $user->name }}</span>
+                                                <span class="fw-medium d-block">{{ $company->commercial_name }}</span>
+                                                <small class="text-muted">{{ $role->name }}</small>
                                             </div>
                                         </div>
                                         </a>

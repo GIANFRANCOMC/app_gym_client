@@ -118,4 +118,20 @@ class Utilities {
 
     }
 
+    public static function generateCode($length = 12) {
+
+        $characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        $randomString = "";
+
+        for($i = 0; $i < $length; $i++) {
+
+            $randomIndex = rand(0, strlen($characters) - 1);
+            $randomString .= $characters[$randomIndex];
+
+        }
+
+        return $randomString;
+
+    }
+
 }
