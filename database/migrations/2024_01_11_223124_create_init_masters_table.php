@@ -69,6 +69,47 @@ return new class extends Migration {
             $table->foreign("identity_document_type_id")->references("id")->on("identity_document_types")->onDelete("cascade");
         });
 
+        Schema::create("sections", function(Blueprint $table) {
+            $table->id();
+            $table->string("slug");
+            $table->string("name");
+            $table->integer("order")->nullable();
+            $table->enum("status", ["active", "inactive"])->default("active");
+
+            $table->timestamp("created_at")->useCurrent()->nullable();
+            $table->integer("created_by")->nullable();
+            $table->timestamp("updated_at")->nullable();
+            $table->integer("updated_by")->nullable();
+        });
+
+        Schema::create("sub_sections", function(Blueprint $table) {
+            $table->id();
+            $table->string("slug");
+            $table->string("name");
+            $table->integer("order")->nullable();
+            $table->enum("status", ["active", "inactive"])->default("active");
+
+            $table->timestamp("created_at")->useCurrent()->nullable();
+            $table->integer("created_by")->nullable();
+            $table->timestamp("updated_at")->nullable();
+            $table->integer("updated_by")->nullable();
+        });
+
+        Schema::create("companies_sections", function(Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger("company_id");
+            $table->unsignedBigInteger("section_id");
+            $table->enum("status", ["active", "inactive"])->default("active");
+
+            $table->timestamp("created_at")->useCurrent()->nullable();
+            $table->integer("created_by")->nullable();
+            $table->timestamp("updated_at")->nullable();
+            $table->integer("updated_by")->nullable();
+
+            $table->foreign("company_id")->references("id")->on("companies")->onDelete("cascade");
+            $table->foreign("section_id")->references("id")->on("sections")->onDelete("cascade");
+        });
+
         Schema::create("roles", function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("company_id");
@@ -128,6 +169,41 @@ return new class extends Migration {
 
         DB::table("companies")->insert([
             ["id" => 1, "identity_document_type_id" => 1, "document_number" => "999999999", "legal_name" => "PAGAPE S.A.", "commercial_name" => "PAGAPE", "address" => "-", "telephone" => "-", "email" => ""]
+        ]);
+
+        DB::table("sections")->insert([
+            ["id" => 1, "slug" => "sc_home", "name" => "home", "order" => 1],
+            ["id" => 2, "slug" => "sc_sales", "name" => "sales", "order" => 2],
+            ["id" => 3, "slug" => "sc_trackings", "name" => "trackings", "order" => 3],
+            ["id" => 4, "slug" => "sc_items", "name" => "items", "order" => 4],
+            ["id" => 5, "slug" => "sc_customers", "name" => "customers", "order" => 5],
+            ["id" => 6, "slug" => "sc_configuration", "name" => "configuration", "order" => 6],
+            ["id" => 7, "slug" => "sc_reports", "name" => "reports", "order" => 7]
+        ]);
+
+        DB::table("companies_sections")->insert([
+            ["company_id" => 1, "section_id" => 1],
+            ["company_id" => 1, "section_id" => 2],
+            ["company_id" => 1, "section_id" => 3],
+            ["company_id" => 1, "section_id" => 4],
+            ["company_id" => 1, "section_id" => 5],
+            ["company_id" => 1, "section_id" => 6],
+            ["company_id" => 1, "section_id" => 7]
+        ]);
+
+        DB::table("sub_sections")->insert([
+            ["id" => 1, "slug" => "sbc_home-main", "name" => "home-main"],
+            ["id" => 2, "slug" => "sbc_sales-list", "name" => "sales-list"],
+            ["id" => 3, "slug" => "sbc_sales-main", "name" => "sales-main"],
+            ["id" => 4, "slug" => "sbc_trackings-subscriptions", "name" => "trackings-subscriptions"],
+            ["id" => 5, "slug" => "sbc_items-products", "name" => "items-products"],
+            ["id" => 6, "slug" => "sbc_items-services", "name" => "items-services"],
+            ["id" => 7, "slug" => "sbc_items-subscriptions", "name" => "items-subscriptions"],
+            ["id" => 8, "slug" => "sbc_customers-main", "name" => "customers-main"],
+            ["id" => 9, "slug" => "sbc_configuration-my_company", "name" => "configuration-my_company"],
+            ["id" => 10, "slug" => "sbc_configuration-branchs", "name" => "configuration-branchs"],
+            ["id" => 11, "slug" => "sbc_configuration-users", "name" => "configuration-users"],
+            ["id" => 12, "slug" => "sbc_reports-main", "name" => "reports-main"]
         ]);
 
         DB::table("roles")->insert([
