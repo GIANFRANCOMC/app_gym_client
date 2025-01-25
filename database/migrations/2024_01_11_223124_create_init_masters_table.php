@@ -74,6 +74,10 @@ return new class extends Migration {
             $table->string("slug");
             $table->string("name");
             $table->integer("order")->nullable();
+            $table->string("dom_id")->default("");
+            $table->string("dom_label")->default("");
+            $table->string("dom_icon")->default("");
+            $table->boolean("has_sub_menu")->default(false);
             $table->enum("status", ["active", "inactive"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();
@@ -88,6 +92,9 @@ return new class extends Migration {
             $table->string("slug");
             $table->string("name");
             $table->integer("order")->nullable();
+            $table->string("dom_id")->default("");
+            $table->string("dom_label")->default("");
+            $table->string("dom_icon")->default("");
             $table->enum("status", ["active", "inactive"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();
@@ -175,28 +182,28 @@ return new class extends Migration {
         ]);
 
         DB::table("sections")->insert([
-            ["id" => 1, "slug" => "sc_home", "name" => "home", "order" => 1],
-            ["id" => 2, "slug" => "sc_sales", "name" => "sales", "order" => 2],
-            ["id" => 3, "slug" => "sc_trackings", "name" => "trackings", "order" => 3],
-            ["id" => 4, "slug" => "sc_items", "name" => "items", "order" => 4],
-            ["id" => 5, "slug" => "sc_customers", "name" => "customers", "order" => 5],
-            ["id" => 6, "slug" => "sc_configuration", "name" => "configuration", "order" => 6],
-            ["id" => 7, "slug" => "sc_reports", "name" => "reports", "order" => 7]
+            ["id" => 1, "slug" => "sc_home", "name" => "home", "order" => 1, "dom_id" => "menu-item-home", "dom_label" => "Inicio", "dom_icon" => "fa fa-home", "has_sub_menu" => false],
+            ["id" => 2, "slug" => "sc_sales", "name" => "sales", "order" => 2, "dom_id" => "menu-item-sales", "dom_label" => "Ventas", "dom_icon" => "fa-solid fa-cash-register", "has_sub_menu" => true],
+            ["id" => 3, "slug" => "sc_trackings", "name" => "trackings", "order" => 3, "dom_id" => "menu-item-trackings", "dom_label" => "Seguimiento", "dom_icon" => "fa-solid fa-binoculars", "has_sub_menu" => true],
+            ["id" => 4, "slug" => "sc_items", "name" => "items", "order" => 4, "dom_id" => "menu-item-catalogs", "dom_label" => "Catálogo comercial", "dom_icon" => "fa fa-book", "has_sub_menu" => true],
+            ["id" => 5, "slug" => "sc_customers", "name" => "customers", "order" => 5, "dom_id" => "menu-item-customers", "dom_label" => "Clientes", "dom_icon" => "fa fa-user", "has_sub_menu" => false],
+            ["id" => 6, "slug" => "sc_configuration", "name" => "configuration", "order" => 6, "dom_id" => "menu-item-configuration", "dom_label" => "Configuración", "dom_icon" => "fa fa-gear", "has_sub_menu" => true],
+            ["id" => 7, "slug" => "sc_reports", "name" => "reports", "order" => 7, "dom_id" => "menu-item-reports", "dom_label" => "Reportes", "dom_icon" => "fa fa-print", "has_sub_menu" => false]
         ]);
 
         DB::table("sub_sections")->insert([
-            ["id" => 1, "slug" => "sbc_home-main", "name" => "home-main"],
-            ["id" => 2, "slug" => "sbc_sales-list", "name" => "sales-list"],
-            ["id" => 3, "slug" => "sbc_sales-main", "name" => "sales-main"],
-            ["id" => 4, "slug" => "sbc_trackings-subscriptions", "name" => "trackings-subscriptions"],
-            ["id" => 5, "slug" => "sbc_items-products", "name" => "items-products"],
-            ["id" => 6, "slug" => "sbc_items-services", "name" => "items-services"],
-            ["id" => 7, "slug" => "sbc_items-subscriptions", "name" => "items-subscriptions"],
-            ["id" => 8, "slug" => "sbc_customers-main", "name" => "customers-main"],
-            ["id" => 9, "slug" => "sbc_configuration-my_company", "name" => "configuration-my_company"],
-            ["id" => 10, "slug" => "sbc_configuration-branchs", "name" => "configuration-branchs"],
-            ["id" => 11, "slug" => "sbc_configuration-users", "name" => "configuration-users"],
-            ["id" => 12, "slug" => "sbc_reports-main", "name" => "reports-main"]
+            ["id" => 1, "section_id" => 1, "slug" => "sbc_home-main", "name" => "home-main", "dom_id" => "menu-item-home", "dom_label" => "Inicio"],
+            ["id" => 2, "section_id" => 2, "slug" => "sbc_sales-list", "name" => "sales-list", "dom_id" => "menu-item-list-sales", "dom_label" => "Listado"],
+            ["id" => 3, "section_id" => 2, "slug" => "sbc_sales-main", "name" => "sales-main", "dom_id" => "menu-item-create-sales", "dom_label" => "Nuevo"],
+            ["id" => 4, "section_id" => 3, "slug" => "sbc_trackings-subscriptions", "name" => "trackings-subscriptions", "dom_id" => "menu-item-trackings-subscriptions", "dom_label" => "Suscripciones"],
+            ["id" => 5, "section_id" => 4, "slug" => "sbc_items-products", "name" => "items-products", "dom_id" => "menu-item-catalogs-products", "dom_label" => "Productos"],
+            ["id" => 6, "section_id" => 4, "slug" => "sbc_items-services", "name" => "items-services", "dom_id" => "menu-item-catalogs-services", "dom_label" => "Servicios"],
+            ["id" => 7, "section_id" => 4, "slug" => "sbc_items-subscriptions", "name" => "items-subscriptions", "dom_id" => "menu-item-catalogs-subscriptions", "dom_label" => "Suscripciones"],
+            ["id" => 8, "section_id" => 5, "slug" => "sbc_customers-main", "name" => "customers-main", "dom_id" => "menu-item-customers", "dom_label" => "Clientes"],
+            ["id" => 9, "section_id" => 6, "slug" => "sbc_configuration-my_company", "name" => "configuration-my_company", "dom_id" => "menu-item-configuration-companies", "dom_label" => "Mi empresa"],
+            ["id" => 10, "section_id" => 6, "slug" => "sbc_configuration-branchs", "name" => "configuration-branchs", "dom_id" => "menu-item-configuration-branches", "dom_label" => "Sucursales"],
+            ["id" => 11, "section_id" => 6, "slug" => "sbc_configuration-users", "name" => "configuration-users", "dom_id" => "menu-item-configuration-users", "dom_label" => "Colaboradores"],
+            ["id" => 12, "section_id" => 7, "slug" => "sbc_reports-main", "name" => "reports-main", "dom_id" => "menu-item-reports", "dom_label" => "Reportes"]
         ]);
 
         DB::table("companies_sub_sections")->insert([
@@ -233,7 +240,7 @@ return new class extends Migration {
 
         Schema::dropIfExists("users");
         Schema::dropIfExists("roles");
-        Schema::dropIfExists("companies_sections");
+        Schema::dropIfExists("companies_sub_sections");
         Schema::dropIfExists("sub_sections");
         Schema::dropIfExists("sections");
         Schema::dropIfExists("companies");

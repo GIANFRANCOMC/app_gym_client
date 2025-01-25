@@ -22,6 +22,9 @@ class SubSection extends Model {
         "slug",
         "name",
         "order",
+        "dom_id",
+        "dom_label",
+        "dom_icon",
         "status",
         "created_at",
         "created_by",
@@ -51,7 +54,7 @@ class SubSection extends Model {
     // Relationships
     public function section() {
 
-        return $this->belongsTo(Section::class, "section_id", "id")
+        return $this->belongsTo(Section::class, "section_id", "id");
 
     }
 

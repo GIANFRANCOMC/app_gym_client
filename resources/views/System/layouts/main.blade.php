@@ -1,10 +1,21 @@
 <!DOCTYPE html>
 
 @php
-    $user = Auth::user();
+    $user    = Auth::user();
     $company = $user->company;
-    $role = $user->role;
-    $companySections = $company->companySubSections->sortBy("order");
+    $role    = $user->role;
+
+    // Access
+    $companySubSections = $company->companySubSections()->with("subSection.section")->get();
+
+    $sections = $companySubSections->pluck("subSection")
+                                    ->groupBy(fn($subSection) => $subSection->section->id)
+                                    ->map(fn($subSections, $sectionName) => [
+                                        "section" => $subSections->first()->section,
+                                        "subSections" => $subSections,
+                                    ]);
+
+    $sections = $sections->sortBy(fn($section) => $section["section"]->order);
 @endphp
 
 <html
@@ -52,6 +63,33 @@
                                 </div>
                             </span>
                         </li>
+                        @foreach($sections as $section)
+                            @if($section['section']->has_sub_menu)
+                                <li class="menu-item" id="{{ $section['section']->dom_id }}">
+                                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                                        <i class="{{ $section['section']->dom_icon }} me-3"></i>
+                                        <div>{{ $section["section"]->dom_label }}</div>
+                                    </a>
+                                    <ul class="menu-sub">
+                                        @foreach($section["subSections"] as $subSection)
+                                            <li class="menu-item" id="{{ $subSection->dom_id }}">
+                                                <a href="{{ route('sales.index') }}" class="menu-link">
+                                                    <div>{{ $subSection->dom_label }}</div>
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </li>
+                            @else
+                                <li class="menu-item" id="{{ $section['section']->dom_id }}">
+                                    <a href="{{ route('home.index') }}" class="menu-link">
+                                        <i class="{{ $section['section']->dom_icon }} me-3"></i>
+                                        <div>{{ $section["section"]->dom_label }}</div>
+                                    </a>
+                                </li>
+                            @endif
+                        @endforeach
+                        {{-- <br/>
                         <li class="menu-item" id="menu-item-home">
                             <a href="{{ route('home.index') }}" class="menu-link">
                                 <i class="fa fa-home me-3"></i>
@@ -76,13 +114,13 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="menu-item" id="menu-item-tracking">
+                        <li class="menu-item" id="menu-item-trackings">
                             <a href="javascript:void(0);" class="menu-link menu-toggle">
                                 <i class="fa-solid fa-binoculars me-3"></i>
                                 <div data-i18n="Ventas">Seguimiento</div>
                             </a>
                             <ul class="menu-sub">
-                                <li class="menu-item" id="menu-item-tracking-subscriptions">
+                                <li class="menu-item" id="menu-item-trackings-subscriptions">
                                     <a href="{{ route('trackingSubscriptions.index') }}" class="menu-link">
                                         <div data-i18n="Collapsed menu">Suscripciones</div>
                                     </a>
@@ -146,7 +184,7 @@
                                 <i class="fa fa-print me-3"></i>
                                 <div data-i18n="Page 1">Reportes</div>
                             </a>
-                        </li>
+                        </li> --}}
                         <li class="menu-item">
                             <a href="javascript:void(0)" class="menu-link bg-danger" onclick="$('#logout').submit();">
                                 <i class="fa fa-right-from-bracket me-3"></i>
