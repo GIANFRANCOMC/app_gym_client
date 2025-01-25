@@ -358,10 +358,39 @@ export function legibleFormatDate({dateString = null, type = "datetime"}) {
 
 export function sendWhatsapp({phoneNumber, message}) {
 
-    let encodedMessage = encodeURIComponent(message);
+    if(!this.isDefined({value: phoneNumber})) {
 
-    let link = "https://wa.me/"+phoneNumber+"?text="+encodedMessage;
+        toastrs({type: "error", subtitle: "No es posible generar el envío a Whatsapp, diligenciar los campos necesarios."});
 
-    window.open(link, "_blank");
+    }else if(!this.isDefined({value: message})) {
+
+        toastrs({type: "error", subtitle: "No es posible generar el envío a Whatsapp, mensaje no identificado."});
+
+    }else {
+
+        let encodedMessage = encodeURIComponent(message);
+
+        let link = "https://wa.me/"+phoneNumber+"?text="+encodedMessage;
+
+        window.open(link, "_blank");
+
+    }
+
+}
+
+export function getMessageWhatsapp({data, action}) {
+
+    let message = null;
+
+    if(["reportSale"].includes(action)) {
+
+        const information = "¡Se ha creado la venta exitosamente! Para obtener el archivo, visite el siguiente enlace:";
+        const url = Requests.routeReport({resource: "sale", params: {document: data?.id, type: "a4"}, extras: {action}});
+
+        message = `${information} %0A ${url}`;
+
+    }
+
+    return message;
 
 }

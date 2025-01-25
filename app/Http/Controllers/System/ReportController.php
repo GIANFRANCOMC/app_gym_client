@@ -11,6 +11,8 @@ use stdClass;
 
 use App\Models\System\{Branch, Company, Customer, Item, SaleBody, SaleHeader, User};
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
+use Carbon\Exceptions\InvalidFormatException;
 use Exception;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -45,12 +47,39 @@ class ReportController extends Controller {
 
     public function sale(Request $request) {
 
+        $message500 = "Por favor, no altere el enlace generado. Cualquier modificación podría invalidarlo. Si tiene algún problema, solicite uno nuevo";
+        $message404 = "Información no encontrada";
+
         if(Utilities::isDefined($request->document)) {
 
             $document  = base64_decode($request->document ?? "");
-            $printType = $request->type ?? "a4";
+            $printType = base64_decode($request->type ?? "");
+            $expdt     = str_replace("T", " ", base64_decode($request->expdt ?? ""));
 
-            if(Utilities::isDefined($document)) {
+            // Validate params: INIT
+            if(!(intval($document) > 0) || !in_array($printType, ["a4", "mm80"]) || !Utilities::isDefined($expdt)) {
+
+                return response()->view("errors.500", ["msg" => $message500], 500);
+
+            }
+
+            // Validate params: EXPIRATION
+            try {
+
+                $expirationDate = Carbon::parse($expdt)->startOfDay();
+                $currentDate    = Carbon::now()->startOfDay();
+
+            }catch(InvalidFormatException $e) {
+
+                return response()->view("errors.500", ["msg" => $message500." (expdt)"], 500);
+
+            }catch (Exception $e) {
+
+                return response()->view("errors.500", ["msg" => $message500]." (expdt)", 500);
+
+            }
+
+            if($expirationDate->greaterThan($currentDate)) {
 
                 $saleHeader = SaleHeader::where("id", $document)
                                         ->with(["serie.documentType", "holder", "positions"])
@@ -109,11 +138,15 @@ class ReportController extends Controller {
 
                 }
 
+            }else {
+
+                return response()->view("errors.500", ["msg" => "El enlace ha caducado. Por favor, solicita uno nuevo."], 500);
+
             }
 
         }
 
-        return response()->view("errors.404", ["msg" => "Información no encontrada"], 404);
+        return response()->view("errors.404", ["msg" => $message404], 404);
 
     }
 

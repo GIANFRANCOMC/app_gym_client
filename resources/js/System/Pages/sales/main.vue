@@ -151,73 +151,75 @@
                                                 </td>
                                             </tr>
                                             <template v-if="record?.extras?.showDetail">
-                                                <tr class="border-transparent text-center" v-if="['subscription'].includes(record?.type)">
-                                                    <td colspan="1"></td>
-                                                    <td colspan="5">
-                                                        <div class="row g-2 my-1">
-                                                            <div class="col-4">
-                                                                <InputText
-                                                                    title="Duración"
-                                                                    v-model="record.extras.formatted_duration"
-                                                                    isRequired
-                                                                    disabled/>
+                                                <template v-if="['subscription'].includes(record?.type)">
+                                                    <tr class="border-transparent text-center">
+                                                        <td colspan="1"></td>
+                                                        <td colspan="5">
+                                                            <div class="row g-2 my-1">
+                                                                <div class="col-4">
+                                                                    <InputText
+                                                                        title="Duración"
+                                                                        v-model="record.extras.formatted_duration"
+                                                                        isRequired
+                                                                        disabled/>
+                                                                </div>
+                                                                <div class="col-4">
+                                                                    <InputDatetime
+                                                                        title="Fecha de inicio"
+                                                                        v-model="record.extras.start_date"
+                                                                        @change="calculateDuration({record})"
+                                                                        isRequired/>
+                                                                </div>
+                                                                <div class="col-4">
+                                                                    <InputDatetime
+                                                                        title="Fecha de finalización"
+                                                                        v-model="record.extras.end_date"
+                                                                        isRequired
+                                                                        disabled/>
+                                                                </div>
+                                                                <InputSlot
+                                                                    :isInputGroup="false"
+                                                                    :divInputClass="['text-start', 'mt-3']"
+                                                                    xl="12"
+                                                                    lg="12">
+                                                                    <template v-slot:input>
+                                                                        <div v-if="['today', 'day', 'month', 'year'].includes(record.extras?.duration_type)" class="form-check form-check-primary my-2">
+                                                                            <label class="form-check-label">
+                                                                                <input
+                                                                                    class="form-check-input"
+                                                                                    type="checkbox"
+                                                                                    v-model="record.extras.set_end_of_day"
+                                                                                    @change="calculateDuration({record})"/>
+                                                                                Ajustar la hora de la Fecha de finalización al final del día (23:59 = 11:59 PM)
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="form-check form-check-primary my-2">
+                                                                            <label class="form-check-label">
+                                                                                <input
+                                                                                    class="form-check-input"
+                                                                                    type="checkbox"
+                                                                                    v-model="record.extras.force"/>
+                                                                                Tomar en cuenta la suscripciones activas
+                                                                            </label>
+                                                                        </div>
+                                                                    </template>
+                                                                </InputSlot>
                                                             </div>
-                                                            <div class="col-4">
-                                                                <InputDatetime
-                                                                    title="Fecha de inicio"
-                                                                    v-model="record.extras.start_date"
-                                                                    @change="calculateDuration({record})"
-                                                                    isRequired/>
-                                                            </div>
-                                                            <div class="col-4">
-                                                                <InputDatetime
-                                                                    title="Fecha de finalización"
-                                                                    v-model="record.extras.end_date"
-                                                                    isRequired
-                                                                    disabled/>
-                                                            </div>
-                                                            <InputSlot
-                                                                :isInputGroup="false"
-                                                                :divInputClass="['text-start', 'mt-3']"
-                                                                xl="12"
-                                                                lg="12">
-                                                                <template v-slot:input>
-                                                                    <div v-if="['today', 'day', 'month', 'year'].includes(record.extras?.duration_type)" class="form-check form-check-primary my-2">
-                                                                        <label class="form-check-label">
-                                                                            <input
-                                                                                class="form-check-input"
-                                                                                type="checkbox"
-                                                                                v-model="record.extras.set_end_of_day"
-                                                                                @change="calculateDuration({record})"/>
-                                                                            Ajustar la hora de la Fecha de finalización al final del día (23:59 = 11:59 PM)
-                                                                        </label>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="border-transparent">
+                                                        <td colspan="6">
+                                                            <div class="divider text-center divider-info">
+                                                                <div class="divider-text">
+                                                                    <div class="badge rounded-pill bg-label-info px-5 py-1">
+                                                                        <i class="fa fa-info-circle"></i>
+                                                                        <span class="ms-2 fw-bold h6 text-info" v-text="'Detalle #'+(keyRecord + 1)"></span>
                                                                     </div>
-                                                                    <div class="form-check form-check-primary my-2">
-                                                                        <label class="form-check-label">
-                                                                            <input
-                                                                                class="form-check-input"
-                                                                                type="checkbox"
-                                                                                v-model="record.extras.force"/>
-                                                                            Tomar en cuenta la suscripciones activas
-                                                                        </label>
-                                                                    </div>
-                                                                </template>
-                                                            </InputSlot>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr class="border-transparent">
-                                                    <td colspan="6">
-                                                        <div class="divider text-center divider-info">
-                                                            <div class="divider-text">
-                                                                <div class="badge rounded-pill bg-label-info px-5 py-1">
-                                                                    <i class="fa fa-info-circle"></i>
-                                                                    <span class="ms-2 fw-bold h6 text-info" v-text="'Detalle #'+(keyRecord + 1)"></span>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
+                                                        </td>
+                                                    </tr>
+                                                </template>
                                             </template>
                                         </template>
                                         <tr class="fs-5">
@@ -523,7 +525,7 @@
                 <InputText
                     v-model="forms.entity.createUpdate.extras.modals.finished.data.whatsapp">
                     <template v-slot:inputGroupAppend>
-                        <button class="btn btn-success waves-effect" type="button" @click="sendWhatsapp({data: forms.entity.createUpdate.extras.modals.finished.data})">
+                        <button class="btn btn-success waves-effect" type="button" @click="sendWhatsapp({data: forms.entity.createUpdate.extras.modals.finished.data})" :disabled="!isDefined({value: forms.entity.createUpdate.extras.modals.finished.data.whatsapp})">
                             <i class="ti ti-brand-whatsapp"></i>
                             <span class="ms-2">Enviar a Whatsapp</span>
                         </button>
@@ -1239,11 +1241,12 @@ export default {
             return Utils.legibleFormatDate({dateString, type});
 
         },
-        sendWhatsapp({data = null}) {
+        sendWhatsapp({data = null, action = "reportSale"}) {
 
-            let phoneNumber = this.forms.entity.createUpdate.extras.modals.finished.data.whatsapp;
+            const phoneNumber = this.forms.entity.createUpdate.extras.modals.finished.data.whatsapp;
+            const message     = Utils.getMessageWhatsapp({data, action});
 
-            Utils.sendWhatsapp({phoneNumber, message: Requests.routeReport({entity: "sale", type: "a4", data})});
+            Utils.sendWhatsapp({phoneNumber, message});
 
         }
     },

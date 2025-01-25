@@ -210,8 +210,27 @@ export function generateRoutes({entity, requestRoute}) {
 
 }
 
-export function routeReport({entity = "sale", type = "a4", data = null}) {
+export function routeReport({resource, params = null, extras = null}) {
 
-    return `${this.config({entity: "reports", type: entity})}?document=${data?.hash_id}&type=${type}`;
+    let route = `${this.config({entity: "reports", type: resource})}`;
+
+    const url = new URL(route);
+    const searchParams = url.searchParams;
+
+    Object.keys(params).forEach(key => {
+
+        searchParams.append(key, btoa(params[key]));
+
+    });
+
+    if(["reportSale"].includes(extras?.action)) {
+
+        const expirationDate = Utils.addDuration({startDate: new Date(), type: "month", quantity: 3});
+
+        searchParams.append("expdt", btoa(expirationDate));
+
+    }
+
+    return url.toString();
 
 }

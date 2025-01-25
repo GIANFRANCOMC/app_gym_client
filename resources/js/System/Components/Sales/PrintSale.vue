@@ -81,7 +81,9 @@ export default {
 
             let data = this.data;
 
-            window.open(Requests.routeReport({entity: "sale", type, data}), "_blank");
+            const url = Requests.routeReport({resource: "sale", params: {document: data?.id, type}, extras: {action: "reportSale"}});
+
+            window.open(url, "_blank");
 
         }
     }
