@@ -65,9 +65,9 @@ class Company extends Model {
 
     }
 
-    public function companySections() {
+    public function companySubSections() {
 
-        return $this->hasMany(CompanySection::class, "company_id", "id")
+        return $this->hasMany(CompanySubSection::class, "company_id", "id")
                     ->whereIn("status", ["active"]);
 
     }

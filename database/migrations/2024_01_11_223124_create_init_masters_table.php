@@ -84,6 +84,7 @@ return new class extends Migration {
 
         Schema::create("sub_sections", function(Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger("section_id");
             $table->string("slug");
             $table->string("name");
             $table->integer("order")->nullable();
@@ -93,12 +94,14 @@ return new class extends Migration {
             $table->integer("created_by")->nullable();
             $table->timestamp("updated_at")->nullable();
             $table->integer("updated_by")->nullable();
+
+            $table->foreign("section_id")->references("id")->on("sections")->onDelete("cascade");
         });
 
-        Schema::create("companies_sections", function(Blueprint $table) {
+        Schema::create("companies_sub_sections", function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("company_id");
-            $table->unsignedBigInteger("section_id");
+            $table->unsignedBigInteger("sub_section_id");
             $table->enum("status", ["active", "inactive"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();
@@ -107,7 +110,7 @@ return new class extends Migration {
             $table->integer("updated_by")->nullable();
 
             $table->foreign("company_id")->references("id")->on("companies")->onDelete("cascade");
-            $table->foreign("section_id")->references("id")->on("sections")->onDelete("cascade");
+            $table->foreign("sub_section_id")->references("id")->on("sub_sections")->onDelete("cascade");
         });
 
         Schema::create("roles", function(Blueprint $table) {
@@ -181,16 +184,6 @@ return new class extends Migration {
             ["id" => 7, "slug" => "sc_reports", "name" => "reports", "order" => 7]
         ]);
 
-        DB::table("companies_sections")->insert([
-            ["company_id" => 1, "section_id" => 1],
-            ["company_id" => 1, "section_id" => 2],
-            ["company_id" => 1, "section_id" => 3],
-            ["company_id" => 1, "section_id" => 4],
-            ["company_id" => 1, "section_id" => 5],
-            ["company_id" => 1, "section_id" => 6],
-            ["company_id" => 1, "section_id" => 7]
-        ]);
-
         DB::table("sub_sections")->insert([
             ["id" => 1, "slug" => "sbc_home-main", "name" => "home-main"],
             ["id" => 2, "slug" => "sbc_sales-list", "name" => "sales-list"],
@@ -204,6 +197,21 @@ return new class extends Migration {
             ["id" => 10, "slug" => "sbc_configuration-branchs", "name" => "configuration-branchs"],
             ["id" => 11, "slug" => "sbc_configuration-users", "name" => "configuration-users"],
             ["id" => 12, "slug" => "sbc_reports-main", "name" => "reports-main"]
+        ]);
+
+        DB::table("companies_sub_sections")->insert([
+            ["company_id" => 1, "sub_section_id" => 1],
+            ["company_id" => 1, "sub_section_id" => 2],
+            ["company_id" => 1, "sub_section_id" => 3],
+            ["company_id" => 1, "sub_section_id" => 4],
+            ["company_id" => 1, "sub_section_id" => 5],
+            ["company_id" => 1, "sub_section_id" => 6],
+            ["company_id" => 1, "sub_section_id" => 7],
+            ["company_id" => 1, "sub_section_id" => 8],
+            ["company_id" => 1, "sub_section_id" => 9],
+            ["company_id" => 1, "sub_section_id" => 10],
+            ["company_id" => 1, "sub_section_id" => 11],
+            ["company_id" => 1, "sub_section_id" => 12]
         ]);
 
         DB::table("roles")->insert([
@@ -225,6 +233,9 @@ return new class extends Migration {
 
         Schema::dropIfExists("users");
         Schema::dropIfExists("roles");
+        Schema::dropIfExists("companies_sections");
+        Schema::dropIfExists("sub_sections");
+        Schema::dropIfExists("sections");
         Schema::dropIfExists("companies");
         Schema::dropIfExists("currencies");
         Schema::dropIfExists("document_types");

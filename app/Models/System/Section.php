@@ -48,9 +48,9 @@ class Section extends Model {
     }
 
     // Relationships
-    public function companiesSections() {
+    public function subSections() {
 
-        return $this->hasMany(CompanySection::class, "section_id", "id")
+        return $this->hasMany(SubSection::class, "section_id", "id")
                     ->whereIn("status", ["active"]);
 
     }

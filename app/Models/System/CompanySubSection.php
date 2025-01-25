@@ -5,9 +5,9 @@ namespace App\Models\System;
 use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
 
-class CompanySection extends Model {
+class CompanySubSection extends Model {
 
-    protected $table               = "companies_sections";
+    protected $table               = "companies_sub_sections";
     protected $primaryKey          = "id";
     public $incrementing           = true;
     public $timestamps             = true;
@@ -19,7 +19,7 @@ class CompanySection extends Model {
 
     protected $fillable = [
         "company_id",
-        "section_id",
+        "sub_section_id",
         "status",
         "created_at",
         "created_by",
@@ -53,9 +53,9 @@ class CompanySection extends Model {
 
     }
 
-    public function section() {
+    public function subSection() {
 
-        return $this->belongsTo(Section::class, "section_id", "id");
+        return $this->belongsTo(SubSection::class, "sub_section_id", "id");
 
     }
 

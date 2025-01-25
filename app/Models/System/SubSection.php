@@ -18,6 +18,7 @@ class SubSection extends Model {
     ];
 
     protected $fillable = [
+        "section_id",
         "slug",
         "name",
         "order",
@@ -48,11 +49,17 @@ class SubSection extends Model {
     }
 
     // Relationships
-    /* public function companiesSections() {
+    public function section() {
 
-        return $this->hasMany(CompanySection::class, "section_id", "id")
+        return $this->belongsTo(Section::class, "section_id", "id")
+
+    }
+
+    public function companiesSubSections() {
+
+        return $this->hasMany(CompanySubSection::class, "sub_section_id", "id")
                     ->whereIn("status", ["active"]);
 
-    } */
+    }
 
 }

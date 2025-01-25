@@ -4,6 +4,7 @@
     $user = Auth::user();
     $company = $user->company;
     $role = $user->role;
+    $companySections = $company->companySubSections->sortBy("order");
 @endphp
 
 <html
@@ -140,12 +141,6 @@
                                 </li>
                             </ul>
                         </li>
-                        {{-- <li class="menu-item" id="menu-item-analytics">
-                            <a href="{{ route('reports.index') }}" class="menu-link">
-                                <i class="fa fa-chart-simple me-3"></i>
-                                <div data-i18n="Page 1">Analytics</div>
-                            </a>
-                        </li> --}}
                         <li class="menu-item" id="menu-item-reports">
                             <a href="{{ route('reports.index') }}" class="menu-link">
                                 <i class="fa fa-print me-3"></i>
