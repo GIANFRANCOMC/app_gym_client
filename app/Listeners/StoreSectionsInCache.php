@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Listeners;
+
+use App\Helpers\System\Utilities;
+use Illuminate\Auth\Events\Authenticated;
+use App\Services\CompanySectionService;
+
+class StoreSectionsInCache {
+
+    public function handle(Authenticated $event) {
+
+        $user = $event->user;
+
+        if(Utilities::isDefined($user)) {
+
+            // Call the function to automatically cache sections
+            CompanySectionService::getActiveSections($user->company_id);
+
+        }
+
+    }
+
+}

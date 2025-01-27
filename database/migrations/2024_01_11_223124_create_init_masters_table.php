@@ -95,6 +95,7 @@ return new class extends Migration {
             $table->string("dom_id")->default("");
             $table->string("dom_label")->default("");
             $table->string("dom_icon")->default("");
+            $table->string("dom_route")->default("");
             $table->enum("status", ["active", "inactive"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();
@@ -192,18 +193,18 @@ return new class extends Migration {
         ]);
 
         DB::table("sub_sections")->insert([
-            ["id" => 1, "section_id" => 1, "slug" => "sbc_home-main", "name" => "home-main", "dom_id" => "menu-item-home", "dom_label" => "Inicio"],
-            ["id" => 2, "section_id" => 2, "slug" => "sbc_sales-list", "name" => "sales-list", "dom_id" => "menu-item-list-sales", "dom_label" => "Listado"],
-            ["id" => 3, "section_id" => 2, "slug" => "sbc_sales-main", "name" => "sales-main", "dom_id" => "menu-item-create-sales", "dom_label" => "Nuevo"],
-            ["id" => 4, "section_id" => 3, "slug" => "sbc_trackings-subscriptions", "name" => "trackings-subscriptions", "dom_id" => "menu-item-trackings-subscriptions", "dom_label" => "Suscripciones"],
-            ["id" => 5, "section_id" => 4, "slug" => "sbc_items-products", "name" => "items-products", "dom_id" => "menu-item-catalogs-products", "dom_label" => "Productos"],
-            ["id" => 6, "section_id" => 4, "slug" => "sbc_items-services", "name" => "items-services", "dom_id" => "menu-item-catalogs-services", "dom_label" => "Servicios"],
-            ["id" => 7, "section_id" => 4, "slug" => "sbc_items-subscriptions", "name" => "items-subscriptions", "dom_id" => "menu-item-catalogs-subscriptions", "dom_label" => "Suscripciones"],
-            ["id" => 8, "section_id" => 5, "slug" => "sbc_customers-main", "name" => "customers-main", "dom_id" => "menu-item-customers", "dom_label" => "Clientes"],
-            ["id" => 9, "section_id" => 6, "slug" => "sbc_configuration-my_company", "name" => "configuration-my_company", "dom_id" => "menu-item-configuration-companies", "dom_label" => "Mi empresa"],
-            ["id" => 10, "section_id" => 6, "slug" => "sbc_configuration-branchs", "name" => "configuration-branchs", "dom_id" => "menu-item-configuration-branches", "dom_label" => "Sucursales"],
-            ["id" => 11, "section_id" => 6, "slug" => "sbc_configuration-users", "name" => "configuration-users", "dom_id" => "menu-item-configuration-users", "dom_label" => "Colaboradores"],
-            ["id" => 12, "section_id" => 7, "slug" => "sbc_reports-main", "name" => "reports-main", "dom_id" => "menu-item-reports", "dom_label" => "Reportes"]
+            ["id" => 1, "section_id" => 1, "slug" => "sbc_home-main", "name" => "home-main", "dom_id" => "menu-item-home", "dom_label" => "Inicio", "dom_route" => "home.index"],
+            ["id" => 2, "section_id" => 2, "slug" => "sbc_sales-list", "name" => "sales-list", "dom_id" => "menu-item-list-sales", "dom_label" => "Listado", "dom_route" => "sales.index"],
+            ["id" => 3, "section_id" => 2, "slug" => "sbc_sales-main", "name" => "sales-main", "dom_id" => "menu-item-create-sales", "dom_label" => "Nuevo", "dom_route" => "sales.create"],
+            ["id" => 4, "section_id" => 3, "slug" => "sbc_trackings-subscriptions", "name" => "trackings-subscriptions", "dom_id" => "menu-item-trackings-subscriptions", "dom_label" => "Suscripciones", "dom_route" => "trackingSubscriptions.index"],
+            ["id" => 5, "section_id" => 4, "slug" => "sbc_items-products", "name" => "items-products", "dom_id" => "menu-item-catalogs-products", "dom_label" => "Productos", "dom_route" => "products.index"],
+            ["id" => 6, "section_id" => 4, "slug" => "sbc_items-services", "name" => "items-services", "dom_id" => "menu-item-catalogs-services", "dom_label" => "Servicios", "dom_route" => "services.index"],
+            ["id" => 7, "section_id" => 4, "slug" => "sbc_items-subscriptions", "name" => "items-subscriptions", "dom_id" => "menu-item-catalogs-subscriptions", "dom_label" => "Suscripciones", "dom_route" => "subscriptions.index"],
+            ["id" => 8, "section_id" => 5, "slug" => "sbc_customers-main", "name" => "customers-main", "dom_id" => "menu-item-customers", "dom_label" => "Clientes", "dom_route" => "customers.index"],
+            ["id" => 9, "section_id" => 6, "slug" => "sbc_configuration-my_company", "name" => "configuration-my_company", "dom_id" => "menu-item-configuration-companies", "dom_label" => "Mi empresa", "dom_route" => "companies.index"],
+            ["id" => 10, "section_id" => 6, "slug" => "sbc_configuration-branchs", "name" => "configuration-branchs", "dom_id" => "menu-item-configuration-branches", "dom_label" => "Sucursales", "dom_route" => "branches.index"],
+            ["id" => 11, "section_id" => 6, "slug" => "sbc_configuration-users", "name" => "configuration-users", "dom_id" => "menu-item-configuration-users", "dom_label" => "Colaboradores", "dom_route" => "users.index"],
+            ["id" => 12, "section_id" => 7, "slug" => "sbc_reports-main", "name" => "reports-main", "dom_id" => "menu-item-reports", "dom_label" => "Reportes", "dom_route" => "reports.index"]
         ]);
 
         DB::table("companies_sub_sections")->insert([

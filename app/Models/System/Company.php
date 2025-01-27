@@ -3,6 +3,7 @@
 namespace App\Models\System;
 
 use App\Helpers\System\Utilities;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 
 class Company extends Model {
@@ -48,6 +49,42 @@ class Company extends Model {
         ];
 
         return Utilities::getValues($statusses, $type, $code);
+
+    }
+
+    public static function getActiveSections($company_id) {
+
+        $sections = collect();
+
+        if(!Utilities::isDefined($company_id)) {
+
+            return $sections;
+
+        }
+
+        try {
+
+            $companySubSections = CompanySubSection::where("company_id", $company_id)
+                                                   ->whereHas("subSection.section", function($query) { $query->where("status", "active"); })
+                                                   ->with("subSection.section")
+                                                   ->get();
+
+            $sections = $companySubSections->pluck("subSection")
+                                           ->filter(fn($subSection) => $subSection->status === "active")
+                                           ->groupBy(fn($subSection) => $subSection->section->id)
+                                           ->map(fn($subSections, $sectionId) => [
+                                               "section" => $subSections->first()->section,
+                                               "subSections" => $subSections,
+                                           ])
+                                           ->sortBy(fn($section) => $section["section"]->order);
+
+        }catch(Exception $e) {
+
+            //
+
+        }
+
+        return $sections;
 
     }
 

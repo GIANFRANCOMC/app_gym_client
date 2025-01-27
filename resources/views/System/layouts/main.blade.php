@@ -1,21 +1,14 @@
 <!DOCTYPE html>
 
 @php
-    $user    = Auth::user();
-    $company = $user->company;
-    $role    = $user->role;
+    $user     = Auth::user();
+    $company  = $user->company;
+    $role     = $user->role;
+    $sections = Cache::get("active_sections_".$company->id);
 
-    // Access
-    $companySubSections = $company->companySubSections()->with("subSection.section")->get();
-
-    $sections = $companySubSections->pluck("subSection")
-                                    ->groupBy(fn($subSection) => $subSection->section->id)
-                                    ->map(fn($subSections, $sectionName) => [
-                                        "section" => $subSections->first()->section,
-                                        "subSections" => $subSections,
-                                    ]);
-
-    $sections = $sections->sortBy(fn($section) => $section["section"]->order);
+    // Cache data
+    $hasActiveSections  = Cache::get("has_active_sections_".$company->id);
+    $lastActiveSections = Cache::get("last_active_sections_".$company->id);
 @endphp
 
 <html
@@ -63,132 +56,45 @@
                                 </div>
                             </span>
                         </li>
-                        @foreach($sections as $section)
-                            @if($section['section']->has_sub_menu)
-                                <li class="menu-item" id="{{ $section['section']->dom_id }}">
-                                    <a href="javascript:void(0);" class="menu-link menu-toggle">
-                                        <i class="{{ $section['section']->dom_icon }} me-3"></i>
-                                        <div>{{ $section["section"]->dom_label }}</div>
-                                    </a>
+                        @foreach($sections as $sec)
+                            @php
+                                $section = $sec["section"];
+                                $subSec  = $sec["subSections"]->first();
+                            @endphp
+                            <li class="menu-item" id="{{ $section->dom_id }}">
+                                <a href="{{ $section->has_sub_menu ? 'javascript:void(0);' : route($subSec->dom_route) }}" class="{{ $section->has_sub_menu ? 'menu-link menu-toggle' : 'menu-link' }}">
+                                    <i class="{{ $section->dom_icon }} me-3"></i>
+                                    <div>{{ $section->dom_label }}</div>
+                                </a>
+                                @if($section->has_sub_menu)
                                     <ul class="menu-sub">
-                                        @foreach($section["subSections"] as $subSection)
+                                        @foreach($sec["subSections"] as $subSection)
                                             <li class="menu-item" id="{{ $subSection->dom_id }}">
-                                                <a href="{{ route('sales.index') }}" class="menu-link">
+                                                <a href="{{ route($subSection->dom_route) }}" class="menu-link">
                                                     <div>{{ $subSection->dom_label }}</div>
                                                 </a>
                                             </li>
                                         @endforeach
                                     </ul>
-                                </li>
-                            @else
-                                <li class="menu-item" id="{{ $section['section']->dom_id }}">
-                                    <a href="{{ route('home.index') }}" class="menu-link">
-                                        <i class="{{ $section['section']->dom_icon }} me-3"></i>
-                                        <div>{{ $section["section"]->dom_label }}</div>
-                                    </a>
-                                </li>
-                            @endif
+                                @endif
+                            </li>
                         @endforeach
-                        {{-- <br/>
-                        <li class="menu-item" id="menu-item-home">
-                            <a href="{{ route('home.index') }}" class="menu-link">
-                                <i class="fa fa-home me-3"></i>
-                                <div data-i18n="Inicio">Inicio</div>
+                        <li class="menu-item">
+                            <a href="javascript:void(0)" class="menu-link">
+                                <i class="fa fa-check me-3"></i>
+                                <div class="text-white">{{ $hasActiveSections }}</div>
                             </a>
                         </li>
-                        <li class="menu-item" id="menu-item-sales">
-                            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                                <i class="fa-solid fa-cash-register me-3"></i>
-                                <div data-i18n="Ventas">Ventas</div>
-                            </a>
-                            <ul class="menu-sub">
-                                <li class="menu-item" id="menu-item-list-sales">
-                                    <a href="{{ route('sales.index') }}" class="menu-link">
-                                        <div data-i18n="Collapsed menu">Listado</div>
-                                    </a>
-                                </li>
-                                <li class="menu-item" id="menu-item-create-sales">
-                                    <a href="{{ route('sales.create') }}" class="menu-link">
-                                        <div data-i18n="Collapsed menu">Nuevo</div>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="menu-item" id="menu-item-trackings">
-                            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                                <i class="fa-solid fa-binoculars me-3"></i>
-                                <div data-i18n="Ventas">Seguimiento</div>
-                            </a>
-                            <ul class="menu-sub">
-                                <li class="menu-item" id="menu-item-trackings-subscriptions">
-                                    <a href="{{ route('trackingSubscriptions.index') }}" class="menu-link">
-                                        <div data-i18n="Collapsed menu">Suscripciones</div>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="menu-item" id="menu-item-catalogs">
-                            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                                <i class="fa fa-book me-3"></i>
-                                <div data-i18n="Page 1">Catálogo comercial</div>
-                            </a>
-                            <ul class="menu-sub">
-                                <li class="menu-item" id="menu-item-catalogs-products">
-                                    <a href="{{ route('products.index') }}" class="menu-link">
-                                        <div data-i18n="Collapsed menu">Productos</div>
-                                    </a>
-                                </li>
-                                <li class="menu-item" id="menu-item-catalogs-services">
-                                    <a href="{{ route('services.index') }}" class="menu-link">
-                                        <div data-i18n="Collapsed menu">Servicios</div>
-                                    </a>
-                                </li>
-                                <li class="menu-item" id="menu-item-catalogs-subscriptions">
-                                    <a href="{{ route('subscriptions.index') }}" class="menu-link">
-                                        <div data-i18n="Collapsed menu">Suscripciones</div>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="menu-item" id="menu-item-customers">
-                            <a href="{{ route('customers.index') }}" class="menu-link">
-                                <i class="fa fa-user me-3"></i>
-                                <div data-i18n="Page 1">Clientes</div>
+                        <li class="menu-item">
+                            <a href="javascript:void(0)" class="menu-link">
+                                <i class="fa fa-eye me-3"></i>
+                                <div class="text-white">{{ $lastActiveSections }}</div>
                             </a>
                         </li>
-                        <li class="menu-item" id="menu-item-configuration">
-                            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                                <i class="fa fa-gear me-3"></i>
-                                <div data-i18n="Configuración">Configuración</div>
-                            </a>
-                            <ul class="menu-sub">
-                                <li class="menu-item" id="menu-item-configuration-companies">
-                                    <a href="{{ route('companies.index') }}" class="menu-link">
-                                        <div data-i18n="Collapsed menu">Mi empresa</div>
-                                    </a>
-                                </li>
-                                <li class="menu-item" id="menu-item-configuration-branches">
-                                    <a href="{{ route('branches.index') }}" class="menu-link">
-                                        <div data-i18n="Collapsed menu">Sucursales</div>
-                                    </a>
-                                </li>
-                                <li class="menu-item" id="menu-item-configuration-users">
-                                    <a href="{{ route('users.index') }}" class="menu-link">
-                                        <div data-i18n="Collapsed menu">Colaboradores</div>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="menu-item" id="menu-item-reports">
-                            <a href="{{ route('reports.index') }}" class="menu-link">
-                                <i class="fa fa-print me-3"></i>
-                                <div data-i18n="Page 1">Reportes</div>
-                            </a>
-                        </li> --}}
                         <li class="menu-item">
                             <a href="javascript:void(0)" class="menu-link bg-danger" onclick="$('#logout').submit();">
                                 <i class="fa fa-right-from-bracket me-3"></i>
-                                <div data-i18n="Page 2" class="text-white">Cerrar sesión</div>
+                                <div class="text-white">Cerrar sesión</div>
                             </a>
                             <form method="POST" action="{{ route('logout') }}" id="logout">
                                 @csrf

@@ -25,6 +25,7 @@ class SubSection extends Model {
         "dom_id",
         "dom_label",
         "dom_icon",
+        "dom_route",
         "status",
         "created_at",
         "created_by",
