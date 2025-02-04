@@ -21,6 +21,8 @@ return new class extends Migration {
             $table->integer("duration_value")->nullable();
             $table->dateTime("start_date");
             $table->dateTime("end_date");
+            $table->boolean("set_end_of_day")->default(false);
+            $table->boolean("force")->default(false);
             $table->text("observation")->nullable();
             $table->text("motive")->nullable();
             $table->enum("type", ["sale", "manual"])->default("sale");

@@ -685,23 +685,23 @@
                 <tr class="bg-grey border-top-bottom">
                     <th class="text-center py-2">DESCRIPCIÓN</th>
                     <th class="text-center py-2">CANTIDAD</th>
-                    <th class="text-center py-2">UNIDAD</th>
+                    {{-- <th class="text-center py-2">UNIDAD</th> --}}
                     <th class="text-right py-2">P. UNITARIO</th>
                     <th class="text-right py-2">TOTAL</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($saleHeader->positions as $position)
+                @foreach ($saleHeader->allPositions as $position)
                     <tr>
                         <td class="text-center">{{ $position->name }}</td>
                         <td class="text-center">{{ $position->quantity }}</td>
-                        <td class="text-center">UND</td>
+                        {{-- <td class="text-center">UND</td> --}}
                         <td class="text-right">S/ {{ number_format(($position->price), 2) }}</td>
                         <td class="text-right">S/ {{ number_format(($position->total), 2) }}</td>
                     </tr>
                 @endforeach
                 <tr class="border-top">
-                    <td colspan="4" class="text-right font-bold">TOTAL A PAGAR:</td>
+                    <td colspan="3" class="text-right font-bold">TOTAL A PAGAR:</td>
                     <td colspan="1" class="text-right font-bold">S/ {{ number_format(($saleHeader->total), 2) }}</td>
                 </tr>
             </tbody>

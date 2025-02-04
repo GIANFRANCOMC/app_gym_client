@@ -17,3 +17,7 @@
     text-decoration: none;
     cursor: default;
 }
+
+.no-resize {
+    resize: none !important;
+}

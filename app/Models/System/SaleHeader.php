@@ -174,4 +174,10 @@ class SaleHeader extends Model {
 
     }
 
+    public function allPositions() {
+
+        return $this->hasMany(SaleBody::class, "sale_header_id", "id");
+
+    }
+
 }

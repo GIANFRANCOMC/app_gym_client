@@ -123,7 +123,7 @@
                                                 <td>
                                                     <InputNumber v-model="record.price">
                                                         <template v-slot:inputGroupPrepend v-if="isDefined({value: record?.currency})">
-                                                            <button class="btn btn-primary waves-effect px-1" type="button" v-text="record?.currency?.sign"></button>
+                                                            <button class="btn btn-primary waves-effect px-2" type="button" v-text="record?.currency?.sign"></button>
                                                         </template>
                                                     </InputNumber>
                                                 </td>
@@ -138,7 +138,7 @@
                                                         <i class="fa fa-times"></i>
                                                         <span class="ms-1 fw-semibold">Eliminar</span>
                                                     </button>
-                                                    <button class="btn btn-info btn-xs waves-effect my-1" type="button" @click="duplicateDetail({record, keyRecord})">
+                                                    <button v-if="['product', 'service'].includes(record?.type)" class="btn btn-info btn-xs waves-effect my-1" type="button" @click="duplicateDetail({record, keyRecord})">
                                                         <i class="fa fa-copy"></i>
                                                         <span class="ms-1 fw-semibold">Duplicar</span>
                                                     </button>
@@ -155,14 +155,14 @@
                                                     <tr class="border-transparent text-center">
                                                         <td colspan="1"></td>
                                                         <td colspan="5">
-                                                            <div class="row g-2 my-1">
-                                                                <div class="col-4">
+                                                            <div class="row justify-content-center g-2 my-1">
+                                                                <!-- <div class="col-4">
                                                                     <InputText
                                                                         title="Duración"
                                                                         v-model="record.extras.formatted_duration"
                                                                         isRequired
                                                                         disabled/>
-                                                                </div>
+                                                                </div> -->
                                                                 <div class="col-4">
                                                                     <InputDatetime
                                                                         title="Fecha de inicio"
@@ -183,7 +183,7 @@
                                                                     xl="12"
                                                                     lg="12">
                                                                     <template v-slot:input>
-                                                                        <div v-if="['today', 'day', 'month', 'year'].includes(record.extras?.duration_type)" class="form-check form-check-primary my-2">
+                                                                        <div v-if="['day', 'month', 'year'].includes(record.extras?.duration_type)" class="form-check form-check-primary my-2">
                                                                             <label class="form-check-label">
                                                                                 <input
                                                                                     class="form-check-input"
@@ -235,7 +235,7 @@
                                     <template v-else>
                                         <tr>
                                             <td class="text-center" colspan="99">
-                                                <WithoutData type="text"/>
+                                                <WithoutData type="image"/>
                                             </td>
                                         </tr>
                                     </template>
@@ -250,14 +250,18 @@
         <div class="col-lg-3 col-12">
             <div class="card">
                 <div class="card-body">
-                    <div class="row g-3 mb-4">
-                        <InputText
+                    <div class="row g-3">
+                        <InputTextArea
                             v-model="forms.entity.createUpdate.data.observation"
                             hasDiv
                             :divClass="['mb-3', 'p-0']"
                             title="Observaciones"
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.observation"/>
+                        <button class="btn btn-info waves-effect my-1" @click="viewSubscription({})">
+                            <i class="fa-solid fa-binoculars"></i>
+                            <span class="ms-2">Ver suscripciones</span>
+                        </button>
                         <button class="btn btn-primary waves-effect my-1" @click="modalAddDetail({})">
                             <i class="fa fa-plus"></i>
                             <span class="ms-2">Agregar detalle</span>
@@ -399,7 +403,7 @@
                                                 <template v-slot:input>
                                                     <div class="d-block my-1">
                                                         <i class="fa fa-calendar ms-1"></i>
-                                                        <span class="ms-2">Duración base:</span>
+                                                        <span class="ms-2">Duración base de la suscripción:</span>
                                                         <span v-text="forms.entity.createUpdate.extras.modals.details.data.extras.formatted_duration" class="fw-bold ms-1"></span>
                                                     </div>
                                                     <div class="d-block mt-1 mb-2">
@@ -488,6 +492,75 @@
                     <button type="button" :class="['btn waves-effect', ['store'].includes(forms.entity.createUpdate.extras.modals.details.data?.mode) ? 'btn-primary' : 'btn-warning']" @click="addDetail()">
                         <i class="fa fa-save"></i>
                         <span class="ms-2">Guardar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" :id="forms.entity.createUpdate.extras.modals.subscriptions.id" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.createUpdate.extras.modals.subscriptions.titles.default"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="d-block">
+                            <span>Cliente:</span>
+                            <span v-text="forms.entity.createUpdate.data.holder?.data?.document_number+'-'+forms.entity.createUpdate.data.holder?.data?.name" class="fw-bold ms-1"></span>
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover">
+                                <thead class="table-light">
+                                    <tr class="text-center align-middle">
+                                        <th class="fw-bold col-1">#</th>
+                                        <th class="fw-bold text-nowrap col-2">FECHA DE INICIO</th>
+                                        <th class="fw-bold text-nowrap col-2">FECHA DE FINALIZACIÓN</th>
+                                        <th class="fw-bold col-1">TIPO</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-border-bottom-0 bg-white">
+                                    <template v-if="forms.entity.createUpdate.extras.modals.subscriptions.data.loading">
+                                        <tr class="text-center">
+                                            <td colspan="99">
+                                                <Loader/>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                    <template v-else>
+                                        <template v-if="(options?.holders?.subscriptions[forms.entity.createUpdate.data.holder?.data?.id] ?? []).length > 0">
+                                            <template v-for="(record, keyRecord) in options?.holders?.subscriptions[forms.entity.createUpdate.data.holder?.data?.id]" :key="record.id">
+                                                <tr class="text-nowrap text-center">
+                                                    <td v-text="keyRecord + 1"></td>
+                                                    <td v-text="legibleFormatDate({dateString: record.start_date})"></td>
+                                                    <td v-text="legibleFormatDate({dateString: record.end_date})"></td>
+                                                    <td>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </template>
+                                        <template v-else>
+                                            <tr>
+                                                <td class="text-center" colspan="99">
+                                                    <WithoutData type="text"/>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" :class="['btn waves-effect', 'btn-primary']" @click="refreshSubscriptions()">
+                        <i class="fa fa-refresh"></i>
+                        <span class="ms-2">Actualizar</span>
                     </button>
                 </div>
             </div>
@@ -600,6 +673,15 @@ export default {
                                         mode: "store"
                                     },
                                     errors: {}
+                                },
+                                subscriptions: {
+                                    id: Utils.uuid(),
+                                    titles: {
+                                        default: "Suscripciones activas"
+                                    },
+                                    data: {
+                                        loading: false
+                                    }
                                 },
                                 finished: {
                                     id: Utils.uuid(),
@@ -840,6 +922,26 @@ export default {
         viewDetail({record, keyRecord}) {
 
             record.extras.showDetail = !record.extras.showDetail;
+
+        },
+        viewSubscription({}) {
+
+            let form = this.forms.entity.createUpdate.extras.modals.subscriptions;
+
+            Alerts.modals({type: "show", id: form.id});
+
+        },
+        async refreshSubscriptions() {
+
+            let form = this.forms.entity.createUpdate.extras.modals.subscriptions;
+
+            form.data.loading = true;
+
+            let getSubscriptions = await Utils.getSubscriptions({customer: this.forms.entity.createUpdate.data.holder?.data});
+
+            this.options.holders.subscriptions[this.forms.entity.createUpdate.data.holder?.data?.id] = Requests.valid({result: getSubscriptions}) ? getSubscriptions?.data?.subscriptions : false;
+
+            form.data.loading = false;
 
         },
         // Entity forms

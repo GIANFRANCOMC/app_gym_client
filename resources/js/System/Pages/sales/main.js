@@ -13,6 +13,7 @@ import InputSelect   from "../../Components/InputSelect.vue";
 import InputSlot     from "../../Components/InputSlot.vue";
 import InputSelect2  from "../../Components/InputSelect2.vue";
 import InputText     from "../../Components/InputText.vue";
+import InputTextArea from "../../Components/InputTextArea.vue";
 import Paginator     from "../../Components/Paginator.vue";
 import Loader        from "../../Components/Loader.vue";
 import WithoutData   from "../../Components/WithoutData.vue";
@@ -29,6 +30,7 @@ createApp(App)
 .component("InputSlot", InputSlot)
 .component("InputSelect2", InputSelect2)
 .component("InputText", InputText)
+.component("InputTextArea", InputTextArea)
 .component("Paginator", Paginator)
 .component("Loader", Loader)
 .component("WithoutData", WithoutData)

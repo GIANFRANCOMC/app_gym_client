@@ -14,6 +14,8 @@ class SaleBody extends Model {
     public static $snakeAttributes = true;
 
     protected $appends = [
+        "formatted_duration",
+        "formatted_type",
         "formatted_status"
     ];
 
@@ -25,6 +27,12 @@ class SaleBody extends Model {
         "quantity",
         "price",
         "total",
+        "customer_id",
+        "type",
+        "duration_type",
+        "duration_value",
+        "set_end_of_day",
+        "force",
         "observation",
         "status",
         "created_at",
@@ -34,6 +42,27 @@ class SaleBody extends Model {
     ];
 
     // Appends
+    public function getFormattedDurationAttribute() {
+
+        if(Utilities::isDefined($this->duration_type) && Utilities::isDefined($this->duration_value)) {
+
+            $prop = $this->duration_value > 1 ? "plural" : "label";
+            $durationType = self::getDurationTypes("first", $this->attributes["duration_type"])[$prop] ?? "";
+
+            return "{$this->duration_value} {$durationType}";
+
+        }
+
+        return "";
+
+    }
+
+    public function getFormattedTypeAttribute() {
+
+        return self::getTypes("first", $this->attributes["type"])["label"] ?? "";
+
+    }
+
     public function getFormattedStatusAttribute() {
 
         return self::getStatusses("first", $this->attributes["status"])["label"] ?? "";
@@ -41,11 +70,37 @@ class SaleBody extends Model {
     }
 
     // Functions
+    public static function getDurationTypes($type = "all", $code = "") {
+
+        $types = [
+            ["code" => "hour", "label" => "Hora", "plural" => "Horas"],
+            ["code" => "day", "label" => "Día", "plural" => "Días"],
+            ["code" => "today", "label" => "Día de hoy", "plural" => "Días de hoy"],
+            ["code" => "month", "label" => "Mes", "plural" => "Meses"],
+            ["code" => "year", "label" => "Año", "plural" => "Años"]
+        ];
+
+        return Utilities::getValues($types, $type, $code);
+
+    }
+
+    public static function getTypes($type = "all", $code = "") {
+
+        $types = [
+            ["code" => "sale", "label" => "Venta"],
+            ["code" => "manual", "label" => "Manual"]
+        ];
+
+        return Utilities::getValues($types, $type, $code);
+
+    }
+
     public static function getStatusses($type = "all", $code = "") {
 
         $statusses = [
             ["code" => "active", "label" => "Activo"],
-            ["code" => "inactive", "label" => "Inactivo"]
+            ["code" => "inactive", "label" => "Inactivo"],
+            ["code" => "cancelled", "label" => "Anulado"]
         ];
 
         return Utilities::getValues($statusses, $type, $code);
@@ -68,6 +123,12 @@ class SaleBody extends Model {
     public function currency() {
 
         return $this->belongsTo(Currency::class, "currency_id", "id");
+
+    }
+
+    public function customer() {
+
+        return $this->belongsTo(Customer::class, "customer_id", "id");
 
     }
 

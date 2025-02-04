@@ -144,6 +144,12 @@ class SaleController extends Controller {
                     $saleBody->quantity       = $detail["quantity"];
                     $saleBody->price          = $detail["price"];
                     $saleBody->total          = Utilities::round((floatval($saleBody->quantity) * floatval($saleBody->price)));
+                    $saleBody->customer_id    = $saleHeader->holder_id;
+                    $saleBody->type           = $detail["type"];
+                    $saleBody->duration_type  = $detail["extras"]["duration_type"];
+                    $saleBody->duration_value = $detail["extras"]["duration_value"];
+                    $saleBody->set_end_of_day = $detail["extras"]["set_end_of_day"] ?? false;
+                    $saleBody->force          = $detail["extras"]["force"] ?? false;
                     $saleBody->observation    = $detail["observation"] ?? "";
                     $saleBody->status         = "active";
                     $saleBody->created_at     = now();
@@ -159,10 +165,12 @@ class SaleController extends Controller {
                         $subscription->sale_header_id = $saleHeader->id;
                         $subscription->sale_body_id   = $saleBody->id;
                         $subscription->customer_id    = $saleHeader->holder_id;
-                        $subscription->duration_type  = $detail["extras"]["duration_type"];
-                        $subscription->duration_value = $detail["extras"]["duration_value"];
+                        $subscription->duration_type  = $saleBody->duration_type;
+                        $subscription->duration_value = $saleBody->duration_value;
                         $subscription->start_date     = str_replace("T", " ", $detail["extras"]["start_date"]);
                         $subscription->end_date       = str_replace("T", " ", $detail["extras"]["end_date"]);
+                        $subscription->set_end_of_day = $saleBody->set_end_of_day;
+                        $subscription->force          = $saleBody->force;
                         $subscription->observation    = $detail["extras"]["observation"] ?? "";
                         $subscription->type           = "sale";
                         $subscription->status         = "active";
@@ -226,6 +234,10 @@ class SaleController extends Controller {
             $saleHeader->save();
 
             $motive = "Por la anulación de la venta.";
+
+            SaleBody::where("sale_header_id", $saleHeader->id)
+                    ->whereIn("status", ["active"])
+                    ->update(["status" => "cancelled", "updated_at" => now(), "updated_by" => $userAuth->id ?? null]);
 
             Subscription::where("company_id", $userAuth->company_id)
                         ->where("sale_header_id", $saleHeader->id)

@@ -28,6 +28,8 @@ class Subscription extends Model {
         "duration_value",
         "start_date",
         "end_date",
+        "set_end_of_day",
+        "force",
         "observation",
         "motive",
         "type",

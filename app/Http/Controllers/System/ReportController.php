@@ -82,7 +82,7 @@ class ReportController extends Controller {
             if($expirationDate->greaterThan($currentDate)) {
 
                 $saleHeader = SaleHeader::where("id", $document)
-                                        ->with(["serie.documentType", "holder", "positions"])
+                                        ->with(["serie.documentType", "holder", "allPositions"])
                                         ->first();
 
                 $company = Company::first();
