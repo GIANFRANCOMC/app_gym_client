@@ -539,6 +539,7 @@
                                                     <td v-text="legibleFormatDate({dateString: record.start_date})"></td>
                                                     <td v-text="legibleFormatDate({dateString: record.end_date})"></td>
                                                     <td>
+                                                        <span v-text="record.formatted_type" class="badge bg-label-primary fw-bold"></span>
                                                     </td>
                                                 </tr>
                                             </template>
