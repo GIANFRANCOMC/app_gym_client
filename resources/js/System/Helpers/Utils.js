@@ -246,46 +246,46 @@ export function getErrors({errors}) {
 
 export function addDuration({startDate, type, quantity, setEndOfDay = false}) {
 
-    const fecha = new Date(startDate);
+    const date = new Date(startDate);
 
     try {
 
         switch(type) {
-            case 'hour':
-                fecha.setHours(fecha.getHours() + quantity);
+            case "hour":
+                date.setHours(date.getHours() + quantity);
                 break;
 
-            case 'today':
-                fecha.setDate(fecha.getDate() + (quantity <= 0 ? 0 : (quantity - 1)));
-                fecha.setHours(23, 59, 59, 999);
+            case "day":
+                date.setDate(date.getDate() + quantity);
                 break;
 
-            case 'day':
-                fecha.setDate(fecha.getDate() + quantity);
+            case "today":
+                date.setDate(date.getDate() + (quantity <= 0 ? 0 : (quantity - 1)));
+                date.setHours(23, 59, 59, 999);
                 break;
 
-            case 'month':
-                fecha.setMonth(fecha.getMonth() + quantity);
+            case "month":
+                date.setMonth(date.getMonth() + quantity);
                 break;
 
-            case 'year':
-                fecha.setFullYear(fecha.getFullYear() + quantity);
+            case "year":
+                date.setFullYear(date.getFullYear() + quantity);
                 break;
         }
 
-        if(setEndOfDay && ["today", "day", "month", "year"].includes(type)) {
+        if(setEndOfDay && ["day", "today", "month", "year"].includes(type)) {
 
-            fecha.setHours(23, 59, 59, 999);
+            date.setHours(23, 59, 59, 999);
 
         }
 
     }catch(e) {
 
-        fecha.setDate(fecha.getDate());
+        date.setDate(date.getDate());
 
     }
 
-    return isNaN(fecha.getTime()) ? "" : this.parseISOToDatetimeLocal(fecha.toString());
+    return isNaN(date.getTime()) ? "" : this.parseISOToDatetimeLocal(date.toString());
 
 }
 
@@ -384,7 +384,7 @@ export function getMessageWhatsapp({data, action}) {
 
     if(["reportSale"].includes(action)) {
 
-        const information = "¡Se ha creado la venta exitosamente! Para obtener el archivo, visite el siguiente enlace:";
+        const information = "¡Se ha creado la venta exitosamente! Para obtener el documento de la venta, visite el siguiente enlace:";
         const url = Requests.routeReport({resource: "sale", params: {document: data?.id, type: "a4"}, extras: {action}});
 
         message = `${information} %0A ${url}`;

@@ -101,9 +101,9 @@
                                         <template v-for="(record, keyRecord) in forms.entity.createUpdate.data.details" :key="record.id">
                                             <tr class="text-center">
                                                 <td>
-                                                    <span v-text="keyRecord + 1" class="badge rounded-pill bg-info"></span>
+                                                    <span v-text="keyRecord + 1" class="badge rounded-pill bg-info fw-bold"></span>
                                                 </td>
-                                                <td class="fw-bold text-start">
+                                                <td class="fw-semibold text-start">
                                                     <span class="text-break" v-text="record.name"></span>
                                                 </td>
                                                 <td>
@@ -123,46 +123,41 @@
                                                 <td>
                                                     <InputNumber v-model="record.price">
                                                         <template v-slot:inputGroupPrepend v-if="isDefined({value: record?.currency})">
-                                                            <button class="btn btn-primary waves-effect px-2" type="button" v-text="record?.currency?.sign"></button>
+                                                            <button class="btn btn-primary waves-effect px-2" type="button">
+                                                                <small v-text="record?.currency?.sign"></small>
+                                                            </button>
                                                         </template>
                                                     </InputNumber>
                                                 </td>
                                                 <td>
-                                                    <span class="text-break">
-                                                        <span v-text="record.currency?.sign ?? ''"></span>
-                                                        <span v-text="separatorNumber(calculateTotal({item: record}))" class="ms-2"></span>
+                                                    <span class="text-break fw-semibold">
+                                                        <small v-text="record.currency?.sign ?? ''"></small>
+                                                        <small v-text="separatorNumber(calculateTotal({item: record}))" class="ms-2"></small>
                                                     </span>
                                                 </td>
                                                 <td>
                                                     <button class="btn btn-danger btn-xs waves-effect my-1" type="button" @click="deleteDetail({record, keyRecord})">
                                                         <i class="fa fa-times"></i>
-                                                        <span class="ms-1 fw-semibold">Eliminar</span>
+                                                        <span class="ms-1">Eliminar</span>
                                                     </button>
                                                     <button v-if="['product', 'service'].includes(record?.type)" class="btn btn-info btn-xs waves-effect my-1" type="button" @click="duplicateDetail({record, keyRecord})">
                                                         <i class="fa fa-copy"></i>
-                                                        <span class="ms-1 fw-semibold">Duplicar</span>
+                                                        <span class="ms-1">Duplicar</span>
                                                     </button>
-                                                    <template v-if="['subscription'].includes(record?.type)">
+                                                    <template v-if="isSubscription(record?.type)">
                                                         <button class="btn btn-success btn-xs waves-effect my-1" type="button" @click="viewDetail({record, keyRecord})">
                                                             <i :class="record?.extras?.showDetail ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
-                                                            <span class="ms-1 fw-semibold" v-text="record?.extras?.showDetail ? 'Ocultar detalle' : 'Mostar detalle'"></span>
+                                                            <span class="ms-1" v-text="record?.extras?.showDetail ? 'Ocultar detalle' : 'Mostar detalle'"></span>
                                                         </button>
                                                     </template>
                                                 </td>
                                             </tr>
                                             <template v-if="record?.extras?.showDetail">
-                                                <template v-if="['subscription'].includes(record?.type)">
+                                                <template v-if="isSubscription(record?.type)">
                                                     <tr class="border-transparent text-center">
                                                         <td colspan="1"></td>
                                                         <td colspan="5">
                                                             <div class="row justify-content-center g-2 my-1">
-                                                                <!-- <div class="col-4">
-                                                                    <InputText
-                                                                        title="Duración"
-                                                                        v-model="record.extras.formatted_duration"
-                                                                        isRequired
-                                                                        disabled/>
-                                                                </div> -->
                                                                 <div class="col-4">
                                                                     <InputDatetime
                                                                         title="Fecha de inicio"
@@ -179,12 +174,10 @@
                                                                 </div>
                                                                 <InputSlot
                                                                     :isInputGroup="false"
-                                                                    :divInputClass="['text-start', 'mt-3']"
-                                                                    xl="12"
-                                                                    lg="12">
+                                                                    :divInputClass="['col-12', 'text-start', 'mt-3']">
                                                                     <template v-slot:input>
-                                                                        <div v-if="['day', 'month', 'year'].includes(record.extras?.duration_type)" class="form-check form-check-primary my-2">
-                                                                            <label class="form-check-label">
+                                                                        <div v-if="['day', 'month', 'year'].includes(record.extras?.duration_type)" class="form-check form-check-primary my-1">
+                                                                            <label class="form-check-label fw-semibold">
                                                                                 <input
                                                                                     class="form-check-input"
                                                                                     type="checkbox"
@@ -193,7 +186,7 @@
                                                                                 Ajustar la hora de la Fecha de finalización al final del día (23:59 = 11:59 PM)
                                                                             </label>
                                                                         </div>
-                                                                        <div class="form-check form-check-primary my-2">
+                                                                        <!--<div class="form-check form-check-primary my-2">
                                                                             <label class="form-check-label">
                                                                                 <input
                                                                                     class="form-check-input"
@@ -201,7 +194,7 @@
                                                                                     v-model="record.extras.force"/>
                                                                                 Tomar en cuenta la suscripciones activas
                                                                             </label>
-                                                                        </div>
+                                                                        </div>-->
                                                                     </template>
                                                                 </InputSlot>
                                                             </div>
@@ -258,7 +251,7 @@
                             title="Observaciones"
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.observation"/>
-                        <button class="btn btn-info waves-effect my-1" @click="viewSubscription({})">
+                        <button class="btn btn-info waves-effect my-1" @click="viewSubscriptions({})">
                             <i class="fa-solid fa-binoculars"></i>
                             <span class="ms-2">Ver suscripciones</span>
                         </button>
@@ -301,18 +294,18 @@
                                         <span v-text="label" class="d-block fw-bold"></span>
                                         <div class="d-block">
                                             <small>
-                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star text-warning"></i>
                                             </small>
-                                            <small v-text="data?.formatted_type" class="ms-1"></small>
+                                            <small v-text="data?.formatted_type" class="ms-2"></small>
                                             <small v-text="data?.currency?.sign" class="ms-2"></small>
                                             <small v-text="separatorNumber(data?.price)" class="ms-1"></small>
                                         </div>
-                                        <template v-if="['subscription'].includes(data?.type)">
+                                        <template v-if="isSubscription(data?.type)">
                                             <div class="d-block">
                                                 <small>
-                                                    <i class="fa fa-clock"></i>
+                                                    <i class="fa fa-clock text-info"></i>
                                                 </small>
-                                                <small class="ms-1">Duración:</small>
+                                                <small class="ms-2">Duración:</small>
                                                 <small v-text="data?.formatted_duration" class="ms-2"></small>
                                             </div>
                                         </template>
@@ -367,7 +360,7 @@
                         <div class="accordion mt-4" id="accordionConfigSubscription">
                             <div class="card accordion-item">
                                 <h2 class="accordion-header d-flex align-items-center border">
-                                    <button type="button" class="accordion-button fw-bold" data-bs-toggle="collapse" data-bs-target="#accordionConfigSubscription-1" aria-expanded="true">
+                                    <button type="button" class="accordion-button fw-semibold" data-bs-toggle="collapse" data-bs-target="#accordionConfigSubscription-1" aria-expanded="true">
                                         <i class="fa fa-info-circle"></i>
                                         <span class="ms-2">Detalle de la suscripción</span>
                                     </button>
@@ -397,19 +390,17 @@
                                                 lg="6"/>
                                             <InputSlot
                                                 :isInputGroup="false"
-                                                :divInputClass="['mt-3']"
-                                                xl="12"
-                                                lg="12">
+                                                :divInputClass="['col-12', 'text-start', 'mt-3']">
                                                 <template v-slot:input>
                                                     <div class="d-block my-1">
-                                                        <i class="fa fa-calendar ms-1"></i>
+                                                        <i class="fa fa-calendar text-primary ms-1"></i>
                                                         <span class="ms-2">Duración base de la suscripción:</span>
-                                                        <span v-text="forms.entity.createUpdate.extras.modals.details.data.extras.formatted_duration" class="fw-bold ms-1"></span>
+                                                        <span v-text="forms.entity.createUpdate.extras.modals.details.data.extras.formatted_duration" class="fw-bold ms-2"></span>
                                                     </div>
                                                     <div class="d-block mt-1 mb-2">
-                                                        <i class="fa fa-calculator ms-1"></i>
+                                                        <i class="fa fa-calculator text-primary ms-1"></i>
                                                         <span class="ms-2">Duración total calculada:</span>
-                                                        <span v-text="forms.entity.createUpdate.extras.modals.details.data.extras.formatted_total_duration" class="fw-bold ms-1"></span>
+                                                        <span v-text="forms.entity.createUpdate.extras.modals.details.data.extras.formatted_total_duration" class="fw-bold ms-2"></span>
                                                     </div>
                                                     <div v-if="['day', 'month', 'year'].includes(forms.entity.createUpdate.extras.modals.details.data.extras?.duration_type)" class="form-check form-check-primary my-1">
                                                         <label class="form-check-label fw-semibold">
@@ -421,7 +412,7 @@
                                                             Ajustar la hora de la Fecha de finalización al final del día (23:59 = 11:59 PM)
                                                         </label>
                                                     </div>
-                                                    <div class="form-check form-check-primary fw-semibold my-1">
+                                                    <!--<div class="form-check form-check-primary fw-semibold my-1">
                                                         <label class="form-check-label">
                                                             <input
                                                                 class="form-check-input"
@@ -429,7 +420,7 @@
                                                                 v-model="forms.entity.createUpdate.extras.modals.details.data.extras.force"/>
                                                             Tomar en cuenta la suscripciones activas
                                                         </label>
-                                                    </div>
+                                                    </div>-->
                                                 </template>
                                             </InputSlot>
                                         </div>
@@ -440,7 +431,7 @@
                         <div class="accordion mt-3" id="accordionSubscriptions" v-if="isDefined({value: forms.entity.createUpdate.data.holder?.data?.id})">
                             <div class="card accordion-item">
                                 <h2 class="accordion-header d-flex align-items-center border">
-                                    <button type="button" class="accordion-button fw-bold collapsed" data-bs-toggle="collapse" data-bs-target="#accordionSubscriptions-1" aria-expanded="false">
+                                    <button type="button" class="accordion-button fw-semibold collapsed" data-bs-toggle="collapse" data-bs-target="#accordionSubscriptions-1" aria-expanded="false">
                                         <i class="fa-solid fa-binoculars"></i>
                                         <span class="ms-2">Suscripciones activas</span>
                                         <span class="badge badge-center rounded-pill bg-primary ms-2" v-text="(options?.holders?.subscriptions[forms.entity.createUpdate.data.holder?.data?.id] ?? []).length"></span>
@@ -508,8 +499,11 @@
                 <div class="modal-body">
                     <div class="row mb-3">
                         <div class="d-block">
-                            <span>Cliente:</span>
-                            <span v-text="forms.entity.createUpdate.data.holder?.data?.document_number+'-'+forms.entity.createUpdate.data.holder?.data?.name" class="fw-bold ms-1"></span>
+                            <i class="fa fa-user"></i>
+                            <span class="ms-2">Cliente:</span>
+                            <span v-text="forms.entity.createUpdate.data.holder?.data?.document_number" class="fw-bold ms-2"></span>
+                            <span class="fw-bold ms-1">-</span>
+                            <span v-text="forms.entity.createUpdate.data.holder?.data?.name" class="fw-bold ms-1"></span>
                         </div>
                     </div>
                     <div class="row g-3">
@@ -731,7 +725,7 @@ export default {
         // Init
         async initParams({}) {
 
-            let initParams = await Requests.get({route: this.config.entity.routes.initParams, data: {page: "main"}, showAlert: true});
+            const initParams = await Requests.get({route: this.config.entity.routes.initParams, data: {page: "main"}, showAlert: true});
 
             this.options.branches    = initParams.data?.config?.branches;
             this.options.currencies  = initParams.data?.config?.currencies;
@@ -819,13 +813,13 @@ export default {
 
                 record.quantity = operation;
 
+                this.calculateDuration({record});
+
             }else {
 
                 Alerts.toastrs({type: "error", subtitle: this.config.forms.errors.labels.min_number_0});
 
             }
-
-            this.calculateDuration({record});
 
         },
         deleteDetail({record, keyRecord}) {
@@ -907,7 +901,7 @@ export default {
 
                         (el.forms.entity.createUpdate.data.details).push(form);
 
-                        Alerts.toastrs({type: "success", subtitle: `<b>${form?.name}</b> ha sido duplicado al detalle de la venta.`});
+                        Alerts.toastrs({type: "success", subtitle: `<b>${form?.name}</b> ha sido agregado al detalle de la venta.`});
 
                     }else if(result.isDismissed) {
 
@@ -925,7 +919,7 @@ export default {
             record.extras.showDetail = !record.extras.showDetail;
 
         },
-        viewSubscription({}) {
+        viewSubscriptions({}) {
 
             let form = this.forms.entity.createUpdate.extras.modals.subscriptions;
 
@@ -938,7 +932,7 @@ export default {
 
             form.data.loading = true;
 
-            let getSubscriptions = await Utils.getSubscriptions({customer: this.forms.entity.createUpdate.data.holder?.data});
+            const getSubscriptions = await Utils.getSubscriptions({customer: this.forms.entity.createUpdate.data.holder?.data});
 
             this.options.holders.subscriptions[this.forms.entity.createUpdate.data.holder?.data?.id] = Requests.valid({result: getSubscriptions}) ? getSubscriptions?.data?.subscriptions : false;
 
@@ -978,8 +972,8 @@ export default {
 
                 });
 
-                let createUpdate = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: form.id}) :
-                                                                             Requests.post({route: this.config.entity.routes.store, data: form}));
+                const createUpdate = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: form.id}) :
+                                                                               Requests.post({route: this.config.entity.routes.store, data: form}));
 
                 if(Requests.valid({result: createUpdate})) {
 
@@ -1026,8 +1020,8 @@ export default {
                     this.forms.entity.createUpdate.data.id          = null;
                     // this.forms.entity.createUpdate.data.issue_date  = Utils.getCurrentDate();
                     // this.forms.entity.createUpdate.data.holder      = null;
-                    this.forms.entity.createUpdate.data.status      = "";
                     this.forms.entity.createUpdate.data.observation = "";
+                    this.forms.entity.createUpdate.data.status      = "";
                     // this.forms.entity.createUpdate.data.details     = [];
                     break;
             }
@@ -1069,7 +1063,7 @@ export default {
 
                 }else {
 
-                    if(["subscription"].includes(form?.type)) {
+                    if(this.isSubscription(form?.type)) {
 
                         if(!this.isDefined({value: form?.extras?.start_date})) {
 
@@ -1100,7 +1094,7 @@ export default {
 
                         }
 
-                        if(!form?.extras?.force) {
+                        /* if(!form?.extras?.force) {
 
                             const subscriptions = Utils.cloneJson(this.options?.holders?.subscriptions[this.forms.entity.createUpdate.data.holder?.data?.id]);
 
@@ -1129,7 +1123,7 @@ export default {
 
                             }
 
-                        }
+                        } */
 
                     }
 
@@ -1223,8 +1217,6 @@ export default {
 
                     if(!this.isDefined({value: form?.status})) {
 
-                        result.status.push(this.config.forms.errors.labels.required);
-
                         result.status.push(`${isDescriptive ? "Estado:" : ""} ${this.config.forms.errors.labels.required}`);
                         result.bool = false;
 
@@ -1243,13 +1235,13 @@ export default {
 
                     for(let [keyDetail, detail] of Object.entries(form?.details)) {
 
-                        let validateDetail = this.validateForm({functionName: "addDetail", form: detail, extras: {type: "descriptive"}});
+                        const validateDetail = this.validateForm({functionName: "addDetail", form: detail, extras: {type: "descriptive"}});
 
                         if(!validateDetail?.bool) {
 
                             let propsValidate = Utils.getErrors({errors: validateDetail});
 
-                            errorDetails.push(`<p class="mb-1">Detalle de la venta <b>${parseInt(keyDetail) + 1}</b>:</p>`+propsValidate.flat().map(e => `<li>${e}</li>`).join(""));
+                            errorDetails.push(`<p class="mb-1">Detalle de la venta <b>#${parseInt(keyDetail) + 1}</b>:</p>`+propsValidate.flat().map(e => `<li>${e}</li>`).join(""));
                             result.bool = false;
 
                         }
@@ -1285,7 +1277,7 @@ export default {
 
             let data = record;
 
-            if(["subscription"].includes(data?.type)) {
+            if(this.isSubscription(data?.type)) {
 
                 let setEndOfDay   = data?.extras?.set_end_of_day,
                     startDate     = data?.extras?.start_date,
@@ -1366,11 +1358,11 @@ export default {
         },
         series: function() {
 
-            let branch = (this.options?.branches?.records ?? []).filter(e => e?.id == this.forms.entity.createUpdate.data.branch?.code);
+            const branch = (this.options?.branches?.records ?? []).filter(e => e?.id == this.forms.entity.createUpdate.data.branch?.code);
 
             if(branch.length === 1) {
 
-                let series = branch[0].series;
+                const series = branch[0].series;
 
                 return series.map(e => ({code: e.id, label: `${e.legible_serie} - ${e?.document_type?.name}`, data: e}));
 
@@ -1421,36 +1413,56 @@ export default {
         },
         "forms.entity.createUpdate.data.holder": async function(newValue, oldValue) {
 
-            let getSubscriptions = await Utils.getSubscriptions({customer: newValue?.data});
+            const getSubscriptions = await Utils.getSubscriptions({customer: newValue?.data});
 
             this.options.holders.subscriptions[newValue?.data?.id] = Requests.valid({result: getSubscriptions}) ? getSubscriptions?.data?.subscriptions : false;
 
         },
         "forms.entity.createUpdate.extras.modals.details.data.item": function(newValue, oldValue) {
 
-            let data = newValue?.data;
+            const data = newValue?.data;
 
-            this.forms.entity.createUpdate.extras.modals.details.data.type     = data?.type;
-            this.forms.entity.createUpdate.extras.modals.details.data.currency = data?.currency;
-            this.forms.entity.createUpdate.extras.modals.details.data.name     = data?.name;
-            this.forms.entity.createUpdate.extras.modals.details.data.price    = Number(data?.price ?? 0);
+            let modalData = this.forms.entity.createUpdate.extras.modals.details.data;
 
-            if(["subscription"].includes(data?.type)) {
+            modalData.type     = data?.type;
+            modalData.currency = data?.currency;
+            modalData.name     = data?.name;
+            modalData.price    = Number(data?.price ?? 0);
 
-                let modalData = this.forms.entity.createUpdate.extras.modals.details.data;
+            // Set quantity decimals
+            const quantity = modalData?.quantity ?? 1,
+                  decimals = this.getItemDecimals({mode: "result", record: modalData});
 
-                const decimals = this.getItemDecimals({mode: "result", record: modalData});
+            modalData.quantity = Number(this.fixedNumber(quantity, decimals));
 
-                this.forms.entity.createUpdate.extras.modals.details.data.quantity = Number(this.fixedNumber(modalData.quantity, decimals));
+            // Set extras
+            let extras = {
+                set_end_of_day: false,
+                force: false,
+                duration_type: "",
+                duration_value: "",
+                start_date: "",
+                end_date: "",
+                observation: "",
+                formatted_duration: "",
+                formatted_total_duration: "",
+                formatted_type: "",
+                showDetail: true
+            };
 
-                let start_date = Utils.isDefined({value: modalData.extras.start_date}) ? modalData.extras.start_date : Utils.getCurrentDate("datetime");
+            if(["product", "service"].includes(data?.type)) {
 
-                this.forms.entity.createUpdate.extras.modals.details.data.extras = {
+                modalData.extras = extras;
+
+            }else if(this.isSubscription(data?.type)) {
+
+                // Set extras
+                extras = {
                     set_end_of_day: ["today"].includes(data?.duration_type),
                     force: true,
                     duration_type: data?.duration_type,
                     duration_value: data?.duration_value,
-                    start_date,
+                    start_date: Utils.isDefined({value: modalData.extras.start_date}) ? modalData.extras.start_date : Utils.getCurrentDate("datetime"),
                     end_date: "",
                     observation: "",
                     formatted_duration: data?.formatted_duration,
@@ -1459,7 +1471,13 @@ export default {
                     showDetail: true
                 };
 
-                this.calculateDuration({record: this.forms.entity.createUpdate.extras.modals.details.data});
+                modalData.extras = extras;
+
+                this.calculateDuration({record: modalData});
+
+            }else {
+
+                modalData.extras = extras;
 
             }
 
