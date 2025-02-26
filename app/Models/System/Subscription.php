@@ -64,7 +64,7 @@ class Subscription extends Model {
 
     public function getFormattedStatusAttribute() {
 
-        return self::getStatusses("first", $this->attributes["status"])["label"] ?? "";
+        return self::getStatuses("first", $this->attributes["status"])["label"] ?? "";
 
     }
 
@@ -94,15 +94,15 @@ class Subscription extends Model {
 
     }
 
-    public static function getStatusses($type = "all", $code = "") {
+    public static function getStatuses($type = "all", $code = "") {
 
-        $statusses = [
+        $statuses = [
             ["code" => "active", "label" => "Activo"],
             ["code" => "inactive", "label" => "Inactivo"],
             ["code" => "cancelled", "label" => "Anulado"]
         ];
 
-        return Utilities::getValues($statusses, $type, $code);
+        return Utilities::getValues($statuses, $type, $code);
 
     }
 

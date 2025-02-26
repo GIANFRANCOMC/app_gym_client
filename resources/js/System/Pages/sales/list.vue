@@ -8,7 +8,7 @@
             title="Serie"
             :titleClass="[config.forms.classes.title]"
             xl="6"
-            lg="6">
+            lg="12">
             <template v-slot:input>
                 <v-select
                     v-model="lists.entity.filters.serie"
@@ -32,7 +32,6 @@
             hasDiv
             title="Secuencia"
             :titleClass="[config.forms.classes.title]"
-            placeholder="Ejemplo: 203"
             xl="3"
             lg="6"/>
         <InputDate
@@ -74,7 +73,7 @@
             <template v-slot:input>
                 <v-select
                     v-model="lists.entity.filters.status"
-                    :options="statusses"
+                    :options="statuses"
                     :class="config.forms.classes.select2"
                     :clearable="true"
                     placeholder="Seleccione"/>
@@ -293,7 +292,7 @@ export default {
         async listEntity({url = null}) {
 
             let filters = Utils.cloneJson(this.lists.entity.filters);
-            const filterJson = {serie_id: filters?.serie?.code, sequential: filters?.sequential, holder_id: filters?.holder?.code, issue_date: filters.issue_date, status: filters?.status?.code};
+            const filterJson = {serie_id: filters?.serie?.code, sequential: filters?.sequential, issue_date: filters.issue_date, holder_id: filters?.holder?.code, status: filters?.status?.code};
 
             this.lists.entity.extras.loading = true;
             this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: {...filterJson}}))?.data;
@@ -483,9 +482,9 @@ export default {
             return this.options?.holders?.records.map(e => ({code: e.id, label: `${e.document_number} - ${e.name}`, data: e}));
 
         },
-        statusses: function() {
+        statuses: function() {
 
-            return this.options?.salesHeader?.statusses.map(e => ({code: e.code, label: e.label}));
+            return this.options?.salesHeader?.statuses.map(e => ({code: e.code, label: e.label}));
 
         }
     }

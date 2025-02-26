@@ -27,7 +27,7 @@ class UserController extends Controller {
             $config->identityDocumentTypes->records = IdentityDocumentType::get();
 
             $config->users = new stdClass();
-            $config->users->statusses = User::getStatusses();
+            $config->users->statuses = User::getStatuses();
 
         }
 

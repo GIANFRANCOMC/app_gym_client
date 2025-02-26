@@ -118,14 +118,14 @@ class ReportController extends Controller {
 
                             // return view("System.pdf.sales.a4", $data);
                             $pdf = Pdf::loadView("System.pdf.sales.a4", $data);
-                            return $pdf->stream("archivo.pdf", ["Attachment" => false]);
+                            return $pdf->stream("$saleHeader->serie_sequential - A4.pdf", ["Attachment" => false]);
                             // return $pdf->download("Comprobante ".$saleHeader->serie_sequential.".pdf");
 
                         }else if(in_array($printType, ["mm80"])) {
 
                             // return view("System.pdf.sales.mm80", $data);
                             $pdf = Pdf::loadView("System.pdf.sales.mm80", $data)->setPaper([0, 0, 80 * 2.83, 160 * 2.83]);
-                            return $pdf->stream("archivo.pdf", ["Attachment" => false]);
+                            return $pdf->stream("$saleHeader->serie_sequential - 80mm.pdf", ["Attachment" => false]);
                             // return $pdf->download("Comprobante ".$saleHeader->serie_sequential.".pdf");
 
                         }

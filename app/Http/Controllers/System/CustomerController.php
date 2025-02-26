@@ -27,7 +27,7 @@ class CustomerController extends Controller {
             $config->identityDocumentTypes->records = IdentityDocumentType::get();
 
             $config->customers = new stdClass();
-            $config->customers->statusses = Customer::getStatusses();
+            $config->customers->statuses = Customer::getStatuses();
 
         }
 

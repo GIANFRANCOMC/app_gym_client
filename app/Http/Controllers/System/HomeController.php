@@ -45,7 +45,6 @@ class HomeController extends Controller {
         $userAuth = Auth::user();
 
         $branches = Branch::where("company_id", $userAuth->company_id)
-                          ->whereIn("status", ["active"])
                           ->with(["series"])
                           ->get();
 
@@ -78,7 +77,7 @@ class HomeController extends Controller {
             ],
             "branches" => [
                 "valid" => [
-                    "count" => $branches->count()
+                    "count" => $branches->whereIn("status", ["active"])->count()
                 ]
             ],
             "users" => [

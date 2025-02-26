@@ -173,7 +173,7 @@
                             <template v-slot:input>
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.status"
-                                    :options="statusses"
+                                    :options="statuses"
                                     :clearable="false"/>
                             </template>
                         </InputSlot>
@@ -336,7 +336,7 @@ export default {
             if(this.isDefined({value: record})) {
 
                 let currency = this.currencies.filter(e => e.code === record?.currency_id)[0],
-                    status   = this.statusses.filter(e => e.code === record?.status)[0];
+                    status   = this.statuses.filter(e => e.code === record?.status)[0];
 
                 this.forms.entity.createUpdate.data.id            = record?.id;
                 this.forms.entity.createUpdate.data.internal_code = record?.internal_code;
@@ -350,7 +350,7 @@ export default {
 
                 // this.setGenerateCode({showAlert: false});
                 this.forms.entity.createUpdate.data.currency = this.currencies[0];
-                this.forms.entity.createUpdate.data.status   = this.statusses[0];
+                this.forms.entity.createUpdate.data.status   = this.statuses[0];
 
             }
 
@@ -525,9 +525,9 @@ export default {
             return this.options?.currencies?.records.map(e => ({code: e.id, label: e.plural_name}));
 
         },
-        statusses: function() {
+        statuses: function() {
 
-            return this.options?.products?.statusses.map(e => ({code: e.code, label: e.label}));
+            return this.options?.products?.statuses.map(e => ({code: e.code, label: e.label}));
 
         }
     },

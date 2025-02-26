@@ -30,7 +30,7 @@ class SaleController extends Controller {
             $config->customers->records = Customer::getAll();
 
             $config->salesHeader = new stdClass();
-            $config->salesHeader->statusses = SaleHeader::getStatusses();
+            $config->salesHeader->statuses = SaleHeader::getStatuses();
 
         }else if(in_array($page, ["main"])) {
 
@@ -48,7 +48,7 @@ class SaleController extends Controller {
             $config->items->records = Item::getAll("sale");
 
             $config->salesHeader = new stdClass();
-            $config->salesHeader->statusses = SaleHeader::getStatusses();
+            $config->salesHeader->statuses = SaleHeader::getStatuses();
 
         }
 
@@ -61,6 +61,14 @@ class SaleController extends Controller {
 
     public function list(Request $request) {
 
+        $userAuth = Auth::user();
+
+        $branches = Branch::where("company_id", $userAuth->company_id)
+                          ->with(["series"])
+                          ->get();
+
+        $serieIds = $branches->pluck("series.*.id")->flatten();
+
         $list = SaleHeader::when(Utilities::isDefined($request->serie_id), function($query) use($request) {
 
                                 $query->where("serie_id", $request->serie_id);
@@ -71,14 +79,14 @@ class SaleController extends Controller {
                                 $query->where("sequential", $request->sequential);
 
                            })
-                           ->when(Utilities::isDefined($request->holder_id), function($query) use($request) {
-
-                                $query->where("holder_id", $request->holder_id);
-
-                           })
                            ->when(Utilities::isDefined($request->issue_date), function($query) use($request) {
 
                                 $query->where("issue_date", $request->issue_date);
+
+                           })
+                           ->when(Utilities::isDefined($request->holder_id), function($query) use($request) {
+
+                                $query->where("holder_id", $request->holder_id);
 
                            })
                            ->when(Utilities::isDefined($request->status), function($query) use($request) {
@@ -86,6 +94,7 @@ class SaleController extends Controller {
                                 $query->where("status", $request->status);
 
                            })
+                           ->whereIn("serie_id", $serieIds)
                            ->orderBy("id", "DESC")
                            ->with(["serie.documentType", "holder", "currency"])
                            ->paginate($request->per_page ?? Utilities::$per_page_default);
@@ -199,9 +208,9 @@ class SaleController extends Controller {
 
                 }
 
-                $saleHeader->total  = $total;
-                $saleHeader->status = "active";
-                $saleHeader->save();
+                // $saleHeader->total  = $total;
+                // $saleHeader->status = "active";
+                // $saleHeader->save();
 
                 // With
                 // $saleHeader->serie;
@@ -240,27 +249,36 @@ class SaleController extends Controller {
 
         $userAuth = Auth::user();
 
-        // Cambiar condicional - y agregar company_id si le pertenece
         $saleHeader = SaleHeader::findOrFail($id);
 
         if(Utilities::isDefined($saleHeader) && in_array($saleHeader->status, ["active"])) {
 
-            $saleHeader->status     = "cancelled";
-            $saleHeader->updated_at = now();
-            $saleHeader->updated_by = $userAuth->id ?? null;
-            $saleHeader->save();
+            if($serie = $saleHeader->serie) {
 
-            $motive = "Por la anulación de la venta.";
+                $branch = $serie->branch;
 
-            SaleBody::where("sale_header_id", $saleHeader->id)
-                    ->whereIn("status", ["active"])
-                    ->update(["status" => "cancelled", "updated_at" => now(), "updated_by" => $userAuth->id ?? null]);
+                if(Utilities::isDefined($branch) && $branch->company_id == $userAuth->company_id) {
 
-            Subscription::where("company_id", $userAuth->company_id)
-                        ->where("sale_header_id", $saleHeader->id)
-                        ->whereIn("type", ["sale"])
-                        ->whereIn("status", ["active"])
-                        ->update(["motive" => $motive, "status" => "cancelled", "updated_at" => now(), "updated_by" => $userAuth->id ?? null]);
+                    $saleHeader->status     = "cancelled";
+                    $saleHeader->updated_at = now();
+                    $saleHeader->updated_by = $userAuth->id ?? null;
+                    $saleHeader->save();
+
+                    $motive = "Por la anulación de la venta.";
+
+                    SaleBody::where("sale_header_id", $saleHeader->id)
+                            ->whereIn("status", ["active"])
+                            ->update(["status" => "cancelled", "updated_at" => now(), "updated_by" => $userAuth->id ?? null]);
+
+                    Subscription::where("company_id", $userAuth->company_id)
+                                ->where("sale_header_id", $saleHeader->id)
+                                ->whereIn("type", ["sale"])
+                                ->whereIn("status", ["active"])
+                                ->update(["motive" => $motive, "status" => "cancelled", "updated_at" => now(), "updated_by" => $userAuth->id ?? null]);
+
+                }
+
+            }
 
         }
 

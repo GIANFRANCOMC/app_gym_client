@@ -678,7 +678,7 @@
             <tr>
                 <td class="text-left">
                     <p class="m-0 desc">FECHA DE EMISIÓN: {{ $saleHeader->formatted_issue_date }}</p>
-                    <p class="m-0 desc">CLIENTE: {{ $saleHeader->holder->name }}</p>
+                    <p class="m-0 desc">CLIENTE: {{ $saleHeader->holder->document_number }} - {{ $saleHeader->holder->name }}</p>
                 </td>
             </tr>
         </table>
@@ -701,6 +701,17 @@
                         <td class="text-right desc-9">S/ {{ number_format(($position->price), 2) }}</td>
                         <td class="text-right desc-9">S/ {{ number_format(($position->total), 2) }}</td>
                     </tr>
+                    @if (in_array($position->type, ["subscription"]))
+                        <tr>
+                            <td colspan="1"></td>
+                            <td colspan="3" class="pb-1 desc-9">
+                                <small class="font-bold">Fecha de inicio:</small>
+                                <small>{{ \Carbon\Carbon::parse($position->formatted_extras->end_date)->format("d-m-Y h:i A") }}</small> <br/>
+                                <small class="font-bold">Fecha de finalización:</small>
+                                <small>{{ \Carbon\Carbon::parse($position->formatted_extras->end_date)->format("d-m-Y h:i A") }}</small>
+                            </td>
+                        </tr>
+                    @endif
                 @endforeach
                 <tr class="border-top">
                     <td colspan="3" class="text-right font-bold desc-9">TOTAL A PAGAR:</td>

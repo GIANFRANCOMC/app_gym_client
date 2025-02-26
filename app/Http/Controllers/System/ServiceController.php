@@ -24,7 +24,7 @@ class ServiceController extends Controller {
         if(in_array($page, ["main"])) {
 
             $config->services = new stdClass();
-            $config->services->statusses = Item::getStatusses();
+            $config->services->statuses = Item::getStatuses();
 
             $config->currencies = new stdClass();
             $config->currencies->records = Currency::get();

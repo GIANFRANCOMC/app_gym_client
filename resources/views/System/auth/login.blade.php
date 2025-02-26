@@ -3,18 +3,21 @@
         $hasCompany   = isset($data->company) && !empty($data->company);
         $hasCompanies = isset($data->companies) && !empty($data->companies) && count($data->companies) > 0;
     @endphp
-    <div class="d-flex flex-column justify-content-center mb-3">
+    <div class="d-flex flex-column justify-content-center">
         @if ($hasCompany)
             <span class="h5 text-center fw-semibold mb-2">
                 Bienvenido a
             </span>
-            <span class="h5 text-center fw-bold">
+            <span class="h3 text-center fw-bold mb-4">
                 {{ $data->company->commercial_name }}
             </span>
         @else
-            <span class="h4 text-center fw-semibold mb-2">
-                Bienvenido
+            <span class="text-center mb-3">
+                <img src="{{ asset('System/assets/img/utils/admin/6_.png') }}" class="img-fluid" width="70%"/>
             </span>
+            {{-- <span class="h4 text-center fw-semibold mb-2">
+                Bienvenido
+            </span> --}}
         @endif
     </div>
     <form method="POST" action="{{ route('login') }}">

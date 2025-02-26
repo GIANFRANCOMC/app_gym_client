@@ -126,7 +126,7 @@
                             <template v-slot:input>
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.status"
-                                    :options="statusses"
+                                    :options="statuses"
                                     :clearable="false"/>
                             </template>
                         </InputSlot>
@@ -271,7 +271,7 @@ export default {
 
             if(this.isDefined({value: record})) {
 
-                let status = this.statusses.filter(e => e.code === record?.status)[0];
+                let status = this.statuses.filter(e => e.code === record?.status)[0];
 
                 this.forms.entity.createUpdate.data.id     = record?.id;
                 this.forms.entity.createUpdate.data.name   = record?.name;
@@ -279,7 +279,7 @@ export default {
 
             }else {
 
-                this.forms.entity.createUpdate.data.status = this.statusses[0];
+                this.forms.entity.createUpdate.data.status = this.statuses[0];
 
             }
 
@@ -404,9 +404,9 @@ export default {
             ];
 
         },
-        statusses: function() {
+        statuses: function() {
 
-            return this.options?.branches?.statusses.map(e => ({code: e.code, label: e.label}));
+            return this.options?.branches?.statuses.map(e => ({code: e.code, label: e.label}));
 
         }
     },

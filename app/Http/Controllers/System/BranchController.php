@@ -24,7 +24,7 @@ class BranchController extends Controller {
         if(in_array($page, ["main"])) {
 
             $config->branches = new stdClass();
-            $config->branches->statusses = Branch::getStatusses();
+            $config->branches->statuses = Branch::getStatuses();
 
         }
 

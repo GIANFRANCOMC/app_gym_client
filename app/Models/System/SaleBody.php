@@ -3,6 +3,7 @@
 namespace App\Models\System;
 
 use App\Helpers\System\Utilities;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 
 class SaleBody extends Model {
@@ -14,8 +15,8 @@ class SaleBody extends Model {
     public static $snakeAttributes = true;
 
     protected $appends = [
-        "formatted_duration",
         "formatted_type",
+        "formatted_extras",
         "formatted_status"
     ];
 
@@ -39,30 +40,29 @@ class SaleBody extends Model {
     ];
 
     // Appends
-    public function getFormattedDurationAttribute() {
-
-        if(Utilities::isDefined($this->duration_type) && Utilities::isDefined($this->duration_value)) {
-
-            $prop = $this->duration_value > 1 ? "plural" : "label";
-            $durationType = self::getDurationTypes("first", $this->attributes["duration_type"])[$prop] ?? "";
-
-            return "{$this->duration_value} {$durationType}";
-
-        }
-
-        return "";
-
-    }
-
     public function getFormattedTypeAttribute() {
 
         return self::getTypes("first", $this->attributes["type"])["label"] ?? "";
 
     }
 
+    public function getFormattedExtrasAttribute() {
+
+        try {
+
+            return json_decode($this->extras);
+
+        }catch(Exception $e) {
+
+            return "";
+
+        }
+
+    }
+
     public function getFormattedStatusAttribute() {
 
-        return self::getStatusses("first", $this->attributes["status"])["label"] ?? "";
+        return self::getStatuses("first", $this->attributes["status"])["label"] ?? "";
 
     }
 
@@ -92,15 +92,15 @@ class SaleBody extends Model {
 
     }
 
-    public static function getStatusses($type = "all", $code = "") {
+    public static function getStatuses($type = "all", $code = "") {
 
-        $statusses = [
+        $statuses = [
             ["code" => "active", "label" => "Activo"],
             ["code" => "inactive", "label" => "Inactivo"],
             ["code" => "cancelled", "label" => "Anulado"]
         ];
 
-        return Utilities::getValues($statusses, $type, $code);
+        return Utilities::getValues($statuses, $type, $code);
 
     }
 

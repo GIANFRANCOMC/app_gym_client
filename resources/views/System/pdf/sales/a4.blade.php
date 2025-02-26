@@ -649,8 +649,8 @@
     </head>
     <body>
         @if (in_array($saleHeader->status, ["cancelled"]))
-            <div style="position: absolute; text-align: center; top:4%;">
-                <img src="{{ $cancelledImg }}" style="opacity: 0.20;" width="60%">
+            <div style="position: absolute; text-align: center; top:9%;">
+                <img src="{{ $cancelledImg }}" style="opacity: 0.15;" width="60%">
             </div>
         @endif
         <table class="full-width mt-3">
@@ -658,9 +658,9 @@
                 <td width="70%">
                     <p class="m-0 font-xlg font-bold">{{ $company->commercial_name }}</p>
                     <p class="m-0 font-lg font-bold">{{ $company->identityDocumentType->name }} {{ $company->document_number }}</p>
-                    <p class="m-0 uppercase">Dirección: {{ $company->address ?? "N/A" }}</p>
-                    <p class="m-0 uppercase">Teléfono: {{ $company->telephone ?? "N/A" }}</p>
-                    <p class="m-0 uppercase">Correo electrónico: {{ $company->email ?? "N/A" }}</p>
+                    <p class="m-0 uppercase">• Dirección: {{ $company->address ?? "N/A" }}</p>
+                    <p class="m-0 uppercase">• Teléfono: {{ $company->telephone ?? "N/A" }}</p>
+                    <p class="m-0 uppercase">• Correo electrónico: {{ $company->email ?? "N/A" }}</p>
                 </td>
                 <td width="30%" class="border-box text-center">
                     <p class="m-0 font-xlg font-bold">{{ $saleHeader->serie->documentType->name }}</p>
@@ -670,14 +670,14 @@
         </table>
         <table class="full-width mt-4">
             <tr>
-                <td width="120px">FECHA DE EMISIÓN</td>
+                <td width="130px">• FECHA DE EMISIÓN</td>
                 <td width="8px">:</td>
                 <td>{{ $saleHeader->formatted_issue_date }}</td>
             </tr>
             <tr>
-                <td>CLIENTE:</td>
+                <td>• CLIENTE:</td>
                 <td>:</td>
-                <td>{{ $saleHeader->holder->name }}</td>
+                <td>{{ $saleHeader->holder->document_number }} - {{ $saleHeader->holder->name }}</td>
             </tr>
         </table>
         <table class="full-width mt-10">
@@ -699,6 +699,17 @@
                         <td class="text-right">S/ {{ number_format(($position->price), 2) }}</td>
                         <td class="text-right">S/ {{ number_format(($position->total), 2) }}</td>
                     </tr>
+                    @if (in_array($position->type, ["subscription"]))
+                        <tr>
+                            <td colspan="1"></td>
+                            <td colspan="3" class="pb-1">
+                                <small class="font-bold">Fecha de inicio:</small>
+                                <small>{{ \Carbon\Carbon::parse($position->formatted_extras->end_date)->format("d-m-Y h:i A") }}</small> <br/>
+                                <small class="font-bold">Fecha de finalización:</small>
+                                <small>{{ \Carbon\Carbon::parse($position->formatted_extras->end_date)->format("d-m-Y h:i A") }}</small>
+                            </td>
+                        </tr>
+                    @endif
                 @endforeach
                 <tr class="border-top">
                     <td colspan="3" class="text-right font-bold">TOTAL A PAGAR:</td>

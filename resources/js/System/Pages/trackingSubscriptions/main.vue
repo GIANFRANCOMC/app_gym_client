@@ -220,7 +220,7 @@ export default {
             if(this.isDefined({value: record})) {
 
                 let currency = this.currencies.filter(e => e.code === record?.currency_id)[0],
-                    status   = this.statusses.filter(e => e.code === record?.status)[0];
+                    status   = this.statuses.filter(e => e.code === record?.status)[0];
 
                 this.forms.entity.createUpdate.data.id            = record?.id;
                 this.forms.entity.createUpdate.data.internal_code = record?.internal_code;
@@ -234,7 +234,7 @@ export default {
 
                 // this.setGenerateCode({showAlert: false});
                 this.forms.entity.createUpdate.data.currency = this.currencies[0];
-                this.forms.entity.createUpdate.data.status   = this.statusses[0];
+                this.forms.entity.createUpdate.data.status   = this.statuses[0];
 
             }
 
@@ -396,9 +396,9 @@ export default {
             ];
 
         },
-        statusses: function() {
+        statuses: function() {
 
-            return this.options?.subscriptions?.statusses.map(e => ({code: e.code, label: e.label}));
+            return this.options?.subscriptions?.statuses.map(e => ({code: e.code, label: e.label}));
 
         }
     },

@@ -84,7 +84,7 @@
                     <template v-slot:input>
                         <v-select
                             v-model="forms.entity.createUpdate.data.status"
-                            :options="statusses"
+                            :options="statuses"
                             :clearable="false"
                             :disabled="true"/>
                     </template>
@@ -195,7 +195,7 @@ export default {
                 const company = (this.options.company?.records ?? []).length > 0 ? this.options.company?.records[0] : null;
 
                 let identityDocumentType = this.identityDocumentTypes.filter(e => e.code === company?.identity_document_type_id)[0],
-                    status               = this.statusses.filter(e => e.code === company?.status)[0];
+                    status               = this.statuses.filter(e => e.code === company?.status)[0];
 
                 this.forms.entity.createUpdate.data.id                     = company?.id;
                 this.forms.entity.createUpdate.data.identity_document_type = identityDocumentType;
@@ -380,9 +380,9 @@ export default {
             return this.options?.identityDocumentTypes?.records.map(e => ({code: e.id, label: e.name}));
 
         },
-        statusses: function() {
+        statuses: function() {
 
-            return this.options?.companies?.statusses.map(e => ({code: e.code, label: e.label}));
+            return this.options?.companies?.statuses.map(e => ({code: e.code, label: e.label}));
 
         }
     }

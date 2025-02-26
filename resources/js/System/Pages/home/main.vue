@@ -12,7 +12,7 @@
                                 <i class="fa-solid fa-cash-register"></i>
                             </span>
                         </div>
-                        <h4 class="mb-0" v-text="'S/ '+fixedNumber(forms.entity.home.data.sales?.all?.total ?? 0)"></h4>
+                        <h4 class="mb-0" v-text="'S/ '+separatorNumber(fixedNumber(forms.entity.home.data.sales?.all?.total ?? 0))"></h4>
                     </div>
                     <span class="fw-semibold">
                         VENTAS EN TOTAL
@@ -30,7 +30,7 @@
                                 <i class="fa-solid fa-rectangle-xmark"></i>
                             </span>
                         </div>
-                        <h4 class="mb-0" v-text="'S/ '+fixedNumber(forms.entity.home.data.sales?.cancelled?.total ?? 0)"></h4>
+                        <h4 class="mb-0" v-text="'S/ '+separatorNumber(fixedNumber(forms.entity.home.data.sales?.cancelled?.total ?? 0))"></h4>
                     </div>
                     <span class="fw-semibold">
                         VENTAS ANULADAS
@@ -48,7 +48,7 @@
                                 <i class="ti ti-git-fork ti-md"></i>
                             </span>
                         </div>
-                        <h4 class="mb-0" v-text="forms.entity.home.data.branches?.valid?.count ?? 0"></h4>
+                        <h4 class="mb-0" v-text="separatorNumber(forms.entity.home.data.branches?.valid?.count ?? 0)"></h4>
                     </div>
                     <span class="fw-semibold">SUCURSALES</span>
                 </div>
@@ -63,7 +63,7 @@
                                 <i class="fa-solid fa-users"></i>
                             </span>
                         </div>
-                        <h4 class="mb-0" v-text="forms.entity.home.data.users?.valid?.count ?? 0"></h4>
+                        <h4 class="mb-0" v-text="separatorNumber(forms.entity.home.data.users?.valid?.count ?? 0)"></h4>
                     </div>
                     <span class="fw-semibold">COLABORADORES</span>
                 </div>
@@ -73,7 +73,7 @@
     <div class="card h-100">
         <div class="card-header d-flex align-items-center justify-content-between">
             <div class="card-title mb-0">
-                <h5 class="m-0 me-2">Últimas ventas de hoy</h5>
+                <h5 class="m-0 fw-semibold badge bg-primary text-uppercase">Últimas ventas de hoy</h5>
             </div>
         </div>
         <div class="card-body">
@@ -86,6 +86,7 @@
                             <th class="fw-bold col-1">FECHA DE EMISIÓN</th>
                             <th class="fw-bold col-1">TOTAL</th>
                             <th class="fw-bold col-1">ESTADO</th>
+                            <th class="fw-bold col-1">ACCIONES</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0 bg-white">
@@ -103,11 +104,17 @@
                                     <span v-text="record.formatted_issue_date" class="d-block"></span>
                                 </td>
                                 <td>
-                                    <span v-text="record.currency?.sign ?? ''"></span>
-                                    <span v-text="record.total" class="ms-1"></span>
+                                    <span v-text="record.currency?.sign ?? ''" class="fw-semibold"></span>
+                                    <span v-text="separatorNumber(record.total)" class="fw-semibold ms-1"></span>
                                 </td>
                                 <td>
                                     <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive', 'cancelled'].includes(record.status) }]" v-text="record.formatted_status"></span>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary waves-effect" @click="modalActionsEntity({record})">
+                                        <i class="fa fa-gear"></i>
+                                        <span class="ms-2">Acciones</span>
+                                    </button>
                                 </td>
                             </tr>
                         </template>
@@ -123,6 +130,22 @@
             </div>
         </div>
     </div>
+
+    <PrintSale :modalId="forms.entity.home.extras.modals.actions.id" :data="forms.entity.home.extras.modals.actions.data">
+        <template v-slot:extraGroupAppend>
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mt-5 mb-3">
+                <InputText
+                    v-model="forms.entity.home.extras.modals.actions.data.whatsapp">
+                    <template v-slot:inputGroupAppend>
+                        <button class="btn btn-success waves-effect" type="button" @click="sendWhatsapp({data: forms.entity.home.extras.modals.actions.data})" :disabled="!isDefined({value: forms.entity.home.extras.modals.actions.data.whatsapp})">
+                            <i class="ti ti-brand-whatsapp"></i>
+                            <span class="ms-2">Enviar a Whatsapp</span>
+                        </button>
+                    </template>
+                </InputText>
+            </div>
+        </template>
+    </PrintSale>
 </template>
 
 <script>
@@ -156,6 +179,19 @@ export default {
             forms: {
                 entity: {
                     home: {
+                        extras: {
+                            modals: {
+                                actions: {
+                                    id: Utils.uuid(),
+                                    data: {
+                                        id: null,
+                                        extras: {},
+                                        whatsapp: ""
+                                    },
+                                    errors: {}
+                                }
+                            }
+                        },
                         data: {
                             sales: null,
                             branches: null,
@@ -209,6 +245,14 @@ export default {
             return Requests.valid({result: initData});
 
         },
+        // Entity forms
+        modalActionsEntity({record = null}) {
+
+            this.forms.entity.home.extras.modals.actions.data = {...record, extras: {}, whatsapp: ""};
+
+            Alerts.modals({type: "show", id: this.forms.entity.home.extras.modals.actions.id});
+
+        },
         // Others
         isDefined({value}) {
 
@@ -218,6 +262,19 @@ export default {
         fixedNumber(value) {
 
             return Utils.fixedNumber(value);
+
+        },
+        separatorNumber(value) {
+
+            return Utils.separatorNumber(value);
+
+        },
+        sendWhatsapp({data = null, action = "reportSale"}) {
+
+            const phoneNumber = this.forms.entity.home.extras.modals.actions.data.whatsapp;
+            const message     = Utils.getMessageWhatsapp({data, action});
+
+            Utils.sendWhatsapp({phoneNumber, message});
 
         }
     },

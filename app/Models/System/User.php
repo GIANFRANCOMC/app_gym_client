@@ -66,19 +66,19 @@ class User extends Authenticatable {
     // Appends
     public function getFormattedStatusAttribute() {
 
-        return self::getStatusses("first", $this->attributes["status"])["label"] ?? "";
+        return self::getStatuses("first", $this->attributes["status"])["label"] ?? "";
 
     }
 
     // Functions
-    public static function getStatusses($type = "all", $code = "") {
+    public static function getStatuses($type = "all", $code = "") {
 
-        $statusses = [
+        $statuses = [
             ["code" => "active", "label" => "Activo"],
             ["code" => "inactive", "label" => "Inactivo"]
         ];
 
-        return Utilities::getValues($statusses, $type, $code);
+        return Utilities::getValues($statuses, $type, $code);
 
     }
 

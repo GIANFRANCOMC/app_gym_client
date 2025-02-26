@@ -26,7 +26,7 @@ class CompanyController extends Controller {
         if(in_array($page, ["main"])) {
 
             $config->companies = new stdClass();
-            $config->companies->statusses = Company::getStatusses();
+            $config->companies->statuses = Company::getStatuses();
 
             $config->company = new stdClass();
             $config->company->records = [$userAuth->company];

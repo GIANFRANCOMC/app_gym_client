@@ -25,7 +25,7 @@ class SubscriptionController extends Controller {
 
             $config->subscriptions = new stdClass();
             $config->subscriptions->durationTypes = Item::getDurationTypes();
-            $config->subscriptions->statusses     = Item::getStatusses();
+            $config->subscriptions->statuses     = Item::getStatuses();
 
             $config->currencies = new stdClass();
             $config->currencies->records = Currency::get();

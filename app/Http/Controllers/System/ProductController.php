@@ -24,7 +24,7 @@ class ProductController extends Controller {
         if(in_array($page, ["main"])) {
 
             $config->products = new stdClass();
-            $config->products->statusses = Item::getStatusses();
+            $config->products->statuses = Item::getStatuses();
 
             $config->currencies = new stdClass();
             $config->currencies->records = Currency::get();
