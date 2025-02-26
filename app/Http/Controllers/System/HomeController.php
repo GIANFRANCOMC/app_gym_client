@@ -66,9 +66,9 @@ class HomeController extends Controller {
         $data = [
             "sales" => [
                 "all" => [
-                    "total"  => $sales->sum("total"),
-                    "count"  => $sales->count(),
-                    "latest" => $sales->take(10)
+                    "total"   => $sales->sum("total"),
+                    "count"   => $sales->count(),
+                    "records" => $sales
                 ],
                 "cancelled" => [
                     "total" => $cancelledSales->sum("total"),

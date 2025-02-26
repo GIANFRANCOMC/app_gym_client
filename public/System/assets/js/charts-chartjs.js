@@ -18,7 +18,7 @@
 
   let cardColor, headingColor, labelColor, borderColor, legendColor;
 
-  if (isDarkStyle) {
+  if (false) {
     cardColor = config.colors_dark.cardColor;
     headingColor = config.colors_dark.headingColor;
     labelColor = config.colors_dark.textMuted;

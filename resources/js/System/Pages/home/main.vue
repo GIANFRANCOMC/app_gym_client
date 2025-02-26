@@ -70,10 +70,36 @@
             </div>
         </div>
     </div>
+    <div class="row g-3 mb-4">
+        <div class="col-xl-12 col-12">
+            <div class="card">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <div class="card-title mb-0">
+                        <h5 class="m-0 fw-semibold">Ventas por intervalo de 3 horas | Hoy</h5>
+                    </div>
+                    <div v-show="false">
+                        <button class="btn btn-sm btn-primary" @click="initChart()">
+                            <i class="fa-solid fa-sync"></i>
+                            <span class="ms-2">Actualizar</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <canvas id="barChartId" class="chartjs" data-height="250"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="card h-100">
         <div class="card-header d-flex align-items-center justify-content-between">
             <div class="card-title mb-0">
-                <h5 class="m-0 fw-semibold badge bg-primary text-uppercase">Últimas ventas de hoy</h5>
+                <h5 class="m-0 fw-semibold">Últimas ventas | Hoy</h5>
+            </div>
+            <div v-show="false">
+                <button class="btn btn-sm btn-primary" @click="goSalesList()">
+                    <i class="fa-solid fa-cash-register"></i>
+                    <span class="ms-2">Ir al listado de ventas</span>
+                </button>
             </div>
         </div>
         <div class="card-body">
@@ -90,8 +116,8 @@
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0 bg-white">
-                        <template v-if="(forms.entity.home.data.sales?.all?.latest ?? []).length > 0">
-                            <tr v-for="record in forms.entity.home.data.sales.all.latest" :key="record.id" class="text-center">
+                        <template v-if="(forms.entity.home.data.sales?.all?.records ?? []).length > 0">
+                            <tr v-for="record in forms.entity.home.data.sales.all.records" :key="record.id" class="text-center">
                                 <td class="text-start">
                                     <span v-text="record.serie_sequential" class="fw-bold d-block"></span>
                                     <small v-text="record.serie?.document_type?.name" class="d-block"></small>
@@ -153,6 +179,8 @@ import * as Alerts    from "../../Helpers/Alerts.js";
 import * as Constants from "../../Helpers/Constants.js";
 import * as Requests  from "../../Helpers/Requests.js";
 import * as Utils     from "../../Helpers/Utils.js";
+
+let barChartInstance = null;
 
 export default {
     components: {
@@ -242,7 +270,140 @@ export default {
             this.forms.entity.home.data.branches = initData.data?.data?.branches;
             this.forms.entity.home.data.users    = initData.data?.data?.users;
 
+            this.initChart();
+
             return Requests.valid({result: initData});
+
+        },
+        initChart() {
+
+            // Utils
+            const roundUpToNearest = (value) => {
+                if (value <= 1000) return 1000;
+                if (value <= 5000) return 5000;
+                if (value <= 10000) return 10000;
+                return Math.ceil(value / 10000) * 10000;
+            };
+
+            // Ajust height
+            const chartList = document.querySelectorAll(".chartjs");
+
+            chartList.forEach(function(chartListItem) {
+
+                chartListItem.height = chartListItem.dataset.height;
+
+            });
+
+            // Config
+            const intervals = [
+            { label: "12:00 AM - 03:00 AM", start: 0, end: 3 },
+            { label: "03:00 AM - 06:00 AM", start: 3, end: 6 },
+            { label: "06:00 AM - 09:00 AM", start: 6, end: 9 },
+            { label: "09:00 AM - 12:00 PM", start: 9, end: 12 },
+            { label: "12:00 PM - 03:00 PM", start: 12, end: 15 },
+            { label: "03:00 PM - 06:00 PM", start: 15, end: 18 },
+            { label: "06:00 PM - 09:00 PM", start: 18, end: 21 },
+            { label: "09:00 PM - 12:00 AM", start: 21, end: 24 }
+            ];
+
+            const totalsByInterval = intervals.map(interval => ({ label: interval.label, total: 0 }));
+
+            // Process data
+            const sales = this.forms.entity.home.data.sales.all.records;
+
+            sales.forEach(sale => {
+
+                const saleHour = new Date(sale.created_at).getUTCHours();
+                const interval = intervals.find(i => saleHour >= i.start && saleHour < i.end);
+
+                if(interval) {
+
+                    const index = intervals.indexOf(interval);
+                    totalsByInterval[index].total += parseFloat(sale.total);
+
+                }
+
+            });
+
+            // Get information
+            const barChart = document.getElementById("barChartId");
+            const labels   = totalsByInterval.map(i => i.label);
+            const data     = totalsByInterval.map(i => i.total);
+            const yMax     = roundUpToNearest(Math.max(...data));
+
+            if(barChart) {
+
+                if(barChartInstance) {
+
+                    barChartInstance.destroy();
+
+                }
+
+                barChartInstance = new Chart(barChart, {
+                    type: "bar",
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                data: data,
+                                backgroundColor: "#28dac6",
+                                borderColor: "transparent",
+                                maxBarThickness: 20,
+                                borderRadius: {
+                                    topRight: 15,
+                                    topLeft: 15
+                                }
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: {
+                            duration: 500
+                        },
+                        plugins: {
+                            tooltip: {
+                                backgroundColor: this.config.colors.charts.default.backgroundColor,
+                                bodyColor: this.config.colors.charts.default.bodyColor,
+                                borderColor: this.config.colors.charts.default.borderColor,
+                                borderWidth: 1,
+                                rtl: false,
+                                titleColor: this.config.colors.charts.default.titleColor
+                            },
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    color: this.config.colors.charts.default.borderColor,
+                                    drawBorder: false,
+                                    borderColor: this.config.colors.charts.default.borderColor
+                                },
+                                ticks: {
+                                    color: this.config.colors.charts.default.labelColor
+                                }
+                            },
+                            y: {
+                                min: 0,
+                                max: yMax,
+                                grid: {
+                                    color: this.config.colors.charts.default.borderColor,
+                                    drawBorder: false,
+                                    borderColor: this.config.colors.charts.default.borderColor
+                                },
+                                ticks: {
+                                    stepSize: yMax / 5,
+                                    color: this.config.colors.charts.default.labelColor
+                                }
+                            }
+                        }
+                    }
+                });
+
+            };
 
         },
         // Entity forms
@@ -251,6 +412,13 @@ export default {
             this.forms.entity.home.extras.modals.actions.data = {...record, extras: {}, whatsapp: ""};
 
             Alerts.modals({type: "show", id: this.forms.entity.home.extras.modals.actions.id});
+
+        },
+        goSalesList() {
+
+            const url = Requests.config({entity: "sales", type: "consult"});
+
+            window.location.href = url;
 
         },
         // Others

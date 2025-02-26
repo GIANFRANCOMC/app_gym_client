@@ -26,5 +26,16 @@ export const generalConfig = {
                 default: "text-danger"
             }
         }
+    },
+    colors: {
+        charts: {
+            default: {
+                backgroundColor: "#ffffff",
+                bodyColor: "#6f6b7d",
+                labelColor: "#a5a3ae",
+                borderColor: "#dbdade",
+                titleColor: "#5d596c",
+            }
+        }
     }
 };
