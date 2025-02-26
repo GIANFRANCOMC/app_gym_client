@@ -15,7 +15,7 @@ export const generalConfig = {
             required: "*",
             round: 2,
             minValue: 0,
-            maxValue: 99999999
+            maxValue: 9999999
         },
         errors: {
             labels: {

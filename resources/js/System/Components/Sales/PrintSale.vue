@@ -20,8 +20,7 @@
                                 <div class="badge bg-primary p-3 rounded mb-1">
                                     <i class="fa fa-print fs-3"></i>
                                 </div>
-                                <br/>
-                                <span class="fw-semibold">A4</span>
+                                <span class="d-block fw-semibold">A4</span>
                             </div>
                         </div>
                         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mx-2" v-if="mm80">
@@ -29,8 +28,7 @@
                                 <div class="badge bg-primary p-3 rounded mb-1">
                                     <i class="fa-solid fa-note-sticky fs-3"></i>
                                 </div>
-                                <br/>
-                                <span class="fw-semibold">80MM</span>
+                                <span class="d-block fw-semibold">80MM</span>
                             </div>
                         </div>
                         <slot name="extraGroupAppend"></slot>

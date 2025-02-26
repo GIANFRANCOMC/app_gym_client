@@ -118,7 +118,11 @@ class SaleController extends Controller {
 
             if($newSequential > 0) {
 
-                $total = 0;
+                $total = array_reduce($request["details"], function($carry, $detail) {
+
+                    return $carry + Utilities::round(floatval($detail["quantity"]) * floatval($detail["price"]));
+
+                }, 0);
 
                 $saleHeader = new SaleHeader();
                 $saleHeader->serie_id    = $request->serie_id;
@@ -127,14 +131,27 @@ class SaleController extends Controller {
                 $saleHeader->seller_id   = $userAuth->id;
                 $saleHeader->currency_id = $request->currency_id;
                 $saleHeader->issue_date  = $request->issue_date;
-                $saleHeader->total       = 0;
+                $saleHeader->total       = $total;
                 $saleHeader->observation = $request->observation ?? "";
-                $saleHeader->status      = "inactive";
+                $saleHeader->status      = "active";
                 $saleHeader->created_at  = now();
                 $saleHeader->created_by  = $userAuth->id ?? null;
                 $saleHeader->save();
 
                 foreach($request["details"] as $detail) {
+
+                    $extras = new stdClass();
+
+                    if(in_array($detail["type"], ["subscription"])) {
+
+                        $extras->duration_type  = $detail["extras"]["duration_type"];
+                        $extras->duration_value = $detail["extras"]["duration_value"];
+                        $extras->start_date     = str_replace("T", " ", $detail["extras"]["start_date"]);
+                        $extras->end_date       = str_replace("T", " ", $detail["extras"]["end_date"]);
+                        $extras->set_end_of_day = $detail["extras"]["set_end_of_day"] ?? false;
+                        $extras->force          = $detail["extras"]["force"] ?? true;
+
+                    }
 
                     $saleBody = new SaleBody();
                     $saleBody->sale_header_id = $saleHeader->id;
@@ -146,11 +163,8 @@ class SaleController extends Controller {
                     $saleBody->total          = Utilities::round((floatval($saleBody->quantity) * floatval($saleBody->price)));
                     $saleBody->customer_id    = $saleHeader->holder_id;
                     $saleBody->type           = $detail["type"];
-                    $saleBody->duration_type  = $detail["extras"]["duration_type"];
-                    $saleBody->duration_value = $detail["extras"]["duration_value"];
-                    $saleBody->set_end_of_day = $detail["extras"]["set_end_of_day"] ?? false;
-                    $saleBody->force          = $detail["extras"]["force"] ?? false;
                     $saleBody->observation    = $detail["observation"] ?? "";
+                    $saleBody->extras         = json_encode($extras);
                     $saleBody->status         = "active";
                     $saleBody->created_at     = now();
                     $saleBody->created_by     = $userAuth->id ?? null;
@@ -160,18 +174,21 @@ class SaleController extends Controller {
 
                     if(in_array($detail["type"], ["subscription"])) {
 
+                        $extras->observation = $detail["extras"]["observation"] ?? "";
+
                         $subscription = new Subscription();
                         $subscription->company_id     = $userAuth->company_id;
                         $subscription->sale_header_id = $saleHeader->id;
                         $subscription->sale_body_id   = $saleBody->id;
                         $subscription->customer_id    = $saleHeader->holder_id;
-                        $subscription->duration_type  = $saleBody->duration_type;
-                        $subscription->duration_value = $saleBody->duration_value;
-                        $subscription->start_date     = str_replace("T", " ", $detail["extras"]["start_date"]);
-                        $subscription->end_date       = str_replace("T", " ", $detail["extras"]["end_date"]);
-                        $subscription->set_end_of_day = $saleBody->set_end_of_day;
-                        $subscription->force          = $saleBody->force;
-                        $subscription->observation    = $detail["extras"]["observation"] ?? "";
+                        $subscription->duration_type  = $extras->duration_type;
+                        $subscription->duration_value = $extras->duration_value;
+                        $subscription->start_date     = $extras->start_date;
+                        $subscription->end_date       = $extras->end_date;
+                        $subscription->set_end_of_day = $extras->set_end_of_day;
+                        $subscription->force          = $extras->force;
+                        $subscription->observation    = $extras->observation;
+                        $subscription->motive         = null;
                         $subscription->type           = "sale";
                         $subscription->status         = "active";
                         $subscription->created_at     = now();

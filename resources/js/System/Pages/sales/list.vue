@@ -1,12 +1,12 @@
 <template>
-    <Breadcrumb :list="[config.entity.page, { title: 'Listado' }]"/>
+    <Breadcrumb :list="breadcrumbTitles"/>
 
-    <!-- Records -->
+    <!-- Content -->
     <div class="row align-items-end g-3 mb-4">
         <InputSlot
             hasDiv
             title="Serie"
-            :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+            :titleClass="[config.forms.classes.title]"
             xl="6"
             lg="6">
             <template v-slot:input>
@@ -14,7 +14,8 @@
                     v-model="lists.entity.filters.serie"
                     :options="series"
                     :class="config.forms.classes.select2"
-                    :clearable="true">
+                    :clearable="true"
+                    placeholder="Seleccione">
                     <template #option="{ data }">
                         <span v-text="`${data?.legible_serie} - ${data?.document_type?.name}`" class="d-block fw-bold"></span>
                         <small v-text="data?.branch?.name" class="d-block"></small>
@@ -30,7 +31,7 @@
             @enterKeyPressed="listEntity({})"
             hasDiv
             title="Secuencia"
-            :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+            :titleClass="[config.forms.classes.title]"
             placeholder="Ejemplo: 203"
             xl="3"
             lg="6"/>
@@ -39,13 +40,13 @@
             @enterKeyPressed="listEntity({})"
             hasDiv
             title="Fecha de emisión"
-            :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+            :titleClass="[config.forms.classes.title]"
             xl="3"
             lg="6"/>
         <InputSlot
             hasDiv
             title="Cliente"
-            :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+            :titleClass="[config.forms.classes.title]"
             xl="6"
             lg="6">
             <template v-slot:input>
@@ -53,7 +54,8 @@
                     v-model="lists.entity.filters.holder"
                     :options="holders"
                     :class="config.forms.classes.select2"
-                    :clearable="true">
+                    :clearable="true"
+                    placeholder="Seleccione">
                     <template #option="{ label }">
                         <span v-text="truncate({value: label, length: 50})" class="d-block"></span>
                     </template>
@@ -66,7 +68,7 @@
         <InputSlot
             hasDiv
             title="Estado"
-            :titleClass="['fw-bold', 'colon-at-end', 'fs-5']"
+            :titleClass="[config.forms.classes.title]"
             xl="3"
             lg="6">
             <template v-slot:input>
@@ -74,8 +76,8 @@
                     v-model="lists.entity.filters.status"
                     :options="statusses"
                     :class="config.forms.classes.select2"
-                    :clearable="true">
-                </v-select>
+                    :clearable="true"
+                    placeholder="Seleccione"/>
             </template>
         </InputSlot>
         <InputSlot
@@ -86,7 +88,7 @@
             <template v-slot:input>
                 <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})">
                     <i class="fa fa-search"></i>
-                    <span class="ms-1">Buscar</span>
+                    <span class="ms-2">Buscar</span>
                 </button>
             </template>
         </InputSlot>
@@ -127,15 +129,16 @@
                                 <span :class="['badge', 'd-block', 'mt-1',{ 'bg-label-success': record.diff_days_issue_date == 0, 'bg-label-warning': record.diff_days_issue_date != 0 }]" v-text="diffDaysLegible({diff: record.diff_days_issue_date})"></span>
                             </td>
                             <td>
-                                <span v-text="record.currency?.sign ?? ''"></span>
-                                <span v-text="record.total" class="ms-1"></span>
+                                <span v-text="record.currency?.sign ?? ''" class="fw-semibold"></span>
+                                <span v-text="separatorNumber(record.total)" class="fw-semibold ms-1"></span>
                             </td>
                             <td>
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive', 'cancelled'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-sm rounded-pill btn-primary waves-effect m-1" @click="modalActionsEntity({record})" data-bs-toggle="tooltip" data-bs-placement="top" title="Acciones">
+                                <button type="button" class="btn btn-sm btn-primary waves-effect" @click="modalActionsEntity({record})">
                                     <i class="fa fa-gear"></i>
+                                    <span class="ms-2">Acciones</span>
                                 </button>
                             </td>
                         </tr>
@@ -155,16 +158,26 @@
         <Paginator :links="lists.entity.records.links" @clickPage="listEntity"/>
     </div>
 
-    <PrintSale :modalId="forms.entity.createUpdate.extras.modals.finished.id" :data="forms.entity.createUpdate.extras.modals.finished.data">
+    <PrintSale :modalId="forms.entity.createUpdate.extras.modals.actions.id" :data="forms.entity.createUpdate.extras.modals.actions.data">
         <template v-slot:extraGroupAppend>
-            <div v-if="['active'].includes(forms.entity.createUpdate.extras.modals.finished.data?.status)" class="col-xl-3 col-lg-3 col-md-3 col-sm-3">
+            <div v-if="['active'].includes(forms.entity.createUpdate.extras.modals.actions.data?.status)" class="col-xl-3 col-lg-3 col-md-3 col-sm-3">
                 <div class="text-center cursor-pointer p-1" @click="cancelEntity({})">
                     <div class="badge bg-danger p-3 rounded mb-1">
                         <i class="fa-solid fa-rectangle-xmark fs-3"></i>
                     </div>
-                    <br/>
-                    <span class="fw-semibold">Anular venta</span>
+                    <span class="d-block fw-semibold">Anular venta</span>
                 </div>
+            </div>
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mt-5 mb-3">
+                <InputText
+                    v-model="forms.entity.createUpdate.extras.modals.actions.data.whatsapp">
+                    <template v-slot:inputGroupAppend>
+                        <button class="btn btn-success waves-effect" type="button" @click="sendWhatsapp({data: forms.entity.createUpdate.extras.modals.actions.data})" :disabled="!isDefined({value: forms.entity.createUpdate.extras.modals.actions.data.whatsapp})">
+                            <i class="ti ti-brand-whatsapp"></i>
+                            <span class="ms-2">Enviar a Whatsapp</span>
+                        </button>
+                    </template>
+                </InputText>
             </div>
         </template>
     </PrintSale>
@@ -182,8 +195,8 @@ export default {
     },
     mounted: async function() {
 
-        Utils.navbarItem(this.config.entity.page.menu.id, {addClass: "open"});
-        Utils.navbarItem("menu-item-list-sales", {});
+        Utils.navbarItem("menu-item-sales", {addClass: "open"});
+        Utils.navbarItem(this.config.entity.page.menu.id, {});
         Alerts.swals({type: "initParams"});
 
         let initParams = await this.initParams({}),
@@ -222,11 +235,14 @@ export default {
                     createUpdate: {
                         extras: {
                             modals: {
-                                finished: {
+                                actions: {
                                     id: Utils.uuid(),
                                     data: {
-                                        id: null
-                                    }
+                                        id: null,
+                                        extras: {},
+                                        whatsapp: ""
+                                    },
+                                    errors: {}
                                 }
                             }
                         },
@@ -241,10 +257,10 @@ export default {
                 entity: {
                     ...Requests.config({entity: "sales"}),
                     page: {
-                        title: "Ventas",
+                        title: "Listado",
                         active: true,
                         menu: {
-                            id: "menu-item-sales"
+                            id: "menu-item-list-sales"
                         }
                     }
                 }
@@ -286,9 +302,9 @@ export default {
         },
         modalActionsEntity({record = null}) {
 
-            this.forms.entity.createUpdate.extras.modals.finished.data = record;
+            this.forms.entity.createUpdate.extras.modals.actions.data = {...record, extras: {}, whatsapp: ""};
 
-            Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.finished.id});
+            Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.actions.id});
 
         },
         cancelEntity({}) {
@@ -297,19 +313,19 @@ export default {
 
             this.formErrors({functionName, type: "clear"});
 
-            let form = Utils.cloneJson(this.forms.entity.createUpdate.extras.modals.finished.data);
+            let form = Utils.cloneJson(this.forms.entity.createUpdate.extras.modals.actions.data);
 
             const validateForm = this.validateForm({functionName, form});
 
-            if(validateForm?.bool) {
+            Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.actions.id});
 
-                Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.finished.id});
+            if(validateForm?.bool) {
 
                 let el = this;
 
                 Swal.fire({
-                    html: `<span class="d-block my-1">¿Desea anular la venta con documento <b>${form?.serie_sequential}</b>?</span>
-                           <span class="d-block my-1">Nota: Si en el detalle de la venta tiene susbscripciones asociados serán anulados.</span>`,
+                    html: `<span class="d-block my-1">¿Desea anular la venta <b>${form?.serie_sequential}</b>?</span>
+                           <span class="d-block mt-2 mb-1"><b>Nota:</b> Si en el detalle de la venta tiene susbscripciones asociadas serán anulados.</span>`,
                     icon: "warning",
                     allowOutsideClick: false,
                     showCancelButton: true,
@@ -327,7 +343,7 @@ export default {
 
                         let cancel = await Requests.patch({route: el.config.entity.routes.cancel, id: form.id});
 
-                        if(cancel?.bool && cancel?.data?.bool) {
+                        if(Requests.valid({result: cancel})) {
 
                             Alerts.toastrs({type: "success", subtitle: cancel?.data?.msg});
                             Alerts.swals({show: false});
@@ -349,12 +365,16 @@ export default {
 
                 })
 
+            }else {
+
+                Alerts.generateAlert({messages: Utils.getErrors({errors: validateForm}), msgContent: `<div class="fw-semibold mb-2">${this.config.messages.errorValidate}</div>`});
+
             }
 
             Alerts.tooltips({show: false});
 
         },
-        // Utils forms
+        // Forms utils
         clearForm({functionName}) {
 
             switch(functionName) {
@@ -370,6 +390,10 @@ export default {
 
                 //
 
+            }else if(["cancelEntity"].includes(functionName)) {
+
+                this.forms.entity.createUpdate.extras.modals.actions.errors = ["set"].includes(type) ? errors : [];
+
             }
 
         },
@@ -383,6 +407,17 @@ export default {
 
                 //
 
+            }else if(["cancelEntity"].includes(functionName)) {
+
+                result.sale = [];
+
+                if(!this.isDefined({value: form?.id})) {
+
+                    result.sale.push(this.config.forms.errors.labels.required);
+                    result.bool = false;
+
+                }
+
             }
 
             return result;
@@ -394,6 +429,11 @@ export default {
             return Utils.isDefined({value});
 
         },
+        separatorNumber(value) {
+
+            return Utils.separatorNumber(value);
+
+        },
         truncate({value, length}) {
 
             return Utils.truncate({value, length});
@@ -403,9 +443,22 @@ export default {
 
             return Utils.diffDaysLegible({diff});
 
+        },
+        sendWhatsapp({data = null, action = "reportSale"}) {
+
+            const phoneNumber = this.forms.entity.createUpdate.extras.modals.actions.data.whatsapp;
+            const message     = Utils.getMessageWhatsapp({data, action});
+
+            Utils.sendWhatsapp({phoneNumber, message});
+
         }
     },
     computed: {
+        breadcrumbTitles: function() {
+
+            return [{title: "Ventas"}, this.config.entity.page];
+
+        },
         series: function() {
 
             let series = [];

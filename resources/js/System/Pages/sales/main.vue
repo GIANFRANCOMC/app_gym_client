@@ -19,7 +19,8 @@
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.branch"
                                     :options="branches"
-                                    :clearable="false"/>
+                                    :clearable="false"
+                                    placeholder="Seleccione"/>
                             </template>
                         </InputSlot>
                         <InputSlot
@@ -34,7 +35,8 @@
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.serie"
                                     :options="series"
-                                    :clearable="false">
+                                    :clearable="false"
+                                    placeholder="Seleccione">
                                 </v-select>
                             </template>
                         </InputSlot>
@@ -59,7 +61,8 @@
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.holder"
                                     :options="holders"
-                                    :clearable="false"/>
+                                    :clearable="false"
+                                    placeholder="Seleccione"/>
                             </template>
                         </InputSlot>
                         <!-- <InputSlot
@@ -74,7 +77,8 @@
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.currency"
                                     :options="currencies"
-                                    :clearable="false">
+                                    :clearable="false"
+                                    placeholder="Seleccione">
                                     <template #option="{ label, data }">
                                         <span v-text="label" class="d-block fw-bold"></span>
                                         <small v-text="'('+data?.sign+')'" class="d-block"></small>
@@ -289,7 +293,8 @@
                                 <v-select
                                     v-model="forms.entity.createUpdate.extras.modals.details.data.item"
                                     :options="items"
-                                    :clearable="false">
+                                    :clearable="false"
+                                    placeholder="Seleccione">
                                     <template #option="{ label, data }">
                                         <span v-text="label" class="d-block fw-bold"></span>
                                         <div class="d-block">
@@ -585,8 +590,7 @@
                     <div class="badge bg-success p-3 rounded mb-1">
                         <i class="fa-solid fa-cash-register fs-3"></i>
                     </div>
-                    <br/>
-                    <span class="fw-semibold">Nueva venta</span>
+                    <span class="d-block fw-semibold">Nueva venta</span>
                 </div>
             </div>
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mt-5 mb-3">
@@ -653,12 +657,12 @@ export default {
                                         price: 0,
                                         observation: "",
                                         extras: {
-                                            set_end_of_day: false,
-                                            force: false,
                                             duration_type: "",
                                             duration_value: "",
                                             start_date: "",
                                             end_date: "",
+                                            set_end_of_day: false,
+                                            force: false,
                                             observation: "",
                                             formatted_duration: "",
                                             formatted_total_duration: "",
@@ -953,6 +957,7 @@ export default {
 
             if(validateForm?.bool) {
 
+                form.branch_id   = form?.branch?.code;
                 form.serie_id    = form?.serie?.code;
                 form.holder_id   = form?.holder?.code;
                 form.currency_id = form?.currency?.code;
@@ -1007,7 +1012,7 @@ export default {
             }
 
         },
-        // Utils forms
+        // Forms utils
         clearForm({functionName}) {
 
             switch(functionName) {
@@ -1437,12 +1442,12 @@ export default {
 
             // Set extras
             let extras = {
-                set_end_of_day: false,
-                force: false,
                 duration_type: "",
                 duration_value: "",
                 start_date: "",
                 end_date: "",
+                set_end_of_day: false,
+                force: false,
                 observation: "",
                 formatted_duration: "",
                 formatted_total_duration: "",
@@ -1458,12 +1463,12 @@ export default {
 
                 // Set extras
                 extras = {
-                    set_end_of_day: ["today"].includes(data?.duration_type),
-                    force: true,
                     duration_type: data?.duration_type,
                     duration_value: data?.duration_value,
                     start_date: Utils.isDefined({value: modalData.extras.start_date}) ? modalData.extras.start_date : Utils.getCurrentDate("datetime"),
                     end_date: "",
+                    set_end_of_day: ["today"].includes(data?.duration_type),
+                    force: true,
                     observation: "",
                     formatted_duration: data?.formatted_duration,
                     formatted_total_duration: "",

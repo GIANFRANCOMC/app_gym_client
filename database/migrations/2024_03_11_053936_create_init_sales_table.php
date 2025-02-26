@@ -45,11 +45,8 @@ return new class extends Migration {
             $table->decimal("total", 10, 2);
             $table->unsignedBigInteger("customer_id");
             $table->enum("type", ["product", "service", "subscription"])->default("product");
-            $table->enum("duration_type", ["hour", "day", "today", "month", "year"])->nullable();
-            $table->integer("duration_value")->nullable();
-            $table->boolean("set_end_of_day")->default(false);
-            $table->boolean("force")->default(false);
-            $table->text("observation");
+            $table->text("observation")->nullable();
+            $table->text("extras");
             $table->enum("status", ["active", "cancelled", "inactive"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();
