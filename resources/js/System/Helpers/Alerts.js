@@ -11,6 +11,10 @@ export function swals({show = true, type = "default", timeout = 0}) {
                 message = "Cargando";
                 break;
 
+            case "consult":
+                message = "Consultando información";
+                break;
+
             case "initParams":
                 message = "";
                 break;

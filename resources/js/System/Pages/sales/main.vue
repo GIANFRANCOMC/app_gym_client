@@ -45,6 +45,7 @@
                             hasDiv
                             title="Fecha de emisión"
                             isRequired
+                            disabled
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.issue_date"
                             xl="3"

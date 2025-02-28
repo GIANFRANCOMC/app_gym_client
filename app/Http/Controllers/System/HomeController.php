@@ -44,13 +44,15 @@ class HomeController extends Controller {
 
         $userAuth = Auth::user();
 
+        $date = Utilities::isDefined($request->date) && Utilities::isValidDateFormat($request->date) ? $request->date : date("Y-m-d");
+
         $branches = Branch::where("company_id", $userAuth->company_id)
                           ->with(["series"])
                           ->get();
 
         $serieIds = $branches->pluck("series.*.id")->flatten();
 
-        $sales = SaleHeader::whereDate("created_at", date("Y-m-d"))
+        $sales = SaleHeader::whereDate("created_at", $date)
                            ->whereIn("serie_id", $serieIds)
                            ->orderBy("created_at", "DESC")
                            ->with(["serie.documentType", "holder", "currency"])
@@ -59,9 +61,9 @@ class HomeController extends Controller {
         $cancelledSales = $sales->whereIn("status", ["cancelled"])
                                 ->values();
 
-        $users = User::where("company_id", $userAuth->company_id)
-                      ->whereIn("status", ["active"])
-                      ->get();
+        // $users = User::where("company_id", $userAuth->company_id)
+                      // ->whereIn("status", ["active"])
+                      // ->get();
 
         $data = [
             "sales" => [
@@ -82,7 +84,7 @@ class HomeController extends Controller {
             ],
             "users" => [
                 "valid" => [
-                    "count" => $users->count()
+                    "count" => 0 // $users->count()
                 ]
             ]
         ];

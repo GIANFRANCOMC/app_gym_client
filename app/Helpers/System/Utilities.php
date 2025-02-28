@@ -3,6 +3,7 @@
 namespace App\Helpers\System;
 
 use Carbon\Carbon;
+use DateTime;
 use Exception;
 use Illuminate\Support\Str;
 use stdClass;
@@ -131,6 +132,13 @@ class Utilities {
         }
 
         return $randomString;
+
+    }
+
+    public static function isValidDateFormat($date, $format = "Y-m-d") {
+
+        $d = DateTime::createFromFormat($format, $date);
+        return $d && $d->format($format) === $date;
 
     }
 

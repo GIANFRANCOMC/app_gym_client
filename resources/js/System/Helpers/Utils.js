@@ -330,29 +330,61 @@ export function findOverlaps(sale, subscriptions) {
 
 export function legibleFormatDate({dateString = null, type = "datetime"}) {
 
-    // Convert the string to a Date object
-    const date = new Date(dateString);
+    try {
 
-    // Validate if the date is valid
-    if (isNaN(date.getTime())) {
-        throw new Error("Invalid date. Make sure it follows the 'YYYY-MM-DD HH:mm:ss' format.");
+        if (!dateString) throw new Error("Invalid date string");
+
+        let date;
+        let year, month, day, hours = 0, minutes = 0;
+
+        if(dateString.includes(" ")) {
+
+            // Formato con hora (YYYY-MM-DD HH:mm)
+            const [datePart, timePart] = dateString.split(" ");
+            [year, month, day] = datePart.split("-").map(Number);
+            [hours, minutes] = timePart.split(":").map(Number);
+
+        }else {
+
+            // Formato sin hora (YYYY-MM-DD)
+            [year, month, day] = dateString.split("-").map(Number);
+
+        }
+
+        // Crear la fecha asegurando que respete la zona horaria local
+        date = new Date(year, month - 1, day, hours, minutes);
+
+        // Validar si la fecha es válida
+        if(isNaN(date.getTime())) {
+            throw new Error("Invalid date format. Use 'YYYY-MM-DD' or 'YYYY-MM-DD HH:mm'.");
+        }
+
+        // Extraer componentes
+        const formattedDay = day.toString().padStart(2, "0");
+        const formattedMonth = month.toString().padStart(2, "0");
+
+        // Convertir hora a formato 12h
+        const ampm = hours >= 12 ? "PM" : "AM";
+        const formattedHours = (hours % 12 || 12).toString().padStart(2, "0");
+        const formattedMinutes = minutes.toString().padStart(2, "0");
+
+        if(type === "date") {
+
+            return `${formattedDay}-${formattedMonth}-${year}`;
+
+        }else if (type === "datetime") {
+
+            return `${formattedDay}-${formattedMonth}-${year} ${formattedHours}:${formattedMinutes} ${ampm}`;
+
+        }
+
+        return `${formattedDay}-${formattedMonth}-${year} ${formattedHours}:${formattedMinutes} ${ampm}`;
+
+    }catch (e) {
+
+        return dateString; // Retorna la fecha original en caso de error
+
     }
-
-    // Extract date components
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
-    const year = date.getFullYear();
-
-    // Extract time components
-    let hours = date.getHours();
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-
-    // Determine AM/PM
-    const ampm = hours >= 12 ? "PM" : "AM";
-    hours = hours % 12 || 12; // Convert to 12-hour format
-
-    // Format the final string
-    return `${day}-${month}-${year} ${hours}:${minutes} ${ampm}`;
 
 }
 

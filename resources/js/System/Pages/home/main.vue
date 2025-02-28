@@ -12,12 +12,9 @@
                                 <i class="fa-solid fa-cash-register"></i>
                             </span>
                         </div>
-                        <h4 class="mb-0" v-text="'S/ '+separatorNumber(fixedNumber(forms.entity.home.data.sales?.all?.total ?? 0))"></h4>
+                        <h5 class="mb-0" v-text="'S/ '+separatorNumber(fixedNumber(forms.entity.home.data.sales?.all?.total ?? 0))"></h5>
                     </div>
-                    <span class="fw-semibold">
-                        VENTAS EN TOTAL
-                        <small class="text-muted">| Hoy</small>
-                    </span>
+                    <span class="fw-semibold">VENTAS EN TOTAL</span>
                 </div>
             </div>
         </div>
@@ -30,12 +27,9 @@
                                 <i class="fa-solid fa-rectangle-xmark"></i>
                             </span>
                         </div>
-                        <h4 class="mb-0" v-text="'S/ '+separatorNumber(fixedNumber(forms.entity.home.data.sales?.cancelled?.total ?? 0))"></h4>
+                        <h5 class="mb-0" v-text="'S/ '+separatorNumber(fixedNumber(forms.entity.home.data.sales?.cancelled?.total ?? 0))"></h5>
                     </div>
-                    <span class="fw-semibold">
-                        VENTAS ANULADAS
-                        <small class="text-muted">| Hoy</small>
-                    </span>
+                    <span class="fw-semibold">VENTAS ANULADAS</span>
                 </div>
             </div>
         </div>
@@ -48,7 +42,7 @@
                                 <i class="ti ti-git-fork ti-md"></i>
                             </span>
                         </div>
-                        <h4 class="mb-0" v-text="separatorNumber(forms.entity.home.data.branches?.valid?.count ?? 0)"></h4>
+                        <h5 class="mb-0" v-text="separatorNumber(forms.entity.home.data.branches?.valid?.count ?? 0)"></h5>
                     </div>
                     <span class="fw-semibold">SUCURSALES</span>
                 </div>
@@ -57,25 +51,41 @@
         <div class="col-lg-3 col-sm-6">
             <div class="card card-border-shadow-secondary h-100">
                 <div class="card-body">
+                    <InputDate
+                        v-model="forms.entity.home.data.date"
+                        @change="initData({loading: true})"
+                        hasDiv
+                        title="Fecha a consultar"
+                        isRequired
+                        :titleClass="['form-label', 'colon-at-end', 'fw-semibold']"/>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="col-lg-3 col-sm-6">
+            <div class="card card-border-shadow-secondary h-100">
+                <div class="card-body">
                     <div class="d-flex align-items-center mb-3">
                         <div class="avatar me-3">
                             <span class="avatar-initial rounded bg-label-secondary">
                                 <i class="fa-solid fa-users"></i>
                             </span>
                         </div>
-                        <h4 class="mb-0" v-text="separatorNumber(forms.entity.home.data.users?.valid?.count ?? 0)"></h4>
+                        <h5 class="mb-0" v-text="separatorNumber(forms.entity.home.data.users?.valid?.count ?? 0)"></h5>
                     </div>
                     <span class="fw-semibold">COLABORADORES</span>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
     <div class="row g-3 mb-4">
         <div class="col-xl-12 col-12">
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <div class="card-title mb-0">
-                        <h5 class="m-0 fw-semibold">Ventas por intervalo de 3 horas | Hoy</h5>
+                        <h5 class="m-0 fw-semibold">
+                            Ventas creadas
+                            <span class="text-muted" v-text="'| Fecha: '+legibleFormatDate({dateString: forms.entity.home.data.date, type: 'date'})"></span>
+                        </h5>
                     </div>
                     <div v-show="false">
                         <button class="btn btn-sm btn-primary" @click="initChart()">
@@ -85,7 +95,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <canvas id="barChartId" class="chartjs" data-height="250"></canvas>
+                    <canvas id="barChartId" class="chartjs" data-height="230"></canvas>
                 </div>
             </div>
         </div>
@@ -93,7 +103,10 @@
     <div class="card h-100">
         <div class="card-header d-flex align-items-center justify-content-between">
             <div class="card-title mb-0">
-                <h5 class="m-0 fw-semibold">Últimas ventas | Hoy</h5>
+                <h5 class="m-0 fw-semibold">
+                    Últimas ventas
+                    <span class="text-muted" v-text="'| Fecha: '+legibleFormatDate({dateString: forms.entity.home.data.date, type: 'date'})"></span>
+                </h5>
             </div>
             <div v-show="false">
                 <button class="btn btn-sm btn-primary" @click="goSalesList()">
@@ -116,8 +129,8 @@
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0 bg-white">
-                        <template v-if="(forms.entity.home.data.sales?.all?.records ?? []).length > 0">
-                            <tr v-for="record in forms.entity.home.data.sales.all.records" :key="record.id" class="text-center">
+                        <template v-if="lastSales.length > 0">
+                            <tr v-for="record in lastSales" :key="record.id" class="text-center">
                                 <td class="text-start">
                                     <span v-text="record.serie_sequential" class="fw-bold d-block"></span>
                                     <small v-text="record.serie?.document_type?.name" class="d-block"></small>
@@ -221,6 +234,7 @@ export default {
                             }
                         },
                         data: {
+                            date: "",
                             sales: null,
                             branches: null,
                             users: null
@@ -257,20 +271,34 @@ export default {
 
             return new Promise(resolve => {
 
+                this.forms.entity.home.data.date = Utils.getCurrentDate();
+
                 resolve(true);
 
             });
 
         },
-        async initData({}) {
+        async initData({loading = false}) {
 
-            let initData = await Requests.get({route: this.config.entity.routes.initData, data: {page: "main"}, showAlert: true});
+            if(loading) {
+
+                Alerts.swals({type: "consult"});
+
+            }
+
+            let initData = await Requests.get({route: this.config.entity.routes.initData, data: {page: "main", date: this.forms.entity.home.data.date}, showAlert: true});
 
             this.forms.entity.home.data.sales    = initData.data?.data?.sales;
             this.forms.entity.home.data.branches = initData.data?.data?.branches;
             this.forms.entity.home.data.users    = initData.data?.data?.users;
 
             this.initChart();
+
+            if(loading) {
+
+                Alerts.swals({show: false});
+
+            }
 
             return Requests.valid({result: initData});
 
@@ -279,10 +307,10 @@ export default {
 
             // Utils
             const roundUpToNearest = (value) => {
+                if (value <= 500) return 500;
                 if (value <= 1000) return 1000;
-                if (value <= 5000) return 5000;
-                if (value <= 10000) return 10000;
-                return Math.ceil(value / 10000) * 10000;
+                if (value <= 3000) return 3000;
+                return Math.ceil(value / 20000) * 20000;
             };
 
             // Ajust height
@@ -296,14 +324,14 @@ export default {
 
             // Config
             const intervals = [
-            { label: "12:00 AM - 03:00 AM", start: 0, end: 3 },
-            { label: "03:00 AM - 06:00 AM", start: 3, end: 6 },
-            { label: "06:00 AM - 09:00 AM", start: 6, end: 9 },
-            { label: "09:00 AM - 12:00 PM", start: 9, end: 12 },
-            { label: "12:00 PM - 03:00 PM", start: 12, end: 15 },
-            { label: "03:00 PM - 06:00 PM", start: 15, end: 18 },
-            { label: "06:00 PM - 09:00 PM", start: 18, end: 21 },
-            { label: "09:00 PM - 12:00 AM", start: 21, end: 24 }
+                { label: "12:00 AM - 03:00 AM", start: 0, end: 3 },
+                { label: "03:00 AM - 06:00 AM", start: 3, end: 6 },
+                { label: "06:00 AM - 09:00 AM", start: 6, end: 9 },
+                { label: "09:00 AM - 12:00 PM", start: 9, end: 12 },
+                { label: "12:00 PM - 03:00 PM", start: 12, end: 15 },
+                { label: "03:00 PM - 06:00 PM", start: 15, end: 18 },
+                { label: "06:00 PM - 09:00 PM", start: 18, end: 21 },
+                { label: "09:00 PM - 12:00 AM", start: 21, end: 24 }
             ];
 
             const totalsByInterval = intervals.map(interval => ({ label: interval.label, total: 0 }));
@@ -313,7 +341,7 @@ export default {
 
             sales.forEach(sale => {
 
-                const saleHour = new Date(sale.created_at).getUTCHours();
+                const saleHour = new Date(sale.created_at).getHours(); // Usa getHours() en vez de getUTCHours()
                 const interval = intervals.find(i => saleHour >= i.start && saleHour < i.end);
 
                 if(interval) {
@@ -437,6 +465,11 @@ export default {
             return Utils.separatorNumber(value);
 
         },
+        legibleFormatDate({dateString = null, type = "datetime"}) {
+
+            return Utils.legibleFormatDate({dateString, type});
+
+        },
         sendWhatsapp({data = null, action = "reportSale"}) {
 
             const phoneNumber = this.forms.entity.home.extras.modals.actions.data.whatsapp;
@@ -450,6 +483,11 @@ export default {
         breadcrumbTitles: function() {
 
             return [this.config.entity.page];
+
+        },
+        lastSales: function() {
+
+            return (this.forms.entity.home.data.sales?.all?.records ?? []).slice(0, 10);
 
         }
     }
