@@ -21,12 +21,14 @@ return new class extends Migration {
             $table->date("issue_date");
             $table->decimal("total", 10, 2);
             $table->text("observation")->nullable();
-            $table->enum("status", ["active", "cancelled", "inactive"])->default("active");
+            $table->enum("status", ["active", "canceled", "inactive"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();
             $table->integer("created_by")->nullable();
             $table->timestamp("updated_at")->nullable();
             $table->integer("updated_by")->nullable();
+            $table->timestamp("canceled_at")->nullable();
+            $table->integer("canceled_by")->nullable();
 
             $table->foreign("serie_id")->references("id")->on("series")->onDelete("cascade");
             $table->foreign("holder_id")->references("id")->on("customers")->onDelete("cascade");
@@ -47,12 +49,14 @@ return new class extends Migration {
             $table->enum("type", ["product", "service", "subscription"])->default("product");
             $table->text("observation")->nullable();
             $table->text("extras");
-            $table->enum("status", ["active", "cancelled", "inactive"])->default("active");
+            $table->enum("status", ["active", "canceled", "inactive"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();
             $table->integer("created_by")->nullable();
             $table->timestamp("updated_at")->nullable();
             $table->integer("updated_by")->nullable();
+            $table->timestamp("canceled_at")->nullable();
+            $table->integer("canceled_by")->nullable();
 
             $table->foreign("sale_header_id")->references("id")->on("sales_header")->onDelete("cascade");
             $table->foreign("item_id")->references("id")->on("items")->onDelete("cascade");

@@ -37,7 +37,9 @@ class Subscription extends Model {
         "created_at",
         "created_by",
         "updated_at",
-        "updated_by"
+        "updated_by",
+        "canceled_at",
+        "canceled_by"
     ];
 
     // Appends
@@ -97,9 +99,9 @@ class Subscription extends Model {
     public static function getStatuses($type = "all", $code = "") {
 
         $statuses = [
-            ["code" => "active", "label" => "Activo"],
+            ["code" => "active", "label" => "Vigente"],
             ["code" => "inactive", "label" => "Inactivo"],
-            ["code" => "cancelled", "label" => "Anulado"]
+            ["code" => "canceled", "label" => "Anulado"]
         ];
 
         return Utilities::getValues($statuses, $type, $code);

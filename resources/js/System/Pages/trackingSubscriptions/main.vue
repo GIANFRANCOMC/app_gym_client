@@ -44,10 +44,11 @@
                 <tr class="text-center align-middle">
                     <th class="fw-bold col-1">CLIENTE</th>
                     <th class="fw-bold col-1">DURACIÓN</th>
-                    <th class="fw-bold col-2">FECHA DE INICIO</th>
-                    <th class="fw-bold col-2">FECHA DE FINALIZACIÓN</th>
-                    <th class="fw-bold col-1">TIPO</th>
+                    <th class="fw-bold col-1">FECHA DE INICIO</th>
+                    <th class="fw-bold col-1">FECHA DE FINALIZACIÓN</th>
+                    <th class="fw-bold col-1">ORIGEN</th>
                     <th class="fw-bold col-1">ESTADO</th>
+                    <th class="fw-bold col-1">ACCIONES</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0 bg-white">
@@ -61,19 +62,33 @@
                 <template v-else>
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
-                            <td v-text="record.customer?.name"></td>
+                            <td class="text-start">
+                                <span v-text="record.customer?.name" class="fw-bold d-block"></span>
+                                <small v-text="record.customer?.document_number" class="d-block"></small>
+                            </td>
                             <td>
                                 <span v-text="record.formatted_duration" class="badge bg-label-primary fw-bold"></span>
                             </td>
-                            <td v-text="record.start_date"></td>
-                            <td v-text="record.end_date"></td>
                             <td>
+                                <span v-text="legibleFormatDate({dateString: record.start_date, type: 'date'})" class="d-block fw-semibold"></span>
+                                <span v-text="legibleFormatDate({dateString: record.start_date, type: 'time'})" class="d-block fw-semibold"></span>
+                            </td>
+                            <td>
+                                <span v-text="legibleFormatDate({dateString: record.end_date, type: 'date'})" class="d-block fw-semibold"></span>
+                                <span v-text="legibleFormatDate({dateString: record.end_date, type: 'time'})" class="d-block fw-semibold"></span>
+                            </td>
+                            <td class="text-start">
                                 <span v-text="record.formatted_type" class="d-block fw-bold"></span>
                                 <span v-text="record.sale_header?.serie_sequential" class="d-block fw-semibold"></span>
                             </td>
                             <td>
-                                <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive', 'cancelled'].includes(record.status) }]" v-text="record.formatted_status"></span>
-                                <span v-if="isDefined({value: record.motive})" v-text="'Motivo: '+record.motive" class="d-block text-start fw-semibold mt-2"></span>
+                                <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive', 'canceled'].includes(record.status) }]" v-text="record.formatted_status"></span>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-primary waves-effect" @click="modalActionsEntity({record})">
+                                    <i class="fa fa-gear"></i>
+                                    <span class="ms-2">Acciones</span>
+                                </button>
                             </td>
                         </tr>
                     </template>
@@ -91,6 +106,37 @@
     <div class="d-flex justify-content-center" v-if="!lists.entity.extras.loading && lists.entity.records?.total > 0">
         <Paginator :links="lists.entity.records.links" @clickPage="listEntity"/>
     </div>
+
+    <div class="modal fade" :id="forms.entity.createUpdate.extras.modals.actions.id" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-uppercase fw-bold"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row justify-content-center g-1 mt-4">
+                        <div v-if="['active'].includes(forms.entity.createUpdate.extras.modals.actions.data?.status)" class="col-xl-3 col-lg-3 col-md-3 col-sm-3">
+                            <div class="text-center cursor-pointer p-1" @click="cancelEntity({})">
+                                <div class="badge bg-danger p-3 rounded mb-1">
+                                    <i class="fa-solid fa-rectangle-xmark fs-3"></i>
+                                </div>
+                                <span class="d-block fw-semibold">Anular suscripción</span>
+                            </div>
+                        </div>
+                        <div v-if="['canceled'].includes(forms.entity.createUpdate.extras.modals.actions.data?.status)" class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                            <span class="fw-semibold">Motivo:</span>
+                            <span class="ms-2" v-text="forms.entity.createUpdate.extras.modals.actions.data?.motive"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </template>
 
 <script>
@@ -142,11 +188,10 @@ export default {
                     createUpdate: {
                         extras: {
                             modals: {
-                                default: {
+                                actions: {
                                     id: Utils.uuid(),
-                                    titles: {
-                                        store: "Agregar",
-                                        update: "Editar"
+                                    data: {
+                                        id: null
                                     }
                                 }
                             }
@@ -209,84 +254,84 @@ export default {
 
         },
         // Forms
-        modalCreateUpdateEntity({record = null}) {
+        modalActionsEntity({record = null}) {
 
-            const functionName = "modalCreateUpdateEntity";
+            this.forms.entity.createUpdate.extras.modals.actions.data = record;
 
-            // Alerts.swals({});
-            this.clearForm({functionName});
-            this.formErrors({functionName, type: "clear"});
-
-            if(this.isDefined({value: record})) {
-
-                let currency = this.currencies.filter(e => e.code === record?.currency_id)[0],
-                    status   = this.statuses.filter(e => e.code === record?.status)[0];
-
-                this.forms.entity.createUpdate.data.id            = record?.id;
-                this.forms.entity.createUpdate.data.internal_code = record?.internal_code;
-                this.forms.entity.createUpdate.data.name          = record?.name;
-                this.forms.entity.createUpdate.data.description   = record?.description;
-                this.forms.entity.createUpdate.data.price         = record?.price;
-                this.forms.entity.createUpdate.data.currency      = currency;
-                this.forms.entity.createUpdate.data.status        = status;
-
-            }else {
-
-                // this.setGenerateCode({showAlert: false});
-                this.forms.entity.createUpdate.data.currency = this.currencies[0];
-                this.forms.entity.createUpdate.data.status   = this.statuses[0];
-
-            }
-
-            // Alerts.swals({show: false});
-            Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.default.id});
+            Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.actions.id});
 
         },
-        async createUpdateEntity() {
+        cancelEntity({}) {
 
-            const functionName = "createUpdateEntity";
+            const functionName = "cancelEntity";
 
-            Alerts.swals({});
             this.formErrors({functionName, type: "clear"});
 
-            let form = Utils.cloneJson(this.forms.entity.createUpdate.data);
+            let form = Utils.cloneJson(this.forms.entity.createUpdate.extras.modals.actions.data);
 
             const validateForm = this.validateForm({functionName, form});
 
+            Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.actions.id});
+
             if(validateForm?.bool) {
 
-                form.currency_id = form?.currency?.code;
-                form.status = form?.status?.code;
+                let el = this;
 
-                delete form.currency;
+                Swal.fire({
+                    html: `<span class="d-block my-1">¿Desea anular la venta suscripción del cliente <b>${form.customer?.name}</b>?</span>
+                           <div class="form-group text-start mt-2">
+                                <label class="form-label colon-at-end">Motivo</label>
+                                <label class="text-danger ms-1 fw-bold">*</label>
+                                <div class="input-group">
+                                    <textarea type="text" class="form-control no-resize" maxlength="999" id="motiveId"></textarea>
+                                </div>
+                           </div>`,
+                    icon: "warning",
+                    allowOutsideClick: false,
+                    showCancelButton: true,
+                    confirmButtonText: "Sí, anular",
+                    cancelButtonText: "Cancelar",
+                    customClass: {
+                        confirmButton: "btn btn-primary waves-effect",
+                        cancelButton: "btn btn-secondary waves-effect ms-3"
+                    }
+                }).then(async function(result) {
 
-                let createUpdate = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: form.id}) :
-                                                                             Requests.post({route: this.config.entity.routes.store, data: form}));
+                    if(result.isConfirmed) {
 
-                if(Requests.valid({result: createUpdate})) {
+                        Alerts.swals({});
 
-                    Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
-                    Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
-                    Alerts.swals({show: false});
+                        let cancel = await Requests.patch({route: el.config.entity.routes.cancel, id: form.id});
 
-                    this.clearForm({functionName});
-                    this.listEntity({url: `${this.lists.entity.extras.route}?page=${this.lists.entity.records?.current_page ?? 1}`});
+                        if(Requests.valid({result: cancel})) {
 
-                }else {
+                            Alerts.toastrs({type: "success", subtitle: cancel?.data?.msg});
+                            Alerts.swals({show: false});
 
-                    this.formErrors({functionName, type: "set", errors: createUpdate?.errors ?? []});
-                    Alerts.toastrs({type: "error", subtitle: createUpdate?.data?.msg});
-                    Alerts.swals({show: false});
+                            el.listEntity({})
 
-                }
+                        }else {
+
+                            Alerts.toastrs({type: "error", subtitle: cancel?.data?.msg});
+                            Alerts.swals({show: false});
+
+                        }
+
+                    }else if(result.isDismissed) {
+
+                        //
+
+                    }
+
+                })
 
             }else {
 
-                this.formErrors({functionName, type: "set", errors: validateForm});
-                Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
-                Alerts.swals({show: false});
+                Alerts.generateAlert({messages: Utils.getErrors({errors: validateForm}), msgContent: `<div class="fw-semibold mb-2">${this.config.messages.errorValidate}</div>`});
 
             }
+
+            Alerts.tooltips({show: false});
 
         },
         // Forms utils
@@ -295,13 +340,7 @@ export default {
             switch(functionName) {
                 case "modalCreateUpdateEntity":
                 case "createUpdateEntity":
-                    this.forms.entity.createUpdate.data.id            = null;
-                    this.forms.entity.createUpdate.data.internal_code = "";
-                    this.forms.entity.createUpdate.data.name          = "";
-                    this.forms.entity.createUpdate.data.description   = "";
-                    this.forms.entity.createUpdate.data.price         = "";
-                    this.forms.entity.createUpdate.data.currency      = null;
-                    this.forms.entity.createUpdate.data.status        = null;
+                    //
                     break;
             }
 
@@ -376,9 +415,9 @@ export default {
             return Utils.isDefined({value});
 
         },
-        generateCode({length}) {
+        legibleFormatDate({dateString = null, type = "datetime"}) {
 
-            return Utils.generateCode({length});
+            return Utils.legibleFormatDate({dateString, type});
 
         }
     },

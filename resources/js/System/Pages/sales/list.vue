@@ -132,7 +132,7 @@
                                 <span v-text="separatorNumber(record.total)" class="fw-semibold ms-1"></span>
                             </td>
                             <td>
-                                <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive', 'cancelled'].includes(record.status) }]" v-text="record.formatted_status"></span>
+                                <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive', 'canceled'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
                             <td>
                                 <button type="button" class="btn btn-sm btn-primary waves-effect" @click="modalActionsEntity({record})">

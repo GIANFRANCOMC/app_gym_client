@@ -103,15 +103,15 @@ class ReportController extends Controller {
 
                     try {
 
-                        $cancelledPath = public_path("System/assets/img/utils/sales/cancelled.png");
-                        $cancelledImg  = "data:image/".pathinfo($cancelledPath, PATHINFO_EXTENSION).";base64,".base64_encode(file_get_contents($cancelledPath));
+                        $canceledPath = public_path("System/assets/img/utils/sales/canceled.png");
+                        $canceledImg  = "data:image/".pathinfo($canceledPath, PATHINFO_EXTENSION).";base64,".base64_encode(file_get_contents($canceledPath));
 
                         $data = [
-                            "saleHeader"   => $saleHeader,
-                            "company"      => $company,
-                            "extras"       => $saleHeader,
-                            "logoImg"      => $logoImg,
-                            "cancelledImg" => $cancelledImg
+                            "saleHeader"  => $saleHeader,
+                            "company"     => $company,
+                            "extras"      => $saleHeader,
+                            "logoImg"     => $logoImg,
+                            "canceledImg" => $canceledImg
                         ];
 
                         if(in_array($printType, ["a4"])) {

@@ -58,8 +58,8 @@ class HomeController extends Controller {
                            ->with(["serie.documentType", "holder", "currency"])
                            ->get();
 
-        $cancelledSales = $sales->whereIn("status", ["cancelled"])
-                                ->values();
+        $canceledSales = $sales->whereIn("status", ["canceled"])
+                               ->values();
 
         // $users = User::where("company_id", $userAuth->company_id)
                       // ->whereIn("status", ["active"])
@@ -72,9 +72,9 @@ class HomeController extends Controller {
                     "count"   => $sales->count(),
                     "records" => $sales
                 ],
-                "cancelled" => [
-                    "total" => $cancelledSales->sum("total"),
-                    "count" => $cancelledSales->count()
+                "canceled" => [
+                    "total" => $canceledSales->sum("total"),
+                    "count" => $canceledSales->count()
                 ]
             ],
             "branches" => [

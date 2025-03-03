@@ -17,7 +17,6 @@
 <script src="{{ asset('System/assets/js/ui-toasts.js') }}"></script>
 <script src="{{ asset('System/assets/vendor/libs/toastr/toastr.js') }}"></script>
 <script src="{{ asset('System/assets/vendor/libs/chartjs/chartjs.js') }}"></script>
-<script src="{{ asset('System/assets/js/charts-chartjs.js') }}"></script>
 
 <!-- Main JS -->
 <script src="{{ asset('System/assets/js/main.js') }}"></script>

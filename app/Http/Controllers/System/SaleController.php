@@ -259,22 +259,33 @@ class SaleController extends Controller {
 
                 if(Utilities::isDefined($branch) && $branch->company_id == $userAuth->company_id) {
 
-                    $saleHeader->status     = "cancelled";
-                    $saleHeader->updated_at = now();
-                    $saleHeader->updated_by = $userAuth->id ?? null;
+                    $saleHeader->status      = "canceled";
+                    $saleHeader->updated_at  = now();
+                    $saleHeader->updated_by  = $userAuth->id ?? null;
+                    $saleHeader->canceled_at = now();
+                    $saleHeader->canceled_by = $userAuth->id ?? null;
                     $saleHeader->save();
 
                     $motive = "Por la anulación de la venta.";
 
                     SaleBody::where("sale_header_id", $saleHeader->id)
                             ->whereIn("status", ["active"])
-                            ->update(["status" => "cancelled", "updated_at" => now(), "updated_by" => $userAuth->id ?? null]);
+                            ->update(["status" => "canceled",
+                                      "updated_at" => now(),
+                                      "updated_by" => $userAuth->id ?? null,
+                                      "canceled_at" => now(),
+                                      "canceled_by" => $userAuth->id ?? null]);
 
                     Subscription::where("company_id", $userAuth->company_id)
                                 ->where("sale_header_id", $saleHeader->id)
                                 ->whereIn("type", ["sale"])
                                 ->whereIn("status", ["active"])
-                                ->update(["motive" => $motive, "status" => "cancelled", "updated_at" => now(), "updated_by" => $userAuth->id ?? null]);
+                                ->update(["motive" => $motive,
+                                          "status" => "canceled",
+                                          "updated_at" => now(),
+                                          "updated_by" => $userAuth->id ?? null,
+                                          "canceled_at" => now(),
+                                          "canceled_by" => $userAuth->id ?? null]);
 
                 }
 

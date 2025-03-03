@@ -21,7 +21,7 @@
                         <img src="{{ asset('System/assets/img/utils/login/1.png') }}" alt="auth-login-cover" class="img-fluid" width="70%">
                     </div>
                 </div>
-                <div class="d-flex col-12 col-lg-4 align-items-center authentication-bg p-sm-12 p-6">
+                <div class="d-flex col-12 col-lg-4 align-items-center authentication-bg p-sm-12 p-6 bg-white">
                     <div class="w-px-400 mx-auto mt-12 pt-5">
                         {{ $slot }}
                     </div>

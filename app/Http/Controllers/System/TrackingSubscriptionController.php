@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
-use App\Http\Requests\System\Subscriptions\{StoreTrackingSubscriptionRequest, UpdateTrackingSubscriptionRequest};
+use App\Http\Requests\System\TrackingSubscriptions\{CancelTrackingSubscriptionRequest, StoreTrackingSubscriptionRequest, UpdateTrackingSubscriptionRequest};
 use App\Models\System\{Item, Subscription};
 
 class TrackingSubscriptionController extends Controller {
@@ -107,6 +107,35 @@ class TrackingSubscriptionController extends Controller {
     public function update(UpdateTrackingSubscriptionRequest $request, $id) {
 
         //
+
+    }
+
+    public function cancel(CancelTrackingSubscriptionRequest $request, $id) {
+
+        $userAuth = Auth::user();
+
+        $subscription = Subscription::findOrFail($id);
+
+        if(Utilities::isDefined($subscription) && in_array($subscription->status, ["active"])) {
+
+            if(Utilities::isDefined($subscription) && $subscription->company_id == $userAuth->company_id) {
+
+                $subscription->motive      = "xddd";
+                $subscription->status      = "canceled";
+                $subscription->updated_at  = now();
+                $subscription->updated_by  = $userAuth->id ?? null;
+                $subscription->canceled_at = now();
+                $subscription->canceled_by = $userAuth->id ?? null;
+                $subscription->save();
+
+            }
+
+        }
+
+        $bool = $subscription->wasChanged();
+        $msg  = $bool ? "Suscripción anulada correctamente." : "No se ha podido anular la suscripción.";
+
+        return response()->json(["bool" => $bool, "msg" => $msg, "subscription" => $subscription], 200);
 
     }
 

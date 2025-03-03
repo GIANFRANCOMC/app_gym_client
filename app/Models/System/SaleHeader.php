@@ -37,7 +37,9 @@ class SaleHeader extends Model {
         "created_at",
         "created_by",
         "updated_at",
-        "updated_by"
+        "updated_by",
+        "canceled_at",
+        "canceled_by"
     ];
 
     // Appends
@@ -99,7 +101,7 @@ class SaleHeader extends Model {
         $statuses = [
             ["code" => "active", "label" => "Activo"],
             // ["code" => "inactive", "label" => "Inactivo"],
-            ["code" => "cancelled", "label" => "Anulado"]
+            ["code" => "canceled", "label" => "Anulado"]
         ];
 
         return Utilities::getValues($statuses, $type, $code);

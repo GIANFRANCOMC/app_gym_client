@@ -26,12 +26,14 @@ return new class extends Migration {
             $table->text("observation")->nullable();
             $table->text("motive")->nullable();
             $table->enum("type", ["sale", "manual"])->default("sale");
-            $table->enum("status", ["active", "cancelled", "inactive"])->default("active");
+            $table->enum("status", ["active", "canceled", "inactive"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();
             $table->integer("created_by")->nullable();
             $table->timestamp("updated_at")->nullable();
             $table->integer("updated_by")->nullable();
+            $table->timestamp("canceled_at")->nullable();
+            $table->integer("canceled_by")->nullable();
 
             $table->foreign("company_id")->references("id")->on("companies")->onDelete("cascade");
             $table->foreign("sale_header_id")->references("id")->on("sales_header")->onDelete("cascade");

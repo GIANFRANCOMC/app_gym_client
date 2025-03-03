@@ -376,6 +376,10 @@ export function legibleFormatDate({dateString = null, type = "datetime"}) {
 
             return `${formattedDay}-${formattedMonth}-${year} ${formattedHours}:${formattedMinutes} ${ampm}`;
 
+        }else if (type === "time") {
+
+            return `${formattedHours}:${formattedMinutes} ${ampm}`;
+
         }
 
         return `${formattedDay}-${formattedMonth}-${year} ${formattedHours}:${formattedMinutes} ${ampm}`;

@@ -648,9 +648,9 @@
         </style>
     </head>
     <body>
-        @if (in_array($saleHeader->status, ["cancelled"]))
+        @if (in_array($saleHeader->status, ["canceled"]))
             <div style="position: absolute; text-align: center; top:9%;">
-                <img src="{{ $cancelledImg }}" style="opacity: 0.15;" width="60%">
+                <img src="{{ $canceledImg }}" style="opacity: 0.15;" width="60%">
             </div>
         @endif
         <table class="full-width mt-3">

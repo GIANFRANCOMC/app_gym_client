@@ -27,7 +27,7 @@
                                 <i class="fa-solid fa-rectangle-xmark"></i>
                             </span>
                         </div>
-                        <h5 class="mb-0" v-text="'S/ '+separatorNumber(fixedNumber(forms.entity.home.data.sales?.cancelled?.total ?? 0))"></h5>
+                        <h5 class="mb-0" v-text="'S/ '+separatorNumber(fixedNumber(forms.entity.home.data.sales?.canceled?.total ?? 0))"></h5>
                     </div>
                     <span class="fw-semibold">VENTAS ANULADAS</span>
                 </div>
@@ -84,7 +84,7 @@
                     <div class="card-title mb-0">
                         <h5 class="m-0 fw-semibold">
                             Ventas creadas
-                            <span class="text-muted" v-text="'| Fecha: '+legibleFormatDate({dateString: forms.entity.home.data.date, type: 'date'})"></span>
+                            <small class="text-muted" v-text="'| Fecha: '+legibleFormatDate({dateString: forms.entity.home.data.date, type: 'date'})"></small>
                         </h5>
                     </div>
                     <div v-show="false">
@@ -105,7 +105,7 @@
             <div class="card-title mb-0">
                 <h5 class="m-0 fw-semibold">
                     Últimas ventas
-                    <span class="text-muted" v-text="'| Fecha: '+legibleFormatDate({dateString: forms.entity.home.data.date, type: 'date'})"></span>
+                    <small class="text-muted" v-text="'| Fecha: '+legibleFormatDate({dateString: forms.entity.home.data.date, type: 'date'})"></small>
                 </h5>
             </div>
             <div v-show="false">
@@ -147,7 +147,7 @@
                                     <span v-text="separatorNumber(record.total)" class="fw-semibold ms-1"></span>
                                 </td>
                                 <td>
-                                    <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive', 'cancelled'].includes(record.status) }]" v-text="record.formatted_status"></span>
+                                    <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive', 'canceled'].includes(record.status) }]" v-text="record.formatted_status"></span>
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-primary waves-effect" @click="modalActionsEntity({record})">
@@ -286,6 +286,12 @@ export default {
 
             }
 
+            if(!this.isDefined({value: this.forms.entity.home.data.date})) {
+
+                this.forms.entity.home.data.date = Utils.getCurrentDate();
+
+            }
+
             let initData = await Requests.get({route: this.config.entity.routes.initData, data: {page: "main", date: this.forms.entity.home.data.date}, showAlert: true});
 
             this.forms.entity.home.data.sales    = initData.data?.data?.sales;
@@ -324,14 +330,14 @@ export default {
 
             // Config
             const intervals = [
-                { label: "12:00 AM - 03:00 AM", start: 0, end: 3 },
-                { label: "03:00 AM - 06:00 AM", start: 3, end: 6 },
-                { label: "06:00 AM - 09:00 AM", start: 6, end: 9 },
-                { label: "09:00 AM - 12:00 PM", start: 9, end: 12 },
-                { label: "12:00 PM - 03:00 PM", start: 12, end: 15 },
-                { label: "03:00 PM - 06:00 PM", start: 15, end: 18 },
-                { label: "06:00 PM - 09:00 PM", start: 18, end: 21 },
-                { label: "09:00 PM - 12:00 AM", start: 21, end: 24 }
+                { label: "12:00 AM - 02:59 AM", start: 0, end: 3 },
+                { label: "03:00 AM - 05:59 AM", start: 3, end: 6 },
+                { label: "06:00 AM - 08:59 AM", start: 6, end: 9 },
+                { label: "09:00 AM - 11:59 PM", start: 9, end: 12 },
+                { label: "12:00 PM - 02:59 PM", start: 12, end: 15 },
+                { label: "03:00 PM - 05:59 PM", start: 15, end: 18 },
+                { label: "06:00 PM - 08:59 PM", start: 18, end: 21 },
+                { label: "09:00 PM - 11:59 AM", start: 21, end: 24 }
             ];
 
             const totalsByInterval = intervals.map(interval => ({ label: interval.label, total: 0 }));
@@ -341,7 +347,7 @@ export default {
 
             sales.forEach(sale => {
 
-                const saleHour = new Date(sale.created_at).getHours(); // Usa getHours() en vez de getUTCHours()
+                const saleHour = new Date(sale.created_at).getHours();
                 const interval = intervals.find(i => saleHour >= i.start && saleHour < i.end);
 
                 if(interval) {
