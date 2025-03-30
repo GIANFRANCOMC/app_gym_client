@@ -39,36 +39,31 @@ class TrackingSubscriptionController extends Controller {
 
         $userAuth = Auth::user();
 
-        $list = Subscription::when(Utilities::isDefined($request->filter_by), function($query) use($request) {
+        $list = Subscription::select("subscriptions.*")
+                            ->when(Utilities::isDefined($request->filter_by), function($query) use($request) {
 
-                        $filter = Utilities::getWordSearch($request->word);
+                                $filter = Utilities::getWordSearch($request->word);
 
-                        if(in_array($request->filter_by, ["all"])) {
+                                if(in_array($request->filter_by, ["customer"])) {
 
-                            $query->where(function($query) use($request, $filter) {
 
-                                /* $query->where("internal_code", "like", $filter)
-                                      ->orWhere("name", "like", $filter)
-                                      ->orWhere("description", "like", $filter)
-                                      ->orWhere("price", "like", $filter); */
+                                    $query->join("customers", "customers.id", "subscriptions.customer_id")
+                                          ->where(function($query) use($request, $filter) {
 
-                            });
+                                                $query->where("document_number", "like", $filter)
+                                                      ->orWhere("name", "like", $filter)
+                                                      ->orWhere("email", "like", $filter)
+                                                      ->orWhere("phone_number", "like", $filter);
 
-                        }else if(in_array($request->filter_by, ["internal_code", "name", "description", "price"])) {
+                                          });
 
-                            $query->where(function($query) use($request, $filter) {
+                                }
 
-                                $query->where($request->filter_by, "like", $filter);
-
-                            });
-
-                        }
-
-                    })
-                    ->where("company_id", $userAuth->company_id)
-                    ->orderBy("id", "DESC")
-                    ->with(["saleHeader", "customer"])
-                    ->paginate($request->per_page ?? Utilities::$per_page_default);
+                            })
+                            ->where("subscriptions.company_id", $userAuth->company_id)
+                            ->orderBy("subscriptions.id", "DESC")
+                            ->with(["saleHeader", "customer"])
+                            ->paginate($request->per_page ?? Utilities::$per_page_default);
 
         return $list;
 
@@ -120,7 +115,7 @@ class TrackingSubscriptionController extends Controller {
 
             if(Utilities::isDefined($subscription) && $subscription->company_id == $userAuth->company_id) {
 
-                $subscription->motive      = "xddd";
+                $subscription->motive      = $request->motive ?? "N/A";
                 $subscription->status      = "canceled";
                 $subscription->updated_at  = now();
                 $subscription->updated_by  = $userAuth->id ?? null;

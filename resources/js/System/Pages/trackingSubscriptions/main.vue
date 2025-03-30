@@ -299,9 +299,11 @@ export default {
 
                     if(result.isConfirmed) {
 
+                        const motive = Swal.getHtmlContainer().querySelector("#motiveId").value;
+
                         Alerts.swals({});
 
-                        let cancel = await Requests.patch({route: el.config.entity.routes.cancel, id: form.id});
+                        let cancel = await Requests.patch({route: el.config.entity.routes.cancel, data: {motive}, id: form.id});
 
                         if(Requests.valid({result: cancel})) {
 
@@ -430,8 +432,9 @@ export default {
         filterByOptions: function() {
 
             return [
-                {code: "all", label: "Todos"},
-                {code: "name", label: "Tipo"}
+                // {code: "all", label: "Todos"},
+                // {code: "name", label: "Tipo"}
+                {code: "customer", label: "Cliente"}
             ];
 
         },

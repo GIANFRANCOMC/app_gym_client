@@ -23,7 +23,7 @@ class CancelTrackingSubscriptionRequest extends FormRequest {
     public function rules(): array {
 
         return [
-            //
+            "motive" => "required"
         ];
 
     }

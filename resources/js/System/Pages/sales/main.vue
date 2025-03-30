@@ -149,12 +149,12 @@
                                                         <i class="fa fa-copy"></i>
                                                         <span class="ms-1">Duplicar</span>
                                                     </button>
-                                                    <template v-if="isSubscription(record?.type)">
+                                                    <!-- <template v-if="isSubscription(record?.type)">
                                                         <button class="btn btn-success btn-xs waves-effect my-1" type="button" @click="viewDetail({record, keyRecord})">
                                                             <i :class="record?.extras?.showDetail ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
                                                             <span class="ms-1" v-text="record?.extras?.showDetail ? 'Ocultar detalle' : 'Mostar detalle'"></span>
                                                         </button>
-                                                    </template>
+                                                    </template> -->
                                                 </td>
                                             </tr>
                                             <template v-if="record?.extras?.showDetail">
