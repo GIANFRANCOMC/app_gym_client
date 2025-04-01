@@ -118,6 +118,7 @@
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.identity_document_type"
                                     :options="identityDocumentTypes"
+                                    @open="tooltips({show: true, time: 1000})"
                                     :clearable="false"/>
                             </template>
                         </InputSlot>
@@ -129,7 +130,15 @@
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.document_number"
                             xl="6"
-                            lg="6"/>
+                            lg="6">
+                            <template v-slot:inputGroupAppend>
+                                <template v-if="[2].includes(forms.entity.createUpdate.data.identity_document_type?.code)">
+                                    <button class="btn btn-primary waves-effect" type="button" @click="searchDocumentNumber({consult: forms.entity.createUpdate})" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </template>
+                            </template>
+                        </InputText>
                         <InputText
                             v-model="forms.entity.createUpdate.data.name"
                             hasDiv
@@ -478,10 +487,43 @@ export default {
             return result;
 
         },
+        async searchDocumentNumber({consult}) {
+
+            let route = Requests.config({entity: "helpers", type: "searchDocumentNumber"});
+            const formJson = {document_number: consult.data.document_number, type: consult.data.identity_document_type?.code};
+
+            Alerts.swals({});
+
+            let searchDocumentNumber = await Requests.get({route: route, data: formJson});
+
+            if(Requests.valid({result: searchDocumentNumber})) {
+
+                const data = searchDocumentNumber.data.data;
+
+                this.forms.entity.createUpdate.data.name = `${data?.first_name} ${data?.last_name} ${data?.second_last_name}`;
+
+                Alerts.toastrs({type: "success", subtitle: searchDocumentNumber?.data?.msg});
+                Alerts.swals({show: false});
+
+            }else {
+
+                Alerts.toastrs({type: "error", subtitle: searchDocumentNumber?.data?.msg});
+                Alerts.swals({show: false});
+
+            }
+
+            Alerts.tooltips({show: false});
+
+        },
         // Others
         isDefined({value}) {
 
             return Utils.isDefined({value});
+
+        },
+        tooltips({show = true, time = 10}) {
+
+            Alerts.tooltips({show, time});
 
         }
     },

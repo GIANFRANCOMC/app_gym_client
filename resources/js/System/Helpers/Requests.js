@@ -208,6 +208,10 @@ export function generateRoutes({entity, requestRoute}) {
 
         routes.sale = `${requestRoute}/${entity}/sale`;
 
+    }else if(["helpers"].includes(entity)) {
+
+        routes.searchDocumentNumber = `${requestRoute}/${entity}/searchDocumentNumber`;
+
     }
 
     return routes;

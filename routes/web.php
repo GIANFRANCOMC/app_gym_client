@@ -42,6 +42,7 @@ Route::middleware(["web"])
             Route::prefix('/customers')->group($rutaDefecto.'/Customer.php');
 
 
+            Route::prefix('/helpers')->group($rutaDefecto.'/Helper.php');
             Route::prefix('/home')->group($rutaDefecto.'/Home.php');
             Route::prefix('/branches')->group($rutaDefecto.'/Branch.php');
             Route::prefix('/sales')->group($rutaDefecto.'/Sale.php');
