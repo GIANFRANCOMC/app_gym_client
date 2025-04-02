@@ -211,6 +211,7 @@ export function generateRoutes({entity, requestRoute}) {
     }else if(["helpers"].includes(entity)) {
 
         routes.searchDocumentNumber = `${requestRoute}/${entity}/searchDocumentNumber`;
+        routes.sendEmail = `${requestRoute}/${entity}/sendEmail`;
 
     }
 

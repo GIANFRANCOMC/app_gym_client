@@ -719,5 +719,11 @@
                 </tr>
             </tbody>
         </table>
+        <table class="full-width mt-4">
+            <tr>
+                <td width="100px" class="font-bold desc-9">• OBSERVACIONES :</td>
+                <td class="desc-9">{{ empty($saleHeader->observation) ? "N/A" : $saleHeader->observation }}</td>
+            </tr>
+        </table>
     </body>
 </html>

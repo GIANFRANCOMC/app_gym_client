@@ -363,7 +363,7 @@ export function getMessageWhatsapp({data, action}) {
         const information = "¡Se ha creado la venta exitosamente! Para obtener el documento de la venta, visite el siguiente enlace:";
         const url = Requests.routeReport({resource: "sale", params: {document: data?.id, type: "a4"}, extras: {action}});
 
-        message = `${information} %0A ${url}`;
+        message = `${information} ${url}`;
 
     }
 

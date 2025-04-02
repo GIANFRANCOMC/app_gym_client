@@ -8,11 +8,11 @@ export function swals({show = true, type = "default", timeout = 0}) {
 
         switch(type) {
             case "default":
-                message = "Cargando";
+                message = "Cargando.";
                 break;
 
             case "consult":
-                message = "Consultando información";
+                message = "Consultando información.";
                 break;
 
             case "initParams":

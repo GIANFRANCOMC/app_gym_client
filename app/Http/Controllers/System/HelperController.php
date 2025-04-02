@@ -4,8 +4,10 @@ namespace App\Http\Controllers\System;
 
 use App\Helpers\System\Utilities;
 use App\Http\Controllers\Controller;
+use App\Mail\SaleMail;
+use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Auth, DB};
+use Illuminate\Support\Facades\{Auth, DB, Mail};
 use stdClass;
 
 class HelperController extends Controller {
@@ -71,6 +73,42 @@ class HelperController extends Controller {
         }
 
         return response()->json(["bool" => $bool, "msg" => $msg, "data" => $data], 200);
+
+    }
+
+    public function sendEmail(Request $request) {
+
+        $bool   = false;
+        $msg    = "No ha sido posible enviar el correo.";
+        $devMsg = "";
+
+        try {
+
+            $id               = $request->id;
+            $serie_sequential = $request->serie_sequential;
+            $email            = $request->email;
+            $message          = $request->message;
+
+            if(Utilities::isDefined($email) && Utilities::isDefined($message)) {
+
+                $mail = new stdClass();
+                $mail->subject       = "Venta creada en ".env("APP_NAME");
+                $mail->message       = $message;
+
+                Mail::to($email)->send(new SaleMail($mail));
+
+                $bool   = true;
+                $msg    = "Correo enviado con éxito.";
+
+            }
+
+        }catch(Exception $e) {
+
+            $devMsg = $e->getMessage();
+
+        }
+
+        return response()->json(["bool" => $bool, "msg" => $msg, "devMsg" => $devMsg], 200);
 
     }
 

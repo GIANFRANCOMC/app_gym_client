@@ -172,13 +172,26 @@
 
     <PrintSale :modalId="forms.entity.home.extras.modals.actions.id" :data="forms.entity.home.extras.modals.actions.data">
         <template v-slot:extraGroupAppend>
-            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mt-5 mb-3">
+            <div class="row g-2 mt-4">
                 <InputText
+                    hasDiv
+                    title="Número de celular (Whatsapp)"
                     v-model="forms.entity.home.extras.modals.actions.data.whatsapp">
                     <template v-slot:inputGroupAppend>
                         <button class="btn btn-success waves-effect" type="button" @click="sendWhatsapp({data: forms.entity.home.extras.modals.actions.data})" :disabled="!isDefined({value: forms.entity.home.extras.modals.actions.data.whatsapp})">
-                            <i class="ti ti-brand-whatsapp"></i>
-                            <span class="ms-2">Enviar a Whatsapp</span>
+                            <i class="fa-brands fa-whatsapp"></i>
+                            <span class="ms-2">Enviar</span>
+                        </button>
+                    </template>
+                </InputText>
+                <InputText
+                    hasDiv
+                    title="Correo electrónico"
+                    v-model="forms.entity.home.extras.modals.actions.data.email">
+                    <template v-slot:inputGroupAppend>
+                        <button class="btn btn-info waves-effect" type="button" @click="sendEmail({data: forms.entity.home.extras.modals.actions.data})" :disabled="!isDefined({value: forms.entity.home.extras.modals.actions.data.email})">
+                            <i class="fa fa-envelope"></i>
+                            <span class="ms-2">Enviar</span>
                         </button>
                     </template>
                 </InputText>
@@ -227,7 +240,8 @@ export default {
                                     data: {
                                         id: null,
                                         extras: {},
-                                        whatsapp: ""
+                                        whatsapp: "",
+                                        email: ""
                                     },
                                     errors: {}
                                 }
@@ -443,7 +457,10 @@ export default {
         // Entity forms
         modalActionsEntity({record = null}) {
 
-            this.forms.entity.home.extras.modals.actions.data = {...record, extras: {}, whatsapp: ""};
+            const whatsapp = record?.holder?.phone_number ?? "";
+            const email    = record?.holder?.email ?? "";
+
+            this.forms.entity.home.extras.modals.actions.data = {...record, extras: {}, whatsapp, email};
 
             Alerts.modals({type: "show", id: this.forms.entity.home.extras.modals.actions.id});
 
@@ -482,6 +499,30 @@ export default {
             const message     = Utils.getMessageWhatsapp({data, action});
 
             Utils.sendWhatsapp({phoneNumber, message});
+
+        },
+        async sendEmail({data = null, action = "reportSale"}) {
+
+            let route = Requests.config({entity: "helpers", type: "sendEmail"});
+            const formJson = {serie_sequential: data?.serie_sequential, email: data?.email, message: Utils.getMessageWhatsapp({data, action})};
+
+            Alerts.swals({});
+
+            let sendEmail = await Requests.post({route: route, data: formJson, id: data?.id});
+
+            if(Requests.valid({result: sendEmail})) {
+
+                Alerts.toastrs({type: "success", subtitle: sendEmail?.data?.msg});
+                Alerts.swals({show: false});
+
+            }else {
+
+                Alerts.toastrs({type: "error", subtitle: sendEmail?.data?.msg});
+                Alerts.swals({show: false});
+
+            }
+
+            Alerts.tooltips({show: false});
 
         }
     },
