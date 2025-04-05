@@ -16,7 +16,7 @@ class AuthenticatedSessionController extends Controller {
     /**
      * Display the login view.
      */
-    public function create(): View {
+    public function create(Request $request): View {
 
         $data = Utilities::getDefaultData();
 
@@ -32,10 +32,24 @@ class AuthenticatedSessionController extends Controller {
 
         }else {
 
-            $data->companies = Company::whereIn("status", ["active"])
-                                      ->with(["socialsMedia"])
-                                      ->orderBy("commercial_name", "ASC")
-                                      ->get();
+            $base64Company = $request->company;
+            $companyId = base64_decode($base64Company);
+
+            if(Utilities::isDefined($base64Company) && Utilities::isDefined($companyId)) {
+
+                $data->company = Company::where("id", $companyId)
+                                        ->whereIn("status", ["active"])
+                                        ->with(["socialsMedia"])
+                                        ->first();
+
+            }else {
+
+                $data->companies = Company::whereIn("status", ["active"])
+                                          ->with(["socialsMedia"])
+                                          ->orderBy("commercial_name", "ASC")
+                                          ->get();
+
+            }
 
         }
 
@@ -61,12 +75,17 @@ class AuthenticatedSessionController extends Controller {
      */
     public function destroy(Request $request): RedirectResponse {
 
+        $user    = Auth::user();
+        $company = $user->company;
+
         Auth::guard("web")->logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect("/");
+        $query = "?company=".base64_encode($company->id);
+
+        return redirect("/".$query);
 
     }
 

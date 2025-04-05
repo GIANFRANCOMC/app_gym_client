@@ -4,11 +4,11 @@
     $user     = Auth::user();
     $company  = $user->company;
     $role     = $user->role;
-    $sections = Cache::get("active_sections_".$company->id);
+    $sections = Cache::get("active_sections_{$company->id}");
 
     // Cache data
-    $hasActiveSections  = Cache::get("has_active_sections_".$company->id);
-    $lastActiveSections = Cache::get("last_active_sections_".$company->id);
+    $hasActiveSections  = Cache::get("has_active_sections_{$company->id}");
+    $lastActiveSections = Cache::get("last_active_sections_{$company->id}");
 @endphp
 
 <html
@@ -79,13 +79,13 @@
                                 @endif
                             </li>
                         @endforeach
-                        <li class="menu-item">
+                        <li class="menu-item d-none">
                             <a href="javascript:void(0)" class="menu-link">
                                 <i class="fa fa-check me-3"></i>
                                 <div class="text-white">{{ $hasActiveSections }}</div>
                             </a>
                         </li>
-                        <li class="menu-item">
+                        <li class="menu-item d-none">
                             <a href="javascript:void(0)" class="menu-link">
                                 <i class="fa fa-eye me-3"></i>
                                 <div class="text-white">{{ $lastActiveSections }}</div>

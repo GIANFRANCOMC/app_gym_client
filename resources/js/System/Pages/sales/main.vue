@@ -1410,7 +1410,7 @@ export default {
 
                 const series = branch[0].series;
 
-                return series.map(e => ({code: e.id, label: `${e.legible_serie} - ${e?.document_type?.name}`, data: e}));
+                return series.filter(e => e.document_type_id == 1).map(e => ({code: e.id, label: `${e.legible_serie} - ${e?.document_type?.name}`, data: e}));
 
             }
 

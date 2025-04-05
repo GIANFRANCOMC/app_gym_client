@@ -73,6 +73,14 @@
                     :textBottomInfo="forms.entity.createUpdate.errors?.email"
                     xl="6"
                     lg="6"/>
+                <InputText
+                    v-model="forms.entity.createUpdate.data.token_api_misc"
+                    hasDiv
+                    title="Token API - Misc"
+                    hasTextBottom
+                    :textBottomInfo="forms.entity.createUpdate.errors?.token_api_misc"
+                    xl="6"
+                    lg="6"/>
                 <InputSlot
                     hasDiv
                     title="Estado"
@@ -153,6 +161,7 @@ export default {
                             address: "",
                             telephone: "",
                             email: "",
+                            token_api_misc: "",
                             status: null
                         },
                         errors: {}
@@ -205,6 +214,7 @@ export default {
                 this.forms.entity.createUpdate.data.address                = company?.address;
                 this.forms.entity.createUpdate.data.telephone              = company?.telephone;
                 this.forms.entity.createUpdate.data.email                  = company?.email;
+                this.forms.entity.createUpdate.data.token_api_misc         = company?.token_api_misc;
                 this.forms.entity.createUpdate.data.status                 = status;
 
                 resolve(true);
@@ -294,6 +304,7 @@ export default {
                 result.address                = [];
                 result.telephone              = [];
                 result.email                  = [];
+                result.token_api_misc         = [];
                 result.status                 = [];
 
                 if(!this.isDefined({value: form?.identity_document_type})) {
@@ -341,6 +352,13 @@ export default {
                 /* if(!this.isDefined({value: form?.email})) {
 
                     result.email.push(this.config.forms.errors.labels.required);
+                    result.bool = false;
+
+                } */
+
+                /* if(!this.isDefined({value: form?.token_api_misc})) {
+
+                    result.token_api_misc.push(this.config.forms.errors.labels.required);
                     result.bool = false;
 
                 } */

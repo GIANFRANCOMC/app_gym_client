@@ -59,6 +59,7 @@ return new class extends Migration {
             $table->string("address")->nullable();
             $table->string("telephone")->nullable();
             $table->string("email")->nullable();
+            $table->string("token_api_misc")->nullable();
             $table->enum("status", ["active", "inactive"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();

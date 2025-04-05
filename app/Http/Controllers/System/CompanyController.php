@@ -97,6 +97,7 @@ class CompanyController extends Controller {
                 $company->address                   = $request->address;
                 $company->telephone                 = $request->telephone;
                 $company->email                     = $request->email;
+                $company->token_api_misc            = $request->token_api_misc;
                 // $company->status                    = $request->status;
                 $company->updated_at                = now();
                 $company->updated_by                = $userAuth->id ?? null;

@@ -47,7 +47,7 @@
             <thead class="table-light">
                 <tr class="text-center align-middle">
                     <th class="fw-bold col-1">NOMBRE</th>
-                    <th class="fw-bold col-1">SERIES</th>
+                    <!-- <th class="fw-bold col-1">SERIES</th> -->
                     <th class="fw-bold col-1">ESTADO</th>
                     <th class="fw-bold col-1">ACCIONES</th>
                 </tr>
@@ -64,12 +64,12 @@
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td v-text="record.name"></td>
-                            <td class="text-start">
+                            <!-- <td class="text-start">
                                 <div v-for="serie in record?.series" :key="serie.id" class="my-2">
                                     <span v-text="serie?.document_type?.name" class="badge bg-label-primary fw-bold"></span>
                                     <span v-text="serie?.legible_serie" class="badge bg-label-dark fw-bold ms-2"></span>
                                 </div>
-                            </td>
+                            </td> -->
                             <td>
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>

@@ -19,5 +19,7 @@
 <script src="{{ asset('System/assets/vendor/libs/chartjs/chartjs.js') }}"></script>
 
 <!-- Main JS -->
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
+
 <script src="{{ asset('System/assets/js/main.js') }}"></script>
 <!-- Page JS -->

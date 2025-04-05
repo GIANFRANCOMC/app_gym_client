@@ -24,7 +24,8 @@ class UserController extends Controller {
         if(in_array($page, ["main"])) {
 
             $config->identityDocumentTypes = new stdClass();
-            $config->identityDocumentTypes->records = IdentityDocumentType::get();
+            $config->identityDocumentTypes->records = IdentityDocumentType::whereIn("id", [1, 2])
+                                                                          ->get();
 
             $config->users = new stdClass();
             $config->users->statuses = User::getStatuses();

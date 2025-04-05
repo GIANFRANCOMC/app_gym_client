@@ -88,8 +88,16 @@
                 </span>
             </div>
         @endif
+        <div style="display: block; flex-flow: row;">
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAABD52_nxF5GTrXNM" data-size="flexible"></div>
+        </div>
+        @if ($errors->get('captcha'))
+            @foreach ((array) $errors->get('captcha') as $message)
+                <small class="text-danger">{{ $message }}</small>
+            @endforeach
+        @endif
         @if ($hasCompany)
-            <div class="d-flex justify-content-center mt-4">
+            <div class="d-flex justify-content-center mt-3">
                 @foreach ($data->company->socialsMedia as $socialMedia)
                     @switch ($socialMedia->type)
                         @case ("facebook")

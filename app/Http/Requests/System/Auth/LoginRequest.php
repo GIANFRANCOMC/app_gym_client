@@ -71,6 +71,41 @@ class LoginRequest extends FormRequest {
 
         }
 
+        // Captcha
+        $captchaResponse = $this->input("cf-turnstile-response");
+        $secret = "0x4AAAAAABD521CctrZTDhoZBhtGInvookc";
+
+        $context = stream_context_create([
+            "http" => [
+                "method"  => "POST",
+                "header"  => "Content-type: application/x-www-form-urlencoded",
+                "content" => http_build_query([
+                    "secret"   => $secret,
+                    "response" => $captchaResponse,
+                    "remoteip" => $_SERVER["REMOTE_ADDR"],
+                ]),
+                "ignore_errors" => true
+            ]
+        ]);
+
+        $response = file_get_contents("https://challenges.cloudflare.com/turnstile/v0/siteverify", false, $context);
+
+        if(!$response || !$json = json_decode($response)) {
+
+            throw ValidationException::withMessages([
+                "captcha" => trans("auth.captcha")
+            ]);
+
+        }
+
+        if(empty($json->success)) {
+
+            throw ValidationException::withMessages([
+                "captcha" => trans("auth.captcha")
+            ]);
+
+        }
+
         Auth::login($user, $this->boolean("remember"));
 
         RateLimiter::clear($this->throttleKey());
