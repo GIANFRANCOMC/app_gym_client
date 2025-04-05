@@ -9,7 +9,7 @@ export default defineConfig({
             input: [
                 'resources/css/System/app.css',
                 'resources/js/System/app.js',
-                'resources/js/System/Pages/items/main.js',
+                //'resources/js/System/Pages/items/main.js',
             ],
             refresh: true,
         }),
