@@ -11,7 +11,20 @@ export default defineConfig({
                 'resources/js/System/app.js',
                 //'resources/js/System/Pages/items/main.js',
 
+                'resources/js/System/Pages/branches/main.js',
+                'resources/js/System/Pages/companies/main.js',
+                'resources/js/System/Pages/customers/main.js',
                 'resources/js/System/Pages/home/main.js',
+                'resources/js/System/Pages/products/main.js',
+                'resources/js/System/Pages/reports/main.js',
+                'resources/js/System/Pages/sales/list.js',
+                'resources/js/System/Pages/sales/main.js',
+                'resources/js/System/Pages/services/main.js',
+                'resources/js/System/Pages/subscriptions/main.js',
+                'resources/js/System/Pages/trackingSubscriptions/main.js',
+                'resources/js/System/Pages/users/main.js',
+
+
                 'resources/js/System/Helpers/Alerts.js',
                 'resources/js/System/Helpers/Constants.js',
                 'resources/js/System/Helpers/Requests.js',
