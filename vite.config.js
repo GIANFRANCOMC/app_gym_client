@@ -10,6 +10,7 @@ export default defineConfig({
                 'resources/css/System/app.css',
                 'resources/js/System/app.js',
                 //'resources/js/System/Pages/items/main.js',
+                'resources/js/System/Pages/home/main.js',
             ],
             refresh: true,
         }),
