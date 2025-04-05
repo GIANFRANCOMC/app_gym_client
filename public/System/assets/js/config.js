@@ -93,8 +93,8 @@ if (typeof TemplateCustomizer !== 'undefined') {
     themesPath: assetsPath + 'vendor/css' + (rtlSupport ? '/rtl' : '') + '/',
     displayCustomizer: false,
     lang: localStorage.getItem('templateCustomizer-' + templateName + '--Lang') || 'en', // Set default language here
-    // defaultTheme: 2,
-    // defaultStyle: 'system',
+    defaultTheme: 2,
+    defaultStyle: 'light',
     // defaultTextDir: 'rtl',
     // defaultContentLayout: 'wide',
     // defaultHeaderType: 'static',

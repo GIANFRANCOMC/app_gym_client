@@ -22,6 +22,10 @@ use App\Http\Controllers\System\Auth\AuthenticatedSessionController;
 Route::middleware(["web"])
      ->group(function() {
 
+        $rutaDefecto = __DIR__.'/System';
+
+        Route::prefix('/reports')->group($rutaDefecto.'/Report.php');
+
         Route::middleware('guest')->group(function() {
 
             Route::get('/',  [AuthenticatedSessionController::class, 'create'])->name('login');
@@ -30,9 +34,7 @@ Route::middleware(["web"])
 
         });
 
-        Route::middleware(['auth', 'verified'])->group(function () {
-
-            $rutaDefecto = __DIR__.'/System';
+        Route::middleware(['auth', 'verified'])->group(function() use($rutaDefecto) {
 
             Route::prefix('/companies')->group($rutaDefecto.'/Company.php');
             Route::prefix('/products')->group($rutaDefecto.'/Product.php');
@@ -47,7 +49,6 @@ Route::middleware(["web"])
             Route::prefix('/branches')->group($rutaDefecto.'/Branch.php');
             Route::prefix('/sales')->group($rutaDefecto.'/Sale.php');
             Route::prefix('/users')->group($rutaDefecto.'/User.php');
-            Route::prefix('/reports')->group($rutaDefecto.'/Report.php');
 
             Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
                  ->name('logout');
