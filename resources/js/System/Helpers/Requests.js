@@ -11,10 +11,10 @@ export function route() {
 
 export function config({entity = "", type = ""}) {
 
-    let requestRoute = this.route({});
+    let requestRoute = route({});
 
     let config = {
-        routes: this.generateRoutes({entity, requestRoute})
+        routes: generateRoutes({entity, requestRoute})
     };
 
     if(Utils.isDefined({value: type})) {
