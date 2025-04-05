@@ -119,7 +119,7 @@ export function modals({type = "show", id = null, timeout = 0}) {
 
 export function generateAlert({messages = [], type = "warning", headerTitle = null, msgContent = null}) {
 
-	let tableAlertHtml = messages.length > 0 ? this.generateTableAlert({messages, type}) : "";
+	let tableAlertHtml = messages.length > 0 ? generateTableAlert({messages, type}) : "";
 
 	Swal.fire({title             : headerTitle,
                icon              : type,

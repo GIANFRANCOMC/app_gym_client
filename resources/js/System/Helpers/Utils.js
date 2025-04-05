@@ -121,7 +121,7 @@ export function calculateTotal({item}) {
     const quantity = Number(item?.quantity),
           price    = Number(item?.price);
 
-    const total = (isNaN(quantity) || isNaN(price)) ? 0 : this.fixedNumber(quantity * price);
+    const total = (isNaN(quantity) || isNaN(price)) ? 0 : fixedNumber(quantity * price);
 
     return total;
 
@@ -176,7 +176,7 @@ export function getErrors({errors}) {
 
     let propsValidate = Object.values(errors).filter(valueValidate => {
 
-        return this.isDefined({value: valueValidate}) && Array.isArray(valueValidate) && valueValidate.length > 0;
+        return isDefined({value: valueValidate}) && Array.isArray(valueValidate) && valueValidate.length > 0;
 
     });
 
@@ -225,7 +225,7 @@ export function addDuration({startDate, type, quantity, setEndOfDay = false}) {
 
     }
 
-    return isNaN(date.getTime()) ? "" : this.parseISOToDatetimeLocal(date.toString());
+    return isNaN(date.getTime()) ? "" : parseISOToDatetimeLocal(date.toString());
 
 }
 
@@ -334,11 +334,11 @@ export function legibleFormatDate({dateString = null, type = "datetime"}) {
 
 export function sendWhatsapp({phoneNumber, message}) {
 
-    if(!this.isDefined({value: phoneNumber})) {
+    if(!isDefined({value: phoneNumber})) {
 
         toastrs({type: "error", subtitle: "No es posible generar el envío a Whatsapp, diligenciar los campos necesarios."});
 
-    }else if(!this.isDefined({value: message})) {
+    }else if(!isDefined({value: message})) {
 
         toastrs({type: "error", subtitle: "No es posible generar el envío a Whatsapp, mensaje no identificado."});
 

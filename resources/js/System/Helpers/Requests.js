@@ -221,7 +221,7 @@ export function generateRoutes({entity, requestRoute}) {
 
 export function routeReport({resource, params = null, extras = null}) {
 
-    let route = `${this.config({entity: "reports", type: resource})}`;
+    let route = `${config({entity: "reports", type: resource})}`;
 
     const url = new URL(route);
     const searchParams = url.searchParams;
