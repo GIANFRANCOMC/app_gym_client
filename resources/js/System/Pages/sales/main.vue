@@ -606,7 +606,7 @@
                         </button>
                     </template>
                 </InputText>
-                <InputText
+                <!-- <InputText
                     hasDiv
                     title="Correo electrónico"
                     v-model="forms.entity.createUpdate.extras.modals.finished.data.email">
@@ -616,7 +616,7 @@
                             <span class="ms-2">Enviar</span>
                         </button>
                     </template>
-                </InputText>
+                </InputText> -->
             </div>
         </template>
     </PrintSale>
