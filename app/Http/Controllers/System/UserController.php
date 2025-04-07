@@ -110,6 +110,7 @@ class UserController extends Controller {
 
             $user = new User();
             $user->company_id                = $userAuth->company_id;
+            $user->role                      = 2;
             $user->identity_document_type_id = $request->identity_document_type_id;
             $user->document_number           = $request->document_number;
             $user->name                      = $request->name;
@@ -165,6 +166,7 @@ class UserController extends Controller {
 
             DB::transaction(function() use($request, $userAuth, &$user) {
 
+                $user->role                      = 2;
                 $user->identity_document_type_id = $request->identity_document_type_id;
                 $user->document_number           = $request->document_number;
                 $user->name                      = $request->name;
