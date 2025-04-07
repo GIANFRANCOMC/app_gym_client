@@ -125,4 +125,35 @@
             </div>
         @endif
     </form>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const form = document.querySelector("form");
+
+            form.addEventListener("submit", function(e) {
+
+                const captchaResponse = document.querySelector('input[name="cf-turnstile-response"]');
+
+                if(!captchaResponse || captchaResponse.value === "") {
+
+                    e.preventDefault();
+
+                    Swal.fire({
+                        icon              : "warning",
+                        allowOutsideClick : false,
+		                allowEscapeKey    : false,
+                        html              : `<span class="d-block fw-bold">Captcha requerido</span> <span class="d-block mt-2">Por favor, completa el captcha para continuar.</span>`,
+                        confirmButtonText : "Entendido",
+                        customClass: {
+                            confirmButton: "btn btn-primary waves-effect"
+                        }});
+
+                }
+
+            });
+
+        });
+    </script>
+
 </x-system-guest-layout>
