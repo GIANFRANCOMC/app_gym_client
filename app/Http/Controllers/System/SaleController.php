@@ -187,6 +187,7 @@ class SaleController extends Controller {
 
                         $subscription = new Subscription();
                         $subscription->company_id     = $userAuth->company_id;
+                        $subscription->branch_id      = $request->branch_id;
                         $subscription->sale_header_id = $saleHeader->id;
                         $subscription->sale_body_id   = $saleBody->id;
                         $subscription->customer_id    = $saleHeader->holder_id;

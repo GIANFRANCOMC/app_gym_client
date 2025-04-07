@@ -14,6 +14,7 @@ return new class extends Migration {
         Schema::create("subscriptions", function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("company_id");
+            $table->unsignedBigInteger("branch_id");
             $table->unsignedBigInteger("sale_header_id");
             $table->unsignedBigInteger("sale_body_id");
             $table->unsignedBigInteger("customer_id");
@@ -36,6 +37,7 @@ return new class extends Migration {
             $table->integer("canceled_by")->nullable();
 
             $table->foreign("company_id")->references("id")->on("companies")->onDelete("cascade");
+            $table->foreign("branch_id")->references("id")->on("branches")->onDelete("cascade");
             $table->foreign("sale_header_id")->references("id")->on("sales_header")->onDelete("cascade");
             $table->foreign("sale_body_id")->references("id")->on("sales_body")->onDelete("cascade");
             $table->foreign("customer_id")->references("id")->on("customers")->onDelete("cascade");
