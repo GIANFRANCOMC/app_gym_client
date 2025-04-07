@@ -164,11 +164,11 @@
                                 <script>
                                     document.write(new Date().getFullYear());
                                 </script>
-                                , Hecho por <a href="https://pixinvent.com" target="_blank" class="fw-medium">Gianfranco MC</a>
+                                , Hecho por <a href="javascript:void(0)" class="fw-medium">Gianfranco MC</a>
                                 </div>
-                                <div class="d-none d-lg-inline-block">
+                                {{-- <div class="d-none d-lg-inline-block">
                                     <a href="https://demos.pixinvent.com/vuexy-html-admin-template/documentation/" target="_blank" class="footer-link me-4">Documentación</a>
-                                </div>
+                                </div> --}}
                             </div>
                             </div>
                         </footer>
