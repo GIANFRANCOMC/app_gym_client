@@ -114,8 +114,8 @@
                             isRequired
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.role"
-                            xl="6"
-                            lg="6">
+                            xl="12"
+                            lg="12">
                             <template v-slot:input>
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.role"
