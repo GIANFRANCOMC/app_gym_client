@@ -4,6 +4,7 @@ namespace App\Models\System;
 
 use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Role extends Model {
 
@@ -44,6 +45,20 @@ class Role extends Model {
         ];
 
         return Utilities::getValues($statuses, $type, $code);
+
+    }
+
+    public static function getAll($type = "default") {
+
+        $userAuth = Auth::user();
+
+        return Role::where("company_id", $userAuth->company_id)
+                   ->when(in_array($type, ["user"]), function($query) {
+
+                        $query->whereIn("status", ["active"]);
+
+                   })
+                   ->get();
 
     }
 

@@ -46,6 +46,7 @@
         <table class="table table-hover">
             <thead class="table-light">
                 <tr class="text-center align-middle">
+                    <th class="fw-bold col-1">ROL</th>
                     <th class="fw-bold col-1">NÚMERO DE DOCUMENTO</th>
                     <th class="fw-bold col-1">NOMBRE</th>
                     <th class="fw-bold col-1">CORREO ELECTRÓNICO</th>
@@ -64,6 +65,7 @@
                 <template v-else>
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
+                            <td v-text="record?.role?.name"></td>
                             <td>
                                 <span v-text="record.document_number" class="d-block fw-bold"></span>
                                 <span v-text="record.identity_document_type?.name" class="d-block badge bg-label-primary fw-bold mt-1"></span>
@@ -106,6 +108,21 @@
                 </div>
                 <div class="modal-body">
                     <div class="row g-3">
+                        <InputSlot
+                            hasDiv
+                            title="Rol"
+                            isRequired
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.role"
+                            xl="6"
+                            lg="6">
+                            <template v-slot:input>
+                                <v-select
+                                    v-model="forms.entity.createUpdate.data.role"
+                                    :options="roles"
+                                    :clearable="false"/>
+                            </template>
+                        </InputSlot>
                         <InputSlot
                             hasDiv
                             title="Tipo de documento"
@@ -255,6 +272,7 @@ export default {
                         },
                         data: {
                             id: null,
+                            role: null,
                             identity_document_type: null,
                             document_number: "",
                             name: "",
@@ -288,6 +306,7 @@ export default {
 
             let initParams = await Requests.get({route: this.config.entity.routes.initParams, data: {page: "main"}, showAlert: true});
 
+            this.options.roles                 = initParams.data?.config?.roles;
             this.options.identityDocumentTypes = initParams.data?.config?.identityDocumentTypes;
             this.options.users                 = initParams.data?.config?.users;
 
@@ -327,9 +346,11 @@ export default {
 
             if(this.isDefined({value: record})) {
 
-                let identityDocumentType = this.identityDocumentTypes.filter(e => e.code === record?.identity_document_type_id)[0],
+                let role                 = this.roles.filter(e => e.code === record?.role_id)[0],
+                    identityDocumentType = this.identityDocumentTypes.filter(e => e.code === record?.identity_document_type_id)[0],
                     status               = this.statuses.filter(e => e.code === record?.status)[0];
 
+                this.forms.entity.createUpdate.data.role                   = role;
                 this.forms.entity.createUpdate.data.id                     = record?.id;
                 this.forms.entity.createUpdate.data.identity_document_type = identityDocumentType;
                 this.forms.entity.createUpdate.data.document_number        = record?.document_number;
@@ -361,9 +382,11 @@ export default {
 
             if(validateForm?.bool) {
 
+                form.role_id = form?.role?.code;
                 form.identity_document_type_id = form?.identity_document_type?.code;
                 form.status = form?.status?.code;
 
+                delete form.role;
                 delete form.identity_document_type;
 
                 let createUpdate = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: form.id}) :
@@ -402,6 +425,7 @@ export default {
                 case "modalCreateUpdateEntity":
                 case "createUpdateEntity":
                     this.forms.entity.createUpdate.data.id                     = null;
+                    this.forms.entity.createUpdate.data.role                   = null;
                     this.forms.entity.createUpdate.data.identity_document_type = null;
                     this.forms.entity.createUpdate.data.document_number        = "";
                     this.forms.entity.createUpdate.data.name                   = "";
@@ -429,12 +453,20 @@ export default {
 
             if(["createUpdateEntity"].includes(functionName)) {
 
+                result.role                   = [];
                 result.identity_document_type = [];
                 result.document_number        = [];
                 result.name                   = [];
                 result.email                  = [];
                 result.password               = [];
                 result.status                 = [];
+
+                if(!this.isDefined({value: form?.role})) {
+
+                    result.role.push(this.config.forms.errors.labels.required);
+                    result.bool = false;
+
+                }
 
                 if(!this.isDefined({value: form?.identity_document_type})) {
 
@@ -541,6 +573,11 @@ export default {
                 {code: "name", label: "Nombre"},
                 {code: "email", label: "Correo electrónico"}
             ];
+
+        },
+        roles: function() {
+
+            return this.options?.roles?.records.map(e => ({code: e.id, label: e.name}));
 
         },
         identityDocumentTypes: function() {

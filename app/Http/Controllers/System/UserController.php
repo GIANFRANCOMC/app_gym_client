@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\Users\{StoreUserRequest, UpdateUserRequest};
-use App\Models\System\{IdentityDocumentType, User};
+use App\Models\System\{IdentityDocumentType, Role, User};
 
 class UserController extends Controller {
 
@@ -26,6 +26,9 @@ class UserController extends Controller {
             $config->identityDocumentTypes = new stdClass();
             $config->identityDocumentTypes->records = IdentityDocumentType::whereIn("id", [1, 2])
                                                                           ->get();
+
+            $config->roles = new stdClass();
+            $config->roles->records = Role::getAll("user");
 
             $config->users = new stdClass();
             $config->users->statuses = User::getStatuses();
@@ -70,7 +73,7 @@ class UserController extends Controller {
                     })
                     ->where("company_id", $userAuth->company_id)
                     ->orderBy("name", "ASC")
-                    ->with(["identityDocumentType"])
+                    ->with(["identityDocumentType", "role"])
                     ->paginate($request->per_page ?? Utilities::$per_page_default);
 
         return $list;
@@ -110,7 +113,7 @@ class UserController extends Controller {
 
             $user = new User();
             $user->company_id                = $userAuth->company_id;
-            $user->role_id                   = 2;
+            $user->role_id                   = $request->role_id;
             $user->identity_document_type_id = $request->identity_document_type_id;
             $user->document_number           = $request->document_number;
             $user->name                      = $request->name;
@@ -166,7 +169,7 @@ class UserController extends Controller {
 
             DB::transaction(function() use($request, $userAuth, &$user) {
 
-                $user->role_id                   = 2;
+                $user->role_id                   = $request->role_id;
                 $user->identity_document_type_id = $request->identity_document_type_id;
                 $user->document_number           = $request->document_number;
                 $user->name                      = $request->name;
