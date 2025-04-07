@@ -114,7 +114,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row justify-content-center g-1 mt-4">
+                    <div class="row justify-content-center g-1">
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                             <span class="fw-semibold">• Cliente:</span>
                             <span class="ms-2" v-text="forms.entity.createUpdate.extras.modals.actions.data?.customer?.name"></span>
