@@ -43,7 +43,7 @@
             <thead class="table-light">
                 <tr class="text-center align-middle">
                     <th class="fw-bold col-1">CLIENTE</th>
-                    <th class="fw-bold col-1">DURACIÓN</th>
+                    <!-- <th class="fw-bold col-1">DURACIÓN</th> -->
                     <th class="fw-bold col-1">FECHA DE INICIO</th>
                     <th class="fw-bold col-1">FECHA DE FINALIZACIÓN</th>
                     <th class="fw-bold col-1">ORIGEN</th>
@@ -66,9 +66,9 @@
                                 <span v-text="record.customer?.name" class="fw-bold d-block"></span>
                                 <small v-text="record.customer?.document_number" class="d-block"></small>
                             </td>
-                            <td>
+                            <!-- <td>
                                 <span v-text="record.formatted_duration" class="badge bg-label-primary fw-bold"></span>
-                            </td>
+                            </td> -->
                             <td>
                                 <span v-text="legibleFormatDate({dateString: record.start_date, type: 'date'})" class="d-block fw-semibold"></span>
                                 <span v-text="legibleFormatDate({dateString: record.start_date, type: 'time'})" class="d-block fw-semibold"></span>
@@ -77,9 +77,8 @@
                                 <span v-text="legibleFormatDate({dateString: record.end_date, type: 'date'})" class="d-block fw-semibold"></span>
                                 <span v-text="legibleFormatDate({dateString: record.end_date, type: 'time'})" class="d-block fw-semibold"></span>
                             </td>
-                            <td class="text-start">
+                            <td class="text-center">
                                 <span v-text="record.formatted_type" class="d-block fw-bold"></span>
-                                <span v-text="record.sale_header?.serie_sequential" class="d-block fw-semibold"></span>
                             </td>
                             <td>
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive', 'canceled'].includes(record.status) }]" v-text="record.formatted_status"></span>
@@ -116,17 +115,34 @@
                 </div>
                 <div class="modal-body">
                     <div class="row justify-content-center g-1 mt-4">
-                        <div v-if="['active'].includes(forms.entity.createUpdate.extras.modals.actions.data?.status)" class="col-xl-3 col-lg-3 col-md-3 col-sm-3">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                            <span class="fw-semibold">• Cliente:</span>
+                            <span class="ms-2" v-text="forms.entity.createUpdate.extras.modals.actions.data?.customer?.name"></span>
+                        </div>
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                            <span class="fw-semibold">• Fecha de inicio:</span>
+                            <span class="ms-2" v-text="legibleFormatDate({dateString: forms.entity.createUpdate.extras.modals.actions.data?.start_date, type: 'datetime'})"></span>
+                        </div>
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                            <span class="fw-semibold">• Fecha de finalización:</span>
+                            <span class="ms-2" v-text="legibleFormatDate({dateString: forms.entity.createUpdate.extras.modals.actions.data?.end_date, type: 'datetime'})"></span>
+                        </div>
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                            <span class="fw-semibold">• Origen:</span>
+                            <span class="ms-2" v-text="forms.entity.createUpdate.extras.modals.actions.data?.formatted_type"></span>
+                            <span v-if="isDefined({value: forms.entity.createUpdate.extras.modals.actions.data?.sale_header?.serie_sequential})" class="ms-2 fw-semibold" v-text="forms.entity.createUpdate.extras.modals.actions.data?.sale_header?.serie_sequential"></span>
+                        </div>
+                        <div v-if="['canceled'].includes(forms.entity.createUpdate.extras.modals.actions.data?.status)" class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                            <span class="fw-semibold">Motivo:</span>
+                            <span class="ms-2" v-text="forms.entity.createUpdate.extras.modals.actions.data?.motive"></span>
+                        </div>
+                        <div v-if="['active'].includes(forms.entity.createUpdate.extras.modals.actions.data?.status)" class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mt-4">
                             <div class="text-center cursor-pointer p-1" @click="cancelEntity({})">
                                 <div class="badge bg-danger p-3 rounded mb-1">
                                     <i class="fa-solid fa-rectangle-xmark fs-3"></i>
                                 </div>
                                 <span class="d-block fw-semibold">Anular suscripción</span>
                             </div>
-                        </div>
-                        <div v-if="['canceled'].includes(forms.entity.createUpdate.extras.modals.actions.data?.status)" class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                            <span class="fw-semibold">Motivo:</span>
-                            <span class="ms-2" v-text="forms.entity.createUpdate.extras.modals.actions.data?.motive"></span>
                         </div>
                     </div>
                 </div>
