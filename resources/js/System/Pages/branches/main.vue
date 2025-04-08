@@ -47,6 +47,7 @@
             <thead class="table-light">
                 <tr class="text-center align-middle">
                     <th class="fw-bold col-1">NOMBRE</th>
+                    <!-- <th class="fw-bold col-1">ALMACÉN</th> -->
                     <!-- <th class="fw-bold col-1">SERIES</th> -->
                     <th class="fw-bold col-1">ESTADO</th>
                     <th class="fw-bold col-1">ACCIONES</th>
@@ -64,6 +65,7 @@
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td v-text="record.name"></td>
+                            <!-- <td v-text="record.warehouses.map(e => e.name).join('<br/>')"></td> -->
                             <!-- <td class="text-start">
                                 <div v-for="serie in record?.series" :key="serie.id" class="my-2">
                                     <span v-text="serie?.document_type?.name" class="badge bg-label-primary fw-bold"></span>

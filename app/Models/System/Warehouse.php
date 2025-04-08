@@ -4,11 +4,10 @@ namespace App\Models\System;
 
 use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
 
-class Branch extends Model {
+class Warehouse extends Model {
 
-    protected $table               = "branches";
+    protected $table               = "warehouses";
     protected $primaryKey          = "id";
     public $incrementing           = true;
     public $timestamps             = true;
@@ -19,7 +18,7 @@ class Branch extends Model {
     ];
 
     protected $fillable = [
-        "company_id",
+        "branch_id",
         "name",
         "status",
         "created_at",
@@ -47,38 +46,16 @@ class Branch extends Model {
 
     }
 
-    public static function getAll($type = "default") {
-
-        $userAuth = Auth::user();
-
-        return Branch::where("company_id", $userAuth->company_id)
-                     ->when(in_array($type, ["sale"]), function($query) {
-
-                            $query->whereIn("status", ["active"]);
-
-                     })
-                     ->with(["series.documentType"])
-                     ->get();
-
-    }
-
     // Relationships
-    public function company() {
+    public function branch() {
 
-        return $this->belongsTo(Company::class, "company_id", "id");
-
-    }
-
-    public function series() {
-
-        return $this->hasMany(Serie::class, "branch_id", "id")
-                    ->whereIn("status", ["active"]);
+        return $this->belongsTo(Branch::class, "branch_id", "id");
 
     }
 
-    public function warehouses() {
+    public function items() {
 
-        return $this->hasMany(Warehouse::class, "branch_id", "id")
+        return $this->hasMany(WarehouseItem::class, "warehouse_id", "id")
                     ->whereIn("status", ["active"]);
 
     }

@@ -143,4 +143,11 @@ class Item extends Model {
 
     }
 
+    public function warehouseItems() {
+
+        return $this->hasMany(WarehouseItem::class, "item_id", "id")
+                    ->whereIn("status", ["active"]);
+
+    }
+
 }

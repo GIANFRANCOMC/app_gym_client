@@ -99,6 +99,36 @@ return new class extends Migration {
             $table->foreign("identity_document_type_id")->references("id")->on("identity_document_types")->onDelete("cascade");
         });
 
+        Schema::create("warehouses", function(Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger("branch_id");
+            $table->string("name");
+            $table->enum("status", ["active", "inactive"])->default("active");
+
+            $table->timestamp("created_at")->useCurrent()->nullable();
+            $table->integer("created_by")->nullable();
+            $table->timestamp("updated_at")->nullable();
+            $table->integer("updated_by")->nullable();
+
+            $table->foreign("branch_id")->references("id")->on("branches")->onDelete("cascade");
+        });
+
+        Schema::create("warehouse_items", function(Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger("warehouse_id");
+            $table->unsignedBigInteger("item_id");
+            $table->decimal("quantity", 10, 2)->default(0);
+            $table->enum("status", ["active", "inactive"])->default("active");
+
+            $table->timestamp("created_at")->useCurrent()->nullable();
+            $table->integer("created_by")->nullable();
+            $table->timestamp("updated_at")->nullable();
+            $table->integer("updated_by")->nullable();
+
+            $table->foreign("warehouse_id")->references("id")->on("warehouses")->onDelete("cascade");
+            $table->foreign("item_id")->references("id")->on("items")->onDelete("cascade");
+        });
+
         // Inserts
         DB::table("company_socials_media")->insert([
             ["company_id" => 1, "type" => "facebook", "link" => "https://www.facebook.com/GianfrancoMC"],
@@ -132,6 +162,16 @@ return new class extends Migration {
             ["company_id" => 1, "identity_document_type_id" => 2, "document_number" => "71883136", "name" => "Andy Paolo Mejia Carhuajulca", "phone_number" => "51987634253"]
         ]);
 
+        DB::table("warehouses")->insert([
+            ["branch_id" => 1, "name" => "Almacén - Sede principal"]
+        ]);
+
+        DB::table("warehouse_items")->insert([
+            ["warehouse_id" => 1, "item_id" => 1],
+            ["warehouse_id" => 1, "item_id" => 2],
+            ["warehouse_id" => 1, "item_id" => 3]
+        ]);
+
     }
 
     /**
@@ -139,6 +179,8 @@ return new class extends Migration {
      */
     public function down(): void {
 
+        Schema::dropIfExists("warehouse_items");
+        Schema::dropIfExists("warehouses");
         Schema::dropIfExists("customers");
         Schema::dropIfExists("items");
         Schema::dropIfExists("series");

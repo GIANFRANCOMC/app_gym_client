@@ -704,7 +704,7 @@
                             <td colspan="1"></td>
                             <td colspan="3" class="pb-1">
                                 <small class="font-bold">Fecha de inicio:</small>
-                                <small>{{ \Carbon\Carbon::parse($position->formatted_extras->end_date)->format("d-m-Y h:i A") }}</small> <br/>
+                                <small>{{ \Carbon\Carbon::parse($position->formatted_extras->start_date)->format("d-m-Y h:i A") }}</small> <br/>
                                 <small class="font-bold">Fecha de finalización:</small>
                                 <small>{{ \Carbon\Carbon::parse($position->formatted_extras->end_date)->format("d-m-Y h:i A") }}</small>
                             </td>

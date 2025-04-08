@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\Branches\{StoreBranchRequest, UpdateBranchRequest};
-use App\Models\System\{Branch, DocumentType, Serie};
+use App\Models\System\{Branch, DocumentType, Serie, Warehouse};
 
 class BranchController extends Controller {
 
@@ -64,7 +64,7 @@ class BranchController extends Controller {
                         })
                         ->where("company_id", $userAuth->company_id)
                         ->orderBy("id", "ASC")
-                        ->with(["series.documentType"])
+                        ->with(["series.documentType", "warehouses"])
                         ->paginate($request->per_page ?? Utilities::$per_page_default);
 
         return $list;
@@ -118,6 +118,14 @@ class BranchController extends Controller {
                 $serie->save();
 
             }
+
+            $warehouse = new Warehouse();
+            $warehouse->branch_id  = $branch->id;
+            $warehouse->name       = "Almacén - $branch->name";
+            $warehouse->status     = "active";
+            $warehouse->created_at = now();
+            $warehouse->created_by = $userAuth->id ?? null;
+            $warehouse->save();
 
         });
 

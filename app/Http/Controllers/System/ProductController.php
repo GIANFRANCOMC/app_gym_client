@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\Products\{StoreProductRequest, UpdateProductRequest};
-use App\Models\System\{Currency, Item};
+use App\Models\System\{Branch, Currency, Item, WarehouseItem};
 
 class ProductController extends Controller {
 
@@ -120,6 +120,26 @@ class ProductController extends Controller {
             $item->created_at    = now();
             $item->created_by    = $userAuth->id ?? null;
             $item->save();
+
+            // Warehouses
+            $branches = Branch::getAll();
+
+            foreach($branches as $branch) {
+
+                foreach($branch->warehouses as $warehouse) {
+
+                    $warehouseItem = new WarehouseItem();
+                    $warehouseItem->warehouse_id = $warehouse->id;
+                    $warehouseItem->item_id      = $item->id;
+                    $warehouseItem->quantity     = 0;
+                    $warehouseItem->status       = $request->status;
+                    $warehouseItem->created_at   = now();
+                    $warehouseItem->created_by   = $userAuth->id ?? null;
+                    $warehouseItem->save();
+
+                }
+
+            }
 
         });
 
