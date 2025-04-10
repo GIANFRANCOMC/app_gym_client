@@ -69,6 +69,19 @@ class Branch extends Model {
 
     }
 
+    public function assets() {
+
+        return $this->hasMany(BranchAsset::class, "branch_id", "id")
+                    ->whereIn("status", ["active"]);
+
+    }
+
+    public function assetsAll() {
+
+        return $this->hasMany(BranchAsset::class, "branch_id", "id");
+
+    }
+
     public function series() {
 
         return $this->hasMany(Serie::class, "branch_id", "id")

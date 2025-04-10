@@ -80,4 +80,10 @@ class Warehouse extends Model {
 
     }
 
+    public function itemsAll() {
+
+        return $this->hasMany(WarehouseItem::class, "warehouse_id", "id");
+
+    }
+
 }

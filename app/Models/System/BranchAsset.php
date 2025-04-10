@@ -4,14 +4,10 @@ namespace App\Models\System;
 
 use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Facades\Auth;
 
-class Asset extends Model {
+class BranchAsset extends Model {
 
-    // use HasFactory;
-
-    protected $table               = "assets";
+    protected $table               = "branch_assets";
     protected $primaryKey          = "id";
     public $incrementing           = true;
     public $timestamps             = true;
@@ -22,10 +18,12 @@ class Asset extends Model {
     ];
 
     protected $fillable = [
-        "company_id",
-        "internal_code",
-        "name",
-        "description",
+        "branch_id",
+        "asset_id",
+        "quantity",
+        "acquisition_value",
+        "acquisition_date",
+        "notes",
         "status",
         "created_at",
         "created_by",
@@ -45,33 +43,24 @@ class Asset extends Model {
 
         $statuses = [
             ["code" => "active", "label" => "Activo"],
-            ["code" => "inactive", "label" => "Inactivo"]
+            ["code" => "maintenance", "label" => "En mantenimiento"],
+            ["code" => "inactive", "label" => "Retirado"]
         ];
 
         return Utilities::getValues($statuses, $type, $code);
 
     }
 
-    public static function getAll($type = "default") {
-
-        $userAuth = Auth::user();
-
-        return Asset::where("company_id", $userAuth->company_id)
-                    ->get();
-
-    }
-
     // Relationships
-    public function company() {
+    public function branch() {
 
-        return $this->belongsTo(Company::class, "company_id", "id");
+        return $this->belongsTo(Branch::class, "branch_id", "id");
 
     }
 
-    public function branchAssets() {
+    public function asset() {
 
-        return $this->hasMany(BranchAsset::class, "asset_id", "id")
-                    ->whereIn("status", ["active"]);
+        return $this->belongsTo(Asset::class, "asset_id", "id");
 
     }
 

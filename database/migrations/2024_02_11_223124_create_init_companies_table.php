@@ -145,6 +145,25 @@ return new class extends Migration {
             $table->foreign("item_id")->references("id")->on("items")->onDelete("cascade");
         });
 
+        Schema::create("branch_assets", function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger("branch_id");
+            $table->unsignedBigInteger("asset_id");
+            $table->integer("quantity")->default(1);
+            $table->decimal("acquisition_value", 10, 2)->nullable();
+            $table->date("acquisition_date")->nullable();
+            $table->text("notes")->nullable();
+            $table->enum("status", ["active", "maintenance", "retired"])->default("active");
+
+            $table->timestamp("created_at")->useCurrent()->nullable();
+            $table->integer("created_by")->nullable();
+            $table->timestamp("updated_at")->nullable();
+            $table->integer("updated_by")->nullable();
+
+            $table->foreign("branch_id")->references("id")->on("branches")->onDelete("cascade");
+            $table->foreign("asset_id")->references("id")->on("assets")->onDelete("cascade");
+        });
+
         // Inserts
         DB::table("company_socials_media")->insert([
             ["company_id" => 1, "type" => "facebook", "link" => "https://www.facebook.com/GianfrancoMC"],
