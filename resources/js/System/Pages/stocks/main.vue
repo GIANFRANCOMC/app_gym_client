@@ -27,7 +27,7 @@
                     <i class="fa fa-search"></i>
                     <span class="ms-2">Buscar</span>
                 </button>
-                <button v-if="isDefined({value: lists.entity.filters.warehouse?.code}) && !lists.entity.extras.loading" type="button" class="btn btn-success waves-effect ms-3" @click="createUpdateEntity({})">
+                <button v-if="isDefined({value: lists.entity.filters.warehouse?.code}) && !lists.entity.extras.loading" type="button" class="btn btn-success waves-effect" @click="createUpdateEntity({})">
                     <i class="fa fa-save"></i>
                     <span class="ms-2">Guardar</span>
                 </button>
