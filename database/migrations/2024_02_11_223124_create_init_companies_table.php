@@ -80,6 +80,22 @@ return new class extends Migration {
             $table->foreign("currency_id")->references("id")->on("currencies")->onDelete("cascade");
         });
 
+        Schema::create("assets", function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger("company_id");
+            $table->string("internal_code");
+            $table->string("name");
+            $table->text("description")->nullable();
+            $table->enum("status", ["active", "inactive"])->default("active");
+
+            $table->timestamp("created_at")->useCurrent()->nullable();
+            $table->integer("created_by")->nullable();
+            $table->timestamp("updated_at")->nullable();
+            $table->integer("updated_by")->nullable();
+
+            $table->foreign("company_id")->references("id")->on("companies")->onDelete("cascade");
+        });
+
         Schema::create("customers", function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("company_id");
@@ -182,6 +198,7 @@ return new class extends Migration {
         Schema::dropIfExists("warehouse_items");
         Schema::dropIfExists("warehouses");
         Schema::dropIfExists("customers");
+        Schema::dropIfExists("assets");
         Schema::dropIfExists("items");
         Schema::dropIfExists("series");
         Schema::dropIfExists("branches");

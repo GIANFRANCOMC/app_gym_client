@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class Item extends Model {
 
-    use HasFactory;
+    // use HasFactory;
 
     protected $table               = "items";
     protected $primaryKey          = "id";
