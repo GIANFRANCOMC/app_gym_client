@@ -83,4 +83,10 @@ class Branch extends Model {
 
     }
 
+    public function warehousesAll() {
+
+        return $this->hasMany(Warehouse::class, "branch_id", "id");
+
+    }
+
 }

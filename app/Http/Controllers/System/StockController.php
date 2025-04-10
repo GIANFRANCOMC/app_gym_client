@@ -88,13 +88,13 @@ class StockController extends Controller {
 
             foreach($request->items as $item) {
 
-                $existing = WarehouseItem::where("warehouse_id", $request->warehouse_id)
-                                         ->where("item_id", $item["id"])
-                                         ->first();
+                $warehouseItem = WarehouseItem::where("warehouse_id", $request->warehouse_id)
+                                              ->where("item_id", $item["id"])
+                                              ->first();
 
-                if($existing) {
+                if($warehouseItem) {
 
-                    $existing->update([
+                    $warehouseItem->update([
                         "quantity"     => floatval($item["stock_quantity"]),
                         "status"       => "active",
                         "updated_at"   => now(),

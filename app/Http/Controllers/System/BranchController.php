@@ -119,9 +119,11 @@ class BranchController extends Controller {
 
             }
 
+            $seq = 1;
+
             $warehouse = new Warehouse();
             $warehouse->branch_id  = $branch->id;
-            $warehouse->name       = "Almacén - $branch->name";
+            $warehouse->name       = "Almacén $seq - $branch->name";
             $warehouse->status     = "active";
             $warehouse->created_at = now();
             $warehouse->created_by = $userAuth->id ?? null;
@@ -154,6 +156,7 @@ class BranchController extends Controller {
 
         $branch = Branch::where("id", $id)
                         ->where("company_id", $userAuth->company_id)
+                        ->with(["warehousesAll"])
                         ->first();
 
         if(Utilities::isDefined($branch)) {
@@ -165,6 +168,19 @@ class BranchController extends Controller {
                 $branch->updated_at = now();
                 $branch->updated_by = $userAuth->id ?? null;
                 $branch->save();
+
+                $seq = 1;
+
+                foreach($branch->warehousesAll as $warehouse) {
+
+                    $warehouse->name       = "Almacén $seq - $branch->name";
+                    $warehouse->updated_at = now();
+                    $warehouse->updated_by = $userAuth->id ?? null;
+                    $warehouse->save();
+
+                    $seq++;
+
+                }
 
             });
 
