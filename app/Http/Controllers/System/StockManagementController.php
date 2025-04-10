@@ -23,7 +23,7 @@ class StockManagementController extends Controller {
         if(in_array($page, ["main"])) {
 
             $config->warehouses = new stdClass();
-            $config->warehouses->records = Warehouse::getAll("stock");
+            $config->warehouses->records = Warehouse::getAll("stock_management");
 
         }
 
@@ -55,7 +55,7 @@ class StockManagementController extends Controller {
 
     public function index() {
 
-        return view("System/general/stocks/main");
+        return view("System/general/stocks_management/main");
 
     }
 

@@ -57,7 +57,7 @@ class Warehouse extends Model {
                             $query->where("company_id", $userAuth->company_id);
 
                         })
-                        ->when(in_array($type, ["stock"]), function($query) {
+                        ->when(in_array($type, ["stock_management"]), function($query) {
 
                             // $query->whereIn("status", ["active"]);
 
