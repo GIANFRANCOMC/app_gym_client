@@ -63,7 +63,7 @@
                                     </li>
                                     <li>
                                         <span v-text="'Nombre:'" class="fw-bold"></span>
-                                        <span v-text="record.internal_code" class="ms-2"></span>
+                                        <span v-text="record.name" class="ms-2"></span>
                                     </li>
                                     <li>
                                         <span v-text="'Descripción:'" class="fw-bold"></span>
