@@ -159,7 +159,7 @@ export default {
                         title: "Gestión de stock",
                         active: true,
                         menu: {
-                            id: "menu-item-inventories-stocks"
+                            id: "menu-item-inventories-stocks_management"
                         }
                     }
                 }

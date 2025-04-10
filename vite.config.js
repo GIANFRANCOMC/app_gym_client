@@ -11,6 +11,7 @@ export default defineConfig({
                 'resources/js/System/app.js',
                 //'resources/js/System/Pages/items/main.js',
 
+                'resources/js/System/Pages/assets/main.js',
                 'resources/js/System/Pages/branches/main.js',
                 'resources/js/System/Pages/companies/main.js',
                 'resources/js/System/Pages/customers/main.js',
