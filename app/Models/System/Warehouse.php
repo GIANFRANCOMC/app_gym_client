@@ -59,7 +59,7 @@ class Warehouse extends Model {
                         })
                         ->when(in_array($type, ["stock"]), function($query) {
 
-                            $query->whereIn("status", ["active"]);
+                            // $query->whereIn("status", ["active"]);
 
                         })
                         ->get();

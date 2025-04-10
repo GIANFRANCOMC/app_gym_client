@@ -132,6 +132,10 @@
                             <span class="ms-2" v-text="forms.entity.createUpdate.extras.modals.actions.data?.formatted_type"></span>
                             <span v-if="isDefined({value: forms.entity.createUpdate.extras.modals.actions.data?.sale_header?.serie_sequential})" class="ms-2 fw-semibold" v-text="forms.entity.createUpdate.extras.modals.actions.data?.sale_header?.serie_sequential"></span>
                         </div>
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                            <span class="fw-semibold">• Estado:</span>
+                            <span class="ms-2" v-text="forms.entity.createUpdate.extras.modals.actions.data?.formatted_status"></span>
+                        </div>
                         <div v-if="['canceled'].includes(forms.entity.createUpdate.extras.modals.actions.data?.status)" class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                             <span class="fw-semibold">• Motivo:</span>
                             <span class="ms-2" v-text="forms.entity.createUpdate.extras.modals.actions.data?.motive"></span>

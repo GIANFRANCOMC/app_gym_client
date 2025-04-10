@@ -101,7 +101,7 @@ class Subscription extends Model {
 
         $statuses = [
             ["code" => "active", "label" => "Vigente"],
-            ["code" => "inactive", "label" => "Inactivo"],
+            ["code" => "inactive", "label" => "Vencido"],
             ["code" => "canceled", "label" => "Anulado"]
         ];
 
