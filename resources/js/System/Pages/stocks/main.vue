@@ -126,7 +126,7 @@ export default {
                 entity: {
                     extras: {
                         loading: false,
-                        route: Requests.config({entity: "stocks", type: "list"})
+                        route: Requests.config({entity: "stocks_management", type: "list"})
                     },
                     filters: {
                         branch: null,
@@ -154,7 +154,7 @@ export default {
             config: {
                 ...Constants.generalConfig,
                 entity: {
-                    ...Requests.config({entity: "stocks"}),
+                    ...Requests.config({entity: "stocks_management"}),
                     page: {
                         title: "Gestión de stock",
                         active: true,

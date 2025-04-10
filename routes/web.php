@@ -42,8 +42,9 @@ Route::middleware(["web"])
             Route::prefix('/trackingSubscriptions')->group($rutaDefecto.'/TrackingSubscription.php');
             Route::prefix('/subscriptions')->group($rutaDefecto.'/Subscription.php');
             Route::prefix('/customers')->group($rutaDefecto.'/Customer.php');
-            Route::prefix('/stocks')->group($rutaDefecto.'/Stock.php');
+            Route::prefix('/stocks_management')->group($rutaDefecto.'/StockManagement.php');
             Route::prefix('/assets')->group($rutaDefecto.'/Asset.php');
+            Route::prefix('/assets_management')->group($rutaDefecto.'/AssetManagement.php');
 
 
             Route::prefix('/helpers')->group($rutaDefecto.'/Helper.php');

@@ -10,7 +10,7 @@ use stdClass;
 
 use App\Models\System\{Item, Warehouse, WarehouseItem};
 
-class StockController extends Controller {
+class StockManagementController extends Controller {
 
     public function initParams(Request $request) {
 
