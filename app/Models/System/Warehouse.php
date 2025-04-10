@@ -4,6 +4,7 @@ namespace App\Models\System;
 
 use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Warehouse extends Model {
 
@@ -43,6 +44,25 @@ class Warehouse extends Model {
         ];
 
         return Utilities::getValues($statuses, $type, $code);
+
+    }
+
+    public static function getAll($type = "default") {
+
+        $userAuth = Auth::user();
+
+        return Warehouse::with("branch")
+                        ->whereHas("branch", function($query) use($userAuth) {
+
+                            $query->where("company_id", $userAuth->company_id);
+
+                        })
+                        ->when(in_array($type, ["stock"]), function($query) {
+
+                            $query->whereIn("status", ["active"]);
+
+                        })
+                        ->get();
 
     }
 

@@ -68,6 +68,13 @@ class Item extends Model {
 
     }
 
+
+    public function getStockQuantityAttribute($value) {
+
+        return $value ?? 0;
+
+    }
+
     // Functions
     public static function getTypes($type = "all", $code = "") {
 
