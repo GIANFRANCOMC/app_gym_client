@@ -11,6 +11,7 @@ use stdClass;
 class Utilities {
 
     public static $per_page_default = 10;
+    public static $per_page_max = 1000;
 
     public static $messages = [
         "422" => "Error al validar."

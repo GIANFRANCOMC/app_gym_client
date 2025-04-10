@@ -47,7 +47,7 @@ class StockManagementController extends Controller {
 
                     }], "quantity")
                     ->orderBy("name", "ASC")
-                    ->paginate($request->per_page ?? Utilities::$per_page_default);
+                    ->paginate($request->per_page ?? Utilities::$per_page_max);
 
         return $list;
 

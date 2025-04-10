@@ -57,7 +57,11 @@ class Branch extends Model {
                             $query->whereIn("status", ["active"]);
 
                      })
-                     ->with(["series.documentType"])
+                     ->when(in_array($type, ["asset_management"]), function($query) {
+
+                        // $query->whereIn("status", ["active"]);
+
+                     })
                      ->get();
 
     }
