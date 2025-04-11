@@ -5,14 +5,14 @@
     <div class="row align-items-end g-3 mb-4">
         <InputSlot
             hasDiv
-            title="Almacén"
+            title="Sucursal"
             :titleClass="[config.forms.classes.title]"
             xl="6"
             lg="7">
             <template v-slot:input>
                 <v-select
-                    v-model="lists.entity.filters.warehouse"
-                    :options="warehouses"
+                    v-model="lists.entity.filters.branch"
+                    :options="branches"
                     :class="config.forms.classes.select2"
                     :clearable="false"/>
             </template>
@@ -23,14 +23,16 @@
             xl="6"
             lg="5">
             <template v-slot:input>
-                <button v-if="!lists.entity.extras.loading" type="button" class="btn btn-primary waves-effect" @click="listEntity({})">
-                    <i class="fa fa-search"></i>
-                    <span class="ms-2">Buscar</span>
-                </button>
-                <button v-if="isDefined({value: lists.entity.filters.warehouse?.code}) && !lists.entity.extras.loading" type="button" class="btn btn-success waves-effect ms-3" @click="createUpdateEntity({})">
-                    <i class="fa fa-save"></i>
-                    <span class="ms-2">Guardar</span>
-                </button>
+                <div v-if="!lists.entity.extras.loading">
+                    <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})">
+                        <i class="fa fa-search"></i>
+                        <span class="ms-2">Buscar</span>
+                    </button>
+                    <button v-if="isDefined({value: lists.entity.filters.branch?.code})" type="button" class="btn btn-success waves-effect ms-3" @click="createUpdateEntity({})">
+                        <i class="fa fa-save"></i>
+                        <span class="ms-2">Guardar</span>
+                    </button>
+                </div>
             </template>
         </InputSlot>
     </div>
@@ -39,8 +41,10 @@
             <thead class="table-light">
                 <tr class="text-center align-middle">
                     <th class="fw-bold col-1">#</th>
-                    <th class="fw-bold col-3">PRODUCTO</th>
+                    <th class="fw-bold col-3">DETALLE</th>
                     <th class="fw-bold col-2">CANTIDAD</th>
+                    <th class="fw-bold col-2">VALOR DE<br/>ADQUISICIÓN</th>
+                    <th class="fw-bold col-2">FECHA DE<br/>ADQUISICIÓN</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0 bg-white">
@@ -56,24 +60,39 @@
                         <tr v-for="(record, indexRecord) in lists.entity.records.data" :key="record.id" class="text-center">
                             <td v-text="indexRecord + 1"></td>
                             <td class="text-start">
-                                <ul>
+                                <ul v-if="isNumber({value: record.id})">
                                     <li>
                                         <span v-text="'Código interno:'" class="fw-bold"></span>
-                                        <span v-text="record.internal_code" class="ms-2"></span>
+                                        <span v-text="record?.asset?.internal_code" class="ms-2"></span>
                                     </li>
                                     <li>
                                         <span v-text="'Nombre:'" class="fw-bold"></span>
-                                        <span v-text="record.name" class="ms-2"></span>
+                                        <span v-text="record?.asset?.name" class="ms-2"></span>
                                     </li>
                                     <li>
                                         <span v-text="'Descripción:'" class="fw-bold"></span>
-                                        <span v-text="isDefined({value: record.description}) ? record.description : 'N/A'" class="ms-2"></span>
+                                        <span v-text="isDefined({value: record?.asset?.description}) ? record?.asset?.description : 'N/A'" class="ms-2"></span>
                                     </li>
                                 </ul>
+                                <div v-else>
+                                    <v-select
+                                        v-model="record.branch"
+                                        :options="assets"
+                                        :class="config.forms.classes.select2"
+                                        :clearable="false"/>
+                                </div>
                             </td>
                             <td>
                                 <InputNumber
-                                    v-model="record.stock_quantity"/>
+                                    v-model="record.quantity"/>
+                            </td>
+                            <td>
+                                <InputNumber
+                                    v-model="record.acquisition_value"/>
+                            </td>
+                            <td>
+                                <InputDate
+                                    v-model="record.acquisition_date"/>
                             </td>
                         </tr>
                     </template>
@@ -105,7 +124,7 @@ export default {
     },
     mounted: async function() {
 
-        Utils.navbarItem("menu-item-inventories", {addClass: "open"});
+        Utils.navbarItem("menu-item-infrastructure", {addClass: "open"});
         Utils.navbarItem(this.config.entity.page.menu.id, {});
         Alerts.swals({type: "initParams"});
 
@@ -126,10 +145,10 @@ export default {
                 entity: {
                     extras: {
                         loading: false,
-                        route: Requests.config({entity: "stocks_management", type: "list"})
+                        route: Requests.config({entity: "assets_management", type: "list"})
                     },
                     filters: {
-                        warehouse: null
+                        branch: null
                     },
                     records: {
                         total: 0
@@ -153,12 +172,12 @@ export default {
             config: {
                 ...Constants.generalConfig,
                 entity: {
-                    ...Requests.config({entity: "stocks_management"}),
+                    ...Requests.config({entity: "assets_management"}),
                     page: {
-                        title: "Gestión de stock",
+                        title: "Gestión de activos",
                         active: true,
                         menu: {
-                            id: "menu-item-inventories-stocks_management"
+                            id: "menu-item-infrastructure-assets_management"
                         }
                     }
                 }
@@ -171,7 +190,8 @@ export default {
 
             let initParams = await Requests.get({route: this.config.entity.routes.initParams, data: {page: "main"}, showAlert: true});
 
-            this.options.warehouses = initParams.data?.config?.warehouses;
+            this.options.assets   = initParams.data?.config?.assets;
+            this.options.branches = initParams.data?.config?.branches;
 
             return Requests.valid({result: initParams});
 
@@ -180,7 +200,7 @@ export default {
 
             return new Promise(resolve => {
 
-                this.lists.entity.filters.warehouse = this.warehouses[0];
+                this.lists.entity.filters.branch = this.branches[0];
 
                 resolve(true);
 
@@ -191,7 +211,7 @@ export default {
         async listEntity({url = null}) {
 
             let filters = Utils.cloneJson(this.lists.entity.filters);
-            const filterJson = {warehouse_id: filters?.warehouse?.code};
+            const filterJson = {branch_id: filters?.branch?.code};
 
             this.lists.entity.extras.loading = true;
             this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: filterJson}))?.data;
@@ -206,9 +226,9 @@ export default {
             Alerts.swals({});
             this.formErrors({functionName, type: "clear"});
 
-            const items = (this.lists.entity.records.data).map(e => ({id: e.id, stock_quantity: e?.stock_quantity}));
+            const items = (this.lists.entity.records.data); // .map(e => ({id: e.id, stock_quantity: e?.stock_quantity}));
 
-            let form = Utils.cloneJson({warehouse_id: this.lists.entity.filters.warehouse?.code, items});
+            let form = Utils.cloneJson({branch_id: this.lists.entity.filters.branch?.code, items});
 
             const validateForm = this.validateForm({functionName, form});
 
@@ -222,7 +242,7 @@ export default {
                     Alerts.swals({show: false});
 
                     // this.clearForm({functionName});
-                    // this.listEntity({url: `${this.lists.entity.extras.route}?page=${this.lists.entity.records?.current_page ?? 1}`});
+                    this.listEntity({url: `${this.lists.entity.extras.route}?page=${this.lists.entity.records?.current_page ?? 1}`});
 
                 }else {
 
@@ -270,9 +290,9 @@ export default {
 
                 result.msg = [];
 
-                if(!this.isDefined({value: form?.warehouse_id})) {
+                if(!this.isDefined({value: form?.branch_id})) {
 
-                    result.msg.push(`<b>Almacén:</b> ${this.config.forms.errors.labels.required}`);
+                    result.msg.push(`<b>Sucursal:</b> ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }
@@ -281,9 +301,16 @@ export default {
 
                     const seq = parseInt(indexRecord) + 1;
 
-                    if(Number(record?.stock_quantity ?? 0) < 0) {
+                    if(Number(record?.quantity ?? 0) < 0) {
 
-                        result.msg.push(`<b>Producto #${seq}:</b> Cantidad / ${this.config.forms.errors.labels.min_equal_number_0}`);
+                        result.msg.push(`<b>Activo #${seq}:</b> Cantidad / ${this.config.forms.errors.labels.min_equal_number_0}`);
+                        result.bool = false;
+
+                    }
+
+                    if(Number(record?.acquisition_value ?? 0) < 0) {
+
+                        result.msg.push(`<b>Activo #${seq}:</b> Valor de adquisición / ${this.config.forms.errors.labels.min_equal_number_0}`);
                         result.bool = false;
 
                     }
@@ -301,6 +328,11 @@ export default {
             return Utils.isDefined({value});
 
         },
+        isNumber({value, minValue = 0}) {
+
+            return Utils.isNumber({value, minValue});
+
+        },
         tooltips({show = true, time = 10}) {
 
             Alerts.tooltips({show, time});
@@ -310,19 +342,24 @@ export default {
     computed: {
         breadcrumbTitles: function() {
 
-            return [{title: "Inventario"}, this.config.entity.page];
+            return [{title: "Infraestructura"}, this.config.entity.page];
 
         },
-        warehouses: function() {
+        branches: function() {
 
-            return this.options?.warehouses?.records.map(e => ({code: e.id, label: e.name}));
+            return this.options?.branches?.records.map(e => ({code: e.id, label: e.name}));
+
+        },
+        assets: function() {
+
+            return this.options?.assets?.records.map(e => ({code: e.id, label: e.name}));
 
         }
     },
     watch: {
-        "lists.entity.filters.warehouse": function(newValue, oldValue) {
+        "lists.entity.filters.branch": function(newValue, oldValue) {
 
-            if(this.isDefined({value: this.lists.entity.filters.warehouse?.code})) {
+            if(this.isDefined({value: this.lists.entity.filters.branch?.code})) {
 
                 this.listEntity({});
 

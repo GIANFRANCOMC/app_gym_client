@@ -57,6 +57,11 @@ class Asset extends Model {
         $userAuth = Auth::user();
 
         return Asset::where("company_id", $userAuth->company_id)
+                    ->when(in_array($type, ["asset_management"]), function($query) {
+
+                        // $query->whereIn("status", ["active"]);
+
+                    })
                     ->get();
 
     }

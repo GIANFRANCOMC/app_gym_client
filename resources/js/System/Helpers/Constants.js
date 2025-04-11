@@ -20,7 +20,8 @@ export const generalConfig = {
         errors: {
             labels: {
                 required: "Es obligatorio",
-                min_number_0: "Debe ser mayor a 0"
+                min_number_0: "Debe ser mayor a 0",
+                min_equal_number_0: "Debe ser mayor o igual a 0"
             },
             styles: {
                 default: "text-danger"

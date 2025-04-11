@@ -149,8 +149,8 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger("branch_id");
             $table->unsignedBigInteger("asset_id");
-            $table->integer("quantity")->default(1);
-            $table->decimal("acquisition_value", 10, 2)->nullable();
+            $table->decimal("quantity", 10, 2)->nullable()->default(0);
+            $table->decimal("acquisition_value", 10, 2)->nullable()->default(0);
             $table->date("acquisition_date")->nullable();
             $table->text("notes")->nullable();
             $table->enum("status", ["active", "maintenance", "retired"])->default("active");
@@ -214,6 +214,7 @@ return new class extends Migration {
      */
     public function down(): void {
 
+        Schema::dropIfExists("branch_assets");
         Schema::dropIfExists("warehouse_items");
         Schema::dropIfExists("warehouses");
         Schema::dropIfExists("customers");
