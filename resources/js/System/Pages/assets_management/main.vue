@@ -23,7 +23,7 @@
             xl="6"
             lg="5">
             <template v-slot:input>
-                <div v-if="!lists.entity.extras.loading">
+                <template v-if="!lists.entity.extras.loading">
                     <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})">
                         <i class="fa fa-search"></i>
                         <span class="ms-2">Buscar</span>
@@ -32,7 +32,7 @@
                         <i class="fa fa-save"></i>
                         <span class="ms-2">Guardar</span>
                     </button>
-                </div>
+                </template>
             </template>
         </InputSlot>
     </div>
@@ -57,44 +57,49 @@
                 </template>
                 <template v-else>
                     <template v-if="lists.entity.records.total > 0">
-                        <tr v-for="(record, indexRecord) in lists.entity.records.data" :key="record.id" class="text-center">
-                            <td v-text="indexRecord + 1"></td>
-                            <td class="text-start">
-                                <ul v-if="isNumber({value: record.id})">
-                                    <li>
-                                        <span v-text="'Código interno:'" class="fw-bold"></span>
-                                        <span v-text="record?.asset?.internal_code" class="ms-2"></span>
-                                    </li>
-                                    <li>
-                                        <span v-text="'Nombre:'" class="fw-bold"></span>
-                                        <span v-text="record?.asset?.name" class="ms-2"></span>
-                                    </li>
-                                    <li>
-                                        <span v-text="'Descripción:'" class="fw-bold"></span>
-                                        <span v-text="isDefined({value: record?.asset?.description}) ? record?.asset?.description : 'N/A'" class="ms-2"></span>
-                                    </li>
-                                </ul>
-                                <div v-else>
-                                    <v-select
-                                        v-model="record.branch"
-                                        :options="assets"
-                                        :class="config.forms.classes.select2"
-                                        :clearable="false"/>
-                                </div>
-                            </td>
-                            <td>
-                                <InputNumber
-                                    v-model="record.quantity"/>
-                            </td>
-                            <td>
-                                <InputNumber
-                                    v-model="record.acquisition_value"/>
-                            </td>
-                            <td>
-                                <InputDate
-                                    v-model="record.acquisition_date"/>
-                            </td>
-                        </tr>
+                        <template v-for="(record, indexRecord) in lists.entity.records.data" :key="record.branch_asset_id">
+                            <tr class="text-center">
+                            <!-- <tr class="border-transparent text-center"> -->
+                                <td v-text="indexRecord + 1"></td>
+                                <td class="text-start">
+                                    <!-- v-if="isNumber({value: record.branch_asset_id})" -->
+                                    <ul>
+                                        <li>
+                                            <span v-text="'Código interno:'" class="fw-bold"></span>
+                                            <span v-text="record?.asset_internal_code" class="ms-2"></span>
+                                        </li>
+                                        <li>
+                                            <span v-text="'Nombre:'" class="fw-bold"></span>
+                                            <span v-text="record?.asset_name" class="ms-2"></span>
+                                        </li>
+                                        <li>
+                                            <span v-text="'Descripción:'" class="fw-bold"></span>
+                                            <span v-text="isDefined({value: record?.asset_description}) ? record?.asset_description : 'N/A'" class="ms-2"></span>
+                                        </li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <InputNumber
+                                        v-model="record.branch_asset_quantity"/>
+                                </td>
+                                <td>
+                                    <InputNumber
+                                        v-model="record.branch_asset_acquisition_value"/>
+                                </td>
+                                <td>
+                                    <InputDate
+                                        v-model="record.branch_asset_acquisition_date"/>
+                                </td>
+                            </tr>
+                            <!-- <tr class="text-center">
+                                <td colspan="1"></td>
+                                <td colspan="4" class="text-start">
+                                    <InputText
+                                        title="Nota"
+                                        v-model="record.branch_asset_note"/>
+                                </td>
+                            </tr> -->
+                        </template>
                     </template>
                     <template v-else>
                         <tr>
@@ -190,7 +195,6 @@ export default {
 
             let initParams = await Requests.get({route: this.config.entity.routes.initParams, data: {page: "main"}, showAlert: true});
 
-            this.options.assets   = initParams.data?.config?.assets;
             this.options.branches = initParams.data?.config?.branches;
 
             return Requests.valid({result: initParams});
@@ -226,7 +230,7 @@ export default {
             Alerts.swals({});
             this.formErrors({functionName, type: "clear"});
 
-            const items = (this.lists.entity.records.data); // .map(e => ({id: e.id, stock_quantity: e?.stock_quantity}));
+            const items = this.lists.entity.records.data;
 
             let form = Utils.cloneJson({branch_id: this.lists.entity.filters.branch?.code, items});
 
@@ -301,14 +305,14 @@ export default {
 
                     const seq = parseInt(indexRecord) + 1;
 
-                    if(Number(record?.quantity ?? 0) < 0) {
+                    if(Number(record?.branch_asset_quantity ?? 0) < 0) {
 
                         result.msg.push(`<b>Activo #${seq}:</b> Cantidad / ${this.config.forms.errors.labels.min_equal_number_0}`);
                         result.bool = false;
 
                     }
 
-                    if(Number(record?.acquisition_value ?? 0) < 0) {
+                    if(Number(record?.branch_asset_acquisition_value ?? 0) < 0) {
 
                         result.msg.push(`<b>Activo #${seq}:</b> Valor de adquisición / ${this.config.forms.errors.labels.min_equal_number_0}`);
                         result.bool = false;
@@ -348,11 +352,6 @@ export default {
         branches: function() {
 
             return this.options?.branches?.records.map(e => ({code: e.id, label: e.name}));
-
-        },
-        assets: function() {
-
-            return this.options?.assets?.records.map(e => ({code: e.id, label: e.name}));
 
         }
     },

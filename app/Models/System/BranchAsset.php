@@ -23,7 +23,7 @@ class BranchAsset extends Model {
         "quantity",
         "acquisition_value",
         "acquisition_date",
-        "notes",
+        "note",
         "status",
         "created_at",
         "created_by",

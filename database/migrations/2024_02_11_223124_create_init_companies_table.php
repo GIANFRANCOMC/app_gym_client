@@ -152,7 +152,7 @@ return new class extends Migration {
             $table->decimal("quantity", 10, 2)->nullable()->default(0);
             $table->decimal("acquisition_value", 10, 2)->nullable()->default(0);
             $table->date("acquisition_date")->nullable();
-            $table->text("notes")->nullable();
+            $table->text("note")->nullable();
             $table->enum("status", ["active", "maintenance", "retired"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();
