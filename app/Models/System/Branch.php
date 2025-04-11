@@ -62,6 +62,7 @@ class Branch extends Model {
                         // $query->whereIn("status", ["active"]);
 
                      })
+                     ->with(["series.documentType"])
                      ->get();
 
     }
