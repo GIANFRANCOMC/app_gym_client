@@ -120,7 +120,7 @@
                             xl="5"
                             lg="5">
                             <template v-slot:inputGroupAppend>
-                                <button type="button" :class="['btn waves-effect', isDefined({value: forms.entity.createUpdate.data?.id}) ? 'btn-warning' : 'btn-primary']" @click="setGenerateCode({length: 12})" data-bs-toggle="tooltip" data-bs-placement="top" title="Generar aleatoriamente">
+                                <button type="button" :class="['btn waves-effect', isDefined({value: forms.entity.createUpdate.data?.id}) ? 'btn-warning' : 'btn-primary']" @click="setGenerateCode({length: 7})" data-bs-toggle="tooltip" data-bs-placement="top" title="Generar aleatoriamente">
                                     <i class="fa fa-rotate"></i>
                                 </button>
                             </template>
@@ -166,7 +166,13 @@
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.duration_value"
                             xl="6"
-                            lg="6"/>
+                            lg="6">
+                            <template v-slot:inputGroupAppend>
+                                <button v-if="isDefined({value: getLabelDurationType({record: forms.entity.createUpdate.data})})" type="button" :class="['btn waves-effect', isDefined({value: forms.entity.createUpdate.data?.id}) ? 'btn-warning' : 'btn-primary']">
+                                    <span v-text="getLabelDurationType({record: forms.entity.createUpdate.data})"></span>
+                                </button>
+                            </template>
+                        </InputNumber>
                         <InputNumber
                             v-model="forms.entity.createUpdate.data.price"
                             hasDiv
@@ -354,6 +360,19 @@ export default {
                 Alerts.tooltips({show: false});
 
             }
+
+        },
+        getLabelDurationType({record = null}) {
+
+            if(this.isDefined({value: this.options?.subscriptions?.durationTypes}) && this.isDefined({value: record})) {
+
+                let durationType = this.options.subscriptions.durationTypes.filter(e => e.code == record?.duration_type?.code);
+
+                return parseFloat(record.duration_value) > 1 ? durationType[0]?.plural : durationType[0]?.label;
+
+            }
+
+            return null;
 
         },
         modalCreateUpdateEntity({record = null}) {

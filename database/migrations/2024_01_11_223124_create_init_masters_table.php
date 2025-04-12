@@ -186,11 +186,11 @@ return new class extends Migration {
         DB::table("sections")->insert([
             ["id" => 1, "slug" => "sc_home", "name" => "home", "order" => 1, "dom_id" => "menu-item-home", "dom_label" => "Inicio", "dom_icon" => "fa fa-home", "has_sub_menu" => false],
             ["id" => 2, "slug" => "sc_sales", "name" => "sales", "order" => 2, "dom_id" => "menu-item-sales", "dom_label" => "Ventas", "dom_icon" => "fa-solid fa-cash-register", "has_sub_menu" => true],
-            ["id" => 3, "slug" => "sc_trackings", "name" => "trackings", "order" => 3, "dom_id" => "menu-item-trackings", "dom_label" => "Seguimiento", "dom_icon" => "fa-solid fa-binoculars", "has_sub_menu" => true],
-            ["id" => 4, "slug" => "sc_items", "name" => "items", "order" => 4, "dom_id" => "menu-item-catalogs", "dom_label" => "Catálogo comercial", "dom_icon" => "fa fa-book", "has_sub_menu" => true],
-            ["id" => 5, "slug" => "sc_inventories", "name" => "inventories", "order" => 5, "dom_id" => "menu-item-inventories", "dom_label" => "Inventario", "dom_icon" => "fa-solid fa-arrow-right-arrow-left", "has_sub_menu" => true],
-            ["id" => 6, "slug" => "sc_infrastructure", "name" => "infrastructure", "order" => 6, "dom_id" => "menu-item-infrastructure", "dom_label" => "Infraestructura", "dom_icon" => "fa-solid fa-industry", "has_sub_menu" => true],
-            ["id" => 7, "slug" => "sc_customers", "name" => "customers", "order" => 7, "dom_id" => "menu-item-customers", "dom_label" => "Clientes", "dom_icon" => "fa fa-user", "has_sub_menu" => false],
+            ["id" => 3, "slug" => "sc_trackings", "name" => "trackings", "order" => 4, "dom_id" => "menu-item-trackings", "dom_label" => "Seguimiento", "dom_icon" => "fa-solid fa-binoculars", "has_sub_menu" => true],
+            ["id" => 4, "slug" => "sc_items", "name" => "items", "order" => 5, "dom_id" => "menu-item-catalogs", "dom_label" => "Catálogo comercial", "dom_icon" => "fa fa-book", "has_sub_menu" => true],
+            ["id" => 5, "slug" => "sc_inventories", "name" => "inventories", "order" => 6, "dom_id" => "menu-item-inventories", "dom_label" => "Inventario", "dom_icon" => "fa-solid fa-arrow-right-arrow-left", "has_sub_menu" => true],
+            ["id" => 6, "slug" => "sc_infrastructure", "name" => "infrastructure", "order" => 7, "dom_id" => "menu-item-infrastructure", "dom_label" => "Infraestructura", "dom_icon" => "fa-solid fa-industry", "has_sub_menu" => true],
+            ["id" => 7, "slug" => "sc_customers", "name" => "customers", "order" => 3, "dom_id" => "menu-item-customers", "dom_label" => "Clientes", "dom_icon" => "fa fa-user", "has_sub_menu" => false],
             ["id" => 8, "slug" => "sc_configuration", "name" => "configuration", "order" => 8, "dom_id" => "menu-item-configuration", "dom_label" => "Configuración", "dom_icon" => "fa fa-gear", "has_sub_menu" => true],
             ["id" => 9, "slug" => "sc_reports", "name" => "reports", "order" => 9, "dom_id" => "menu-item-reports", "dom_label" => "Reportes", "dom_icon" => "fa fa-print", "has_sub_menu" => false]
         ]);
