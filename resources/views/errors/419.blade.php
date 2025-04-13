@@ -44,7 +44,7 @@
                     </div>
                     <a href="{{ url('/login') }}" class="btn btn-primary mb-10 waves-effect">
                         <i class="fa fa-sign-in"></i>
-                        <span class="ms-1">Ir al login</span>
+                        <span class="ms-1">Ir al inicio</span>
                     </a>
                 </div>
             </div>
