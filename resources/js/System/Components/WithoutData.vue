@@ -2,7 +2,7 @@
     <template v-if="['image'].includes(type)">
         <img :src="image" class="fluid-image" width="25%"/>
         <h5>
-            <span class="badge bg-warning text-white fw-semibold px-5" v-text="text"></span>
+            <span class="fw-bold px-5" v-text="text"></span>
         </h5>
     </template>
     <template v-else-if="['text'].includes(type)">
@@ -31,7 +31,7 @@ export default {
         },
         image() {
 
-            return `${Constants.requestRoute}/System/assets/img/utils/without_data.svg`;
+            return `${Constants.requestRoute}/System/assets/img/utils/without_data/2.png`;
 
         }
 

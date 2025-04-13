@@ -242,6 +242,14 @@
                         </div>
                         <!-- <small :class="config.forms.errors.styles.default" v-html="isDefined({value: forms.entity.createUpdate.errors?.details}) ? forms.entity.createUpdate.errors?.details : ''"></small> -->
                     </div>
+                    <div class="row justify-content-end g-3 my-1">
+                        <div class="col-lg-auto col-sm-auto">
+                            <a href="javascript:void(0)" @click="modalAddDetail({})" class="fw-bold">
+                                <i class="fa fa-plus-circle"></i>
+                                <span class="ms-1">Agregar detalle</span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -415,7 +423,7 @@
                                                                 type="checkbox"
                                                                 v-model="forms.entity.createUpdate.extras.modals.details.data.extras.set_end_of_day"
                                                                 @change="calculateDuration({record: forms.entity.createUpdate.extras.modals.details.data})"/>
-                                                            Ajustar la hora de la Fecha de finalización al final del día (23:59 = 11:59 PM)
+                                                            Ajustar la <u>hora de la Fecha de finalización</u> al final del día (23:59 = 11:59 PM)
                                                         </label>
                                                     </div>
                                                     <!--<div class="form-check form-check-primary fw-semibold my-1">
