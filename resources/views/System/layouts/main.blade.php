@@ -39,7 +39,7 @@
 
                     <div class="menu-inner-shadow"></div>
 
-                    <ul class="menu-inner py-1 mb-3">
+                    <ul class="menu-inner py-1">
                         <li class="menu-header mb-4">
                             <span class="menu-header-text" data-i18n="Profile">
                                 <div class="row">
