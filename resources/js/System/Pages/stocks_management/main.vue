@@ -75,7 +75,8 @@
                             </td>
                             <td>
                                 <InputNumber
-                                    v-model="record.stock_quantity"/>
+                                    v-model="record.stock_quantity"
+                                    :hasNegative="true"/>
                             </td>
                         </tr>
                     </template>
@@ -279,7 +280,8 @@ export default {
 
                 }
 
-                for(const [indexRecord, record] of Object.entries(form.items)) {
+                // Allowed negative
+                /* for(const [indexRecord, record] of Object.entries(form.items)) {
 
                     const seq = parseInt(indexRecord) + 1;
 
@@ -290,7 +292,7 @@ export default {
 
                     }
 
-                }
+                } */
 
             }
 

@@ -105,6 +105,11 @@ export default {
             required: false,
             default: ["form-control"]
         },
+        hasNegative: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
         minValue: {
             type: [String, Number],
             required: false,
@@ -214,24 +219,42 @@ export default {
 
             }else {
 
-                const hasFormattedNumber = /^\d+(\.\d+)?$/.test(valueString); // Case: 1  2  3.1  5.67  0.329
-                const hasDecimalInitNumber = this.decimals > 0 && /^\d+\.$/.test(valueString); // Case: With decimals (Input: 12. 3134. 23461.)
+                const hasFormattedNumber = this.hasNegative ? /^-?\d+(\.\d+)?$/.test(valueString) : /^\d+(\.\d+)?$/.test(valueString); // Case: 1  2  3.1  5.67  0.329
+                const hasDecimalInitNumber = this.decimals > 0 && (this.hasNegative ? /^-?\d+\.$/.test(valueString) : /^\d+\.$/.test(valueString)); // Case: With decimals (Input: 12. 3134. 23461.)
 
-                if(hasFormattedNumber || hasDecimalInitNumber) {
+                let defaultValue = this.hasNegative ? this.minValue : this.minValue;
+
+                const minValue = this.hasNegative ? -this.maxValue : this.minValue,
+                      maxValue = this.maxValue;
+
+                if(this.hasNegative && value == "-") {
+
+                    //
+
+                }else if(hasFormattedNumber || hasDecimalInitNumber) {
 
                     let numericValue = Number(value);
 
-                    if(isNaN(numericValue) || numericValue < this.minValue) {
+                    if(isNaN(numericValue)) {
 
-                        this.emitValue({result: this.minValue});
+                        // console.log("isNaN");
+                        this.emitValue({result: defaultValue});
 
-                    }else if(numericValue > this.maxValue) {
+                    }else if(numericValue < minValue) {
 
-                        this.emitValue({result: this.maxValue});
+                        // console.log("minValue");
+                        this.emitValue({result: minValue});
+
+                    }else if(numericValue > maxValue) {
+
+                        // console.log("maxValue");
+                        this.emitValue({result: maxValue});
 
                     }else {
 
-                        const regexDecimals = this.decimals > 0 ? new RegExp(`^\\d+(\\.\\d{1,${this.decimals}})?$`) : /^-?\d+$/;
+                        const regexDecimals = this.hasNegative ? (this.decimals > 0 ? new RegExp(`^-?\\d+(\\.\\d{1,${this.decimals}})?$`) : /^-?\d+$/) :
+                                                                 (this.decimals > 0 ? new RegExp(`^\\d+(\\.\\d{1,${this.decimals}})?$`) : /^\d+$/);
+
                         const hasFormattedDecimal = regexDecimals.test(valueString);
 
                         if(this.decimals > 0) {
@@ -248,7 +271,8 @@ export default {
 
                 }else {
 
-                    this.emitValue({result: this.minValue});
+                    // console.error("Sin formato correcto");
+                    this.emitValue({result: defaultValue});
 
                 }
 
@@ -289,6 +313,12 @@ export default {
         handleKeyDown(event) {
 
             let allowedKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "ArrowLeft", "ArrowRight", "Backspace", "Tab"];
+
+            if(this.hasNegative) {
+
+                allowedKeys.push("-");
+
+            }
 
             if(this.decimals > 0) {
 

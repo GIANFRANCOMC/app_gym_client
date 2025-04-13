@@ -80,11 +80,13 @@
                                 </td>
                                 <td>
                                     <InputNumber
-                                        v-model="record.branch_asset_quantity"/>
+                                        v-model="record.branch_asset_quantity"
+                                        :hasNegative="true"/>
                                 </td>
                                 <td>
                                     <InputNumber
-                                        v-model="record.branch_asset_acquisition_value"/>
+                                        v-model="record.branch_asset_acquisition_value"
+                                        :hasNegative="true"/>
                                 </td>
                                 <td>
                                     <InputDate
@@ -301,7 +303,8 @@ export default {
 
                 }
 
-                for(const [indexRecord, record] of Object.entries(form.items)) {
+                // Allowed negative
+                /* for(const [indexRecord, record] of Object.entries(form.items)) {
 
                     const seq = parseInt(indexRecord) + 1;
 
@@ -319,7 +322,7 @@ export default {
 
                     }
 
-                }
+                } */
 
             }
 
