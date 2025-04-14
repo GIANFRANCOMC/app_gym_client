@@ -95,6 +95,13 @@ class Company extends Model {
 
     }
 
+    public function attendances() {
+
+        return $this->hasMany(Attendance::class, "company_id", "id")
+                    ->whereIn("status", ["active"]);
+
+    }
+
     public function branches() {
 
         return $this->hasMany(Branch::class, "company_id", "id")

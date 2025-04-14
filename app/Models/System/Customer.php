@@ -83,6 +83,13 @@ class Customer extends Model {
 
     }
 
+    public function attendances() {
+
+        return $this->hasMany(Attendance::class, "customer_id", "id")
+                    ->whereIn("status", ["active"]);
+
+    }
+
     public function salesHeader() {
 
         return $this->hasMany(SaleHeader::class, "holder_id", "id")

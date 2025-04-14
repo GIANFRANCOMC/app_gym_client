@@ -54,7 +54,12 @@ class Branch extends Model {
         return Branch::where("company_id", $userAuth->company_id)
                      ->when(in_array($type, ["sale"]), function($query) {
 
-                            $query->whereIn("status", ["active"]);
+                        $query->whereIn("status", ["active"]);
+
+                     })
+                     ->when(in_array($type, ["tracking_attendance"]), function($query) {
+
+                        $query->whereIn("status", ["active"]);
 
                      })
                      ->when(in_array($type, ["asset_management"]), function($query) {
@@ -84,6 +89,13 @@ class Branch extends Model {
     public function assetsAll() {
 
         return $this->hasMany(BranchAsset::class, "branch_id", "id");
+
+    }
+
+    public function attendances() {
+
+        return $this->hasMany(Attendance::class, "branch_id", "id")
+                    ->whereIn("status", ["active"]);
 
     }
 
