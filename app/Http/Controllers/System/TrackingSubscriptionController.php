@@ -23,8 +23,8 @@ class TrackingSubscriptionController extends Controller {
 
         if(in_array($page, ["main"])) {
 
-            $config->trackingSubscriptions = new stdClass();
-            $config->trackingSubscriptions->statuses = Subscription::getStatuses();
+            $config->subscriptions = new stdClass();
+            $config->subscriptions->statuses = Subscription::getStatuses();
 
         }
 

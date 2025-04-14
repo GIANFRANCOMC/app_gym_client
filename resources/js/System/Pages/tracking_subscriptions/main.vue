@@ -192,7 +192,7 @@ export default {
                 entity: {
                     extras: {
                         loading: false,
-                        route: Requests.config({entity: "trackingSubscriptions", type: "list"})
+                        route: Requests.config({entity: "tracking_subscriptions", type: "list"})
                     },
                     filters: {
                         filter_by: null,
@@ -228,7 +228,7 @@ export default {
             config: {
                 ...Constants.generalConfig,
                 entity: {
-                    ...Requests.config({entity: "trackingSubscriptions"}),
+                    ...Requests.config({entity: "tracking_subscriptions"}),
                     page: {
                         title: "Suscripciones",
                         active: true,
