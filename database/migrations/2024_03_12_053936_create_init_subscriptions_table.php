@@ -48,8 +48,8 @@ return new class extends Migration {
             $table->unsignedBigInteger("company_id");
             $table->unsignedBigInteger("branch_id");
             $table->unsignedBigInteger("customer_id");
-            $table->dateTime("start_date");
-            $table->dateTime("end_date");
+            $table->dateTime("start_date")->nullable();
+            $table->dateTime("end_date")->nullable();
             $table->text("observation")->nullable();
             $table->enum("type", ["manual"])->default("manual");
             $table->enum("status", ["active", "canceled", "inactive"])->default("active");
@@ -73,6 +73,7 @@ return new class extends Migration {
      */
     public function down(): void {
 
+        Schema::dropIfExists("attendances");
         Schema::dropIfExists("subscriptions");
 
     }

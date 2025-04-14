@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\TrackingSubscriptions\{CancelTrackingSubscriptionRequest, StoreTrackingSubscriptionRequest, UpdateTrackingSubscriptionRequest};
-use App\Models\System\{Item, Subscription};
+use App\Models\System\{Subscription};
 
 class TrackingSubscriptionController extends Controller {
 
@@ -87,13 +87,13 @@ class TrackingSubscriptionController extends Controller {
 
     }
 
-    public function show(Item $item) {
+    public function show(Subscription $subscription) {
 
         //
 
     }
 
-    public function edit(Item $item) {
+    public function edit(Subscription $subscription) {
 
         //
 

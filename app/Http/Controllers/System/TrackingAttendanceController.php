@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\TrackingSubscriptions\{CancelTrackingSubscriptionRequest, StoreTrackingSubscriptionRequest, UpdateTrackingSubscriptionRequest};
-use App\Models\System\{Customer, Item, Subscription};
+use App\Models\System\{Attendance, Branch, Customer, Subscription};
+use Carbon\Carbon;
 
 class TrackingAttendanceController extends Controller {
 
@@ -23,8 +24,11 @@ class TrackingAttendanceController extends Controller {
 
         if(in_array($page, ["main"])) {
 
+            $config->branches = new stdClass();
+            $config->branches->records = Branch::getAll("tracking_attendance");
+
             $config->customers = new stdClass();
-            $config->customers->records = Customer::getAll("attendance");
+            $config->customers->records = Customer::getAll("tracking_attendance");
 
         }
 
@@ -39,31 +43,12 @@ class TrackingAttendanceController extends Controller {
 
         $userAuth = Auth::user();
 
-        $list = Subscription::select("subscriptions.*")
-                            ->when(Utilities::isDefined($request->filter_by), function($query) use($request) {
+        $list = null;
 
-                                $filter = Utilities::getWordSearch($request->word);
-
-                                if(in_array($request->filter_by, ["customer"])) {
-
-
-                                    $query->join("customers", "customers.id", "subscriptions.customer_id")
-                                          ->where(function($query) use($request, $filter) {
-
-                                                $query->where("document_number", "like", $filter)
-                                                      ->orWhere("name", "like", $filter)
-                                                      ->orWhere("email", "like", $filter)
-                                                      ->orWhere("phone_number", "like", $filter);
-
-                                          });
-
-                                }
-
-                            })
-                            ->where("subscriptions.company_id", $userAuth->company_id)
-                            ->orderBy("subscriptions.id", "DESC")
-                            ->with(["saleHeader", "customer"])
-                            ->paginate($request->per_page ?? Utilities::$per_page_default);
+        $list = Attendance::where("company_id", $userAuth->company_id)
+                          ->orderBy("id", "DESC")
+                          ->with(["branch", "customer"])
+                          ->paginate($request->per_page ?? Utilities::$per_page_max);
 
         return $list;
 
@@ -83,17 +68,55 @@ class TrackingAttendanceController extends Controller {
 
     public function store(Request $request) { // StoreTrackingSubscriptionRequest
 
+        $userAuth = Auth::user();
+
+        $attendance = null;
+
+        $subscriptions = Subscription::where("company_id", $userAuth->company_id)
+                                     ->where("branch_id", $request->branch_id)
+                                     ->where("customer_id", $request->customer_id)
+                                     ->where("start_date", "<=", $request->start_date)
+                                     ->where("end_date", ">=", $request->start_date)
+                                     ->where("status", "active")
+                                     ->get();
+
+        if(count($subscriptions) === 0) {
+
+            return response()->json(["bool" => false, "msg" => "El cliente seleccionado no cuenta con una suscripción vigente."], 200);
+
+        }
+
+        DB::transaction(function() use($request, $userAuth, &$attendance) {
+
+            $attendance = new Attendance();
+            $attendance->company_id  = $userAuth->company_id;
+            $attendance->branch_id   = $request->branch_id;
+            $attendance->customer_id = $request->customer_id;
+            $attendance->start_date  = $request->start_date;
+            $attendance->end_date    = $request->end_date;
+            $attendance->observation = $request->observation ?? "";
+            $attendance->type        = "manual";
+            $attendance->status      = "active";
+            $attendance->created_at  = now();
+            $attendance->created_by  = $userAuth->id ?? null;
+            $attendance->save();
+
+        });
+
+        $bool = Utilities::isDefined($attendance);
+        $msg  = $bool ? "Asistencia creada correctamente." : "No se ha podido crear la asistencia.";
+
+        return response()->json(["bool" => $bool, "msg" => $msg, "attendance" => $attendance], 200);
+
+    }
+
+    public function show(Attendance $attendance) {
+
         //
 
     }
 
-    public function show(Item $item) {
-
-        //
-
-    }
-
-    public function edit(Item $item) {
+    public function edit(Attendance $attendance) {
 
         //
 
@@ -109,32 +132,32 @@ class TrackingAttendanceController extends Controller {
 
         $userAuth = Auth::user();
 
-        $subscription = Subscription::findOrFail($id);
+        $attendance = Attendance::findOrFail($id);
 
-        if(Utilities::isDefined($subscription) && in_array($subscription->status, ["active"])) {
+        if(Utilities::isDefined($attendance) && in_array($attendance->status, ["active"])) {
 
-            if(Utilities::isDefined($subscription) && $subscription->company_id == $userAuth->company_id) {
+            if(Utilities::isDefined($attendance) && $attendance->company_id == $userAuth->company_id) {
 
-                $subscription->motive      = $request->motive ?? "N/A";
-                $subscription->status      = "canceled";
-                $subscription->updated_at  = now();
-                $subscription->updated_by  = $userAuth->id ?? null;
-                $subscription->canceled_at = now();
-                $subscription->canceled_by = $userAuth->id ?? null;
-                $subscription->save();
+                $attendance->motive      = $request->motive ?? "N/A";
+                $attendance->status      = "canceled";
+                $attendance->updated_at  = now();
+                $attendance->updated_by  = $userAuth->id ?? null;
+                $attendance->canceled_at = now();
+                $attendance->canceled_by = $userAuth->id ?? null;
+                $attendance->save();
 
             }
 
         }
 
-        $bool = $subscription->wasChanged();
-        $msg  = $bool ? "Suscripción anulada correctamente." : "No se ha podido anular la suscripción.";
+        $bool = $attendance->wasChanged();
+        $msg  = $bool ? "Asistencia anulada correctamente." : "No se ha podido anular la asistencia.";
 
-        return response()->json(["bool" => $bool, "msg" => $msg, "subscription" => $subscription], 200);
+        return response()->json(["bool" => $bool, "msg" => $msg, "attendance" => $attendance], 200);
 
     }
 
-    public function destroy(Subscription $subscription) {
+    public function destroy(Attendance $attendance) {
 
         //
 
