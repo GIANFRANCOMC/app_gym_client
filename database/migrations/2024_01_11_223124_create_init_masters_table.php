@@ -199,7 +199,7 @@ return new class extends Migration {
             ["id" => 1, "section_id" => 1, "slug" => "sbc_home-main", "name" => "home-main", "dom_id" => "menu-item-home", "dom_label" => "Inicio", "dom_route" => "home.index"],
             ["id" => 2, "section_id" => 2, "slug" => "sbc_sales-list", "name" => "sales-list", "dom_id" => "menu-item-list-sales", "dom_label" => "Listado", "dom_route" => "sales.index"],
             ["id" => 3, "section_id" => 2, "slug" => "sbc_sales-main", "name" => "sales-main", "dom_id" => "menu-item-create-sales", "dom_label" => "Nuevo", "dom_route" => "sales.create"],
-            ["id" => 4, "section_id" => 3, "slug" => "sbc_trackings-subscriptions", "name" => "trackings-subscriptions", "dom_id" => "menu-item-trackings-subscriptions", "dom_label" => "Suscripciones", "dom_route" => "trackingSubscriptions.index"],
+            ["id" => 4, "section_id" => 3, "slug" => "sbc_trackings-subscriptions", "name" => "trackings-subscriptions", "dom_id" => "menu-item-trackings-subscriptions", "dom_label" => "Suscripciones", "dom_route" => "tracking_subscriptions.index"],
             ["id" => 5, "section_id" => 4, "slug" => "sbc_items-products", "name" => "items-products", "dom_id" => "menu-item-catalogs-products", "dom_label" => "Productos", "dom_route" => "products.index"],
             ["id" => 6, "section_id" => 4, "slug" => "sbc_items-services", "name" => "items-services", "dom_id" => "menu-item-catalogs-services", "dom_label" => "Servicios", "dom_route" => "services.index"],
             ["id" => 7, "section_id" => 4, "slug" => "sbc_items-subscriptions", "name" => "items-subscriptions", "dom_id" => "menu-item-catalogs-subscriptions", "dom_label" => "Suscripciones", "dom_route" => "subscriptions.index"],
@@ -211,7 +211,7 @@ return new class extends Migration {
             ["id" => 13, "section_id" => 8, "slug" => "sbc_configuration-branchs", "name" => "configuration-branchs", "dom_id" => "menu-item-configuration-branches", "dom_label" => "Sucursales", "dom_route" => "branches.index"],
             ["id" => 14, "section_id" => 8, "slug" => "sbc_configuration-users", "name" => "configuration-users", "dom_id" => "menu-item-configuration-users", "dom_label" => "Colaboradores", "dom_route" => "users.index"],
             ["id" => 15, "section_id" => 9, "slug" => "sbc_reports-main", "name" => "reports-main", "dom_id" => "menu-item-reports", "dom_label" => "Reportes", "dom_route" => "reports.index"],
-            ["id" => 16, "section_id" => 3, "slug" => "sbc_trackings-attendances", "name" => "trackings-attendances", "dom_id" => "menu-item-trackings-attendances", "dom_label" => "Asistencia", "dom_route" => "trackingAttendances.index"]
+            ["id" => 16, "section_id" => 3, "slug" => "sbc_trackings-attendances", "name" => "trackings-attendances", "dom_id" => "menu-item-trackings-attendances", "dom_label" => "Asistencia", "dom_route" => "tracking_attendances.index"]
         ]);
 
         DB::table("companies_sub_sections")->insert([
