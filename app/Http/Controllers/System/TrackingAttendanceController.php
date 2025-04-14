@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\TrackingSubscriptions\{CancelTrackingSubscriptionRequest, StoreTrackingSubscriptionRequest, UpdateTrackingSubscriptionRequest};
-use App\Models\System\{Item, Subscription};
+use App\Models\System\{Customer, Item, Subscription};
 
-class TrackingSubscriptionController extends Controller {
+class TrackingAttendanceController extends Controller {
 
     public function initParams(Request $request) {
 
@@ -23,8 +23,8 @@ class TrackingSubscriptionController extends Controller {
 
         if(in_array($page, ["main"])) {
 
-            $config->trackingSubscriptions = new stdClass();
-            $config->trackingSubscriptions->statuses = Subscription::getStatuses();
+            $config->customers = new stdClass();
+            $config->customers->records = Customer::getAll("attendance");
 
         }
 
@@ -71,7 +71,7 @@ class TrackingSubscriptionController extends Controller {
 
     public function index() {
 
-        return view("System/general/tracking_subscriptions/main");
+        return view("System/general/tracking_attendances/main");
 
     }
 
