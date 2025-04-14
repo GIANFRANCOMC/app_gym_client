@@ -29,8 +29,8 @@
                         <span class="ms-2">Buscar</span>
                     </button>
                     <button type="button" class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})">
-                        <i class="fa fa-check"></i>
-                        <span class="ms-2">Marcar asistencia</span>
+                        <i class="fa fa-plus"></i>
+                        <span class="ms-2">Agregar asistencia</span>
                     </button>
                 </template>
             </template>
@@ -70,23 +70,23 @@
                                 <span v-text="legibleFormatDate({dateString: record.start_date, type: 'time'})" class="d-block fw-semibold"></span>
                             </td>
                             <td>
-                                <template v-if="['active'].includes(record?.status)">
-                                    <InputDatetime
-                                        v-model="record.end_date"/>
-                                </template>
-                                <template v-else>
+                                <template v-if="isDefined({value: record.end_date})">
                                     <span v-text="legibleFormatDate({dateString: record.end_date, type: 'date'})" class="d-block fw-semibold"></span>
                                     <span v-text="legibleFormatDate({dateString: record.end_date, type: 'time'})" class="d-block fw-semibold"></span>
+                                </template>
+                                <template v-else>
+                                    <div class="alert alert-warning d-flex align-items-center" role="alert">
+                                        <span class="alert-icon rounded">
+                                            <i class="fa fa-warning"></i>
+                                        </span>
+                                        <span class="ms-3">Pendiente</span>
+                                    </div>
                                 </template>
                             </td>
                             <td>
                                 <button v-if="['active'].includes(record?.status)" type="button" class="btn btn-sm btn-success waves-effect my-1" @click="modalCreateUpdateEntity({record})">
                                     <i class="fa fa-check"></i>
                                     <span class="ms-2">Finalizar</span>
-                                </button>
-                                <button v-if="['active'].includes(record?.status)" type="button" class="btn btn-sm btn-danger waves-effect my-1" @click="modalCreateUpdateEntity({record})">
-                                    <i class="fa fa-times"></i>
-                                    <span class="ms-2">Anular</span>
                                 </button>
                             </td>
                         </tr>
@@ -278,8 +278,7 @@ export default {
 
             return new Promise(resolve => {
 
-                this.forms.entity.createUpdate.data.branch     = this.branches[0];
-                this.forms.entity.createUpdate.data.start_date = Utils.getCurrentDate("datetime");
+                this.lists.entity.filters.branch = this.branches[0];
 
                 resolve(true);
 
@@ -290,7 +289,7 @@ export default {
         async listEntity({url = null}) {
 
             let filters = Utils.cloneJson(this.lists.entity.filters);
-            const filterJson = {filter_by: filters?.filter_by?.code, word: filters.word};
+            const filterJson = {branch_id: filters?.branch?.code};
 
             this.lists.entity.extras.loading = true;
             this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: filterJson}))?.data;
@@ -319,7 +318,8 @@ export default {
 
             }else {
 
-                this.forms.entity.createUpdate.data.branch = this.branches[0];
+                this.forms.entity.createUpdate.data.branch     = this.branches[0];
+                this.forms.entity.createUpdate.data.start_date = Utils.getCurrentDate("datetime");
 
             }
 
@@ -351,6 +351,7 @@ export default {
 
                 if(Requests.valid({result: createUpdate})) {
 
+                    Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
                     Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
                     Alerts.swals({show: false});
 

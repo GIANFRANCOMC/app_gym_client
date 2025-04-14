@@ -11,6 +11,7 @@ use stdClass;
 use App\Http\Requests\System\TrackingSubscriptions\{CancelTrackingSubscriptionRequest, StoreTrackingSubscriptionRequest, UpdateTrackingSubscriptionRequest};
 use App\Models\System\{Attendance, Branch, Customer, Subscription};
 use Carbon\Carbon;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class TrackingAttendanceController extends Controller {
 
@@ -43,9 +44,18 @@ class TrackingAttendanceController extends Controller {
 
         $userAuth = Auth::user();
 
-        $list = null;
+        $branch = Branch::where("id", $request->branch_id)
+                        ->where("company_id", $userAuth->company_id)
+                        ->first();
+
+        if(!Utilities::isDefined($branch)) {
+
+            return new LengthAwarePaginator([], 0, 1, 1, ["path" => ""]);
+
+        }
 
         $list = Attendance::where("company_id", $userAuth->company_id)
+                          ->where("branch_id", $branch->id)
                           ->orderBy("id", "DESC")
                           ->with(["branch", "customer"])
                           ->paginate($request->per_page ?? Utilities::$per_page_max);
@@ -77,12 +87,24 @@ class TrackingAttendanceController extends Controller {
                                      ->where("customer_id", $request->customer_id)
                                      ->where("start_date", "<=", $request->start_date)
                                      ->where("end_date", ">=", $request->start_date)
-                                     ->where("status", "active")
+                                     ->where("status", "!=", "canceled")
                                      ->get();
 
         if(count($subscriptions) === 0) {
 
             return response()->json(["bool" => false, "msg" => "El cliente seleccionado no cuenta con una suscripción vigente."], 200);
+
+        }
+
+        $attendanceActive = Attendance::where("company_id", $userAuth->company_id)
+                                      ->where("branch_id", $request->branch_id)
+                                      ->where("customer_id", $request->customer_id)
+                                      ->where("status", "active")
+                                      ->first();
+
+        if(Utilities::isDefined($attendanceActive)) {
+
+            return response()->json(["bool" => false, "msg" => "El cliente seleccionado cuenta con un registro de asistencia activo."], 200);
 
         }
 
@@ -124,7 +146,31 @@ class TrackingAttendanceController extends Controller {
 
     public function update(Request $request, $id) { // UpdateTrackingSubscriptionRequest
 
-        //
+        $userAuth = Auth::user();
+
+        $attendance = Attendance::where("id", $id)
+                                ->where("company_id", $userAuth->company_id)
+                                ->where("status", "active")
+                                ->first();
+
+        if(Utilities::isDefined($attendance)) {
+
+            DB::transaction(function() use($request, $userAuth, &$attendance) {
+
+                $attendance->end_date   = $request->end_date;
+                $attendance->status     = "finalized";
+                $attendance->updated_at = now();
+                $attendance->updated_by = $userAuth->id ?? null;
+                $attendance->save();
+
+            });
+
+        }
+
+        $bool = Utilities::isDefined($attendance);
+        $msg  = $bool ? "Asistencia editado correctamente." : "No se ha podido editar la asistencia.";
+
+        return response()->json(["bool" => $bool, "msg" => $msg, "attendance" => $attendance], 200);
 
     }
 
