@@ -3,7 +3,7 @@
 use App\Http\Controllers\System\{TrackingSubscriptionController};
 use Illuminate\Support\Facades\Route;
 
-$entity = "trackingSubscriptions";
+$entity = "tracking_subscriptions";
 
 Route::get('',               [TrackingSubscriptionController::class, 'index'])->name("$entity.index");
 Route::get('/initParams',    [TrackingSubscriptionController::class, 'initParams'])->name("$entity.initParams");

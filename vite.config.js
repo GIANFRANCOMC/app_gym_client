@@ -24,7 +24,8 @@ export default defineConfig({
                 'resources/js/System/Pages/services/main.js',
                 'resources/js/System/Pages/stocks_management/main.js',
                 'resources/js/System/Pages/subscriptions/main.js',
-                'resources/js/System/Pages/trackingSubscriptions/main.js',
+                'resources/js/System/Pages/tracking_subscriptions/main.js',
+                'resources/js/System/Pages/tracking_attendances/main.js',
                 'resources/js/System/Pages/users/main.js',
 
 
