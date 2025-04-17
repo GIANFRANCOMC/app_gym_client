@@ -27,17 +27,27 @@
             lg="4"/>
     </div>
     <div class="row g-3 mb-4">
-        <div class="col-md col-lg-4 col-xl-4">
+        <div class="col-md col-lg-3 col-xl-3">
             <div class="form-check custom-option custom-option-basic bg-white">
                 <label class="form-check-label custom-option-content">
-                    <input class="form-check-input mt-2" type="radio" value="active" v-model="lists.entity.filters.status" @change="listEntity({})">
+                    <input class="form-check-input mt-2" type="radio" value="" v-model="lists.entity.filters.status" @change="listEntity({})">
                     <span class="custom-option-body fs-5">
-                        <span class="ms-4 fw-bold text-dark">Activos</span>
+                        <span class="ms-4 fw-bold text-dark">Todos</span>
                     </span>
                 </label>
             </div>
         </div>
-        <div class="col-md col-lg-4 col-xl-4">
+        <div class="col-md col-lg-3 col-xl-3">
+            <div class="form-check custom-option custom-option-basic bg-white">
+                <label class="form-check-label custom-option-content">
+                    <input class="form-check-input mt-2" type="radio" value="active" v-model="lists.entity.filters.status" @change="listEntity({})">
+                    <span class="custom-option-body fs-5">
+                        <span class="ms-4 fw-bold text-primary">Activos</span>
+                    </span>
+                </label>
+            </div>
+        </div>
+        <div class="col-md col-lg-3 col-xl-3">
             <div class="form-check custom-option custom-option-basic bg-white">
                 <label class="form-check-label custom-option-content">
                     <input class="form-check-input mt-2" type="radio" value="finalized" v-model="lists.entity.filters.status" @change="listEntity({})">
@@ -47,7 +57,7 @@
                 </label>
             </div>
         </div>
-        <div class="col-md col-lg-4 col-xl-4">
+        <div class="col-md col-lg-3 col-xl-3">
             <div class="form-check custom-option custom-option-basic bg-white">
                 <label class="form-check-label custom-option-content">
                     <input class="form-check-input mt-2" type="radio" value="canceled" v-model="lists.entity.filters.status" @change="listEntity({})">
@@ -58,19 +68,17 @@
             </div>
         </div>
     </div>
-    <div class="row align-items-end justify-content-end g-3 mb-4">
+    <div v-if="!lists.entity.extras.loading" class="row align-items-end justify-content-end g-3 mb-4">
         <InputSlot
             hasDiv
             :isInputGroup="false"
             xl="auto"
             lg="auto">
             <template v-slot:input>
-                <template v-if="!lists.entity.extras.loading">
-                    <button type="button" class="btn btn-primary waves-effect" @click="modalCreateUpdateEntity({type: 'store'})">
-                        <i class="fa fa-plus"></i>
-                        <span class="ms-2">Agregar asistencia</span>
-                    </button>
-                </template>
+                <button type="button" class="btn btn-primary waves-effect" @click="modalCreateUpdateEntity({type: 'store'})">
+                    <i class="fa fa-plus"></i>
+                    <span class="ms-2">Agregar asistencia</span>
+                </button>
             </template>
         </InputSlot>
     </div>
