@@ -72,7 +72,13 @@
                     hasTextBottom
                     :textBottomInfo="forms.entity.createUpdate.errors?.email"
                     xl="6"
-                    lg="6"/>
+                    lg="6">
+                    <template v-slot:inputGroupPrepend>
+                        <a href="javascript:void(0)" class="btn btn-icon btn-label-dark waves-effect">
+                            <i class="fa fa-envelope fs-5"></i>
+                        </a>
+                    </template>
+                </InputText>
                 <InputText
                     v-model="forms.entity.createUpdate.data.token_api_misc"
                     hasDiv
@@ -81,7 +87,50 @@
                     :textBottomInfo="forms.entity.createUpdate.errors?.token_api_misc"
                     xl="6"
                     lg="6"/>
+                <InputText
+                    v-model="forms.entity.createUpdate.data.facebook"
+                    hasDiv
+                    title="Facebook"
+                    hasTextBottom
+                    :textBottomInfo="forms.entity.createUpdate.errors?.facebook"
+                    xl="6"
+                    lg="6">
+                    <template v-slot:inputGroupPrepend>
+                        <a href="javascript:void(0)" class="btn btn-icon btn-label-info waves-effect">
+                            <i class="tf-icons fa-brands fa-facebook-f fs-5"></i>
+                        </a>
+                    </template>
+                </InputText>
+                <InputText
+                    v-model="forms.entity.createUpdate.data.instagram"
+                    hasDiv
+                    title="Instagram"
+                    hasTextBottom
+                    :textBottomInfo="forms.entity.createUpdate.errors?.instagram"
+                    xl="6"
+                    lg="6">
+                    <template v-slot:inputGroupPrepend>
+                        <a href="javascript:void(0)" class="btn btn-icon btn-label-danger waves-effect">
+                            <i class="tf-icons fa-brands fa-instagram fs-5"></i>
+                        </a>
+                    </template>
+                </InputText>
+                <InputText
+                    v-model="forms.entity.createUpdate.data.whatsapp"
+                    hasDiv
+                    title="Whatsapp"
+                    hasTextBottom
+                    :textBottomInfo="forms.entity.createUpdate.errors?.whatsapp"
+                    xl="6"
+                    lg="6">
+                    <template v-slot:inputGroupPrepend>
+                        <a href="javascript:void(0)" class="btn btn-icon btn-label-success waves-effect">
+                            <i class="tf-icons fa-brands fa-whatsapp fs-5"></i>
+                        </a>
+                    </template>
+                </InputText>
                 <InputSlot
+                    v-if="false"
                     hasDiv
                     title="Estado"
                     isRequired
@@ -162,6 +211,9 @@ export default {
                             telephone: "",
                             email: "",
                             token_api_misc: "",
+                            facebook: "",
+                            instagram: "",
+                            whatsapp: "",
                             status: null
                         },
                         errors: {}
@@ -215,6 +267,9 @@ export default {
                 this.forms.entity.createUpdate.data.telephone              = company?.telephone;
                 this.forms.entity.createUpdate.data.email                  = company?.email;
                 this.forms.entity.createUpdate.data.token_api_misc         = company?.token_api_misc;
+                this.forms.entity.createUpdate.data.facebook               = company?.facebook;
+                this.forms.entity.createUpdate.data.instagram              = company?.instagram;
+                this.forms.entity.createUpdate.data.whatsapp               = company?.whatsapp;
                 this.forms.entity.createUpdate.data.status                 = status;
 
                 resolve(true);

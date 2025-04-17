@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\Companies\{StoreCompanyRequest, UpdateCompanyRequest};
-use App\Models\System\{Company, IdentityDocumentType};
+use App\Models\System\{Company, CompanySocialMedia, IdentityDocumentType};
 
 class CompanyController extends Controller {
 
@@ -28,8 +28,15 @@ class CompanyController extends Controller {
             $config->companies = new stdClass();
             $config->companies->statuses = Company::getStatuses();
 
+            $company = $userAuth->company;
+            $socialsMedia = $company->socialsMedia;
+
+            $company->facebook  = optional($socialsMedia->where("type", "facebook")->first())->link;
+            $company->instagram = optional($socialsMedia->where("type", "instagram")->first())->link;
+            $company->whatsapp  = optional($socialsMedia->where("type", "whatsapp")->first())->link;
+
             $config->company = new stdClass();
-            $config->company->records = [$userAuth->company];
+            $config->company->records = [$company];
 
             $config->identityDocumentTypes = new stdClass();
             $config->identityDocumentTypes->records = IdentityDocumentType::getAll("company");
@@ -102,6 +109,81 @@ class CompanyController extends Controller {
                 $company->updated_at                = now();
                 $company->updated_by                = $userAuth->id ?? null;
                 $company->save();
+
+                $facebook = CompanySocialMedia::where("company_id", $company->id)
+                                              ->where("type", "facebook")
+                                              ->where("status", "active")
+                                              ->first();
+
+                if(Utilities::isDefined($facebook)) {
+
+                    $facebook->link       = $request->facebook ?? "";
+                    $facebook->updated_at = now();
+                    $facebook->updated_by = $userAuth->id ?? null;
+                    $facebook->save();
+
+                }else {
+
+                    $companySocialMedia = new CompanySocialMedia();
+                    $companySocialMedia->company_id = $company->id;
+                    $companySocialMedia->type       = "facebook";
+                    $companySocialMedia->link       = $request->facebook ?? "";
+                    $companySocialMedia->status     = "active";
+                    $companySocialMedia->created_at = now();
+                    $companySocialMedia->created_by = $userAuth->id ?? null;
+                    $companySocialMedia->save();
+
+                }
+
+                $instagram = CompanySocialMedia::where("company_id", $company->id)
+                                               ->where("type", "instagram")
+                                               ->where("status", "active")
+                                               ->first();
+
+                if(Utilities::isDefined($instagram)) {
+
+                    $instagram->link       = $request->instagram ?? "";
+                    $instagram->updated_at = now();
+                    $instagram->updated_by = $userAuth->id ?? null;
+                    $instagram->save();
+
+                }else {
+
+                    $companySocialMedia = new CompanySocialMedia();
+                    $companySocialMedia->company_id = $company->id;
+                    $companySocialMedia->type       = "instagram";
+                    $companySocialMedia->link       = $request->instagram ?? "";
+                    $companySocialMedia->status     = "active";
+                    $companySocialMedia->created_at = now();
+                    $companySocialMedia->created_by = $userAuth->id ?? null;
+                    $companySocialMedia->save();
+
+                }
+
+                $whatsapp = CompanySocialMedia::where("company_id", $company->id)
+                                              ->where("type", "whatsapp")
+                                              ->where("status", "active")
+                                              ->first();
+
+                if(Utilities::isDefined($whatsapp)) {
+
+                    $whatsapp->link       = $request->whatsapp ?? "";
+                    $whatsapp->updated_at = now();
+                    $whatsapp->updated_by = $userAuth->id ?? null;
+                    $whatsapp->save();
+
+                }else {
+
+                    $companySocialMedia = new CompanySocialMedia();
+                    $companySocialMedia->company_id = $company->id;
+                    $companySocialMedia->type       = "whatsapp";
+                    $companySocialMedia->link       = $request->whatsapp ?? "";
+                    $companySocialMedia->status     = "active";
+                    $companySocialMedia->created_at = now();
+                    $companySocialMedia->created_by = $userAuth->id ?? null;
+                    $companySocialMedia->save();
+
+                }
 
             });
 
