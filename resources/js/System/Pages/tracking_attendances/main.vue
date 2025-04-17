@@ -264,7 +264,7 @@ export default {
                     filters: {
                         branch: null,
                         start_date: "",
-                        status: "active"
+                        status: ""
                     },
                     records: {
                         total: 0
