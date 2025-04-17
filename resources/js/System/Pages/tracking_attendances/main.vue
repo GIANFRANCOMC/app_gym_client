@@ -68,7 +68,7 @@
             </div>
         </div>
     </div>
-    <div v-if="!lists.entity.extras.loading" class="row align-items-end justify-content-end g-3 mb-4">
+    <div v-if="!lists.entity.extras.loading" class="row align-items-end justify-content-center g-3 mb-4">
         <InputSlot
             hasDiv
             :isInputGroup="false"
