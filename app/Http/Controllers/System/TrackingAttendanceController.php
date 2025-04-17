@@ -54,7 +54,16 @@ class TrackingAttendanceController extends Controller {
 
         }
 
-        $list = Attendance::where("company_id", $userAuth->company_id)
+        $list = Attendance::when(Utilities::isDefined($request->status), function($query) use($request) {
+
+                            $query->where(function($query) use($request) {
+
+                                $query->where("status", $request->status);
+
+                            });
+
+                          })
+                          ->where("company_id", $userAuth->company_id)
                           ->where("branch_id", $branch->id)
                           ->whereDate("created_at", $request->start_date ?? date("Y-m-d"))
                           ->orderBy("id", "DESC")

@@ -7,8 +7,8 @@
             hasDiv
             title="Sucursal"
             :titleClass="[config.forms.classes.title]"
-            xl="12"
-            lg="12">
+            xl="7"
+            lg="8">
             <template v-slot:input>
                 <v-select
                     v-model="lists.entity.filters.branch"
@@ -19,11 +19,46 @@
         </InputSlot>
         <InputDate
             v-model="lists.entity.filters.start_date"
+            @change="listEntity({})"
             hasDiv
             title="Fecha de ingreso"
             :titleClass="[config.forms.classes.title]"
             xl="5"
             lg="4"/>
+    </div>
+    <div class="row g-3 mb-4">
+        <div class="col-md col-lg-4 col-xl-4">
+            <div class="form-check custom-option custom-option-basic bg-white">
+                <label class="form-check-label custom-option-content">
+                    <input class="form-check-input mt-2" type="radio" value="active" v-model="lists.entity.filters.status" @change="listEntity({})">
+                    <span class="custom-option-body fs-5">
+                        <span class="ms-4 fw-bold text-dark">Activos</span>
+                    </span>
+                </label>
+            </div>
+        </div>
+        <div class="col-md col-lg-4 col-xl-4">
+            <div class="form-check custom-option custom-option-basic bg-white">
+                <label class="form-check-label custom-option-content">
+                    <input class="form-check-input mt-2" type="radio" value="finalized" v-model="lists.entity.filters.status" @change="listEntity({})">
+                    <span class="custom-option-body fs-5">
+                        <span class="ms-4 fw-bold text-success">Finalizados</span>
+                    </span>
+                </label>
+            </div>
+        </div>
+        <div class="col-md col-lg-4 col-xl-4">
+            <div class="form-check custom-option custom-option-basic bg-white">
+                <label class="form-check-label custom-option-content">
+                    <input class="form-check-input mt-2" type="radio" value="canceled" v-model="lists.entity.filters.status" @change="listEntity({})">
+                    <span class="custom-option-body fs-5">
+                        <span class="ms-4 fw-bold text-danger">Anulados</span>
+                    </span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row align-items-end justify-content-end g-3 mb-4">
         <InputSlot
             hasDiv
             :isInputGroup="false"
@@ -31,11 +66,7 @@
             lg="auto">
             <template v-slot:input>
                 <template v-if="!lists.entity.extras.loading">
-                    <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})">
-                        <i class="fa fa-search"></i>
-                        <span class="ms-2">Buscar</span>
-                    </button>
-                    <button type="button" class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({type: 'store'})">
+                    <button type="button" class="btn btn-primary waves-effect" @click="modalCreateUpdateEntity({type: 'store'})">
                         <i class="fa fa-plus"></i>
                         <span class="ms-2">Agregar asistencia</span>
                     </button>
@@ -209,7 +240,7 @@ export default {
         if(initParams && initOthers) {
 
             Alerts.swals({show: false});
-            this.listEntity({});
+            // this.listEntity({});
 
         }
 
@@ -223,7 +254,9 @@ export default {
                         route: Requests.config({entity: "tracking_attendances", type: "list"})
                     },
                     filters: {
-                        branch: null
+                        branch: null,
+                        start_date: "",
+                        status: "active"
                     },
                     records: {
                         total: 0
@@ -323,7 +356,7 @@ export default {
         async listEntity({url = null}) {
 
             let filters = Utils.cloneJson(this.lists.entity.filters);
-            const filterJson = {branch_id: filters?.branch?.code, start_date: filters?.start_date};
+            const filterJson = {branch_id: filters?.branch?.code, start_date: filters?.start_date, status: filters?.status};
 
             this.lists.entity.extras.loading = true;
             this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: filterJson}))?.data;
@@ -635,6 +668,16 @@ export default {
     },
     watch: {
         "lists.entity.filters.branch": function(newValue, oldValue) {
+
+            this.listEntity({});
+
+        },
+        "lists.entity.filters.start_date": function(newValue, oldValue) {
+
+            // this.listEntity({});
+
+        },
+        "lists.entity.filters.status": function(newValue, oldValue) {
 
             // this.listEntity({});
 
