@@ -56,6 +56,7 @@ class TrackingAttendanceController extends Controller {
 
         $list = Attendance::where("company_id", $userAuth->company_id)
                           ->where("branch_id", $branch->id)
+                          ->whereDate("created_at", $request->start_date ?? date("Y-m-d"))
                           ->orderBy("id", "DESC")
                           ->with(["branch", "customer"])
                           ->paginate($request->per_page ?? Utilities::$per_page_max);
@@ -76,7 +77,7 @@ class TrackingAttendanceController extends Controller {
 
     }
 
-    public function store(Request $request) { // StoreTrackingSubscriptionRequest
+    public function store(Request $request) { // StoreTrackingAttendanceRequest
 
         $userAuth = Auth::user();
 
@@ -104,7 +105,7 @@ class TrackingAttendanceController extends Controller {
 
         if(Utilities::isDefined($attendanceActive)) {
 
-            return response()->json(["bool" => false, "msg" => "El cliente seleccionado cuenta con un registro de asistencia activo."], 200);
+            return response()->json(["bool" => false, "msg" => "El cliente seleccionado cuenta con un registro de asistencia activa."], 200);
 
         }
 
@@ -144,9 +145,15 @@ class TrackingAttendanceController extends Controller {
 
     }
 
-    public function update(Request $request, $id) { // UpdateTrackingSubscriptionRequest
+    public function update(Request $request, $id) { // UpdateTrackingAttendanceRequest
 
         $userAuth = Auth::user();
+
+        if(!Utilities::isDefined($request->end_date)) {
+
+            return response()->json(["bool" => false, "msg" => "No se ha podido finalizar la asistencia, debe de diligenciar la salida."], 200);
+
+        }
 
         $attendance = Attendance::where("id", $id)
                                 ->where("company_id", $userAuth->company_id)
@@ -168,7 +175,7 @@ class TrackingAttendanceController extends Controller {
         }
 
         $bool = Utilities::isDefined($attendance);
-        $msg  = $bool ? "Asistencia editado correctamente." : "No se ha podido editar la asistencia.";
+        $msg  = $bool ? "Asistencia finalizada correctamente." : "No se ha podido finalizar la asistencia.";
 
         return response()->json(["bool" => $bool, "msg" => $msg, "attendance" => $attendance], 200);
 

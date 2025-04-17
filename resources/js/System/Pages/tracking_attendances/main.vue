@@ -7,8 +7,8 @@
             hasDiv
             title="Sucursal"
             :titleClass="[config.forms.classes.title]"
-            xl="6"
-            lg="7">
+            xl="12"
+            lg="12">
             <template v-slot:input>
                 <v-select
                     v-model="lists.entity.filters.branch"
@@ -17,18 +17,25 @@
                     :clearable="false"/>
             </template>
         </InputSlot>
+        <InputDate
+            v-model="lists.entity.filters.start_date"
+            hasDiv
+            title="Fecha de ingreso"
+            :titleClass="[config.forms.classes.title]"
+            xl="5"
+            lg="4"/>
         <InputSlot
             hasDiv
             :isInputGroup="false"
-            xl="6"
-            lg="5">
+            xl="auto"
+            lg="auto">
             <template v-slot:input>
                 <template v-if="!lists.entity.extras.loading">
                     <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})">
                         <i class="fa fa-search"></i>
                         <span class="ms-2">Buscar</span>
                     </button>
-                    <button type="button" class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})">
+                    <button type="button" class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({type: 'store'})">
                         <i class="fa fa-plus"></i>
                         <span class="ms-2">Agregar asistencia</span>
                     </button>
@@ -84,7 +91,7 @@
                                 </template>
                             </td>
                             <td>
-                                <button v-if="['active'].includes(record?.status)" type="button" class="btn btn-sm btn-success waves-effect my-1" @click="modalCreateUpdateEntity({record})">
+                                <button v-if="['active'].includes(record?.status)" type="button" class="btn btn-sm btn-success waves-effect my-1" @click="modalCreateUpdateEntity({record, type: 'finalized'})">
                                     <i class="fa fa-check"></i>
                                     <span class="ms-2">Finalizar</span>
                                 </button>
@@ -111,7 +118,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.createUpdate.extras.modals.default.titles[isDefined({value: forms.entity.createUpdate.data?.id}) ? 'update' : 'store']"></h5>
+                    <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.createUpdate.extras.modals.default.titles[forms.entity.createUpdate.extras.modals.default.type]"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -135,6 +142,7 @@
                         <InputSlot
                             hasDiv
                             title="Cliente"
+                            isRequired
                             xl="12"
                             lg="12">
                             <template v-slot:input>
@@ -167,9 +175,9 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" :class="['btn waves-effect', isDefined({value: forms.entity.createUpdate.data?.id}) ? 'btn-warning' : 'btn-primary']" @click="createUpdateEntity()">
-                        <i class="fa fa-save"></i>
-                        <span class="ms-2">Guardar asistencia</span>
+                    <button type="button" :class="['btn waves-effect', forms.entity.createUpdate.extras.modals.default.config.buttons[forms.entity.createUpdate.extras.modals.default.type]]" @click="createUpdateEntity()">
+                        <i :class="forms.entity.createUpdate.extras.modals.default.config.icons[forms.entity.createUpdate.extras.modals.default.type]"></i>
+                        <span class="ms-2" v-text="forms.entity.createUpdate.extras.modals.default.config.labels[forms.entity.createUpdate.extras.modals.default.type]"></span>
                     </button>
                 </div>
             </div>
@@ -227,9 +235,28 @@ export default {
                             modals: {
                                 default: {
                                     id: Utils.uuid(),
+                                    type: "",
                                     titles: {
                                         store: "Agregar",
-                                        update: "Editar"
+                                        update: "Editar",
+                                        finalized: "Finalizar"
+                                    },
+                                    config: {
+                                        buttons: {
+                                            store: "btn-primary",
+                                            update: "btn-warning",
+                                            finalized: "btn-success"
+                                        },
+                                        icons: {
+                                            store: "fa fa-plus",
+                                            update: "fa fa-save",
+                                            finalized: "fa fa-check"
+                                        },
+                                        labels: {
+                                            store: "Agregar asistencia",
+                                            update: "Editar asistencia",
+                                            finalized: "Finalizar asistencia"
+                                        }
                                     }
                                 }
                             }
@@ -237,9 +264,9 @@ export default {
                         data: {
                             id: null,
                             branch: null,
+                            customer: null,
                             start_date: "",
                             end_date: "",
-                            customer: null,
                             status: null
                         },
                         errors: {}
@@ -278,7 +305,8 @@ export default {
 
             return new Promise(resolve => {
 
-                this.lists.entity.filters.branch = this.branches[0];
+                this.lists.entity.filters.branch     = this.branches[0];
+                this.lists.entity.filters.start_date = Utils.getCurrentDate("date");
 
                 resolve(true);
 
@@ -289,7 +317,7 @@ export default {
         async listEntity({url = null}) {
 
             let filters = Utils.cloneJson(this.lists.entity.filters);
-            const filterJson = {branch_id: filters?.branch?.code};
+            const filterJson = {branch_id: filters?.branch?.code, start_date: filters?.start_date};
 
             this.lists.entity.extras.loading = true;
             this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: filterJson}))?.data;
@@ -297,9 +325,11 @@ export default {
 
         },
         // Forms
-        modalCreateUpdateEntity({record = null}) {
+        modalCreateUpdateEntity({record = null, type = "create"}) {
 
             const functionName = "modalCreateUpdateEntity";
+
+            this.forms.entity.createUpdate.extras.modals.default.type = type;
 
             // Alerts.swals({});
             this.clearForm({functionName});
@@ -307,12 +337,12 @@ export default {
 
             if(this.isDefined({value: record})) {
 
-                const branch = record?.branch;
-                const customer = record?.customer;
+                const branch   = this.branches.filter(e => e.code === record?.branch?.id)[0],
+                      customer = this.customers.filter(e => e.code === record?.customer?.id)[0];
 
                 this.forms.entity.createUpdate.data.id         = record?.id;
-                this.forms.entity.createUpdate.data.branch     = {code: branch?.id, label: branch.name, data: branch};
-                this.forms.entity.createUpdate.data.customer   = {code: customer?.id, label: customer.name, data: customer};
+                this.forms.entity.createUpdate.data.branch     = branch;
+                this.forms.entity.createUpdate.data.customer   = customer;
                 this.forms.entity.createUpdate.data.start_date = record.start_date;
                 this.forms.entity.createUpdate.data.end_date   = this.isDefined({value: record.end_date}) ? record.end_date : Utils.getCurrentDate("datetime");
 
@@ -336,7 +366,7 @@ export default {
 
             let form = Utils.cloneJson(this.forms.entity.createUpdate.data);
 
-            const validateForm = this.validateForm({functionName, form, extras: {type: "descriptive"}});
+            const validateForm = this.validateForm({functionName, form, extras: {type: "descriptive", modal: this.forms.entity.createUpdate.extras.modals.default}});
 
             if(validateForm?.bool) {
 
@@ -351,7 +381,12 @@ export default {
 
                 if(Requests.valid({result: createUpdate})) {
 
-                    Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
+                    if(["finalized"].includes(this.forms.entity.createUpdate.extras.modals.default.type)) {
+
+                        Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
+
+                    }
+
                     Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
                     Alerts.swals({show: false});
 
@@ -370,7 +405,6 @@ export default {
 
                 // this.formErrors({functionName, type: "set", errors: validateForm});
                 // Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
-                // Alerts.swals({show: false});
                 Alerts.generateAlert({messages: Utils.getErrors({errors: validateForm}), msgContent: `<div class="fw-semibold mb-2">${this.config.messages.errorValidate}</div>`});
 
             }
@@ -383,11 +417,18 @@ export default {
                 case "modalCreateUpdateEntity":
                 case "createUpdateEntity":
                     this.forms.entity.createUpdate.data.id         = null;
-                    this.forms.entity.createUpdate.data.branch     = null;
-                    this.forms.entity.createUpdate.data.start_date = "";
-                    this.forms.entity.createUpdate.data.end_date   = "";
+                    // this.forms.entity.createUpdate.data.branch     = null;
                     this.forms.entity.createUpdate.data.customer   = null;
+                    // this.forms.entity.createUpdate.data.start_date = "";
+                    this.forms.entity.createUpdate.data.end_date   = "";
                     this.forms.entity.createUpdate.data.status     = null;
+
+                    if(["finalized"].includes(this.forms.entity.createUpdate.extras.modals.default.type)) {
+
+                        this.forms.entity.createUpdate.data.branch     = null;
+                        this.forms.entity.createUpdate.data.start_date = "";
+
+                    }
                     break;
             }
 
@@ -409,12 +450,26 @@ export default {
 
             if(["createUpdateEntity"].includes(functionName)) {
 
+                result.id         = [];
                 result.branch     = [];
                 result.customer   = [];
                 result.start_date = [];
                 result.end_date   = [];
 
                 const isDescriptive = ["descriptive"].includes(extras?.type);
+
+                const isFinalized = ["finalized"].includes(extras?.modal?.type);
+
+                if(isFinalized) {
+
+                    if(!this.isDefined({value: form?.id})) {
+
+                        result.id.push(`${isDescriptive ? "Registro:" : ""} ${this.config.forms.errors.labels.required}`);
+                        result.bool = false;
+
+                    }
+
+                }
 
                 if(!this.isDefined({value: form?.branch})) {
 
@@ -437,12 +492,16 @@ export default {
 
                 }
 
-                /* if(!this.isDefined({value: form?.end_date})) {
+                if(isFinalized) {
 
-                    result.end_date.push(`${isDescriptive ? "Salida:" : ""} ${this.config.forms.errors.labels.required}`);
-                    result.bool = false;
+                    if(!this.isDefined({value: form?.end_date})) {
 
-                } */
+                        result.end_date.push(`${isDescriptive ? "Salida:" : ""} ${this.config.forms.errors.labels.required}`);
+                        result.bool = false;
+
+                    }
+
+                }
 
             }
 
@@ -484,7 +543,7 @@ export default {
         }
     },
     watch: {
-        "lists.entity.filters.filter_by": function(newValue, oldValue) {
+        "lists.entity.filters.branch": function(newValue, oldValue) {
 
             // this.listEntity({});
 
