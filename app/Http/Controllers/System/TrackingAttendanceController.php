@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
-use App\Http\Requests\System\TrackingSubscriptions\{CancelTrackingSubscriptionRequest, StoreTrackingSubscriptionRequest, UpdateTrackingSubscriptionRequest};
+use App\Http\Requests\System\TrackingAttendances\{CancelTrackingAttendanceRequest};
 use App\Models\System\{Attendance, Branch, Customer, Subscription};
 use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -181,13 +181,13 @@ class TrackingAttendanceController extends Controller {
 
     }
 
-    public function cancel(CancelTrackingSubscriptionRequest $request, $id) {
+    public function cancel(CancelTrackingAttendanceRequest $request, $id) {
 
         $userAuth = Auth::user();
 
         $attendance = Attendance::findOrFail($id);
 
-        if(Utilities::isDefined($attendance) && in_array($attendance->status, ["active"])) {
+        if(Utilities::isDefined($attendance) && in_array($attendance->status, ["finalized"])) {
 
             if(Utilities::isDefined($attendance) && $attendance->company_id == $userAuth->company_id) {
 

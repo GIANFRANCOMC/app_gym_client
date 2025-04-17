@@ -300,7 +300,6 @@ export default {
                     html: `<span class="d-block my-1">¿Desea anular la venta suscripción del cliente <b>${form.customer?.name}</b>?</span>
                            <div class="form-group text-start mt-2">
                                 <label class="form-label colon-at-end">Motivo</label>
-                                <label class="text-danger ms-1 fw-bold">*</label>
                                 <div class="input-group">
                                     <textarea type="text" class="form-control no-resize" maxlength="999" id="motiveId"></textarea>
                                 </div>
@@ -311,7 +310,7 @@ export default {
                     confirmButtonText: "Sí, anular",
                     cancelButtonText: "Cancelar",
                     customClass: {
-                        confirmButton: "btn btn-primary waves-effect",
+                        confirmButton: "btn btn-danger waves-effect",
                         cancelButton: "btn btn-secondary waves-effect ms-3"
                     }
                 }).then(async function(result) {

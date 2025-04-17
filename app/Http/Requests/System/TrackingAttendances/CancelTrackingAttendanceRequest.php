@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\System\TrackingSubscriptions;
+namespace App\Http\Requests\System\TrackingAttendances;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CancelTrackingSubscriptionRequest extends FormRequest {
+class CancelTrackingAttendanceRequest extends FormRequest {
 
     /**
      * Determine if the user is authorized to make this request.

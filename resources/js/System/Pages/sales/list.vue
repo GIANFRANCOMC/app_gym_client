@@ -348,7 +348,7 @@ export default {
                     confirmButtonText: "Sí, anular",
                     cancelButtonText: "Cancelar",
                     customClass: {
-                        confirmButton: "btn btn-primary waves-effect",
+                        confirmButton: "btn btn-danger waves-effect",
                         cancelButton: "btn btn-secondary waves-effect ms-3"
                     }
                 }).then(async function(result) {

@@ -82,18 +82,20 @@
                                     <span v-text="legibleFormatDate({dateString: record.end_date, type: 'time'})" class="d-block fw-semibold"></span>
                                 </template>
                                 <template v-else>
-                                    <div class="alert alert-warning d-flex align-items-center" role="alert">
-                                        <span class="alert-icon rounded">
-                                            <i class="fa fa-warning"></i>
-                                        </span>
-                                        <span class="ms-3">Pendiente</span>
-                                    </div>
+                                    <span>-</span>
                                 </template>
                             </td>
                             <td>
+                                <template v-if="['inactive', 'canceled'].includes(record?.status)">
+                                    <span class="fw-bold" v-text="record.formatted_status"></span>
+                                </template>
                                 <button v-if="['active'].includes(record?.status)" type="button" class="btn btn-sm btn-success waves-effect my-1" @click="modalCreateUpdateEntity({record, type: 'finalized'})">
                                     <i class="fa fa-check"></i>
                                     <span class="ms-2">Finalizar</span>
+                                </button>
+                                <button v-if="['finalized'].includes(record?.status)" type="button" class="btn btn-sm btn-danger waves-effect my-1" @click="modalCreateUpdateEntity({record, type: 'canceled'})">
+                                    <i class="fa fa-times"></i>
+                                    <span class="ms-2">Anular</span>
                                 </button>
                             </td>
                         </tr>
@@ -146,7 +148,7 @@
                             xl="12"
                             lg="12">
                             <template v-slot:input>
-                                <span v-if="isDefined({value: forms.entity.createUpdate.data?.id})" v-text="forms.entity.createUpdate.data?.customer?.data?.name" class="fw-semibold"></span>
+                                <span v-if="isDefined({value: forms.entity.createUpdate.data?.id})" v-text="forms.entity.createUpdate.data?.customer?.label" class="fw-semibold"></span>
                                 <v-select
                                     v-else
                                     v-model="forms.entity.createUpdate.data.customer"
@@ -160,7 +162,7 @@
                             hasDiv
                             title="Ingreso"
                             isRequired
-                            :disabled="isDefined({value: forms.entity.createUpdate.data?.id})"
+                            :disabled="['canceled'].includes(forms.entity.createUpdate.extras.modals.default.type) || isDefined({value: forms.entity.createUpdate.data?.id})"
                             xl="6"
                             lg="6"/>
                         <InputDatetime
@@ -168,14 +170,14 @@
                             hasDiv
                             title="Salida"
                             :isRequired="isDefined({value: forms.entity.createUpdate.data?.id})"
-                            :disabled="!isDefined({value: forms.entity.createUpdate.data?.id})"
+                            :disabled="['canceled'].includes(forms.entity.createUpdate.extras.modals.default.type) || !isDefined({value: forms.entity.createUpdate.data?.id})"
                             xl="6"
                             lg="6"/>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" :class="['btn waves-effect', forms.entity.createUpdate.extras.modals.default.config.buttons[forms.entity.createUpdate.extras.modals.default.type]]" @click="createUpdateEntity()">
+                    <button type="button" :class="['btn waves-effect', forms.entity.createUpdate.extras.modals.default.config.buttons[forms.entity.createUpdate.extras.modals.default.type]]" @click="['canceled'].includes(forms.entity.createUpdate.extras.modals.default.type) ? cancelEntity({}) : createUpdateEntity()">
                         <i :class="forms.entity.createUpdate.extras.modals.default.config.icons[forms.entity.createUpdate.extras.modals.default.type]"></i>
                         <span class="ms-2" v-text="forms.entity.createUpdate.extras.modals.default.config.labels[forms.entity.createUpdate.extras.modals.default.type]"></span>
                     </button>
@@ -239,23 +241,27 @@ export default {
                                     titles: {
                                         store: "Agregar",
                                         update: "Editar",
-                                        finalized: "Finalizar"
+                                        finalized: "Finalizar",
+                                        canceled: "Anular"
                                     },
                                     config: {
                                         buttons: {
                                             store: "btn-primary",
                                             update: "btn-warning",
-                                            finalized: "btn-success"
+                                            finalized: "btn-success",
+                                            canceled: "btn-danger"
                                         },
                                         icons: {
                                             store: "fa fa-plus",
                                             update: "fa fa-save",
-                                            finalized: "fa fa-check"
+                                            finalized: "fa fa-check",
+                                            canceled: "fa fa-times"
                                         },
                                         labels: {
                                             store: "Agregar asistencia",
                                             update: "Editar asistencia",
-                                            finalized: "Finalizar asistencia"
+                                            finalized: "Finalizar asistencia",
+                                            canceled: "Anular asistencia"
                                         }
                                     }
                                 }
@@ -410,6 +416,80 @@ export default {
             }
 
         },
+        cancelEntity({}) {
+
+            const functionName = "cancelEntity";
+
+            this.formErrors({functionName, type: "clear"});
+
+            let form = Utils.cloneJson(this.forms.entity.createUpdate.data);
+
+            const validateForm = this.validateForm({functionName, form});
+
+            Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
+
+            if(validateForm?.bool) {
+
+                let el = this;
+
+                Swal.fire({
+                    html: `<span class="d-block my-1">¿Desea anular la asistencia de <b>${form?.customer?.label}</b>?</span>
+                           <div class="form-group text-start mt-2">
+                                <label class="form-label colon-at-end">Motivo</label>
+                                <div class="input-group">
+                                    <textarea type="text" class="form-control no-resize" maxlength="999" id="motiveId"></textarea>
+                                </div>
+                           </div>`,
+                    icon: "warning",
+                    allowOutsideClick: false,
+                    showCancelButton: true,
+                    confirmButtonText: "Sí, anular",
+                    cancelButtonText: "Cancelar",
+                    customClass: {
+                        confirmButton: "btn btn-danger waves-effect",
+                        cancelButton: "btn btn-secondary waves-effect ms-3"
+                    }
+                }).then(async function(result) {
+
+                    if(result.isConfirmed) {
+
+                        const motive = Swal.getHtmlContainer().querySelector("#motiveId").value;
+
+                        Alerts.swals({});
+
+                        let cancel = await Requests.patch({route: el.config.entity.routes.cancel, data: {motive}, id: form.id});
+
+                        if(Requests.valid({result: cancel})) {
+
+                            Alerts.toastrs({type: "success", subtitle: cancel?.data?.msg});
+                            Alerts.swals({show: false});
+
+                            el.listEntity({})
+
+                        }else {
+
+                            Alerts.toastrs({type: "error", subtitle: cancel?.data?.msg});
+                            Alerts.swals({show: false});
+
+                        }
+
+                    }else if(result.isDismissed) {
+
+                        //
+
+                    }
+
+                })
+
+            }else {
+
+                Alerts.generateAlert({messages: Utils.getErrors({errors: validateForm}), msgContent: `<div class="fw-semibold mb-2">${this.config.messages.errorValidate}</div>`});
+
+            }
+
+            Alerts.tooltips({show: false});
+
+        },
         // Forms utils
         clearForm({functionName}) {
 
@@ -500,6 +580,17 @@ export default {
                         result.bool = false;
 
                     }
+
+                }
+
+            }else if(["cancelEntity"].includes(functionName)) {
+
+                result.msg = [];
+
+                if(!this.isDefined({value: form?.id})) {
+
+                    result.msg.push(`Registro: ${this.config.forms.errors.labels.required}`);
+                    result.bool = false;
 
                 }
 

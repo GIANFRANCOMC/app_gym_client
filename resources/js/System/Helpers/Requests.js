@@ -200,6 +200,10 @@ export function generateRoutes({entity, requestRoute}) {
 
         routes.cancel = `${requestRoute}/${entity}/cancel`;
 
+    }else if(["tracking_attendances"].includes(entity)) {
+
+        routes.cancel = `${requestRoute}/${entity}/cancel`;
+
     }else if(["customers"].includes(entity)) {
 
         routes.getSubscriptions = `${requestRoute}/${entity}/getSubscriptions`;
