@@ -21,3 +21,7 @@
 .no-resize {
     resize: none !important;
 }
+
+.vs__dropdown-toggle {
+    height: 38.9px !important;
+}

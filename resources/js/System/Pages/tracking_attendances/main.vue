@@ -27,42 +27,45 @@
             lg="4"/>
     </div>
     <div class="row g-3 mb-4">
-        <div class="col-md col-lg-3 col-xl-3">
-            <div class="form-check custom-option custom-option-basic bg-white">
+        <div class="col-xl-12 mb-0">
+            <label :class="[config.forms.classes.title]">Estado</label>
+        </div>
+        <div class="col-lg-3 col-xl-3 my-1">
+            <div class="form-check custom-option custom-option-basic border-secondary bg-white">
                 <label class="form-check-label custom-option-content">
-                    <input class="form-check-input mt-2" type="radio" value="" v-model="lists.entity.filters.status" @change="listEntity({})">
-                    <span class="custom-option-body fs-5">
-                        <span class="ms-4 fw-bold text-dark">Todos</span>
+                    <input :class="['form-check-input', lists.entity.filters.status == '' ? 'bg-secondary border-secondary' : '']" type="radio" value="" v-model="lists.entity.filters.status" @change="listEntity({})"/>
+                    <span class="custom-option-body">
+                        <span class="fw-bold text-secondary">Todos los estados</span>
                     </span>
                 </label>
             </div>
         </div>
-        <div class="col-md col-lg-3 col-xl-3">
-            <div class="form-check custom-option custom-option-basic bg-white">
+        <div class="col-lg-3 col-xl-3 my-1">
+            <div class="form-check custom-option custom-option-basic border-primary bg-white">
                 <label class="form-check-label custom-option-content">
-                    <input class="form-check-input mt-2" type="radio" value="active" v-model="lists.entity.filters.status" @change="listEntity({})">
-                    <span class="custom-option-body fs-5">
-                        <span class="ms-4 fw-bold text-primary">Activos</span>
+                    <input :class="['form-check-input', lists.entity.filters.status == 'active' ? 'bg-primary border-primary' : '']" type="radio" value="active" v-model="lists.entity.filters.status" @change="listEntity({})"/>
+                    <span class="custom-option-body">
+                        <span class="fw-bold text-primary">En curso</span>
                     </span>
                 </label>
             </div>
         </div>
-        <div class="col-md col-lg-3 col-xl-3">
-            <div class="form-check custom-option custom-option-basic bg-white">
+        <div class="col-lg-3 col-xl-3 my-1">
+            <div class="form-check custom-option custom-option-basic border-success bg-white">
                 <label class="form-check-label custom-option-content">
-                    <input class="form-check-input mt-2" type="radio" value="finalized" v-model="lists.entity.filters.status" @change="listEntity({})">
-                    <span class="custom-option-body fs-5">
-                        <span class="ms-4 fw-bold text-success">Finalizados</span>
+                    <input :class="['form-check-input', lists.entity.filters.status == 'finalized' ? 'bg-success border-success' : '']" type="radio" value="finalized" v-model="lists.entity.filters.status" @change="listEntity({})"/>
+                    <span class="custom-option-body">
+                        <span class="fw-bold text-success">Concluida</span>
                     </span>
                 </label>
             </div>
         </div>
-        <div class="col-md col-lg-3 col-xl-3">
-            <div class="form-check custom-option custom-option-basic bg-white">
+        <div class="col-lg-3 col-xl-3 my-1">
+            <div class="form-check custom-option custom-option-basic border-danger bg-white">
                 <label class="form-check-label custom-option-content">
-                    <input class="form-check-input mt-2" type="radio" value="canceled" v-model="lists.entity.filters.status" @change="listEntity({})">
-                    <span class="custom-option-body fs-5">
-                        <span class="ms-4 fw-bold text-danger">Anulados</span>
+                    <input :class="['form-check-input', lists.entity.filters.status == 'canceled' ? 'bg-danger border-danger' : '']" type="radio" value="canceled" v-model="lists.entity.filters.status" @change="listEntity({})"/>
+                    <span class="custom-option-body">
+                        <span class="fw-bold text-danger">Anulado</span>
                     </span>
                 </label>
             </div>
@@ -86,6 +89,7 @@
         <table class="table table-hover">
             <thead class="table-light">
                 <tr class="text-center align-middle">
+                    <th class="fw-bold col-1"></th>
                     <th class="fw-bold col-1">SUCURSAL</th>
                     <th class="fw-bold col-1">CLIENTE</th>
                     <th class="fw-bold col-1">INGRESO</th>
@@ -104,6 +108,9 @@
                 <template v-else>
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
+                            <td>
+                                <span :class="['badge', { 'bg-label-primary': ['active'].includes(record.status), 'bg-label-warning': ['inactive'].includes(record.status), 'bg-label-success': ['finalized'].includes(record.status), 'bg-label-danger': ['canceled'].includes(record.status) }]" v-text="record.formatted_status"></span>
+                            </td>
                             <td class="text-start">
                                 <span v-text="record.branch?.name" class="fw-bold d-block"></span>
                             </td>
@@ -125,9 +132,6 @@
                                 </template>
                             </td>
                             <td>
-                                <template v-if="['inactive', 'canceled'].includes(record?.status)">
-                                    <span class="fw-bold" v-text="record.formatted_status"></span>
-                                </template>
                                 <button v-if="['active'].includes(record?.status)" type="button" class="btn btn-sm btn-success waves-effect my-1" @click="modalCreateUpdateEntity({record, type: 'finalized'})">
                                     <i class="fa fa-check"></i>
                                     <span class="ms-2">Finalizar</span>
@@ -150,6 +154,14 @@
             </tbody>
         </table>
     </div>
+    <div v-if="!lists.entity.extras.loading" class="row justify-content-end g-3 my-1">
+        <div class="col-lg-auto col-sm-auto">
+            <a href="javascript:void(0)" @click="modalCreateUpdateEntity({type: 'store'})" class="fw-bold">
+                <i class="fa fa-plus-circle"></i>
+                <span class="ms-1">Agregar asistencia</span>
+            </a>
+        </div>
+    </div>
     <div class="d-flex justify-content-center d-none" v-if="!lists.entity.extras.loading && lists.entity.records?.total > 0">
         <Paginator :links="lists.entity.records.links" @clickPage="listEntity"/>
     </div>
@@ -171,7 +183,7 @@
                             xl="12"
                             lg="12">
                             <template v-slot:input>
-                                <span v-if="isDefined({value: forms.entity.createUpdate.data?.id})" v-text="forms.entity.createUpdate.data?.branch?.data?.name" class="fw-semibold"></span>
+                                <span v-if="true || isDefined({value: forms.entity.createUpdate.data?.id})" v-text="forms.entity.createUpdate.data?.branch?.data?.name" class="fw-semibold"></span>
                                 <v-select
                                     v-else
                                     v-model="forms.entity.createUpdate.data.branch"
@@ -205,6 +217,7 @@
                             xl="6"
                             lg="6"/>
                         <InputDatetime
+                            v-if="isDefined({value: forms.entity.createUpdate.data?.id})"
                             v-model="forms.entity.createUpdate.data.end_date"
                             hasDiv
                             title="Salida"
@@ -395,7 +408,7 @@ export default {
 
             }else {
 
-                this.forms.entity.createUpdate.data.branch     = this.branches[0];
+                this.forms.entity.createUpdate.data.branch     = this.lists.entity.filters.branch;
                 this.forms.entity.createUpdate.data.start_date = Utils.getCurrentDate("datetime");
 
             }
@@ -434,8 +447,9 @@ export default {
 
                     }
 
-                    Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
-                    Alerts.swals({show: false});
+                    // Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
+                    // Alerts.swals({show: false});
+                    Alerts.generateAlert({type: "success", msgContent: createUpdate?.data?.msg});
 
                     this.clearForm({functionName});
                     this.listEntity({url: `${this.lists.entity.extras.route}?page=${this.lists.entity.records?.current_page ?? 1}`});
@@ -443,8 +457,9 @@ export default {
                 }else {
 
                     this.formErrors({functionName, type: "set", errors: createUpdate?.errors ?? []});
-                    Alerts.toastrs({type: "error", subtitle: createUpdate?.data?.msg});
-                    Alerts.swals({show: false});
+                    // Alerts.toastrs({type: "error", subtitle: createUpdate?.data?.msg});
+                    // Alerts.swals({show: false});
+                    Alerts.generateAlert({type: "error", msgContent: createUpdate?.data?.msg});
 
                 }
 

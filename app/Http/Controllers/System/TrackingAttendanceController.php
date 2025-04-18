@@ -102,7 +102,7 @@ class TrackingAttendanceController extends Controller {
 
         if(count($subscriptions) === 0) {
 
-            return response()->json(["bool" => false, "msg" => "El cliente seleccionado no cuenta con una suscripción vigente."], 200);
+            return response()->json(["bool" => false, "msg" => "El cliente seleccionado no cuenta con una suscripción vigente en la sucursal."], 200);
 
         }
 
@@ -114,7 +114,7 @@ class TrackingAttendanceController extends Controller {
 
         if(Utilities::isDefined($attendanceActive)) {
 
-            return response()->json(["bool" => false, "msg" => "El cliente seleccionado cuenta con un registro de asistencia activa."], 200);
+            return response()->json(["bool" => false, "msg" => "El cliente seleccionado cuenta con un registro de asistencia 'En curso'."], 200);
 
         }
 

@@ -62,9 +62,10 @@ class Attendance extends Model {
     public static function getStatuses($type = "all", $code = "") {
 
         $statuses = [
-            ["code" => "active", "label" => "Activo"],
+            ["code" => "active", "label" => "En curso"],
+            ["code" => "canceled", "label" => "Anulado"],
             ["code" => "inactive", "label" => "Inactivo"],
-            ["code" => "canceled", "label" => "Anulado"]
+            ["code" => "finalized", "label" => "Concluida"]
         ];
 
         return Utilities::getValues($statuses, $type, $code);
