@@ -24,7 +24,7 @@ class CustomerController extends Controller {
         if(in_array($page, ["main"])) {
 
             $config->identityDocumentTypes = new stdClass();
-            $config->identityDocumentTypes->records = IdentityDocumentType::whereIn("id", [1, 2])
+            $config->identityDocumentTypes->records = IdentityDocumentType::whereIn("id", [1, 2, 4])
                                                                           ->get();
 
             $config->customers = new stdClass();

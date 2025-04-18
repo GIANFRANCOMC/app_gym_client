@@ -23,14 +23,27 @@ class HelperController extends Controller {
 
         if(Utilities::isDefined($company->token_api_misc)) {
 
-            if(Utilities::isDefined($request->document_number) && preg_match('/^\d{8}$/', $request->document_number) && Utilities::isDefined($request->type)) {
+            if(Utilities::isDefined($request->document_number) && preg_match('/^\d{8,11}$/', $request->document_number) && Utilities::isDefined($request->type)) {
 
-                $params = json_encode(["dni" => $request->document_number]);
+                $type   = "";
+                $params = [];
+
+                switch($request->type) {
+                    case 2:
+                        $type = "dni";
+                        $params = json_encode(["dni" => $request->document_number]);
+                        break;
+
+                    case 4:
+                        $type = "ruc";
+                        $params = json_encode(["ruc" => $request->document_number]);
+                        break;
+                }
 
                 $curlApi = curl_init();
 
                 curl_setopt_array($curlApi, array(
-                    CURLOPT_URL => "https://apiperu.dev/api/dni",
+                    CURLOPT_URL => "https://apiperu.dev/api/$type",
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_CUSTOMREQUEST => "POST",
                     CURLOPT_SSL_VERIFYPEER => false,
@@ -60,13 +73,24 @@ class HelperController extends Controller {
 
                     if($bool) {
 
-                        $data = [
-                            "document_number"   => $dataApi->data->numero,
-                            "first_name"        => $dataApi->data->nombres,
-                            "last_name"         => $dataApi->data->apellido_paterno,
-                            "second_last_name"  => $dataApi->data->apellido_materno,
-                            "verification_code" => $dataApi->data->codigo_verificacion
-                        ];
+                        switch($request->type) {
+                            case 2:
+                                $data = [
+                                    "document_number"   => $dataApi->data->numero,
+                                    "first_name"        => $dataApi->data->nombres,
+                                    "last_name"         => $dataApi->data->apellido_paterno,
+                                    "second_last_name"  => $dataApi->data->apellido_materno,
+                                    "verification_code" => $dataApi->data->codigo_verificacion
+                                ];
+                                break;
+
+                            case 4:
+                                $data = [
+                                    "document_number" => $dataApi->data->ruc,
+                                    "legal_name"      => $dataApi->data->nombre_o_razon_social
+                                ];
+                                break;
+                        }
 
                     }
 
