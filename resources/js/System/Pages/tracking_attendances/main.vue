@@ -65,7 +65,7 @@
                 <label class="form-check-label custom-option-content">
                     <input :class="['form-check-input', lists.entity.filters.status == 'canceled' ? 'bg-danger border-danger' : '']" type="radio" value="canceled" v-model="lists.entity.filters.status" @change="listEntity({})"/>
                     <span class="custom-option-body">
-                        <span class="fw-bold text-danger">Anulado</span>
+                        <span class="fw-bold text-danger">Anulada</span>
                     </span>
                 </label>
             </div>

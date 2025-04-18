@@ -63,8 +63,8 @@ class Attendance extends Model {
 
         $statuses = [
             ["code" => "active", "label" => "En curso"],
-            ["code" => "canceled", "label" => "Anulado"],
-            ["code" => "inactive", "label" => "Inactivo"],
+            ["code" => "canceled", "label" => "Anulada"],
+            ["code" => "inactive", "label" => "Inactiva"],
             ["code" => "finalized", "label" => "Concluida"]
         ];
 

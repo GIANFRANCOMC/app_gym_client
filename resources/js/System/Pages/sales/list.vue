@@ -509,11 +509,7 @@ export default {
 
                 for(let branchSerie of branch.series) {
 
-                    if(branchSerie.document_type_id == 1) {
-
-                        series.push({code: branchSerie.id, label: `(${branch?.name}) ${branchSerie.legible_serie} - ${branchSerie?.document_type?.name}`, data: {...branchSerie, branch}});
-
-                    }
+                    series.push({code: branchSerie.id, label: `(${branch?.name}) ${branchSerie.legible_serie} - ${branchSerie?.document_type?.name}`, data: {...branchSerie, branch}});
 
                 }
 

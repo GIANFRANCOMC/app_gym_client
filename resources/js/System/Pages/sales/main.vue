@@ -1234,6 +1234,16 @@ export default {
                     result.holder.push(`${isDescriptive ? "Cliente:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
+                }else {
+
+                    if((form?.serie?.data?.document_type_id == 1 && ![1, 2].includes(form?.holder?.data?.identity_document_type_id)) ||
+                       (form?.serie?.data?.document_type_id == 2 && ![4].includes(form?.holder?.data?.identity_document_type_id))) {
+
+                        result.holder.push(`${isDescriptive ? "Cliente:" : ""} No apto para generar el comprobante <b>(${form?.serie?.label})</b>.`);
+                        result.bool = false;
+
+                    }
+
                 }
 
                 if(!this.isDefined({value: form?.currency})) {
@@ -1418,7 +1428,7 @@ export default {
 
                 const series = branch[0].series;
 
-                return series.filter(e => e.document_type_id == 1).map(e => ({code: e.id, label: `${e.legible_serie} - ${e?.document_type?.name}`, data: e}));
+                return series.map(e => ({code: e.id, label: `${e.legible_serie} - ${e?.document_type?.name}`, data: e}));
 
             }
 
