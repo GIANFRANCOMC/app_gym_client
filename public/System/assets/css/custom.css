@@ -22,6 +22,12 @@
     resize: none !important;
 }
 
-/* .vs__dropdown-toggle {
-    height: 38.9px !important;
-} */
+/* VUE SELECT */
+.vs__dropdown-toggle {
+    height: auto;
+    min-height: calc(1.4em + 1rem);
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+}
+
