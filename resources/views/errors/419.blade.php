@@ -8,7 +8,7 @@
         <title>{{ config('app.name', 'NombreSistema') }}</title>
 
         <!-- Favicon -->
-        <link rel="icon" type="image/x-icon" href="{{ asset('System/assets/img/utils/admin/4.png') }}"/>
+        <link rel="icon" type="image/x-icon" href="{{ asset('System/assets/img/utils/admin/app_header.png') }}"/>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com"/>
