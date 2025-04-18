@@ -5,19 +5,19 @@
     @endphp
     <div class="d-flex flex-column justify-content-center">
         @if ($hasCompany)
-            <span class="h5 text-center fw-semibold mb-2">
-                Bienvenido a
+            <span class="text-center mb-3">
+                <img src="{{ asset('System/assets/img/utils/admin/app_navbar.png') }}" class="img-fluid" width="50%"/>
             </span>
-            <span class="h3 text-center fw-bold mb-4">
-                {{ $data->company->commercial_name }}
+            <span class="h5 text-center fw-semibold mb-4">
+                Bienvenido a <span class="fw-bold">{{ $data->company->commercial_name }}</span>
             </span>
         @else
-            <span class="text-center mb-3">
-                <img src="{{ asset('System/assets/img/utils/admin/6_.png') }}" class="img-fluid" width="70%"/>
+            <span class="text-center mb-1">
+                <img src="{{ asset('System/assets/img/utils/admin/app_login.png') }}" class="img-fluid" width="85%"/>
             </span>
-            {{-- <span class="h4 text-center fw-semibold mb-2">
+            <span class="h5 text-center fw-semibold mb-4">
                 Bienvenido
-            </span> --}}
+            </span>
         @endif
     </div>
     <form method="POST" action="{{ route('login') }}">

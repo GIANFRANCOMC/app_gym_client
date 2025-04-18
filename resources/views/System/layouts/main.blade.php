@@ -25,15 +25,9 @@
         <div class="layout-wrapper layout-content-navbar">
             <div class="layout-container">
                 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-                    <div class="app-brand demo">
+                    <div class="app-brand demo d-flex justify-content-center mt-3">
                         <a href="#" class="app-brand-link">
-                            <div class="app-brand-text demo menu-text fw-bold">
-                                {{ config('app.name', 'NombreSistema') }}
-                            </div>
-                        </a>
-                        <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
-                            <i class="ti menu-toggle-icon d-none d-xl-block ti-sm align-middle"></i>
-                            <i class="ti ti-x d-block d-xl-none ti-sm align-middle"></i>
+                            <image src="{{ asset('System/assets/img/utils/admin/app_navbar.png') }}" width="160px" height="45px"/>
                         </a>
                     </div>
 
