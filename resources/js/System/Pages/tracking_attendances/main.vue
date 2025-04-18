@@ -25,8 +25,6 @@
             :titleClass="[config.forms.classes.title]"
             xl="5"
             lg="4"/>
-    </div>
-    <div class="row g-3 mb-4">
         <div class="col-xl-12 mb-0">
             <label :class="[config.forms.classes.title]">Estado</label>
         </div>
@@ -70,13 +68,13 @@
                 </label>
             </div>
         </div>
-    </div>
-    <div v-if="!lists.entity.extras.loading" class="row align-items-end justify-content-center g-3 mb-4">
         <InputSlot
+            v-if="!lists.entity.extras.loading"
             hasDiv
+            :divClass="['text-center']"
             :isInputGroup="false"
-            xl="auto"
-            lg="auto">
+            xl="12"
+            lg="12">
             <template v-slot:input>
                 <button type="button" class="btn btn-primary waves-effect" @click="modalCreateUpdateEntity({type: 'store'})">
                     <i class="fa fa-plus"></i>
