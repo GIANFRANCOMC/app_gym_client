@@ -134,7 +134,7 @@
                             xl="6"
                             lg="6">
                             <template v-slot:inputGroupAppend>
-                                <template v-if="[2].includes(forms.entity.createUpdate.data.identity_document_type?.code)">
+                                <template v-if="[2, 4].includes(forms.entity.createUpdate.data.identity_document_type?.code)">
                                     <button class="btn btn-primary waves-effect" type="button" @click="searchDocumentNumber({consult: forms.entity.createUpdate})" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar">
                                         <i class="fa fa-search"></i>
                                     </button>
@@ -495,7 +495,15 @@ export default {
 
                 const data = searchDocumentNumber.data.data;
 
-                this.forms.entity.createUpdate.data.name = `${data?.first_name} ${data?.last_name} ${data?.second_last_name}`;
+                if(consult.data.identity_document_type?.code == 2) {
+
+                    this.forms.entity.createUpdate.data.name = `${data?.first_name} ${data?.last_name} ${data?.second_last_name}`;
+
+                }else if(consult.data.identity_document_type?.code == 4) {
+
+                    this.forms.entity.createUpdate.data.name = `${data?.legal_name}`;
+
+                }
 
                 Alerts.toastrs({type: "success", subtitle: searchDocumentNumber?.data?.msg});
                 Alerts.swals({show: false});
