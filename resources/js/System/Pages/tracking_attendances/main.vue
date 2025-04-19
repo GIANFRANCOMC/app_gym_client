@@ -290,6 +290,7 @@
                         <InputSlot
                             hasDiv
                             title="Cámara"
+                            :isInputGroup="false"
                             xl="12"
                             lg="12">
                             <template v-slot:input>
