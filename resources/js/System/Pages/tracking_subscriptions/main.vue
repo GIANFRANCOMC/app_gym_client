@@ -3,101 +3,110 @@
 
     <!-- Content -->
     <div class="row align-items-end g-3 mb-4">
-        <InputSlot
-            hasDiv
-            title="Sucursal"
-            :titleClass="[config.forms.classes.title]"
-            xl="6"
-            lg="7">
-            <template v-slot:input>
-                <v-select
-                    v-model="lists.entity.filters.branch"
-                    :options="branches"
-                    :class="config.forms.classes.select2"
-                    :clearable="false"/>
-            </template>
-        </InputSlot>
-        <InputDate
-            v-model="lists.entity.filters.start_date"
-            @change="listEntity({})"
-            hasDiv
-            title="Desde"
-            :titleClass="[config.forms.classes.title]"
-            xl="3"
-            lg="4"/>
-        <InputDate
-            v-model="lists.entity.filters.end_date"
-            @change="listEntity({})"
-            hasDiv
-            title="Hasta"
-            :titleClass="[config.forms.classes.title]"
-            xl="3"
-            lg="4"/>
-        <InputSlot
-            hasDiv
-            title="Cliente"
-            :titleClass="[config.forms.classes.title]"
-            xl="12"
-            lg="12">
-            <template v-slot:input>
-                <v-select
-                    v-model="lists.entity.filters.customer"
-                    :options="customers"
-                    :class="config.forms.classes.select2"
-                    :clearable="true"/>
-            </template>
-        </InputSlot>
-        <div class="col-xl-12 mb-0">
-            <label :class="[config.forms.classes.title]">Estado</label>
-        </div>
-        <div class="col-lg-3 col-xl-3 my-1">
-            <div class="form-check custom-option custom-option-basic border-secondary bg-white">
-                <label class="form-check-label custom-option-content">
-                    <input :class="['form-check-input', lists.entity.filters.status == '' ? 'bg-secondary border-secondary' : '']" type="radio" value="" v-model="lists.entity.filters.status" @change="listEntity({})"/>
-                    <span class="custom-option-body">
-                        <span class="fw-bold text-secondary">Todos los estados</span>
-                    </span>
-                </label>
+        <div class="col-lg-9 col-12">
+            <div class="row g-3">
+                <InputSlot
+                    hasDiv
+                    title="Sucursal"
+                    :titleClass="[config.forms.classes.title]"
+                    xl="12"
+                    lg="12">
+                    <template v-slot:input>
+                        <v-select
+                            v-model="lists.entity.filters.branch"
+                            :options="branches"
+                            :class="config.forms.classes.select2"
+                            :clearable="false"/>
+                    </template>
+                </InputSlot>
+                <InputDate
+                    v-model="lists.entity.filters.start_date"
+                    @change="listEntity({})"
+                    hasDiv
+                    title="Desde"
+                    :titleClass="[config.forms.classes.title]"
+                    xl="6"
+                    lg="6"/>
+                <InputDate
+                    v-model="lists.entity.filters.end_date"
+                    @change="listEntity({})"
+                    hasDiv
+                    title="Hasta"
+                    :titleClass="[config.forms.classes.title]"
+                    xl="6"
+                    lg="6"/>
+                <InputSlot
+                    hasDiv
+                    title="Cliente"
+                    :titleClass="[config.forms.classes.title]"
+                    xl="12"
+                    lg="12">
+                    <template v-slot:input>
+                        <v-select
+                            v-model="lists.entity.filters.customer"
+                            :options="customers"
+                            :class="config.forms.classes.select2"
+                            :clearable="true"/>
+                    </template>
+                </InputSlot>
             </div>
         </div>
-        <div class="col-lg-3 col-xl-3 my-1">
-            <div class="form-check custom-option custom-option-basic border-success bg-white">
-                <label class="form-check-label custom-option-content">
-                    <input :class="['form-check-input', lists.entity.filters.status == 'active' ? 'bg-success border-success' : '']" type="radio" value="active" v-model="lists.entity.filters.status" @change="listEntity({})"/>
-                    <span class="custom-option-body">
-                        <span class="fw-bold text-success">Vigente</span>
-                    </span>
-                </label>
-            </div>
-        </div>
-        <div class="col-lg-3 col-xl-3 my-1">
-            <div class="form-check custom-option custom-option-basic border-primary bg-white">
-                <label class="form-check-label custom-option-content">
-                    <input :class="['form-check-input', lists.entity.filters.status == 'inactive' ? 'bg-primary border-primary' : '']" type="radio" value="inactive" v-model="lists.entity.filters.status" @change="listEntity({})"/>
-                    <span class="custom-option-body">
-                        <span class="fw-bold text-primary">Vencida</span>
-                    </span>
-                </label>
-            </div>
-        </div>
-        <div class="col-lg-3 col-xl-3 my-1">
-            <div class="form-check custom-option custom-option-basic border-danger bg-white">
-                <label class="form-check-label custom-option-content">
-                    <input :class="['form-check-input', lists.entity.filters.status == 'canceled' ? 'bg-danger border-danger' : '']" type="radio" value="canceled" v-model="lists.entity.filters.status" @change="listEntity({})"/>
-                    <span class="custom-option-body">
-                        <span class="fw-bold text-danger">Anulada</span>
-                    </span>
-                </label>
+        <div class="col-lg-3 col-12">
+            <div class="row">
+                <div class="col-xl-12">
+                    <label :class="[config.forms.classes.title]">Estado</label>
+                </div>
+                <div class="col-lg-12 col-xl-12">
+                    <div class="form-check custom-option custom-option-basic border-secondary bg-white">
+                        <label class="form-check-label custom-option-content py-2">
+                            <input :class="['form-check-input', lists.entity.filters.status == '' ? 'bg-secondary border-secondary' : '']" type="radio" value="" v-model="lists.entity.filters.status" @change="listEntity({})"/>
+                            <span class="custom-option-body">
+                                <span class="fw-bold text-secondary">Todos los estados</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-xl-12 mt-2 mb-1">
+                    <div class="form-check custom-option custom-option-basic border-success bg-white">
+                        <label class="form-check-label custom-option-content py-2">
+                            <input :class="['form-check-input', lists.entity.filters.status == 'active' ? 'bg-success border-success' : '']" type="radio" value="active" v-model="lists.entity.filters.status" @change="listEntity({})"/>
+                            <span class="custom-option-body">
+                                <span class="fw-bold text-success">Vigente</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-xl-12 my-1">
+                    <div class="form-check custom-option custom-option-basic border-primary bg-white">
+                        <label class="form-check-label custom-option-content py-2">
+                            <input :class="['form-check-input', lists.entity.filters.status == 'inactive' ? 'bg-primary border-primary' : '']" type="radio" value="inactive" v-model="lists.entity.filters.status" @change="listEntity({})"/>
+                            <span class="custom-option-body">
+                                <span class="fw-bold text-primary">Vencida</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-xl-12 my-1">
+                    <div class="form-check custom-option custom-option-basic border-danger bg-white">
+                        <label class="form-check-label custom-option-content py-2">
+                            <input :class="['form-check-input', lists.entity.filters.status == 'canceled' ? 'bg-danger border-danger' : '']" type="radio" value="canceled" v-model="lists.entity.filters.status" @change="listEntity({})"/>
+                            <span class="custom-option-body">
+                                <span class="fw-bold text-danger">Anulada</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
             </div>
         </div>
         <InputSlot
             hasDiv
             :divClass="['text-center']"
             :isInputGroup="false"
+            :divInputClass="['mt-2']"
             xl="12"
             lg="12">
             <template v-slot:input>
-                <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})">
+                <button type="button" class="btn btn-primary waves-effect my-1" @click="listEntity({})">
                     <i class="fa fa-sync"></i>
                     <span class="ms-2">Actualizar</span>
                 </button>
