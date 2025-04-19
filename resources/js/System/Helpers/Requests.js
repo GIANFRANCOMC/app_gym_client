@@ -203,6 +203,8 @@ export function generateRoutes({entity, requestRoute}) {
     }else if(["tracking_attendances"].includes(entity)) {
 
         routes.cancel = `${requestRoute}/${entity}/cancel`;
+        routes.qrcodeStore  = `${requestRoute}/${entity}/qrcodeStore`;
+        routes.qrcodeUpdate = `${requestRoute}/${entity}/qrcodeUpdate`;
 
     }else if(["customers"].includes(entity)) {
 

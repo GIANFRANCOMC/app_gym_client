@@ -101,6 +101,16 @@ class TrackingAttendanceController extends Controller {
 
         $attendance = null;
 
+        $customer = Customer::where("id", $request->customer_id)
+                            ->where("company_id", $userAuth->company_id)
+                            ->first();
+
+        if(!Utilities::isDefined($customer)) {
+
+            return response()->json(["bool" => false, "msg" => "El cliente seleccionado no es correcto."], 200);
+
+        }
+
         $subscriptions = Subscription::where("company_id", $userAuth->company_id)
                                      ->where("branch_id", $request->branch_id)
                                      ->where("customer_id", $request->customer_id)
@@ -111,7 +121,7 @@ class TrackingAttendanceController extends Controller {
 
         if(count($subscriptions) === 0) {
 
-            return response()->json(["bool" => false, "msg" => "El cliente seleccionado no cuenta con una suscripción vigente en la sucursal."], 200);
+            return response()->json(["bool" => false, "msg" => "$customer->name: No cuenta con una suscripción vigente en la sucursal."], 200);
 
         }
 
@@ -123,7 +133,7 @@ class TrackingAttendanceController extends Controller {
 
         if(Utilities::isDefined($attendanceActive)) {
 
-            return response()->json(["bool" => false, "msg" => "El cliente seleccionado cuenta con un registro de asistencia 'En curso'."], 200);
+            return response()->json(["bool" => false, "msg" => "$customer->name: Cuenta con un registro de asistencia 'En curso'."], 200);
 
         }
 
@@ -145,7 +155,7 @@ class TrackingAttendanceController extends Controller {
         });
 
         $bool = Utilities::isDefined($attendance);
-        $msg  = $bool ? "Asistencia creada correctamente." : "No se ha podido crear la asistencia.";
+        $msg  = $bool ? "$customer->name: Asistencia creada correctamente." : "$customer->name: No se ha podido crear la asistencia.";
 
         return response()->json(["bool" => $bool, "msg" => $msg, "attendance" => $attendance], 200);
 
@@ -231,6 +241,77 @@ class TrackingAttendanceController extends Controller {
     public function destroy(Attendance $attendance) {
 
         //
+
+    }
+
+    public function qrcodeStore(Request $request) { // StoreTrackingAttendanceRequest
+
+        $userAuth = Auth::user();
+
+        $attendances = collect();
+
+        foreach($request->customers as $customerRequest) {
+
+            $customer = Customer::where("id", $customerRequest["customer_id"])
+                                ->where("company_id", $userAuth->company_id)
+                                ->first();
+
+            if(!Utilities::isDefined($customer)) {
+
+                $attendances->push(["bool" => false, "msg" => "El cliente seleccionado no es correcto."]);
+                continue;
+
+            }
+
+            $subscriptions = Subscription::where("company_id", $userAuth->company_id)
+                                         ->where("branch_id", $request->branch_id)
+                                         ->where("customer_id", $customerRequest["customer_id"])
+                                         ->where("start_date", "<=", $request->start_date)
+                                         ->where("end_date", ">=", $request->start_date)
+                                         ->where("status", "!=", "canceled")
+                                         ->get();
+
+            if(count($subscriptions) === 0) {
+
+                $attendances->push(["bool" => false, "msg" => "$customer->name: No cuenta con una suscripción vigente en la sucursal."]);
+                continue;
+
+            }
+
+            $attendanceActive = Attendance::where("company_id", $userAuth->company_id)
+                                        ->where("branch_id", $request->branch_id)
+                                        ->where("customer_id", $customerRequest["customer_id"])
+                                        ->where("status", "active")
+                                        ->first();
+
+            if(Utilities::isDefined($attendanceActive)) {
+
+                $attendances->push(["bool" => false, "msg" => "$customer->name: Cuenta con un registro de asistencia 'En curso'."]);
+                continue;
+
+            }
+
+            $attendance = new Attendance();
+            $attendance->company_id  = $userAuth->company_id;
+            $attendance->branch_id   = $request->branch_id;
+            $attendance->customer_id = $customerRequest["customer_id"];
+            $attendance->start_date  = $request->start_date;
+            $attendance->end_date    = $request->end_date;
+            $attendance->observation = $request->observation ?? "";
+            $attendance->type        = "manual";
+            $attendance->status      = "active";
+            $attendance->created_at  = now();
+            $attendance->created_by  = $userAuth->id ?? null;
+            $attendance->save();
+
+            $attendances->push(["bool" => true, "msg" => "$customer->name: Asistencia creada correctamente."]);
+
+        }
+
+        $bool = count($attendances->where("bool", true)) > 0;
+        $msg  = $bool ? "Asistencias creadas correctamente." : "No se han podido crear las asistencias.";
+
+        return response()->json(["bool" => $bool, "msg" => $msg, "attendances" => $attendances], 200);
 
     }
 

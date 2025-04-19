@@ -15,3 +15,6 @@ Route::get('/{id}',          [TrackingAttendanceController::class, 'show'])->nam
 Route::patch('/{id}',        [TrackingAttendanceController::class, 'update'])->name("$entity.update");
 Route::patch('/cancel/{id}', [TrackingAttendanceController::class, 'cancel'])->name("$entity.cancel");
 
+
+Route::post('qrcodeStore',              [TrackingAttendanceController::class, 'qrcodeStore'])->name("$entity.qrcodeStore");
+// Route::patch('/{id}',        [TrackingAttendanceController::class, 'qrcodeUpdate'])->name("$entity.qrcodeUpdate");

@@ -106,6 +106,10 @@
                     <i class="fa fa-plus"></i>
                     <span class="ms-2">Agregar asistencia</span>
                 </button>
+                <button type="button" class="btn btn-secondary waves-effect my-1 ms-3" @click="modalQrcodeEntity({type: 'store'})">
+                    <i class="fa fa-qrcode"></i>
+                    <span class="ms-2">Escanear QR</span>
+                </button>
             </template>
         </InputSlot>
     </div>
@@ -258,6 +262,103 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" :id="forms.entity.qrcode.extras.modals.default.id" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.qrcode.extras.modals.default.titles[forms.entity.qrcode.extras.modals.default.type]"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <InputSlot
+                            hasDiv
+                            title="Sucursal"
+                            isRequired
+                            xl="12"
+                            lg="12">
+                            <template v-slot:input>
+                                <span v-if="true || isDefined({value: forms.entity.qrcode.data?.id})" v-text="forms.entity.qrcode.data?.branch?.data?.name" class="fw-semibold"></span>
+                                <v-select
+                                    v-else
+                                    v-model="forms.entity.qrcode.data.branch"
+                                    :options="branches"
+                                    :class="config.forms.classes.select2"
+                                    :clearable="false"/>
+                            </template>
+                        </InputSlot>
+                        <InputSlot
+                            hasDiv
+                            title="Clientes"
+                            isRequired
+                            xl="12"
+                            lg="12">
+                            <template v-slot:input>
+                                <div class="w-100">
+                                    <QrcodeScanner
+                                        ref="scannerQr"
+                                        @result="onScanCustomer"/>
+                                </div>
+                                <div class="w-100 mt-3">
+                                    <div class="table-responsive my-3">
+                                        <table class="table table-sm table-hover">
+                                            <thead class="table-light">
+                                                <tr class="text-center align-middle">
+                                                    <th class="fw-bold col-1">#</th>
+                                                    <th class="fw-bold col-1">CLIENTE</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="table-border-bottom-0 bg-white">
+                                                <template v-if="(forms.entity.qrcode.data.customers).length > 0">
+                                                    <template v-for="(record, keyRecord) in forms.entity.qrcode.data.customers" :key="record.id">
+                                                        <tr class="text-nowrap text-center">
+                                                            <td v-text="keyRecord + 1"></td>
+                                                            <td v-text="record.label"></td>
+                                                        </tr>
+                                                    </template>
+                                                </template>
+                                                <template v-else>
+                                                    <tr>
+                                                        <td class="text-center" colspan="99">
+                                                            <WithoutData type="image"/>
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </template>
+                        </InputSlot>
+                        <InputDatetime
+                            v-model="forms.entity.qrcode.data.start_date"
+                            hasDiv
+                            title="Ingreso"
+                            isRequired
+                            :disabled="['canceled'].includes(forms.entity.qrcode.extras.modals.default.type) || isDefined({value: forms.entity.qrcode.data?.id})"
+                            xl="6"
+                            lg="6"/>
+                        <InputDatetime
+                            v-if="isDefined({value: forms.entity.qrcode.data?.id})"
+                            v-model="forms.entity.qrcode.data.end_date"
+                            hasDiv
+                            title="Salida"
+                            :isRequired="isDefined({value: forms.entity.qrcode.data?.id})"
+                            :disabled="['canceled'].includes(forms.entity.qrcode.extras.modals.default.type) || !isDefined({value: forms.entity.qrcode.data?.id})"
+                            xl="6"
+                            lg="6"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" :class="['btn waves-effect', forms.entity.qrcode.extras.modals.default.config.buttons[forms.entity.qrcode.extras.modals.default.type]]" @click="['canceled'].includes(forms.entity.qrcode.extras.modals.default.type) ? cancelEntity({}) : qrcodeEntity()">
+                        <i :class="forms.entity.qrcode.extras.modals.default.config.icons[forms.entity.qrcode.extras.modals.default.type]"></i>
+                        <span class="ms-2" v-text="forms.entity.qrcode.extras.modals.default.config.labels[forms.entity.qrcode.extras.modals.default.type]"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -272,6 +373,8 @@ export default {
     },
     mounted: async function() {
 
+        let el = this;
+
         Utils.navbarItem("menu-item-trackings", {addClass: "open"});
         Utils.navbarItem(this.config.entity.page.menu.id, {});
         Alerts.swals({type: "initParams"});
@@ -283,6 +386,26 @@ export default {
 
             Alerts.swals({show: false});
             // this.listEntity({});
+
+            $(`#${this.forms.entity.qrcode.extras.modals.default.id}`)
+            .on("shown.bs.modal", () => {
+
+                if(el.$refs?.scannerQr?.startScanner) {
+
+                    el.$refs.scannerQr.startScanner();
+
+                }
+
+            })
+            .on("hidden.bs.modal", () => {
+
+                if(el.$refs?.scannerQr?.stopScanner) {
+
+                    el.$refs.scannerQr.stopScanner(false);
+
+                }
+
+            });
 
         }
 
@@ -352,6 +475,51 @@ export default {
                             status: null
                         },
                         errors: {}
+                    },
+                    qrcode: {
+                        extras: {
+                            modals: {
+                                default: {
+                                    id: Utils.uuid(),
+                                    type: "",
+                                    titles: {
+                                        store: "Agregar",
+                                        update: "Editar",
+                                        finalized: "Finalizar",
+                                        canceled: "Anular"
+                                    },
+                                    config: {
+                                        buttons: {
+                                            store: "btn-primary",
+                                            update: "btn-warning",
+                                            finalized: "btn-primary",
+                                            canceled: "btn-danger"
+                                        },
+                                        icons: {
+                                            store: "fa fa-plus",
+                                            update: "fa fa-save",
+                                            finalized: "fa fa-check",
+                                            canceled: "fa fa-times"
+                                        },
+                                        labels: {
+                                            store: "Agregar asistencia",
+                                            update: "Editar asistencia",
+                                            finalized: "Finalizar asistencia",
+                                            canceled: "Anular asistencia"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        data: {
+                            id: null,
+                            branch: null,
+                            customers: [],
+                            start_date: "",
+                            end_date: "",
+                            status: null
+                        },
+                        errors: {}
                     }
                 }
             },
@@ -407,7 +575,7 @@ export default {
 
         },
         // Forms
-        modalCreateUpdateEntity({record = null, type = "create"}) {
+        modalCreateUpdateEntity({record = null, type = "store"}) {
 
             const functionName = "modalCreateUpdateEntity";
 
@@ -482,6 +650,123 @@ export default {
                     // Alerts.toastrs({type: "error", subtitle: createUpdate?.data?.msg});
                     // Alerts.swals({show: false});
                     Alerts.generateAlert({type: "error", msgContent: createUpdate?.data?.msg});
+
+                }
+
+            }else {
+
+                // this.formErrors({functionName, type: "set", errors: validateForm});
+                // Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
+                Alerts.generateAlert({messages: Utils.getErrors({errors: validateForm}), msgContent: `<div class="fw-semibold mb-2">${this.config.messages.errorValidate}</div>`});
+
+            }
+
+        },
+        // Qrcode
+        onScanCustomer(decodedText, decodedResult) {
+
+            let customer = this.customers[Math.floor(Math.random() * this.customers.length)];
+
+            if(this.forms.entity.qrcode.data.customers.some(e => e.code == customer.code)) {
+
+                this.$refs.scannerQr.decrementScanCounter();
+
+                Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block">Cliente escaneado: ${customer.label}.</span><span class="d-block fw-semibold mt-1">Ya se encuentra en los clientes escaneados.</span>`});
+
+            }else {
+
+                this.forms.entity.qrcode.data.customers.push(customer);
+
+                Alerts.generateAlert({type: "success", msgContent: `<span class="d-block">Cliente escaneado: ${customer.label}.</span><span class="d-block fw-semibold mt-1">Se ha agregado a los clientes escaneados.</span>`});
+
+            }
+
+        },
+        modalQrcodeEntity({record = null, type = "store"}) {
+
+            const functionName = "modalQrcodeEntity";
+
+            this.forms.entity.qrcode.extras.modals.default.type = type;
+
+            // Alerts.swals({});
+            this.clearForm({functionName});
+            this.formErrors({functionName, type: "clear"});
+
+            if(this.isDefined({value: record})) {
+
+                /* const branch   = this.branches.filter(e => e.code === record?.branch?.id)[0],
+                      customer = this.customers.filter(e => e.code === record?.customer?.id)[0];
+
+                this.forms.entity.qrcode.data.id         = record?.id;
+                this.forms.entity.qrcode.data.branch     = branch;
+                this.forms.entity.qrcode.data.customer   = customer;
+                this.forms.entity.qrcode.data.start_date = record.start_date;
+                this.forms.entity.qrcode.data.end_date   = this.isDefined({value: record.end_date}) ? record.end_date : Utils.getCurrentDate("datetime"); */
+
+            }else {
+
+                this.forms.entity.qrcode.data.branch     = this.lists.entity.filters.branch;
+                this.forms.entity.qrcode.data.start_date = Utils.getCurrentDate("datetime");
+
+            }
+
+            // Alerts.swals({show: false});
+            Alerts.modals({type: "show", id: this.forms.entity.qrcode.extras.modals.default.id});
+
+        },
+        async qrcodeEntity() {
+
+            const functionName = "qrcodeEntity";
+
+            Alerts.swals({});
+            this.formErrors({functionName, type: "clear"});
+
+            let form = Utils.cloneJson(this.forms.entity.qrcode.data);
+
+            const validateForm = this.validateForm({functionName, form, extras: {type: "descriptive", modal: this.forms.entity.qrcode.extras.modals.default}});
+
+            if(validateForm?.bool) {
+
+                form.branch_id = form?.branch?.code;
+
+                delete form.branch;
+
+                form.customers.forEach(customer => {
+
+                    customer.customer_id = customer.code;
+
+                    delete customer.code;
+                    delete customer.label;
+                    delete customer.data;
+
+                });
+
+                const qrcode = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.qrcodeUpdate, data: form, id: form.id}) :
+                                                                         Requests.post({route: this.config.entity.routes.qrcodeStore, data: form}));
+
+                if(Requests.valid({result: qrcode})) {
+
+                    if(["finalized"].includes(this.forms.entity.qrcode.extras.modals.default.type)) {
+
+                        Alerts.modals({type: "hide", id: this.forms.entity.qrcode.extras.modals.default.id});
+
+                    }
+
+                    // Alerts.toastrs({type: "success", subtitle: qrcode?.data?.msg});
+                    // Alerts.swals({show: false});
+                    Alerts.generateAlert({type: "success", messages: qrcode?.data?.attendances.map(e => `${e.bool ? "<i class='fa fa-check-circle text-success'></i>" : "<i class='fa fa-times-circle text-danger'></i>"} <span class='ms-1'>${e.msg}</span>`), msgContent: `<div class="fw-semibold mb-2">${qrcode?.data?.msg}</div>`});
+
+                    this.clearForm({functionName});
+                    this.forms.entity.qrcode.data.customers = [];
+
+                    this.listEntity({url: `${this.lists.entity.extras.route}?page=${this.lists.entity.records?.current_page ?? 1}`});
+
+                }else {
+
+                    this.formErrors({functionName, type: "set", errors: qrcode?.errors ?? []});
+                    // Alerts.toastrs({type: "error", subtitle: qrcode?.data?.msg});
+                    // Alerts.swals({show: false});
+                    Alerts.generateAlert({type: "error", messages: qrcode?.data?.attendances.map(e => `${e.bool ? "<i class='fa fa-check-circle text-success'></i>" : "<i class='fa fa-times-circle text-danger'></i>"} <span class='ms-1'>${e.msg}</span>`), msgContent: `<div class="fw-semibold mb-2">${qrcode?.data?.msg}</div>`});
 
                 }
 
@@ -586,12 +871,31 @@ export default {
 
                     }
                     break;
+
+                case "modalQrcodeEntity":
+                case "qrcodeEntity":
+                    // this.forms.entity.qrcode.data.id        = null;
+                    // this.forms.entity.qrcode.data.customers = [];
+                    // this.forms.entity.qrcode.data.end_date  = "";
+                    // this.forms.entity.qrcode.data.status    = null;
+
+                    // if(["finalized"].includes(this.forms.entity.qrcode.extras.modals.default.type)) {
+
+                        // this.forms.entity.qrcode.data.branch     = null;
+                        // this.forms.entity.qrcode.data.start_date = "";
+
+                    // }
+                    break;
             }
 
         },
         formErrors({functionName, type = "clear", errors = []}) {
 
             if(["modalCreateUpdateEntity", "createUpdateEntity"].includes(functionName)) {
+
+                this.forms.entity.createUpdate.errors = ["set"].includes(type) ? errors : [];
+
+            }else if(["modalQrcodeEntity", "qrcodeEntity"].includes(functionName)) {
 
                 this.forms.entity.createUpdate.errors = ["set"].includes(type) ? errors : [];
 
@@ -637,6 +941,61 @@ export default {
                 if(!this.isDefined({value: form?.customer})) {
 
                     result.customer.push(`${isDescriptive ? "Cliente:" : ""} ${this.config.forms.errors.labels.required}`);
+                    result.bool = false;
+
+                }
+
+                if(!this.isDefined({value: form?.start_date})) {
+
+                    result.start_date.push(`${isDescriptive ? "Ingreso:" : ""} ${this.config.forms.errors.labels.required}`);
+                    result.bool = false;
+
+                }
+
+                if(isFinalized) {
+
+                    if(!this.isDefined({value: form?.end_date})) {
+
+                        result.end_date.push(`${isDescriptive ? "Salida:" : ""} ${this.config.forms.errors.labels.required}`);
+                        result.bool = false;
+
+                    }
+
+                }
+
+            }else if(["qrcodeEntity"].includes(functionName)) {
+
+                result.id         = [];
+                result.branch     = [];
+                result.customers  = [];
+                result.start_date = [];
+                result.end_date   = [];
+
+                const isDescriptive = ["descriptive"].includes(extras?.type);
+
+                const isFinalized = ["finalized"].includes(extras?.modal?.type);
+
+                if(isFinalized) {
+
+                    if(!this.isDefined({value: form?.id})) {
+
+                        result.id.push(`${isDescriptive ? "Registro:" : ""} ${this.config.forms.errors.labels.required}`);
+                        result.bool = false;
+
+                    }
+
+                }
+
+                if(!this.isDefined({value: form?.branch})) {
+
+                    result.branch.push(`${isDescriptive ? "Sucursal:" : ""} ${this.config.forms.errors.labels.required}`);
+                    result.bool = false;
+
+                }
+
+                if(!this.isDefined({value: form?.customers}) || (form?.customers).length === 0) {
+
+                    result.customers.push(`${isDescriptive ? "Clientes:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }

@@ -15,6 +15,7 @@ import InputSelect2  from "../../Components/InputSelect2.vue";
 import InputText     from "../../Components/InputText.vue";
 import Paginator     from "../../Components/Paginator.vue";
 import Loader        from "../../Components/Loader.vue";
+import QrcodeScanner from "../../Components/QrcodeScanner.vue";
 import WithoutData   from "../../Components/WithoutData.vue";
 
 // App creation and mounted
@@ -30,5 +31,6 @@ createApp(App)
 .component("InputText", InputText)
 .component("Paginator", Paginator)
 .component("Loader", Loader)
+.component("QrcodeScanner", QrcodeScanner)
 .component("WithoutData", WithoutData)
 .mount("#app");
