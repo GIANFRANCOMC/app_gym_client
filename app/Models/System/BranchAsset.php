@@ -20,6 +20,7 @@ class BranchAsset extends Model {
     protected $fillable = [
         "branch_id",
         "asset_id",
+        "currency_id",
         "quantity",
         "acquisition_value",
         "acquisition_date",
@@ -61,6 +62,12 @@ class BranchAsset extends Model {
     public function asset() {
 
         return $this->belongsTo(Asset::class, "asset_id", "id");
+
+    }
+
+    public function currency() {
+
+        return $this->belongsTo(Currency::class, "currency_id", "id");
 
     }
 

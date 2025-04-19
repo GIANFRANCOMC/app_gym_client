@@ -42,7 +42,7 @@
                 <tr class="text-center align-middle">
                     <th class="fw-bold col-1">#</th>
                     <th class="fw-bold col-3">DETALLE</th>
-                    <th class="fw-bold col-2">CANTIDAD</th>
+                    <th class="fw-bold min-w-150px">CANTIDAD</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0 bg-white">

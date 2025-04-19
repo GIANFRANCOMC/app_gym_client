@@ -150,6 +150,7 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger("branch_id");
             $table->unsignedBigInteger("asset_id");
+            $table->unsignedBigInteger("currency_id");
             $table->decimal("quantity", 10, 2)->nullable()->default(0);
             $table->decimal("acquisition_value", 10, 2)->nullable()->default(0);
             $table->date("acquisition_date")->nullable();
@@ -163,6 +164,7 @@ return new class extends Migration {
 
             $table->foreign("branch_id")->references("id")->on("branches")->onDelete("cascade");
             $table->foreign("asset_id")->references("id")->on("assets")->onDelete("cascade");
+            $table->foreign("currency_id")->references("id")->on("currencies")->onDelete("cascade");
         });
 
         // Inserts

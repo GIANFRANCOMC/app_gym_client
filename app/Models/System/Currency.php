@@ -49,6 +49,13 @@ class Currency extends Model {
     }
 
     // Relationships
+    public function branchAssets() {
+
+        return $this->hasMany(BranchAsset::class, "currency_id", "id")
+                    ->whereIn("status", ["active"]);
+
+    }
+
     public function items() {
 
         return $this->hasMany(Item::class, "currency_id", "id")

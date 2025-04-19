@@ -42,9 +42,9 @@
                 <tr class="text-center align-middle">
                     <th class="fw-bold col-1">#</th>
                     <th class="fw-bold col-3">DETALLE</th>
-                    <th class="fw-bold col-2">CANTIDAD</th>
-                    <th class="fw-bold col-2">VALOR DE<br/>ADQUISICIÓN</th>
-                    <th class="fw-bold col-2">FECHA DE<br/>ADQUISICIÓN</th>
+                    <th class="fw-bold min-w-150px">CANTIDAD</th>
+                    <th class="fw-bold min-w-150px">VALOR DE<br/>ADQUISICIÓN</th>
+                    <th class="fw-bold min-w-150px">FECHA DE<br/>ADQUISICIÓN</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0 bg-white">
@@ -84,7 +84,16 @@
                                 </td>
                                 <td>
                                     <InputNumber
-                                        v-model="record.branch_asset_acquisition_value"/>
+                                        v-model="record.branch_asset_acquisition_value">
+                                        <template v-slot:inputGroupPrepend>
+                                            <button v-if="isDefined({value: record?.currencies_sign})" class="btn btn-primary waves-effect px-2" type="button">
+                                                <small v-text="record?.currencies_sign"></small>
+                                            </button>
+                                            <button v-else class="btn btn-secondary waves-effect px-2" type="button">
+                                                <small>Nuevo</small>
+                                            </button>
+                                        </template>
+                                    </InputNumber>
                                 </td>
                                 <td>
                                     <InputDate

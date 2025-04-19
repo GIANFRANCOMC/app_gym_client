@@ -55,12 +55,18 @@ class AssetManagementController extends Controller {
                              ->where("branch_assets.branch_id", $branch->id);
 
                       })
+                      ->leftJoin("currencies", function($join) use($branch) {
+
+                        $join->on("currencies.id", "=", "branch_assets.currency_id");
+
+                      })
                       ->select(
                         "assets.id AS asset_id",
                         "assets.name AS asset_name",
                         "assets.description AS asset_description",
                         "assets.internal_code AS asset_internal_code",
                         DB::raw('COALESCE(branch_assets.id, "") as branch_asset_id'),
+                        DB::raw('COALESCE(currencies.sign, "") as currencies_sign'),
                         DB::raw('COALESCE(branch_assets.quantity, 0) as branch_asset_quantity'),
                         DB::raw('COALESCE(branch_assets.acquisition_value, 0) as branch_asset_acquisition_value'),
                         DB::raw('COALESCE(branch_assets.acquisition_date, "") as branch_asset_acquisition_date'),
@@ -158,6 +164,7 @@ class AssetManagementController extends Controller {
                     $branchAsset = new BranchAsset();
                     $branchAsset->branch_id         = $item["branch_id"];
                     $branchAsset->asset_id          = $item["asset_id"];
+                    $branchAsset->currency_id       = 1;
                     $branchAsset->quantity          = Utilities::round(floatval($item["branch_asset_quantity"] ?? 0));
                     $branchAsset->acquisition_value = Utilities::round(floatval($item["branch_asset_acquisition_value"] ?? 0));
                     $branchAsset->acquisition_date  = $item["branch_asset_acquisition_date"] ?? null;

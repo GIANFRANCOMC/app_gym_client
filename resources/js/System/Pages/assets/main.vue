@@ -313,7 +313,7 @@ export default {
 
             }else {
 
-                // this.setGenerateCode({showAlert: false});
+                this.setGenerateCode({length: 7, showAlert: false});
                 this.forms.entity.createUpdate.data.status = this.statuses[0];
 
             }
