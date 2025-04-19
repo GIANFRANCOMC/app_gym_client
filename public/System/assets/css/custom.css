@@ -3,10 +3,6 @@
     margin-left: 1px;
 }
 
-.v-select {
-    width: 100% !important;
-}
-
 .border-transparent {
     border-color: transparent !important;
 }
@@ -22,7 +18,15 @@
     resize: none !important;
 }
 
+.min-w-150px {
+    min-width: 150px !important;
+}
+
 /* VUE SELECT */
+.v-select {
+    width: 100% !important;
+}
+
 .vs__dropdown-toggle {
     height: auto;
     min-height: calc(1.4em + 1.1rem);

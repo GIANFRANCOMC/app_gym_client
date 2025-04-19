@@ -19,14 +19,6 @@
                             :clearable="false"/>
                     </template>
                 </InputSlot>
-                <InputDate
-                    v-model="lists.entity.filters.start_date"
-                    @change="listEntity({})"
-                    hasDiv
-                    title="Fecha de ingreso"
-                    :titleClass="[config.forms.classes.title]"
-                    xl="6"
-                    lg="6"/>
                 <InputSlot
                     hasDiv
                     title="Cliente"
@@ -41,6 +33,14 @@
                             :clearable="true"/>
                     </template>
                 </InputSlot>
+                <InputDate
+                    v-model="lists.entity.filters.start_date"
+                    @change="listEntity({})"
+                    hasDiv
+                    title="Fecha de ingreso"
+                    :titleClass="[config.forms.classes.title]"
+                    xl="6"
+                    lg="6"/>
             </div>
         </div>
         <div class="col-lg-3 col-12">
@@ -113,12 +113,12 @@
         <table class="table table-hover">
             <thead class="table-light">
                 <tr class="text-center align-middle">
-                    <th class="fw-bold col-1"></th>
-                    <th class="fw-bold col-1">SUCURSAL</th>
-                    <th class="fw-bold col-1">CLIENTE</th>
-                    <th class="fw-bold col-1">INGRESO</th>
-                    <th class="fw-bold col-1">SALIDA</th>
-                    <th class="fw-bold col-1">ACCIONES</th>
+                    <th class="fw-bold min-w-150px"></th>
+                    <th class="fw-bold min-w-150px">SUCURSAL</th>
+                    <th class="fw-bold min-w-150px">CLIENTE</th>
+                    <th class="fw-bold min-w-150px">INGRESO</th>
+                    <th class="fw-bold min-w-150px">SALIDA</th>
+                    <th class="fw-bold min-w-150px">ACCIONES</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0 bg-white">

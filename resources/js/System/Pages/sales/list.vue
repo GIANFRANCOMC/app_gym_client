@@ -96,12 +96,12 @@
         <table class="table table-hover">
             <thead class="table-light">
                 <tr class="text-center align-middle">
-                    <th class="fw-bold col-1">DOCUMENTO</th>
-                    <th class="fw-bold col-1">CLIENTE</th>
-                    <th class="fw-bold col-1">FECHA DE EMISIÓN</th>
-                    <th class="fw-bold col-1">TOTAL</th>
-                    <th class="fw-bold col-1">ESTADO</th>
-                    <th class="fw-bold col-1">ACCIONES</th>
+                    <th class="fw-bold min-w-150px">DOCUMENTO</th>
+                    <th class="fw-bold min-w-150px">CLIENTE</th>
+                    <th class="fw-bold min-w-150px">FECHA DE EMISIÓN</th>
+                    <th class="fw-bold min-w-150px">TOTAL</th>
+                    <th class="fw-bold min-w-150px">ESTADO</th>
+                    <th class="fw-bold min-w-150px">ACCIONES</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0 bg-white">

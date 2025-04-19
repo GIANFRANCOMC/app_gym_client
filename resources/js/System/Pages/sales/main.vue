@@ -96,8 +96,8 @@
                                         <th class="fw-bold col-auto">#</th>
                                         <th class="fw-bold col-1">DESCRIPCIÓN</th>
                                         <th class="fw-bold col-3">CANTIDAD</th>
-                                        <th class="fw-bold col-4">PRECIO UNITARIO</th>
-                                        <th class="fw-bold col-3">TOTAL</th>
+                                        <th class="fw-bold min-w-150px">PRECIO UNITARIO</th>
+                                        <th class="fw-bold min-w-150px">TOTAL</th>
                                         <th class="fw-bold col-auto"></th>
                                     </tr>
                                 </thead>
