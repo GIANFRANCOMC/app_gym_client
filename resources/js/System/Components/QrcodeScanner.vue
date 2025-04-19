@@ -159,6 +159,17 @@
 
             });
 
+        },
+        watch: {
+            selectedCameraId(newVal, oldVal) {
+
+                if(this.isScanning && newVal !== oldVal) {
+
+                    this.stopScanner(true);
+
+                }
+
+            }
         }
     };
 </script>
