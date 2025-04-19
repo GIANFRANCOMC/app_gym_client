@@ -289,8 +289,7 @@
                         </InputSlot>
                         <InputSlot
                             hasDiv
-                            title="Clientes"
-                            isRequired
+                            title="Cámara"
                             xl="12"
                             lg="12">
                             <template v-slot:input>
@@ -299,34 +298,41 @@
                                         ref="scannerQr"
                                         @result="onScanCustomer"/>
                                 </div>
-                                <div class="w-100 mt-3">
-                                    <div class="table-responsive my-3">
-                                        <table class="table table-sm table-hover">
-                                            <thead class="table-light">
-                                                <tr class="text-center align-middle">
-                                                    <th class="fw-bold col-1">#</th>
-                                                    <th class="fw-bold col-1">CLIENTE</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="table-border-bottom-0 bg-white">
-                                                <template v-if="(forms.entity.qrcode.data.customers).length > 0">
-                                                    <template v-for="(record, keyRecord) in forms.entity.qrcode.data.customers" :key="record.id">
-                                                        <tr class="text-nowrap text-center">
-                                                            <td v-text="keyRecord + 1"></td>
-                                                            <td v-text="record.label"></td>
-                                                        </tr>
-                                                    </template>
-                                                </template>
-                                                <template v-else>
-                                                    <tr>
-                                                        <td class="text-center" colspan="99">
-                                                            <WithoutData type="image"/>
-                                                        </td>
+                            </template>
+                        </InputSlot>
+                        <InputSlot
+                            hasDiv
+                            title="Clientes"
+                            isRequired
+                            xl="12"
+                            lg="12">
+                            <template v-slot:input>
+                                <div class="table-responsive w-100">
+                                    <table class="table table-sm table-hover">
+                                        <thead class="table-light">
+                                            <tr class="text-center align-middle">
+                                                <th class="fw-bold col-1">#</th>
+                                                <th class="fw-bold col-1">CLIENTE</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="table-border-bottom-0 bg-white">
+                                            <template v-if="(forms.entity.qrcode.data.customers).length > 0">
+                                                <template v-for="(record, keyRecord) in forms.entity.qrcode.data.customers" :key="record.id">
+                                                    <tr class="text-nowrap text-center">
+                                                        <td v-text="keyRecord + 1"></td>
+                                                        <td v-text="record.label"></td>
                                                     </tr>
                                                 </template>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                            </template>
+                                            <template v-else>
+                                                <tr>
+                                                    <td class="text-center" colspan="99">
+                                                        <WithoutData type="text"/>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </template>
                         </InputSlot>

@@ -1,17 +1,21 @@
 <template>
     <div>
-        <!-- Contenedor donde aparece la cámara -->
-        <div ref="scannerContainer" style="width: 100%; max-width: 300px;"></div>
-
-        <!-- Botones -->
-        <div class="controls">
-            <button @click="startScanner" type="button" class="btn btn-success waves-effect">📷 Escanear QR</button>
+        <select v-model="selectedCameraId" class="form-select mb-2" v-if="cameras.length > 0">
+            <template v-for="camera in cameras" :key="camera.id">
+                <option :value="camera.id" v-text="camera.label || 'Cámara ' + camera.id"></option>
+            </template>
+        </select>
+        <div ref="scannerContainer" style="width: 100%;"></div>
+        <div class="controls mt-2">
+            <button @click="startScanner()" v-if="!isScanning" type="button" class="btn btn-success waves-effect">📷 Escanear QR</button>
             <button @click="stopScanner(false)" v-if="isScanning" type="button" class="btn btn-danger waves-effect">🛑 Detener</button>
         </div>
     </div>
 </template>
 
 <script>
+    import * as Alerts  from "../Helpers/Alerts.js";
+
     export default {
         name: "QrcodeScanner",
         emits: ["result"],
@@ -40,7 +44,9 @@
             return {
                 scanner: null,
                 isScanning: false,
-                counterScan: 0
+                counterScan: 0,
+                cameras: [],
+                selectedCameraId: null
             };
         },
         methods: {
@@ -61,10 +67,10 @@
 
                 const cameras = await window.Html5Qrcode.getCameras();
 
-                if(cameras.length) {
+                if(cameras.length > 0) {
 
                     this.scanner.start(
-                        cameras[0].id,
+                        this.selectedCameraId,
                         config,
                         (decodedText, decodedResult) => {
 
@@ -133,13 +139,32 @@
 
             }
 
+            window.Html5Qrcode
+            .getCameras()
+            .then(cameras => {
+
+                this.cameras = cameras;
+
+                if(cameras.length > 0) {
+
+                    this.selectedCameraId = cameras[0].id;
+
+                }
+
+            })
+            .catch(err => {
+
+                console.error("Error al obtener cámaras:", err);
+                Alerts.generateAlert({ type: "error", msgContent: `Error al obtener cámaras.` });
+
+            });
+
         }
     };
 </script>
 
 <style scoped>
     .controls {
-        margin-top: 10px;
         display: flex;
         gap: 10px;
     }
