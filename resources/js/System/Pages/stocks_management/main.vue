@@ -23,12 +23,12 @@
             xl="6"
             lg="5">
             <template v-slot:input>
+                <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})">
+                    <i class="fa fa-search"></i>
+                    <span class="ms-2">Buscar</span>
+                </button>
                 <template v-if="!lists.entity.extras.loading">
-                    <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})">
-                        <i class="fa fa-search"></i>
-                        <span class="ms-2">Buscar</span>
-                    </button>
-                    <button v-if="isDefined({value: lists.entity.filters.warehouse?.code}) && !lists.entity.extras.loading" type="button" class="btn btn-success waves-effect ms-3" @click="createUpdateEntity({})">
+                    <button v-if="isDefined({value: lists.entity.filters.warehouse?.code})" type="button" class="btn btn-success waves-effect ms-3" @click="createUpdateEntity({})">
                         <i class="fa fa-save"></i>
                         <span class="ms-2">Guardar</span>
                     </button>
@@ -276,6 +276,13 @@ export default {
                 if(!this.isDefined({value: form?.warehouse_id})) {
 
                     result.msg.push(`<b>Almacén:</b> ${this.config.forms.errors.labels.required}`);
+                    result.bool = false;
+
+                }
+
+                if((form.items).length === 0) {
+
+                    result.msg.push(`<b>Registros:</b> ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }

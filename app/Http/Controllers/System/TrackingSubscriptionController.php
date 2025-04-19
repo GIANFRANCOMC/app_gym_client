@@ -62,6 +62,24 @@ class TrackingSubscriptionController extends Controller {
                                 });
 
                             })
+                            ->when(Utilities::isDefined($request->start_date), function($query) use($request) {
+
+                                $query->where(function($query) use($request) {
+
+                                    $query->where("start_date", ">=", $request->start_date." 00:00:00");
+
+                                });
+
+                            })
+                            ->when(Utilities::isDefined($request->end_date), function($query) use($request) {
+
+                                $query->where(function($query) use($request) {
+
+                                    $query->where("end_date", "<=", $request->end_date." 23:59:59");
+
+                                });
+
+                            })
                             ->when(Utilities::isDefined($request->status), function($query) use($request) {
 
                                 $query->where(function($query) use($request) {

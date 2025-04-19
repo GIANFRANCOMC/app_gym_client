@@ -83,14 +83,17 @@
             </div>
         </div>
         <InputSlot
-            v-if="!lists.entity.extras.loading"
             hasDiv
             :divClass="['text-center']"
             :isInputGroup="false"
             xl="12"
             lg="12">
             <template v-slot:input>
-                <button type="button" class="btn btn-primary waves-effect" @click="modalCreateUpdateEntity({type: 'store'})">
+                <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})">
+                    <i class="fa fa-sync"></i>
+                    <span class="ms-2">Actualizar</span>
+                </button>
+                <button type="button" class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({type: 'store'})">
                     <i class="fa fa-plus"></i>
                     <span class="ms-2">Agregar asistencia</span>
                 </button>
@@ -121,7 +124,7 @@
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td>
-                                <span :class="['badge', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status), 'bg-label-primary': ['finalized'].includes(record.status), 'bg-label-danger': ['canceled'].includes(record.status) }]" v-text="record.formatted_status"></span>
+                                <span :class="['badge', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-primary': ['finalized'].includes(record.status), 'bg-label-danger': ['canceled'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
                             <td class="text-start">
                                 <span v-text="record.branch?.name" class="fw-bold d-block"></span>
@@ -138,9 +141,6 @@
                                 <template v-if="isDefined({value: record.end_date})">
                                     <span v-text="legibleFormatDate({dateString: record.end_date, type: 'date'})" class="d-block fw-semibold"></span>
                                     <span v-text="legibleFormatDate({dateString: record.end_date, type: 'time'})" class="d-block fw-semibold"></span>
-                                </template>
-                                <template v-else>
-                                    <span>-</span>
                                 </template>
                             </td>
                             <td>
@@ -166,9 +166,9 @@
             </tbody>
         </table>
     </div>
-    <div v-if="!lists.entity.extras.loading" class="row justify-content-end g-3 my-1">
+    <div class="row justify-content-end g-3 my-1">
         <div class="col-lg-auto col-sm-auto">
-            <a href="javascript:void(0)" @click="modalCreateUpdateEntity({type: 'store'})" class="fw-bold">
+            <a href="javascript:void(0)" @click="modalCreateUpdateEntity({type: 'store'})" class="fw-bold ms-3">
                 <i class="fa fa-plus-circle"></i>
                 <span class="ms-1">Agregar asistencia</span>
             </a>

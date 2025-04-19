@@ -23,11 +23,11 @@
             xl="6"
             lg="5">
             <template v-slot:input>
+                <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})">
+                    <i class="fa fa-search"></i>
+                    <span class="ms-2">Buscar</span>
+                </button>
                 <template v-if="!lists.entity.extras.loading">
-                    <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})">
-                        <i class="fa fa-search"></i>
-                        <span class="ms-2">Buscar</span>
-                    </button>
                     <button v-if="isDefined({value: lists.entity.filters.branch?.code})" type="button" class="btn btn-success waves-effect ms-3" @click="createUpdateEntity({})">
                         <i class="fa fa-save"></i>
                         <span class="ms-2">Guardar</span>
@@ -297,6 +297,13 @@ export default {
                 if(!this.isDefined({value: form?.branch_id})) {
 
                     result.msg.push(`<b>Sucursal:</b> ${this.config.forms.errors.labels.required}`);
+                    result.bool = false;
+
+                }
+
+                if((form.items).length === 0) {
+
+                    result.msg.push(`<b>Registros:</b> ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }

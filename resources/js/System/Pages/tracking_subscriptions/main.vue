@@ -7,8 +7,8 @@
             hasDiv
             title="Sucursal"
             :titleClass="[config.forms.classes.title]"
-            xl="7"
-            lg="8">
+            xl="6"
+            lg="7">
             <template v-slot:input>
                 <v-select
                     v-model="lists.entity.filters.branch"
@@ -23,7 +23,15 @@
             hasDiv
             title="Desde"
             :titleClass="[config.forms.classes.title]"
-            xl="5"
+            xl="3"
+            lg="4"/>
+        <InputDate
+            v-model="lists.entity.filters.end_date"
+            @change="listEntity({})"
+            hasDiv
+            title="Hasta"
+            :titleClass="[config.forms.classes.title]"
+            xl="3"
             lg="4"/>
         <InputSlot
             hasDiv
@@ -82,6 +90,19 @@
                 </label>
             </div>
         </div>
+        <InputSlot
+            hasDiv
+            :divClass="['text-center']"
+            :isInputGroup="false"
+            xl="12"
+            lg="12">
+            <template v-slot:input>
+                <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})">
+                    <i class="fa fa-sync"></i>
+                    <span class="ms-2">Actualizar</span>
+                </button>
+            </template>
+        </InputSlot>
     </div>
     <div class="table-responsive">
         <table class="table table-hover">
@@ -107,7 +128,7 @@
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td>
-                                <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-primary': ['inactive'].includes(record.status), 'bg-label-danger': ['canceled'].includes(record.status) }]" v-text="record.formatted_status"></span>
+                                <span :class="['badge', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-primary': ['inactive'].includes(record.status), 'bg-label-danger': ['canceled'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
                             <td class="text-start">
                                 <span v-text="record.branch?.name" class="fw-bold d-block"></span>
@@ -238,6 +259,7 @@ export default {
                         branch: null,
                         customer: null,
                         start_date: "",
+                        end_date: "",
                         status: ""
                     },
                     records: {
@@ -300,6 +322,7 @@ export default {
 
                 this.lists.entity.filters.branch     = this.branches[0];
                 // this.lists.entity.filters.start_date = Utils.getCurrentDate("date");
+                // this.lists.entity.filters.end_date   = Utils.getCurrentDate("date");
 
                 resolve(true);
 
@@ -310,7 +333,7 @@ export default {
         async listEntity({url = null}) {
 
             let filters = Utils.cloneJson(this.lists.entity.filters);
-            const filterJson = {branch_id: filters?.branch?.code, customer_id: filters?.customer?.code, start_date: filters?.start_date, status: filters?.status};
+            const filterJson = {branch_id: filters?.branch?.code, customer_id: filters?.customer?.code, start_date: filters?.start_date, end_date: filters?.end_date, status: filters?.status};
 
             this.lists.entity.extras.loading = true;
             this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: filterJson}))?.data;
@@ -427,44 +450,15 @@ export default {
 
             if(["createUpdateEntity"].includes(functionName)) {
 
-                result.internal_code = [];
-                result.name          = [];
-                result.description   = [];
-                result.price         = [];
-                result.currency      = [];
-                result.status        = [];
+                //
 
-                if(!this.isDefined({value: form?.internal_code})) {
+            }else if(["cancelEntity"].includes(functionName)) {
 
-                    result.internal_code.push(this.config.forms.errors.labels.required);
-                    result.bool = false;
+                result.msg = [];
 
-                }
+                if(!this.isDefined({value: form?.id})) {
 
-                if(!this.isDefined({value: form?.name})) {
-
-                    result.name.push(this.config.forms.errors.labels.required);
-                    result.bool = false;
-
-                }
-
-                if(!this.isDefined({value: form?.price})) {
-
-                    result.price.push(this.config.forms.errors.labels.required);
-                    result.bool = false;
-
-                }
-
-                if(!this.isDefined({value: form?.currency})) {
-
-                    result.currency.push(this.config.forms.errors.labels.required);
-                    result.bool = false;
-
-                }
-
-                if(!this.isDefined({value: form?.status})) {
-
-                    result.status.push(this.config.forms.errors.labels.required);
+                    result.msg.push(`Registro: ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }
