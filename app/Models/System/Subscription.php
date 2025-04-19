@@ -101,8 +101,8 @@ class Subscription extends Model {
 
         $statuses = [
             ["code" => "active", "label" => "Vigente"],
-            ["code" => "inactive", "label" => "Vencido"],
-            ["code" => "canceled", "label" => "Anulado"]
+            ["code" => "inactive", "label" => "Vencida"],
+            ["code" => "canceled", "label" => "Anulada"]
         ];
 
         return Utilities::getValues($statuses, $type, $code);

@@ -61,9 +61,14 @@ class Customer extends Model {
                             $query->whereIn("status", ["active"]);
 
                        })
+                       ->when(in_array($type, ["tracking_subscription"]), function($query) {
+
+                            // $query->whereIn("status", ["active"]);
+
+                       })
                        ->when(in_array($type, ["tracking_attendance"]), function($query) {
 
-                            $query->whereIn("status", ["active"]);
+                            // $query->whereIn("status", ["active"]);
 
                        })
                        ->get();
