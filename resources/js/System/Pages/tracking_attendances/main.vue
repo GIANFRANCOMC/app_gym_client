@@ -25,6 +25,20 @@
             :titleClass="[config.forms.classes.title]"
             xl="5"
             lg="4"/>
+        <InputSlot
+            hasDiv
+            title="Cliente"
+            :titleClass="[config.forms.classes.title]"
+            xl="12"
+            lg="12">
+            <template v-slot:input>
+                <v-select
+                    v-model="lists.entity.filters.customer"
+                    :options="customers"
+                    :class="config.forms.classes.select2"
+                    :clearable="true"/>
+            </template>
+        </InputSlot>
         <div class="col-xl-12 mb-0">
             <label :class="[config.forms.classes.title]">Estado</label>
         </div>
@@ -39,21 +53,21 @@
             </div>
         </div>
         <div class="col-lg-3 col-xl-3 my-1">
-            <div class="form-check custom-option custom-option-basic border-primary bg-white">
+            <div class="form-check custom-option custom-option-basic border-success bg-white">
                 <label class="form-check-label custom-option-content">
-                    <input :class="['form-check-input', lists.entity.filters.status == 'active' ? 'bg-primary border-primary' : '']" type="radio" value="active" v-model="lists.entity.filters.status" @change="listEntity({})"/>
+                    <input :class="['form-check-input', lists.entity.filters.status == 'active' ? 'bg-success border-success' : '']" type="radio" value="active" v-model="lists.entity.filters.status" @change="listEntity({})"/>
                     <span class="custom-option-body">
-                        <span class="fw-bold text-primary">En curso</span>
+                        <span class="fw-bold text-success">En curso</span>
                     </span>
                 </label>
             </div>
         </div>
         <div class="col-lg-3 col-xl-3 my-1">
-            <div class="form-check custom-option custom-option-basic border-success bg-white">
+            <div class="form-check custom-option custom-option-basic border-primary bg-white">
                 <label class="form-check-label custom-option-content">
-                    <input :class="['form-check-input', lists.entity.filters.status == 'finalized' ? 'bg-success border-success' : '']" type="radio" value="finalized" v-model="lists.entity.filters.status" @change="listEntity({})"/>
+                    <input :class="['form-check-input', lists.entity.filters.status == 'finalized' ? 'bg-primary border-primary' : '']" type="radio" value="finalized" v-model="lists.entity.filters.status" @change="listEntity({})"/>
                     <span class="custom-option-body">
-                        <span class="fw-bold text-success">Concluida</span>
+                        <span class="fw-bold text-primary">Concluida</span>
                     </span>
                 </label>
             </div>
@@ -107,7 +121,7 @@
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td>
-                                <span :class="['badge', { 'bg-label-primary': ['active'].includes(record.status), 'bg-label-warning': ['inactive'].includes(record.status), 'bg-label-success': ['finalized'].includes(record.status), 'bg-label-danger': ['canceled'].includes(record.status) }]" v-text="record.formatted_status"></span>
+                                <span :class="['badge', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status), 'bg-label-primary': ['finalized'].includes(record.status), 'bg-label-danger': ['canceled'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
                             <td class="text-start">
                                 <span v-text="record.branch?.name" class="fw-bold d-block"></span>
@@ -130,7 +144,7 @@
                                 </template>
                             </td>
                             <td>
-                                <button v-if="['active'].includes(record?.status)" type="button" class="btn btn-sm btn-success waves-effect my-1" @click="modalCreateUpdateEntity({record, type: 'finalized'})">
+                                <button v-if="['active'].includes(record?.status)" type="button" class="btn btn-sm btn-primary waves-effect my-1" @click="modalCreateUpdateEntity({record, type: 'finalized'})">
                                     <i class="fa fa-check"></i>
                                     <span class="ms-2">Finalizar</span>
                                 </button>
@@ -274,6 +288,7 @@ export default {
                     },
                     filters: {
                         branch: null,
+                        customer: null,
                         start_date: "",
                         status: ""
                     },
@@ -300,7 +315,7 @@ export default {
                                         buttons: {
                                             store: "btn-primary",
                                             update: "btn-warning",
-                                            finalized: "btn-success",
+                                            finalized: "btn-primary",
                                             canceled: "btn-danger"
                                         },
                                         icons: {
@@ -375,7 +390,7 @@ export default {
         async listEntity({url = null}) {
 
             let filters = Utils.cloneJson(this.lists.entity.filters);
-            const filterJson = {branch_id: filters?.branch?.code, start_date: filters?.start_date, status: filters?.status};
+            const filterJson = {branch_id: filters?.branch?.code, customer_id: filters?.customer?.code, start_date: filters?.start_date, status: filters?.status};
 
             this.lists.entity.extras.loading = true;
             this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: filterJson}))?.data;
@@ -550,12 +565,10 @@ export default {
             switch(functionName) {
                 case "modalCreateUpdateEntity":
                 case "createUpdateEntity":
-                    this.forms.entity.createUpdate.data.id         = null;
-                    // this.forms.entity.createUpdate.data.branch     = null;
-                    this.forms.entity.createUpdate.data.customer   = null;
-                    // this.forms.entity.createUpdate.data.start_date = "";
-                    this.forms.entity.createUpdate.data.end_date   = "";
-                    this.forms.entity.createUpdate.data.status     = null;
+                    this.forms.entity.createUpdate.data.id       = null;
+                    this.forms.entity.createUpdate.data.customer = null;
+                    this.forms.entity.createUpdate.data.end_date = "";
+                    this.forms.entity.createUpdate.data.status   = null;
 
                     if(["finalized"].includes(this.forms.entity.createUpdate.extras.modals.default.type)) {
 
@@ -680,11 +693,6 @@ export default {
 
             return this.options?.customers?.records.map(e => ({code: e.id, label: `${e.document_number} - ${e.name}`, data: e}));
 
-        },
-        statuses: function() {
-
-            return this.options?.subscriptions?.statuses.map(e => ({code: e.code, label: e.label}));
-
         }
     },
     watch: {
@@ -693,14 +701,9 @@ export default {
             this.listEntity({});
 
         },
-        "lists.entity.filters.start_date": function(newValue, oldValue) {
+        "lists.entity.filters.customer": function(newValue, oldValue) {
 
-            // this.listEntity({});
-
-        },
-        "lists.entity.filters.status": function(newValue, oldValue) {
-
-            // this.listEntity({});
+            this.listEntity({});
 
         }
     }

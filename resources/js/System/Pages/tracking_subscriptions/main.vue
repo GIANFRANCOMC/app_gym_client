@@ -5,49 +5,93 @@
     <div class="row align-items-end g-3 mb-4">
         <InputSlot
             hasDiv
-            title="Filtrar por"
+            title="Sucursal"
             :titleClass="[config.forms.classes.title]"
-            xl="3"
-            lg="4">
+            xl="7"
+            lg="8">
             <template v-slot:input>
                 <v-select
-                    v-model="lists.entity.filters.filter_by"
-                    :options="filterByOptions"
+                    v-model="lists.entity.filters.branch"
+                    :options="branches"
                     :class="config.forms.classes.select2"
                     :clearable="false"/>
             </template>
         </InputSlot>
-        <InputText
-            v-model="lists.entity.filters.word"
-            @enterKeyPressed="listEntity({})"
+        <InputDate
+            v-model="lists.entity.filters.start_date"
+            @change="listEntity({})"
             hasDiv
-            title="Búsqueda"
+            title="Desde"
             :titleClass="[config.forms.classes.title]"
-            xl="4"
+            xl="5"
             lg="4"/>
         <InputSlot
             hasDiv
-            :isInputGroup="false"
-            xl="5"
-            lg="4">
+            title="Cliente"
+            :titleClass="[config.forms.classes.title]"
+            xl="12"
+            lg="12">
             <template v-slot:input>
-                <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})">
-                    <i class="fa fa-search"></i>
-                    <span class="ms-2">Buscar</span>
-                </button>
+                <v-select
+                    v-model="lists.entity.filters.customer"
+                    :options="customers"
+                    :class="config.forms.classes.select2"
+                    :clearable="true"/>
             </template>
         </InputSlot>
+        <div class="col-xl-12 mb-0">
+            <label :class="[config.forms.classes.title]">Estado</label>
+        </div>
+        <div class="col-lg-3 col-xl-3 my-1">
+            <div class="form-check custom-option custom-option-basic border-secondary bg-white">
+                <label class="form-check-label custom-option-content">
+                    <input :class="['form-check-input', lists.entity.filters.status == '' ? 'bg-secondary border-secondary' : '']" type="radio" value="" v-model="lists.entity.filters.status" @change="listEntity({})"/>
+                    <span class="custom-option-body">
+                        <span class="fw-bold text-secondary">Todos los estados</span>
+                    </span>
+                </label>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xl-3 my-1">
+            <div class="form-check custom-option custom-option-basic border-success bg-white">
+                <label class="form-check-label custom-option-content">
+                    <input :class="['form-check-input', lists.entity.filters.status == 'active' ? 'bg-success border-success' : '']" type="radio" value="active" v-model="lists.entity.filters.status" @change="listEntity({})"/>
+                    <span class="custom-option-body">
+                        <span class="fw-bold text-success">Vigente</span>
+                    </span>
+                </label>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xl-3 my-1">
+            <div class="form-check custom-option custom-option-basic border-primary bg-white">
+                <label class="form-check-label custom-option-content">
+                    <input :class="['form-check-input', lists.entity.filters.status == 'inactive' ? 'bg-primary border-primary' : '']" type="radio" value="inactive" v-model="lists.entity.filters.status" @change="listEntity({})"/>
+                    <span class="custom-option-body">
+                        <span class="fw-bold text-primary">Vencida</span>
+                    </span>
+                </label>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xl-3 my-1">
+            <div class="form-check custom-option custom-option-basic border-danger bg-white">
+                <label class="form-check-label custom-option-content">
+                    <input :class="['form-check-input', lists.entity.filters.status == 'canceled' ? 'bg-danger border-danger' : '']" type="radio" value="canceled" v-model="lists.entity.filters.status" @change="listEntity({})"/>
+                    <span class="custom-option-body">
+                        <span class="fw-bold text-danger">Anulada</span>
+                    </span>
+                </label>
+            </div>
+        </div>
     </div>
     <div class="table-responsive">
         <table class="table table-hover">
             <thead class="table-light">
                 <tr class="text-center align-middle">
+                    <th class="fw-bold col-1"></th>
+                    <th class="fw-bold col-1">SUCURSAL</th>
                     <th class="fw-bold col-1">CLIENTE</th>
-                    <!-- <th class="fw-bold col-1">DURACIÓN</th> -->
                     <th class="fw-bold col-1">FECHA DE INICIO</th>
                     <th class="fw-bold col-1">FECHA DE FINALIZACIÓN</th>
-                    <th class="fw-bold col-1">ORIGEN</th>
-                    <th class="fw-bold col-1">ESTADO</th>
                     <th class="fw-bold col-1">ACCIONES</th>
                 </tr>
             </thead>
@@ -62,13 +106,16 @@
                 <template v-else>
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
+                            <td>
+                                <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-primary': ['inactive'].includes(record.status), 'bg-label-danger': ['canceled'].includes(record.status) }]" v-text="record.formatted_status"></span>
+                            </td>
+                            <td class="text-start">
+                                <span v-text="record.branch?.name" class="fw-bold d-block"></span>
+                            </td>
                             <td class="text-start">
                                 <span v-text="record.customer?.name" class="fw-bold d-block"></span>
                                 <small v-text="record.customer?.document_number" class="d-block"></small>
                             </td>
-                            <!-- <td>
-                                <span v-text="record.formatted_duration" class="badge bg-label-primary fw-bold"></span>
-                            </td> -->
                             <td>
                                 <span v-text="legibleFormatDate({dateString: record.start_date, type: 'date'})" class="d-block fw-semibold"></span>
                                 <span v-text="legibleFormatDate({dateString: record.start_date, type: 'time'})" class="d-block fw-semibold"></span>
@@ -76,12 +123,6 @@
                             <td>
                                 <span v-text="legibleFormatDate({dateString: record.end_date, type: 'date'})" class="d-block fw-semibold"></span>
                                 <span v-text="legibleFormatDate({dateString: record.end_date, type: 'time'})" class="d-block fw-semibold"></span>
-                            </td>
-                            <td class="text-center">
-                                <span v-text="record.formatted_type" class="d-block fw-bold"></span>
-                            </td>
-                            <td>
-                                <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive', 'canceled'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
                             <td>
                                 <button type="button" class="btn btn-sm btn-primary waves-effect" @click="modalActionsEntity({record})">
@@ -180,7 +221,7 @@ export default {
         if(initParams && initOthers) {
 
             Alerts.swals({show: false});
-            this.listEntity({});
+            // this.listEntity({});
 
         }
 
@@ -194,8 +235,10 @@ export default {
                         route: Requests.config({entity: "tracking_subscriptions", type: "list"})
                     },
                     filters: {
-                        filter_by: null,
-                        word: ""
+                        branch: null,
+                        customer: null,
+                        start_date: "",
+                        status: ""
                     },
                     records: {
                         total: 0
@@ -245,7 +288,8 @@ export default {
 
             let initParams = await Requests.get({route: this.config.entity.routes.initParams, data: {page: "main"}, showAlert: true});
 
-            this.options.subscriptions = initParams.data?.config?.subscriptions;
+            this.options.branches  = initParams.data?.config?.branches;
+            this.options.customers = initParams.data?.config?.customers;
 
             return Requests.valid({result: initParams});
 
@@ -254,7 +298,8 @@ export default {
 
             return new Promise(resolve => {
 
-                this.lists.entity.filters.filter_by = this.filterByOptions[0];
+                this.lists.entity.filters.branch     = this.branches[0];
+                // this.lists.entity.filters.start_date = Utils.getCurrentDate("date");
 
                 resolve(true);
 
@@ -265,7 +310,7 @@ export default {
         async listEntity({url = null}) {
 
             let filters = Utils.cloneJson(this.lists.entity.filters);
-            const filterJson = {filter_by: filters?.filter_by?.code, word: filters.word};
+            const filterJson = {branch_id: filters?.branch?.code, customer_id: filters?.customer?.code, start_date: filters?.start_date, status: filters?.status};
 
             this.lists.entity.extras.loading = true;
             this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: filterJson}))?.data;
@@ -447,25 +492,26 @@ export default {
             return [{title: "Seguimiento"}, this.config.entity.page];
 
         },
-        filterByOptions: function() {
+        branches: function() {
 
-            return [
-                // {code: "all", label: "Todos"},
-                // {code: "name", label: "Tipo"}
-                {code: "customer", label: "Cliente"}
-            ];
+            return this.options?.branches?.records.map(e => ({code: e.id, label: e.name, data: e}));
 
         },
-        statuses: function() {
+        customers: function() {
 
-            return this.options?.subscriptions?.statuses.map(e => ({code: e.code, label: e.label}));
+            return this.options?.customers?.records.map(e => ({code: e.id, label: `${e.document_number} - ${e.name}`, data: e}));
 
         }
     },
     watch: {
-        "lists.entity.filters.filter_by": function(newValue, oldValue) {
+        "lists.entity.filters.branch": function(newValue, oldValue) {
 
-            // this.listEntity({});
+            this.listEntity({});
+
+        },
+        "lists.entity.filters.customer": function(newValue, oldValue) {
+
+            this.listEntity({});
 
         }
     }

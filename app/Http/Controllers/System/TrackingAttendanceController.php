@@ -54,7 +54,16 @@ class TrackingAttendanceController extends Controller {
 
         }
 
-        $list = Attendance::when(Utilities::isDefined($request->status), function($query) use($request) {
+        $list = Attendance::when(Utilities::isDefined($request->customer_id), function($query) use($request) {
+
+                            $query->where(function($query) use($request) {
+
+                                $query->where("customer_id", $request->customer_id);
+
+                            });
+
+                          })
+                          ->when(Utilities::isDefined($request->status), function($query) use($request) {
 
                             $query->where(function($query) use($request) {
 

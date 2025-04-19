@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\TrackingSubscriptions\{CancelTrackingSubscriptionRequest, StoreTrackingSubscriptionRequest, UpdateTrackingSubscriptionRequest};
-use App\Models\System\{Subscription};
+use App\Models\System\{Branch, Customer, Subscription};
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class TrackingSubscriptionController extends Controller {
 
@@ -23,8 +24,11 @@ class TrackingSubscriptionController extends Controller {
 
         if(in_array($page, ["main"])) {
 
-            $config->subscriptions = new stdClass();
-            $config->subscriptions->statuses = Subscription::getStatuses();
+            $config->branches = new stdClass();
+            $config->branches->records = Branch::getAll("tracking_subscription");
+
+            $config->customers = new stdClass();
+            $config->customers->records = Customer::getAll("tracking_subscription");
 
         }
 
@@ -39,30 +43,38 @@ class TrackingSubscriptionController extends Controller {
 
         $userAuth = Auth::user();
 
-        $list = Subscription::select("subscriptions.*")
-                            ->when(Utilities::isDefined($request->filter_by), function($query) use($request) {
+        $branch = Branch::where("id", $request->branch_id)
+                        ->where("company_id", $userAuth->company_id)
+                        ->first();
 
-                                $filter = Utilities::getWordSearch($request->word);
+        if(!Utilities::isDefined($branch)) {
 
-                                if(in_array($request->filter_by, ["customer"])) {
+            return new LengthAwarePaginator([], 0, 1, 1, ["path" => ""]);
 
+        }
 
-                                    $query->join("customers", "customers.id", "subscriptions.customer_id")
-                                          ->where(function($query) use($request, $filter) {
+        $list = Subscription::when(Utilities::isDefined($request->customer_id), function($query) use($request) {
 
-                                                $query->where("document_number", "like", $filter)
-                                                      ->orWhere("name", "like", $filter)
-                                                      ->orWhere("email", "like", $filter)
-                                                      ->orWhere("phone_number", "like", $filter);
+                                $query->where(function($query) use($request) {
 
-                                          });
+                                    $query->where("customer_id", $request->customer_id);
 
-                                }
+                                });
 
                             })
-                            ->where("subscriptions.company_id", $userAuth->company_id)
-                            ->orderBy("subscriptions.id", "DESC")
-                            ->with(["saleHeader", "customer"])
+                            ->when(Utilities::isDefined($request->status), function($query) use($request) {
+
+                                $query->where(function($query) use($request) {
+
+                                    $query->where("status", $request->status);
+
+                                });
+
+                            })
+                            ->where("company_id", $userAuth->company_id)
+                            ->where("branch_id", $branch->id)
+                            ->orderBy("id", "DESC")
+                            ->with(["branch", "saleHeader", "customer"])
                             ->paginate($request->per_page ?? Utilities::$per_page_default);
 
         return $list;
