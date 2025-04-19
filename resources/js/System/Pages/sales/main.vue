@@ -178,6 +178,7 @@
                                                                         disabled/>
                                                                 </div>
                                                                 <InputSlot
+                                                                    v-if="false"
                                                                     :isInputGroup="false"
                                                                     :divInputClass="['col-12', 'text-start', 'mt-3']">
                                                                     <template v-slot:input>
@@ -416,7 +417,7 @@
                                                         <span class="ms-2">Duración total calculada:</span>
                                                         <span v-text="forms.entity.createUpdate.extras.modals.details.data.extras.formatted_total_duration" class="fw-bold ms-2"></span>
                                                     </div>
-                                                    <div v-if="['day', 'month', 'year'].includes(forms.entity.createUpdate.extras.modals.details.data.extras?.duration_type)" class="form-check form-check-primary my-1">
+                                                    <div v-if="false  && ['day', 'month', 'year'].includes(forms.entity.createUpdate.extras.modals.details.data.extras?.duration_type)" class="form-check form-check-primary my-1">
                                                         <label class="form-check-label fw-semibold">
                                                             <input
                                                                 class="form-check-input"
