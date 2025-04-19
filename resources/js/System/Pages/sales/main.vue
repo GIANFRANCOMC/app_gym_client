@@ -460,7 +460,7 @@
                                                         <th class="fw-bold col-1">#</th>
                                                         <th class="fw-bold text-nowrap col-2">FECHA DE INICIO</th>
                                                         <th class="fw-bold text-nowrap col-2">FECHA DE FINALIZACIÓN</th>
-                                                        <th class="fw-bold col-1">TIPO</th>
+                                                        <!-- <th class="fw-bold col-1">TIPO</th> -->
                                                     </tr>
                                                 </thead>
                                                 <tbody class="table-border-bottom-0 bg-white">
@@ -470,9 +470,9 @@
                                                                 <td v-text="keyRecord + 1"></td>
                                                                 <td v-text="legibleFormatDate({dateString: record.start_date})"></td>
                                                                 <td v-text="legibleFormatDate({dateString: record.end_date})"></td>
-                                                                <td>
+                                                                <!-- <td>
                                                                     <span v-text="record.formatted_type" class="badge bg-label-primary fw-bold"></span>
-                                                                </td>
+                                                                </td> -->
                                                             </tr>
                                                         </template>
                                                     </template>
@@ -528,7 +528,7 @@
                                         <th class="fw-bold col-1">#</th>
                                         <th class="fw-bold text-nowrap col-2">FECHA DE INICIO</th>
                                         <th class="fw-bold text-nowrap col-2">FECHA DE FINALIZACIÓN</th>
-                                        <th class="fw-bold col-1">TIPO</th>
+                                        <!-- <th class="fw-bold col-1">TIPO</th> -->
                                     </tr>
                                 </thead>
                                 <tbody class="table-border-bottom-0 bg-white">
@@ -546,9 +546,9 @@
                                                     <td v-text="keyRecord + 1"></td>
                                                     <td v-text="legibleFormatDate({dateString: record.start_date})"></td>
                                                     <td v-text="legibleFormatDate({dateString: record.end_date})"></td>
-                                                    <td>
+                                                    <!-- <td>
                                                         <span v-text="record.formatted_type" class="badge bg-label-primary fw-bold"></span>
-                                                    </td>
+                                                    </td> -->
                                                 </tr>
                                             </template>
                                         </template>
