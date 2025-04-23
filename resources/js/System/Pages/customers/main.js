@@ -15,6 +15,7 @@ import InputText    from "../../Components/InputText.vue";
 import Paginator    from "../../Components/Paginator.vue";
 import Loader       from "../../Components/Loader.vue";
 import WithoutData  from "../../Components/WithoutData.vue";
+import CarnetCustomer from "../../Components/Customers/CarnetCustomer.vue";
 
 // App creation and mounted
 createApp(App)
@@ -29,4 +30,5 @@ createApp(App)
 .component("Paginator", Paginator)
 .component("Loader", Loader)
 .component("WithoutData", WithoutData)
+.component("CarnetCustomer", CarnetCustomer)
 .mount("#app");

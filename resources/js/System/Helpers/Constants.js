@@ -1,6 +1,9 @@
 export const requestRoute = `${window.location.protocol}//${window.location.hostname}`;
 
 export const generalConfig = {
+    project: {
+        company: "BLAPOS"
+    },
     messages: {
         withoutResults: "Sin registros",
         errorValidate: "Error al validar, revisar el formulario."

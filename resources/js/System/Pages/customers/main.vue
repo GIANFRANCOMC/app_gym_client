@@ -76,9 +76,13 @@
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-sm btn-warning waves-effect" @click="modalCreateUpdateEntity({record})">
+                                <button type="button" class="btn btn-sm btn-warning waves-effect my-1" @click="modalCreateUpdateEntity({record})">
                                     <i class="fa fa-pencil"></i>
                                     <span class="ms-2">Editar</span>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-success waves-effect my-1" @click="modalCarnetEntity({record})">
+                                    <i class="fa-solid fa-id-badge"></i>
+                                    <span class="ms-2">Carnet</span>
                                 </button>
                             </td>
                         </tr>
@@ -193,6 +197,27 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" :id="forms.entity.carnet.extras.modals.default.id" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.carnet.extras.modals.default.titles[isDefined({value: forms.entity.carnet.data?.id}) ? 'update' : 'store']"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <CarnetCustomer
+                                :customer="forms.entity.carnet.data"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -248,6 +273,29 @@ export default {
                                     titles: {
                                         store: "Agregar",
                                         update: "Editar"
+                                    }
+                                }
+                            }
+                        },
+                        data: {
+                            id: null,
+                            identity_document_type: null,
+                            document_number: "",
+                            name: "",
+                            email: "",
+                            phone_number: "",
+                            status: null
+                        },
+                        errors: {}
+                    },
+                    carnet: {
+                        extras: {
+                            modals: {
+                                default: {
+                                    id: Utils.uuid(),
+                                    titles: {
+                                        store: "Carnet",
+                                        update: "Carnet"
                                     }
                                 }
                             }
@@ -392,6 +440,36 @@ export default {
                 Alerts.swals({show: false});
 
             }
+
+        },
+        // Carnet
+        modalCarnetEntity({record = null, type = "store"}) {
+
+            const functionName = "modalCarnetEntity";
+
+            this.forms.entity.carnet.extras.modals.default.type = type;
+
+            // Alerts.swals({});
+            this.clearForm({functionName});
+            this.formErrors({functionName, type: "clear"});
+
+            if(this.isDefined({value: record})) {
+
+                // let identityDocumentType = this.identityDocumentTypes.filter(e => e.code === record?.identity_document_type_id)[0],
+                //     status               = this.statuses.filter(e => e.code === record?.status)[0];
+
+                // this.forms.entity.carnet.data.id                     = record?.id;
+                // this.forms.entity.carnet.data.identity_document_type = identityDocumentType;
+                this.forms.entity.carnet.data.document_number        = record?.document_number;
+                this.forms.entity.carnet.data.name                   = record?.name;
+                // this.forms.entity.carnet.data.email                  = record?.email;
+                // this.forms.entity.carnet.data.phone_number           = record?.phone_number;
+                // this.forms.entity.carnet.data.status                 = status;
+
+            }
+
+            // Alerts.swals({show: false});
+            Alerts.modals({type: "show", id: this.forms.entity.carnet.extras.modals.default.id});
 
         },
         // Forms utils
