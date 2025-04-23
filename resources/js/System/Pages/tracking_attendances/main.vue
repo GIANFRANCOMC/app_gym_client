@@ -672,19 +672,31 @@ export default {
         // Qrcode
         onScanCustomer(decodedText, decodedResult) {
 
-            let customer = this.customers[Math.floor(Math.random() * this.customers.length)];
+            let dataScan = JSON.parse(decodedResult.result.text);
 
-            if(this.forms.entity.qrcode.data.customers.some(e => e.code == customer.code)) {
+            if(this.forms.entity.qrcode.data.customers.some(e => e.data.document_number == dataScan.identificator)) {
 
                 this.$refs.scannerQr.decrementScanCounter();
 
-                Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block">Cliente escaneado: ${customer.label}.</span><span class="d-block fw-semibold mt-1">Ya se encuentra en los clientes escaneados.</span>`});
+                Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block">Cliente escaneado: ${dataScan.name}.</span><span class="d-block fw-semibold mt-1">Ya se encuentra en los clientes escaneados.</span>`});
 
             }else {
 
-                this.forms.entity.qrcode.data.customers.push(customer);
+                let customersFiltered = this.customers.filter(e => e.data.document_number == dataScan.identificator);
 
-                Alerts.generateAlert({type: "success", msgContent: `<span class="d-block">Cliente escaneado: ${customer.label}.</span><span class="d-block fw-semibold mt-1">Se ha agregado a los clientes escaneados.</span>`});
+                if(customersFiltered.length > 0) {
+
+                    this.forms.entity.qrcode.data.customers.push(customersFiltered[0]);
+
+                    Alerts.generateAlert({type: "success", msgContent: `<span class="d-block">Cliente escaneado: ${dataScan.name}.</span><span class="d-block fw-semibold mt-1">Se ha agregado a los clientes escaneados.</span>`});
+
+                }else {
+
+                    this.$refs.scannerQr.decrementScanCounter();
+
+                    Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block">Cliente escaneado: ${dataScan.name}.</span><span class="d-block fw-semibold mt-1">No se encuentra disponible.</span>`});
+
+                }
 
             }
 
