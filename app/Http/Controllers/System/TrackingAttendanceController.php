@@ -128,6 +128,7 @@ class TrackingAttendanceController extends Controller {
         $attendanceActive = Attendance::where("company_id", $userAuth->company_id)
                                       ->where("branch_id", $request->branch_id)
                                       ->where("customer_id", $request->customer_id)
+                                      ->whereDate("start_date", $request->start_date ?? date("Y-m-d"))
                                       ->where("status", "active")
                                       ->first();
 
@@ -143,7 +144,7 @@ class TrackingAttendanceController extends Controller {
             $attendance->company_id  = $userAuth->company_id;
             $attendance->branch_id   = $request->branch_id;
             $attendance->customer_id = $request->customer_id;
-            $attendance->start_date  = $request->start_date;
+            $attendance->start_date  = $request->start_date ?? date("Y-m-d");
             $attendance->end_date    = $request->end_date;
             $attendance->observation = $request->observation ?? "";
             $attendance->type        = "manual";

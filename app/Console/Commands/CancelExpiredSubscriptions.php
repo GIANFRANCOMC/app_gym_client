@@ -56,7 +56,7 @@ class CancelExpiredSubscriptions extends Command {
         $subscriptions = Subscription::where("status", "active")
                                      ->where(function($query) use($now) {
 
-                                        $query->Where("end_date", "<=", $now);
+                                        $query->where("end_date", "<=", $now);
 
                                         // $query->where("start_date", ">", $now)
                                               // ->orWhere("end_date", "<", $now);
