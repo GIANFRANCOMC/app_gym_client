@@ -149,7 +149,7 @@
 
                     let camerasBack = cameras.filter(e => (e.label.toLowerCase()).includes("back"));
 
-                    this.selectedCameraId = camerasBack.length > 0 ? camerasBack[0] :cameras[0].id;
+                    this.selectedCameraId = camerasBack.length > 0 ? camerasBack[0].id :cameras[0].id;
 
                 }
 
