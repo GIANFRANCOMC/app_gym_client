@@ -1,5 +1,5 @@
 <template>
-    <h4 class="py-2 mb-4" v-if="list.length > 0">
+    <h4 class="py-2 mb-3" v-if="list.length > 0">
         <span class="text-muted fw-light">
             <i class="fa fa-home fa-2xs"></i>
         </span>

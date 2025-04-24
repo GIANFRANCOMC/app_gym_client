@@ -52,7 +52,7 @@ return new class extends Migration {
             $table->dateTime("end_date")->nullable();
             $table->text("observation")->nullable();
             $table->text("motive")->nullable();
-            $table->enum("type", ["manual"])->default("manual");
+            $table->enum("type", ["manual", "qr"])->default("manual");
             $table->enum("status", ["active", "canceled", "inactive", "finalized"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();

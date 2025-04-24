@@ -17,7 +17,7 @@
     import * as Alerts  from "../Helpers/Alerts.js";
 
     export default {
-        name: "QrcodeScanner",
+        name: "CodeScanner",
         emits: ["result"],
         computed: {
             canScan: function() {
@@ -147,7 +147,9 @@
 
                 if(cameras.length > 0) {
 
-                    this.selectedCameraId = cameras[0].id;
+                    let camerasBack = cameras.filter(e => (e.label.toLowerCase()).includes("back"));
+
+                    this.selectedCameraId = camerasBack.length > 0 ? camerasBack[0] :cameras[0].id;
 
                 }
 

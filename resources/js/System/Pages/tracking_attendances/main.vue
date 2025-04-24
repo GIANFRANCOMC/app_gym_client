@@ -92,23 +92,18 @@
         </div>
         <InputSlot
             hasDiv
-            :divClass="['text-center']"
             :isInputGroup="false"
-            :divInputClass="['mt-2']"
+            :divInputClass="['d-flex flex-wrap justify-content-center gap-3 mt-2']"
             xl="12"
             lg="12">
             <template v-slot:input>
-                <button type="button" class="btn btn-primary waves-effect my-1" @click="listEntity({})">
+                <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})">
                     <i class="fa fa-sync"></i>
-                    <span class="ms-2">Actualizar</span>
+                    <span class="ms-2">Actualizar asistencias</span>
                 </button>
-                <button type="button" class="btn btn-primary waves-effect my-1 ms-3" @click="modalCreateUpdateEntity({type: 'store'})">
+                <button type="button" class="btn btn-success waves-effect" @click="selectModeEntity()">
                     <i class="fa fa-plus"></i>
                     <span class="ms-2">Agregar asistencia</span>
-                </button>
-                <button type="button" class="btn btn-secondary waves-effect my-1 ms-3" @click="modalQrcodeEntity({type: 'store'})">
-                    <i class="fa fa-qrcode"></i>
-                    <span class="ms-2">Escanear QR</span>
                 </button>
             </template>
         </InputSlot>
@@ -295,8 +290,9 @@
                             lg="12">
                             <template v-slot:input>
                                 <div class="w-100">
-                                    <QrcodeScanner
+                                    <CodeScanner
                                         ref="scannerQr"
+                                        :limitScan="1"
                                         @result="onScanCustomer"/>
                                 </div>
                             </template>
@@ -314,6 +310,7 @@
                                             <tr class="text-center align-middle">
                                                 <th class="fw-bold col-1">#</th>
                                                 <th class="fw-bold col-1">CLIENTE</th>
+                                                <th class="fw-bold col-1"></th>
                                             </tr>
                                         </thead>
                                         <tbody class="table-border-bottom-0 bg-white">
@@ -322,6 +319,12 @@
                                                     <tr class="text-nowrap text-center">
                                                         <td v-text="keyRecord + 1"></td>
                                                         <td v-text="record.label"></td>
+                                                        <td>
+                                                            <button class="btn btn-danger btn-xs waves-effect" type="button" @click="deleteQrcodeEntity({record, keyRecord})">
+                                                                <i class="fa fa-times"></i>
+                                                                <span class="ms-1">Eliminar</span>
+                                                            </button>
+                                                        </td>
                                                     </tr>
                                                 </template>
                                             </template>
@@ -582,6 +585,63 @@ export default {
 
         },
         // Forms
+        selectModeEntity() {
+
+            let el = this;
+
+            Swal.fire({
+                html: `<span class="fw-bold d-block my-3">Elige una forma para registrar la asistencia.</span>
+                       <div class="form-group text-start">
+                            <div class="mb-3">
+                                <p class="mb-1">Escanea el código QR del carnet para registrar la asistencia de forma rápida y segura.</p>
+                                <button id="btn-qr" type="button" class="btn btn-primary w-100 waves-effect">
+                                    <i class="fa fa-qrcode"></i>
+                                    <span class="ms-2">Escanear QR</span>
+                                </button>
+                            </div>
+                            <div class="mb-3">
+                                <p class="mb-1">Ingresa los datos manualmente si no puedes escanear el QR o si el carnet no está disponible.</p>
+                                <button id="btn-manual" type="button" class="btn btn-primary w-100 waves-effect">
+                                    <i class="fa fa-hand"></i>
+                                    <span class="ms-2">Ingreso Manual</span>
+                                </button>
+                            </div>
+                       </div>`,
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                showCancelButton: true,
+                cancelButtonText: "Cancelar",
+                customClass: {
+                    cancelButton: "btn btn-secondary waves-effect ms-3"
+                },
+                didOpen: () => {
+
+                    document.getElementById("btn-qr").addEventListener("click", () => {
+
+                        Swal.close();
+                        el.modalQrcodeEntity({type: "store"});
+
+                    });
+
+                    document.getElementById("btn-manual").addEventListener("click", () => {
+
+                        Swal.close();
+                        el.modalCreateUpdateEntity({type: "store"});
+
+                    });
+
+                }
+            }).then(async function(result) {
+
+                if(result.isConfirmed) {
+
+                    //
+
+                }
+
+            });
+
+        },
         modalCreateUpdateEntity({record = null, type = "store"}) {
 
             const functionName = "modalCreateUpdateEntity";
@@ -611,7 +671,7 @@ export default {
             }
 
             // Alerts.swals({show: false});
-            Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.default.id});
+            Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.default.id, timeout: 300});
 
         },
         async createUpdateEntity() {
@@ -670,42 +730,12 @@ export default {
 
         },
         // Qrcode
-        onScanCustomer(decodedText, decodedResult) {
-
-            let dataScan = JSON.parse(decodedResult.result.text);
-
-            if(this.forms.entity.qrcode.data.customers.some(e => e.data.document_number == dataScan.identificator)) {
-
-                this.$refs.scannerQr.decrementScanCounter();
-
-                Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block">Cliente escaneado: ${dataScan.name}.</span><span class="d-block fw-semibold mt-1">Ya se encuentra en los clientes escaneados.</span>`});
-
-            }else {
-
-                let customersFiltered = this.customers.filter(e => e.data.document_number == dataScan.identificator);
-
-                if(customersFiltered.length > 0) {
-
-                    this.forms.entity.qrcode.data.customers.push(customersFiltered[0]);
-
-                    Alerts.generateAlert({type: "success", msgContent: `<span class="d-block">Cliente escaneado: ${dataScan.name}.</span><span class="d-block fw-semibold mt-1">Se ha agregado a los clientes escaneados.</span>`});
-
-                }else {
-
-                    this.$refs.scannerQr.decrementScanCounter();
-
-                    Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block">Cliente escaneado: ${dataScan.name}.</span><span class="d-block fw-semibold mt-1">No se encuentra disponible.</span>`});
-
-                }
-
-            }
-
-        },
         modalQrcodeEntity({record = null, type = "store"}) {
 
             const functionName = "modalQrcodeEntity";
 
             this.forms.entity.qrcode.extras.modals.default.type = type;
+            this.$refs.scannerQr.stopScanner(false); // Reset, scan show => open modal
 
             // Alerts.swals({});
             this.clearForm({functionName});
@@ -730,7 +760,69 @@ export default {
             }
 
             // Alerts.swals({show: false});
-            Alerts.modals({type: "show", id: this.forms.entity.qrcode.extras.modals.default.id});
+            Alerts.modals({type: "show", id: this.forms.entity.qrcode.extras.modals.default.id, timeout: 300});
+
+        },
+        onScanCustomer(decodedText, decodedResult) {
+
+            try {
+
+                console.log(decodedText, decodedResult);
+                let dataScan = JSON.parse(decodedResult?.result?.text);
+
+                const dataScanBp = Utils.decodeBase64UTF8(dataScan?.bp);
+                const bp = JSON.parse(dataScanBp);
+
+                if(!this.isDefined({value: dataScanBp}) || !this.isDefined({value: bp})) {
+
+                    this.$refs.scannerQr.decrementScanCounter();
+                    Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block fw-semibold">No pudimos validar el QR. Intenta escanearlo nuevamente o verifica que sea el correcto.</span>`});
+
+                }else {
+
+                    const id = parseInt(bp?.id);
+
+                    if(id > 0) {
+
+                        if(this.forms.entity.qrcode.data.customers.some(e => e.code == id)) {
+
+                            this.$refs.scannerQr.decrementScanCounter();
+                            Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block">Cliente escaneado: ${dataScan.name}.</span><span class="d-block fw-semibold mt-1">Ya se encuentra en los clientes escaneados.</span>`});
+
+                        }else {
+
+                            let customersFiltered = this.customers.filter(e => e.code == id);
+
+                            if(customersFiltered.length == 1) {
+
+                                this.forms.entity.qrcode.data.customers.push(customersFiltered[0]);
+                                Alerts.generateAlert({type: "success", msgContent: `<span class="d-block">Cliente escaneado: ${dataScan.name}.</span><span class="d-block fw-semibold mt-1">Se ha agregado a los clientes escaneados.</span>`});
+
+                            }else {
+
+                                this.$refs.scannerQr.decrementScanCounter();
+                                Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block">Cliente escaneado: ${dataScan.name}.</span><span class="d-block fw-semibold mt-1">No se encuentra disponible.</span>`});
+
+                            }
+
+                        }
+
+                    }else {
+
+                        this.$refs.scannerQr.decrementScanCounter();
+                        Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block fw-semibold">Intenta escanearlo nuevamente o verifica que sea el correcto.</span>`});
+
+                    }
+
+                }
+
+            }catch(e) {
+
+                console.log(e);
+                this.$refs.scannerQr.decrementScanCounter();
+                Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block fw-semibold">No pudimos validar el QR. Intenta escanearlo nuevamente o verifica que sea el correcto.</span>`});
+
+            }
 
         },
         async qrcodeEntity() {
@@ -794,6 +886,53 @@ export default {
                 // this.formErrors({functionName, type: "set", errors: validateForm});
                 // Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
                 Alerts.generateAlert({messages: Utils.getErrors({errors: validateForm}), msgContent: `<div class="fw-semibold mb-2">${this.config.messages.errorValidate}</div>`});
+
+            }
+
+        },
+        deleteQrcodeEntity({record, keyRecord}) {
+
+            const functionName = "deleteQrcodeEntity";
+
+            this.formErrors({functionName, type: "clear"});
+
+            let form = Utils.cloneJson(record);
+
+            const validateForm = this.validateForm({functionName, form});
+
+            console.log(form);
+
+            if(validateForm?.bool) {
+
+                let el = this;
+
+                Swal.fire({
+                    html: `<span>¿Desea eliminar a <b>${form?.label}</b> de los clientes escaneados?</span>`,
+                    icon: "warning",
+                    allowOutsideClick: false,
+                    showCancelButton: true,
+                    confirmButtonText: "Sí, eliminar",
+                    cancelButtonText: "Cancelar",
+                    customClass: {
+                        confirmButton: "btn btn-danger waves-effect",
+                        cancelButton: "btn btn-secondary waves-effect ms-3"
+                    }
+                })
+                .then(function(result) {
+
+                    if(result.isConfirmed) {
+
+                        (el.forms.entity.qrcode.data.customers).splice(keyRecord, 1);
+
+                        Alerts.toastrs({type: "success", subtitle: `<b>${form?.label}</b> ha sido eliminado de los clientes escaneados.`});
+
+                    }else if(result.isDismissed) {
+
+                        //
+
+                    }
+
+                });
 
             }
 

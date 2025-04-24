@@ -3,11 +3,11 @@
         <div class="overflow-auto">
             <div id="carnet" ref="carnet" class="card carnet-card mx-auto shadow-sm position-relative overflow-hidden border border-light" style="min-width: 450px;">
                 <img src="/public/System/assets/img/utils/admin/app_navbar_transparent.png" class="watermark-logo img-fluid" style="width: 22%;" />
-                <div class="card-header bg-primary border-primary py-2 d-flex justify-content-center align-items-center">
+                <div class="card-header bg-dark border-light py-2 d-flex justify-content-center align-items-center">
                     <span class="text-white my-0 fw-bold">CARNET</span>
                 </div>
-                <div class="card-body d-flex align-items-center p-3 carnet-body">
-                    <div class="qr-container flex-shrink-0 p-2 bg-white border rounded">
+                <div class="card-body d-flex align-items-center p-3 carnet-body pattern">
+                    <div class="qr-container flex-shrink-0 p-1 bg-white border border-secondary rounded">
                         <img :src="qrImage" alt="QR" class="img-fluid" style="width: 100px; height: 100px;" />
                     </div>
                     <div class="info-container flex-grow-1 ms-4">
@@ -34,6 +34,8 @@
 import QRCodeStyling from "qr-code-styling";
 import html2canvas from "html2canvas";
 
+import { encodeBase64UTF8 } from "../../Helpers/Utils.js";
+
 export default {
     name: "CarnetCustomer",
     props: {
@@ -54,13 +56,14 @@ export default {
         generarQR() {
 
             const dataJson = {
+                bp: encodeBase64UTF8(JSON.stringify({id: this.customer?.id ?? ""})),
                 identificator: this.customer?.document_number ?? "",
                 name: this.customer?.name ?? ""
             };
 
             const qr = new QRCodeStyling({
-                width: 200,
-                height: 200,
+                width: 300,
+                height: 300,
                 data: JSON.stringify(dataJson),
                 dotsOptions: { color: "#000000", type: "rounded" },
                 backgroundOptions: { color: "#ffffff" },
@@ -123,7 +126,7 @@ export default {
 
                         await navigator.share({title: 'Carnet Digital', text: this.customer?.name, files: [file]});
 
-                    }catch (err) {
+                    }catch(err) {
 
                         console.error('Error al compartir:', err);
 
@@ -173,14 +176,17 @@ export default {
 </script>
 
 <style scoped>
-.carnet-card {
-    max-width: 450px;
-    background-color: #ffffff;
+.pattern {
     background-image: repeating-linear-gradient(45deg,
             rgba(13, 110, 253, 0.03) 0,
             rgba(13, 110, 253, 0.03) 5px,
             transparent 5px,
             transparent 10px);
+}
+
+.carnet-card {
+    max-width: 450px;
+    background-color: #ffffff;
 }
 
 .carnet-body {

@@ -300,7 +300,7 @@ class TrackingAttendanceController extends Controller {
             $attendance->start_date  = $request->start_date;
             $attendance->end_date    = $request->end_date;
             $attendance->observation = $request->observation ?? "";
-            $attendance->type        = "manual";
+            $attendance->type        = "qr";
             $attendance->status      = "active";
             $attendance->created_at  = now();
             $attendance->created_by  = $userAuth->id ?? null;

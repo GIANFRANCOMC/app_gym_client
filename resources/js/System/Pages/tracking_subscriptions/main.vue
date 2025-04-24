@@ -108,7 +108,7 @@
             <template v-slot:input>
                 <button type="button" class="btn btn-primary waves-effect my-1" @click="listEntity({})">
                     <i class="fa fa-sync"></i>
-                    <span class="ms-2">Actualizar</span>
+                    <span class="ms-2">Actualizar suscripciones</span>
                 </button>
             </template>
         </InputSlot>

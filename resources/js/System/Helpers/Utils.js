@@ -370,3 +370,22 @@ export function getMessageWhatsapp({data, action}) {
     return message;
 
 }
+
+export function encodeBase64UTF8(text) {
+
+    const bytes = new TextEncoder().encode(text);
+    const base64 = btoa(String.fromCharCode(...bytes));
+
+    return base64;
+
+}
+
+export function decodeBase64UTF8(base64) {
+
+    const binary = atob(base64);
+    const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
+    const text = new TextDecoder().decode(bytes);
+
+    return text;
+
+}

@@ -76,11 +76,11 @@
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-sm btn-warning waves-effect my-1" @click="modalCreateUpdateEntity({record})">
+                                <button type="button" class="btn btn-sm btn-warning waves-effect d-block my-1" @click="modalCreateUpdateEntity({record})">
                                     <i class="fa fa-pencil"></i>
                                     <span class="ms-2">Editar</span>
                                 </button>
-                                <button type="button" class="btn btn-sm btn-success waves-effect my-1" @click="modalCarnetEntity({record})">
+                                <button type="button" class="btn btn-sm btn-success waves-effect d-block my-1" @click="modalCarnetEntity({record})">
                                     <i class="fa-solid fa-id-badge"></i>
                                     <span class="ms-2">Carnet</span>
                                 </button>
@@ -458,7 +458,7 @@ export default {
                 // let identityDocumentType = this.identityDocumentTypes.filter(e => e.code === record?.identity_document_type_id)[0],
                 //     status               = this.statuses.filter(e => e.code === record?.status)[0];
 
-                // this.forms.entity.carnet.data.id                     = record?.id;
+                this.forms.entity.carnet.data.id                     = record?.id;
                 // this.forms.entity.carnet.data.identity_document_type = identityDocumentType;
                 this.forms.entity.carnet.data.document_number        = record?.document_number;
                 this.forms.entity.carnet.data.name                   = record?.name;
