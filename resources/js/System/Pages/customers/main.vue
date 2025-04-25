@@ -31,11 +31,11 @@
             xl="5"
             lg="4">
             <template v-slot:input>
-                <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})">
+                <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})" :disabled="lists.entity.extras.loading">
                     <i class="fa fa-search"></i>
                     <span class="ms-2">Buscar</span>
                 </button>
-                <button type="button" class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})">
+                <button type="button" class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})" :disabled="lists.entity.extras.loading">
                     <i class="fa fa-plus"></i>
                     <span class="ms-2">Agregar</span>
                 </button>
@@ -76,14 +76,23 @@
                                 <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-sm btn-warning waves-effect d-block my-1" @click="modalCreateUpdateEntity({record})">
-                                    <i class="fa fa-pencil"></i>
-                                    <span class="ms-2">Editar</span>
-                                </button>
-                                <button type="button" class="btn btn-sm btn-success waves-effect d-block my-1" @click="modalCarnetEntity({record})">
-                                    <i class="fa-solid fa-id-badge"></i>
-                                    <span class="ms-2">Carnet</span>
-                                </button>
+                                <InputSlot
+                                    hasDiv
+                                    :isInputGroup="false"
+                                    :divInputClass="['d-flex flex-wrap justify-content-center gap-2']"
+                                    xl="12"
+                                    lg="12">
+                                    <template v-slot:input>
+                                        <button type="button" class="btn btn-sm btn-warning waves-effect" @click="modalCreateUpdateEntity({record})">
+                                            <i class="fa fa-pencil"></i>
+                                            <span class="ms-2">Editar</span>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-success waves-effect" @click="modalCarnetEntity({record})">
+                                            <i class="fa-solid fa-id-badge"></i>
+                                            <span class="ms-2">Carnet</span>
+                                        </button>
+                                    </template>
+                                </InputSlot>
                             </td>
                         </tr>
                     </template>

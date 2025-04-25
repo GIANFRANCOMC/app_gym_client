@@ -23,16 +23,14 @@
             xl="6"
             lg="5">
             <template v-slot:input>
-                <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})">
+                <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})" :disabled="lists.entity.extras.loading">
                     <i class="fa fa-search"></i>
                     <span class="ms-2">Buscar</span>
                 </button>
-                <template v-if="!lists.entity.extras.loading">
-                    <button v-if="isDefined({value: lists.entity.filters.warehouse?.code})" type="button" class="btn btn-success waves-effect ms-3" @click="createUpdateEntity({})">
-                        <i class="fa fa-save"></i>
-                        <span class="ms-2">Guardar</span>
-                    </button>
-                </template>
+                <button v-if="isDefined({value: lists.entity.filters.warehouse?.code})" type="button" class="btn btn-success waves-effect ms-3" @click="createUpdateEntity({})" :disabled="lists.entity.extras.loading">
+                    <i class="fa fa-save"></i>
+                    <span class="ms-2">Guardar</span>
+                </button>
             </template>
         </InputSlot>
     </div>

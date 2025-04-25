@@ -106,7 +106,7 @@
             xl="12"
             lg="12">
             <template v-slot:input>
-                <button type="button" class="btn btn-primary waves-effect my-1" @click="listEntity({})">
+                <button type="button" class="btn btn-primary waves-effect my-1" @click="listEntity({})" :disabled="lists.entity.extras.loading">
                     <i class="fa fa-sync"></i>
                     <span class="ms-2">Actualizar membresías</span>
                 </button>

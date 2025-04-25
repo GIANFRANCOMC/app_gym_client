@@ -7,25 +7,25 @@
                     <span class="text-white my-0 fw-bold">CARNET</span>
                 </div>
                 <div class="card-body d-flex align-items-center p-3 carnet-body pattern">
-                    <div class="qr-container flex-shrink-0 p-1 bg-white border border-secondary rounded">
+                    <div class="flex-shrink-0 p-1 bg-white border border-secondary rounded">
                         <img :src="qrImage" alt="QR" class="img-fluid" style="width: 100px; height: 100px;" />
                     </div>
-                    <div class="info-container flex-grow-1 ms-4">
+                    <div class="flex-grow-1 ms-4">
                         <p class="h5 text-dark mb-1" v-text="customer?.name"></p>
                         <p class="text-secondary fw-bold mb-0">N° {{ customer?.document_number }}</p>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="d-flex justify-content-center gap-2 mt-3">
+        <div class="d-flex flex-wrap justify-content-center gap-2 mt-3">
             <button @click="compartirCarnet" class="btn btn-primary">
                 <i class="fa-solid fa-share-nodes"></i>
                 <span class="ms-2">Compartir</span>
             </button>
-            <!-- <button @click="descargarCarnet" class="btn btn-success">
+            <button @click="descargarCarnet" class="btn btn-success">
                 <i class="fa fa-download"></i>
                 <span class="ms-2">Descargar</span>
-            </button> -->
+            </button>
         </div>
     </div>
 </template>
@@ -82,23 +82,6 @@ export default {
             const original = this.$refs.carnet;
             const cloned = original.cloneNode(true);
 
-            Object.assign(cloned.style, {
-                position: 'absolute',
-                top: '0',
-                left: '0',
-                width: '450px',
-                maxWidth: 'none',
-                transform: 'scale(1)',
-                backgroundColor: '#ffffff',
-                backgroundImage: 'repeating-linear-gradient(45deg, rgba(13,110,253,0.03) 0px, rgba(13,110,253,0.03) 5px, transparent 5px, transparent 10px)',
-                backgroundSize: '100% 100%',
-                backgroundRepeat: 'repeat'
-            });
-
-            // Asegúrate de que tu logo tenga un src absoluto o base64
-            const logo = cloned.querySelector('.watermark-logo');
-            // Si lo cargas con import, asigna: logo.src = this.logoUrl;
-
             document.body.appendChild(cloned);
 
             // 2. Esperar a que todas las <img> (logo + QR) estén cargadas
@@ -108,8 +91,9 @@ export default {
             // 3. Renderizar con html2canvas a mayor resolución
             const canvas = await html2canvas(cloned, {
                 scale: 2,
-                useCORS: true,      // importante si tu logo viene de otra ruta
-                allowTaint: false   // evita marcas de agua de CORS
+                useCORS: true,
+                allowTaint: false,
+                backgroundColor: null
             });
 
             // 4. Eliminar el clon
@@ -142,17 +126,22 @@ export default {
         },
         async descargarCarnet() {
 
-            const carnet = this.$refs.carnet;
-            const cloned = carnet.cloneNode(true);
+            const original = this.$refs.carnet;
+            const cloned = original.cloneNode(true);
 
-            cloned.style.width = "450px";
-            cloned.style.transform = "scale(1)";
-            cloned.style.position = "fixed";
-            cloned.style.top = "-9999px";
-            cloned.style.zoom = "1"; // Optional
-            cloned.style.maxWidth = "none"; // Optional
+            document.body.appendChild(cloned);
 
-            const canvas = await html2canvas(cloned, { scale: 2 });
+            const imgs = Array.from(cloned.querySelectorAll("img"));
+
+            await Promise.all(imgs.map(img => img.complete ? Promise.resolve() : new Promise(res => { img.onload = img.onerror = res; })));
+
+            const canvas = await html2canvas(cloned, {
+                scale: 2,
+                useCORS: true,
+                allowTaint: false,
+                backgroundColor: null
+            });
+
             document.body.removeChild(cloned);
 
             const link = document.createElement("a");
@@ -177,11 +166,15 @@ export default {
 
 <style scoped>
 .pattern {
-    background-image: repeating-linear-gradient(45deg,
-            rgba(13, 110, 253, 0.03) 0,
-            rgba(13, 110, 253, 0.03) 5px,
-            transparent 5px,
-            transparent 10px);
+    background-image: linear-gradient(
+        45deg,
+        rgba(13,110,253,0.08) 0px,
+        rgba(13,110,253,0.08) 5px,
+        rgba(255,255,255,1) 5px,
+        rgba(255,255,255,1) 10px
+    );
+    background-size: 10px 10px;
+    background-repeat: repeat;
 }
 
 .carnet-card {
@@ -206,7 +199,7 @@ export default {
     position: absolute;
     bottom: 14px;
     right: 10px;
-    font-size: 1rem;
-    z-index: 1;
+    z-index: 5;
+    pointer-events: none;
 }
 </style>

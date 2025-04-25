@@ -97,11 +97,11 @@
             xl="12"
             lg="12">
             <template v-slot:input>
-                <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})">
+                <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})" :disabled="lists.entity.extras.loading">
                     <i class="fa fa-sync"></i>
                     <span class="ms-2">Actualizar asistencias</span>
                 </button>
-                <button type="button" class="btn btn-success waves-effect" @click="selectModeEntity()">
+                <button type="button" class="btn btn-success waves-effect" @click="selectModeEntity()" :disabled="lists.entity.extras.loading">
                     <i class="fa fa-plus"></i>
                     <span class="ms-2">Agregar asistencia</span>
                 </button>

@@ -31,11 +31,11 @@
             xl="5"
             lg="4">
             <template v-slot:input>
-                <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})">
+                <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})" :disabled="lists.entity.extras.loading">
                     <i class="fa fa-search"></i>
                     <span class="ms-2">Buscar</span>
                 </button>
-                <button type="button" class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})">
+                <button type="button" class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})" :disabled="lists.entity.extras.loading">
                     <i class="fa fa-plus"></i>
                     <span class="ms-2">Agregar</span>
                 </button>

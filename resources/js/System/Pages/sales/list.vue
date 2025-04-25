@@ -85,7 +85,7 @@
             xl="3"
             lg="6">
             <template v-slot:input>
-                <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})">
+                <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})" :disabled="lists.entity.extras.loading">
                     <i class="fa fa-search"></i>
                     <span class="ms-2">Buscar</span>
                 </button>
