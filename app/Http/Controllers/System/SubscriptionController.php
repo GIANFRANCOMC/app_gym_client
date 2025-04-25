@@ -127,7 +127,7 @@ class SubscriptionController extends Controller {
         });
 
         $bool = Utilities::isDefined($item);
-        $msg  = $bool ? "Suscripción creada correctamente." : "No se ha podido crear la suscripción.";
+        $msg  = $bool ? "Membresía creada correctamente." : "No se ha podido crear la membresía.";
 
         return response()->json(["bool" => $bool, "msg" => $msg, "item" => $item], 200);
 
@@ -186,7 +186,7 @@ class SubscriptionController extends Controller {
         }
 
         $bool = Utilities::isDefined($item);
-        $msg  = $bool ? "Suscripción editada correctamente." : "No se ha podido editar la suscripción.";
+        $msg  = $bool ? "Membresía editada correctamente." : "No se ha podido editar la membresía.";
 
         return response()->json(["bool" => $bool, "msg" => $msg, "item" => $item], 200);
 

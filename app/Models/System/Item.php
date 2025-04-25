@@ -81,7 +81,7 @@ class Item extends Model {
         $types = [
             ["code" => "product", "label" => "Producto"],
             ["code" => "service", "label" => "Servicio"],
-            ["code" => "subscription", "label" => "Suscripción"]
+            ["code" => "subscription", "label" => "Membresía"]
         ];
 
         return Utilities::getValues($types, $type, $code);

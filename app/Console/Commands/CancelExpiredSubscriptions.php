@@ -21,7 +21,7 @@ class CancelExpiredSubscriptions extends Command {
      *
      * @var string
      */
-    protected $description = "Cancela suscripciones que han expirado";
+    protected $description = "Cancela membresías que han expirado";
 
     /**
      * Execute the console command.
@@ -48,7 +48,7 @@ class CancelExpiredSubscriptions extends Command {
             "level" => "info",
         ]]);
 
-        Log::channel("subscriptions")->info("** Inicio del proceso: Evaluación de suscripciones");
+        Log::channel("subscriptions")->info("** Inicio del proceso: Evaluación de membresías");
 
         // Logic
         $now = Carbon::now();
@@ -69,19 +69,19 @@ class CancelExpiredSubscriptions extends Command {
         foreach($subscriptions as $subscription) {
 
             $subscription->update([
-                "motive"     => "Suscripción expirada.",
+                "motive"     => "Membresía expirada.",
                 "status"     => "inactive",
                 "updated_at" => $now,
                 "updated_by" => null
             ]);
 
-            Log::channel("subscriptions")->info("Suscripción ID {$subscription->id} expirada, inicio: {$subscription->start_date} - fin: {$subscription->end_date}");
+            Log::channel("subscriptions")->info("Membresía ID {$subscription->id} expirada, inicio: {$subscription->start_date} - fin: {$subscription->end_date}");
 
             $inactivatedCount++;
 
         }
 
-        Log::channel("subscriptions")->info("Total de suscripciones expiradas: {$inactivatedCount}");
+        Log::channel("subscriptions")->info("Total de membresías expiradas: {$inactivatedCount}");
         Log::channel("subscriptions")->info("------------------- Proceso finalizado -------------------");
 
     }

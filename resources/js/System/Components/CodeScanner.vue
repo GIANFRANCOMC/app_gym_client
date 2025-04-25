@@ -6,10 +6,17 @@
             </template>
         </select>
         <div ref="scannerContainer" style="width: 100%;"></div>
-        <div class="controls mt-2">
-            <button @click="startScanner()" v-if="!isScanning" type="button" class="btn btn-success waves-effect">📷 Escanear QR</button>
-            <button @click="stopScanner(false)" v-if="isScanning" type="button" class="btn btn-danger waves-effect">🛑 Detener</button>
-        </div>
+        <template v-if="cameras.length > 0">
+            <div class="controls mt-2">
+                <button @click="startScanner()" v-if="!isScanning" type="button" class="btn btn-success waves-effect">📷 Escanear QR</button>
+                <button @click="stopScanner(false)" v-if="isScanning" type="button" class="btn btn-danger waves-effect">🛑 Detener</button>
+            </div>
+        </template>
+        <template v-else>
+            <div class="d-flex">
+                <span class="alert alert-danger w-100">Sin alguna cámara detectada.</span>
+            </div>
+        </template>
     </div>
 </template>
 

@@ -158,7 +158,7 @@ class TrackingSubscriptionController extends Controller {
         }
 
         $bool = $subscription->wasChanged();
-        $msg  = $bool ? "Suscripción anulada correctamente." : "No se ha podido anular la suscripción.";
+        $msg  = $bool ? "Membresía anulada correctamente." : "No se ha podido anular la membresía.";
 
         return response()->json(["bool" => $bool, "msg" => $msg, "subscription" => $subscription], 200);
 

@@ -108,7 +108,7 @@
             <template v-slot:input>
                 <button type="button" class="btn btn-primary waves-effect my-1" @click="listEntity({})">
                     <i class="fa fa-sync"></i>
-                    <span class="ms-2">Actualizar suscripciones</span>
+                    <span class="ms-2">Actualizar membresías</span>
                 </button>
             </template>
         </InputSlot>
@@ -216,7 +216,7 @@
                                 <div class="badge bg-danger p-3 rounded mb-1">
                                     <i class="fa-solid fa-rectangle-xmark fs-3"></i>
                                 </div>
-                                <span class="d-block fw-semibold">Anular suscripción</span>
+                                <span class="d-block fw-semibold">Anular membresía</span>
                             </div>
                         </div>
                     </div>
@@ -303,7 +303,7 @@ export default {
                 entity: {
                     ...Requests.config({entity: "tracking_subscriptions"}),
                     page: {
-                        title: "Suscripciones",
+                        title: "Membresías",
                         active: true,
                         menu: {
                             id: "menu-item-trackings-subscriptions"
@@ -374,7 +374,7 @@ export default {
                 let el = this;
 
                 Swal.fire({
-                    html: `<span class="d-block my-1">¿Desea anular la venta suscripción del cliente <b>${form.customer?.name}</b>?</span>
+                    html: `<span class="d-block my-1">¿Desea anular la membresía del cliente <b>${form.customer?.name}</b>?</span>
                            <div class="form-group text-start mt-2">
                                 <label class="form-label colon-at-end">Motivo</label>
                                 <div class="input-group">

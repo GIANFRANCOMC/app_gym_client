@@ -305,7 +305,7 @@ export default {
                 entity: {
                     ...Requests.config({entity: "subscriptions"}),
                     page: {
-                        title: "Suscripciones",
+                        title: "Membresías",
                         active: true,
                         menu: {
                             id: "menu-item-catalogs-subscriptions"

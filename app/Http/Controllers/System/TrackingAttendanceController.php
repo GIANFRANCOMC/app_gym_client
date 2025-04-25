@@ -121,7 +121,7 @@ class TrackingAttendanceController extends Controller {
 
         if(count($subscriptions) === 0) {
 
-            return response()->json(["bool" => false, "msg" => "$customer->name: No cuenta con una suscripción vigente en la sucursal."], 200);
+            return response()->json(["bool" => false, "msg" => "$customer->name: No cuenta con una membresía vigente en la sucursal."], 200);
 
         }
 
@@ -274,7 +274,7 @@ class TrackingAttendanceController extends Controller {
 
             if(count($subscriptions) === 0) {
 
-                $attendances->push(["bool" => false, "msg" => "$customer->name: No cuenta con una suscripción vigente en la sucursal."]);
+                $attendances->push(["bool" => false, "msg" => "$customer->name: No cuenta con una membresía vigente en la sucursal."]);
                 continue;
 
             }

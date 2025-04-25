@@ -213,7 +213,7 @@ class CustomerController extends Controller {
         }
 
         $bool = Utilities::isDefined($customer);
-        $msg  = $bool ? "Suscripciones encontradas." : "No se ha podido identificar el cliente.";
+        $msg  = $bool ? "Membresías encontradas." : "No se ha podido identificar el cliente.";
 
         return response()->json(["bool" => $bool, "msg" => $msg, "subscriptions" => $subscriptions], 200);
 

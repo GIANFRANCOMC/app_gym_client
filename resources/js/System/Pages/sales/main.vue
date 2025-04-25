@@ -198,7 +198,7 @@
                                                                                     class="form-check-input"
                                                                                     type="checkbox"
                                                                                     v-model="record.extras.force"/>
-                                                                                Tomar en cuenta la suscripciones activas
+                                                                                Tomar en cuenta la membresías activas
                                                                             </label>
                                                                         </div>-->
                                                                     </template>
@@ -267,7 +267,7 @@
                             :textBottomInfo="forms.entity.createUpdate.errors?.observation"/>
                         <button class="btn btn-info waves-effect my-1" @click="viewSubscriptions({})">
                             <i class="fa-solid fa-binoculars"></i>
-                            <span class="ms-2">Ver suscripciones</span>
+                            <span class="ms-2">Ver membresías</span>
                         </button>
                         <button class="btn btn-primary waves-effect my-1" @click="modalAddDetail({})">
                             <i class="fa fa-plus"></i>
@@ -377,7 +377,7 @@
                                 <h2 class="accordion-header d-flex align-items-center border">
                                     <button type="button" class="accordion-button fw-semibold" data-bs-toggle="collapse" data-bs-target="#accordionConfigSubscription-1" aria-expanded="true">
                                         <i class="fa fa-info-circle"></i>
-                                        <span class="ms-2">Detalle de la suscripción</span>
+                                        <span class="ms-2">Detalle de la membresía</span>
                                     </button>
                                 </h2>
                                 <div id="accordionConfigSubscription-1" class="accordion-collapse collapse show">
@@ -409,7 +409,7 @@
                                                 <template v-slot:input>
                                                     <div class="d-block my-1">
                                                         <i class="fa fa-calendar text-primary ms-1"></i>
-                                                        <span class="ms-2">Duración base de la suscripción:</span>
+                                                        <span class="ms-2">Duración base de la membresía:</span>
                                                         <span v-text="forms.entity.createUpdate.extras.modals.details.data.extras.formatted_duration" class="fw-bold ms-2"></span>
                                                     </div>
                                                     <div class="d-block mt-1 mb-2">
@@ -433,7 +433,7 @@
                                                                 class="form-check-input"
                                                                 type="checkbox"
                                                                 v-model="forms.entity.createUpdate.extras.modals.details.data.extras.force"/>
-                                                            Tomar en cuenta la suscripciones activas
+                                                            Tomar en cuenta la membresías activas
                                                         </label>
                                                     </div>-->
                                                 </template>
@@ -448,7 +448,7 @@
                                 <h2 class="accordion-header d-flex align-items-center border">
                                     <button type="button" class="accordion-button fw-semibold collapsed" data-bs-toggle="collapse" data-bs-target="#accordionSubscriptions-1" aria-expanded="false">
                                         <i class="fa-solid fa-binoculars"></i>
-                                        <span class="ms-2">Suscripciones activas</span>
+                                        <span class="ms-2">Membresías activas</span>
                                         <span class="badge badge-center rounded-pill bg-primary ms-2" v-text="(options?.holders?.subscriptions[forms.entity.createUpdate.data.holder?.data?.id] ?? []).length"></span>
                                     </button>
                                 </h2>
@@ -699,7 +699,7 @@ export default {
                                 subscriptions: {
                                     id: Utils.uuid(),
                                     titles: {
-                                        default: "Suscripciones activas"
+                                        default: "Membresías activas"
                                     },
                                     data: {
                                         loading: false
@@ -1135,7 +1135,7 @@ export default {
 
                                 let messages = findOverlaps.positions.map(e =>
                                     `<div class="mt-3">
-                                        <span class="d-block fw-bold">Suscripción activa #${parseInt(e?.keyArray) + 1}</span>
+                                        <span class="d-block fw-bold">Membresía activa #${parseInt(e?.keyArray) + 1}</span>
                                         <div class="d-block mt-1">
                                             <i class="fa-regular fa-calendar"></i>
                                             <span class="fw-semibold ms-1">F. inicio:</span>
@@ -1149,7 +1149,7 @@ export default {
                                     </div>`
                                 );
 
-                                result.extras_end_date = [`El rango de fechas ingresadas se cruzan con las siguientes SUSCRIPCIONES ACTIVAS: `+messages.join("")];
+                                result.extras_end_date = [`El rango de fechas ingresadas se cruzan con las siguientes MEMBRESÍAS ACTIVAS: `+messages.join("")];
                                 result.bool = false;
 
                             }

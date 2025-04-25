@@ -84,7 +84,7 @@
                     <i class="ti ti-ban"></i>
                 </span>
                 <span class="ms-3">
-                    Actualice la <b>suscripción</b> para acceder
+                    Actualice la <b>membresía</b> para acceder
                 </span>
             </div>
         @endif
