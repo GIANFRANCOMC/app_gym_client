@@ -135,7 +135,7 @@
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.identity_document_type"
                                     :options="identityDocumentTypes"
-                                    @open="tooltips({show: true, time: 1000})"
+                                    @close="tooltips({show: true, time: 500})"
                                     :clearable="false"/>
                             </template>
                         </InputSlot>

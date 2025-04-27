@@ -10,7 +10,7 @@ export const generalConfig = {
     },
     forms: {
         classes: {
-            title: "fw-bold colon-at-end fs-5",
+            title: "fw-bold colon-at-end fs-6",
             select2: "bg-white"
         },
         inputs: {

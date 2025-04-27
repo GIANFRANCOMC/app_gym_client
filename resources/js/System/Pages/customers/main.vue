@@ -2,7 +2,7 @@
     <Breadcrumb :list="breadcrumbTitles"/>
 
     <!-- Content -->
-    <div class="row align-items-end g-3 mb-4">
+    <div class="row align-items-end g-3 mb-3 mb-md-4">
         <InputSlot
             hasDiv
             title="Filtrar por"
@@ -23,19 +23,21 @@
             hasDiv
             title="Búsqueda"
             :titleClass="[config.forms.classes.title]"
+            :placeholder="'Buscar por ' + (lists.entity.filters.filter_by?.label || '...').toLowerCase()"
             xl="4"
             lg="4"/>
         <InputSlot
             hasDiv
             :isInputGroup="false"
+            :divInputClass="['d-flex flex-wrap justify-content-start gap-2 gap-md-3']"
             xl="5"
             lg="4">
             <template v-slot:input>
-                <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})" :disabled="lists.entity.extras.loading">
+                <button type="button" class="btn btn-info-1 waves-effect" @click="listEntity({})" :disabled="lists.entity.extras.loading">
                     <i class="fa fa-search"></i>
                     <span class="ms-2">Buscar</span>
                 </button>
-                <button type="button" class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})" :disabled="lists.entity.extras.loading">
+                <button type="button" class="btn btn-primary waves-effect" @click="modalCreateUpdateEntity({})" :disabled="lists.entity.extras.loading">
                     <i class="fa fa-plus"></i>
                     <span class="ms-2">Agregar</span>
                 </button>
@@ -44,20 +46,20 @@
     </div>
     <div class="table-responsive">
         <table class="table table-hover">
-            <thead class="table-light">
+            <thead>
                 <tr class="text-center align-middle">
-                    <th class="fw-bold col-1">NÚMERO DE DOCUMENTO</th>
-                    <th class="fw-bold col-1">NOMBRE</th>
-                    <th class="fw-bold col-1">CORREO ELECTRÓNICO</th>
-                    <th class="fw-bold col-1">CELULAR</th>
-                    <th class="fw-bold col-1">ESTADO</th>
-                    <th class="fw-bold col-1">ACCIONES</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 20%;">NÚMERO DE DOCUMENTO</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 25%;">NOMBRE</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 20%;">CORREO ELECTRÓNICO</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 15%;">CELULAR</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 10%;">ESTADO</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 10%;">ACCIONES</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0 bg-white">
                 <template v-if="lists.entity.extras.loading">
                     <tr class="text-center">
-                        <td colspan="99">
+                        <td colspan="99" class="py-4">
                             <Loader/>
                         </td>
                     </tr>
@@ -67,24 +69,24 @@
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td>
                                 <span v-text="record.document_number" class="d-block fw-bold"></span>
-                                <span v-text="record.identity_document_type?.name" class="d-block badge bg-label-primary fw-bold mt-1"></span>
+                                <span v-text="record.identity_document_type?.name" class="badge bg-label-primary fw-bold mt-1"></span>
                             </td>
-                            <td v-text="record.name"></td>
-                            <td v-text="isDefined({value: record.email}) ? record.email : 'N/A'"></td>
+                            <td v-text="record.name" class="text-start"></td>
+                            <td v-text="isDefined({value: record.email}) ? record.email : 'N/A'" class="text-start"></td>
                             <td v-text="isDefined({value: record.phone_number}) ? record.phone_number : 'N/A'"></td>
                             <td>
-                                <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
+                                <span :class="['badge', 'fw-semibold', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
                             <td>
                                 <InputSlot
                                     hasDiv
                                     :isInputGroup="false"
-                                    :divInputClass="['d-flex flex-wrap justify-content-center gap-2']"
+                                    :divInputClass="['d-flex flex-wrap justify-content-center gap-2 gap-md-1']"
                                     xl="12"
                                     lg="12">
                                     <template v-slot:input>
                                         <button type="button" class="btn btn-sm btn-warning waves-effect" @click="modalCreateUpdateEntity({record})">
-                                            <i class="fa fa-pencil"></i>
+                                            <i class="fa-solid fa-pencil"></i>
                                             <span class="ms-2">Editar</span>
                                         </button>
                                         <button type="button" class="btn btn-sm btn-success waves-effect" @click="modalCarnetEntity({record})">
@@ -117,7 +119,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.createUpdate.extras.modals.default.titles[isDefined({value: forms.entity.createUpdate.data?.id}) ? 'update' : 'store']"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close fw-bold" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row g-3">
@@ -133,7 +135,7 @@
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.identity_document_type"
                                     :options="identityDocumentTypes"
-                                    @open="tooltips({show: true, time: 1000})"
+                                    @close="tooltips({show: true, time: 500})"
                                     :clearable="false"/>
                             </template>
                         </InputSlot>
@@ -148,7 +150,7 @@
                             lg="6">
                             <template v-slot:inputGroupAppend>
                                 <template v-if="[2, 4].includes(forms.entity.createUpdate.data.identity_document_type?.code)">
-                                    <button class="btn btn-primary waves-effect" type="button" @click="searchDocumentNumber({consult: forms.entity.createUpdate})" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar">
+                                    <button :class="['btn waves-effect', isDefined({value: forms.entity.createUpdate.data?.id}) ? 'btn-warning' : 'btn-primary']" type="button" @click="searchDocumentNumber({consult: forms.entity.createUpdate})" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar documento">
                                         <i class="fa fa-search"></i>
                                     </button>
                                 </template>
@@ -303,8 +305,8 @@ export default {
                                 default: {
                                     id: Utils.uuid(),
                                     titles: {
-                                        store: "Carnet",
-                                        update: "Carnet"
+                                        store: "Carnet del cliente",
+                                        update: "Carnet del cliente"
                                     }
                                 }
                             }

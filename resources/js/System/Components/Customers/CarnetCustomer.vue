@@ -17,12 +17,12 @@
                 </div>
             </div>
         </div>
-        <div class="d-flex flex-wrap justify-content-center gap-2 mt-3">
-            <button @click="compartirCarnet" class="btn btn-primary">
+        <div class="d-flex flex-wrap justify-content-center gap-2 gap-md-3 mt-3">
+            <button @click="compartirCarnet" class="btn btn-primary waves-effect">
                 <i class="fa-solid fa-share-nodes"></i>
                 <span class="ms-2">Compartir</span>
             </button>
-            <button @click="descargarCarnet" class="btn btn-success">
+            <button @click="descargarCarnet" class="btn btn-success waves-effect">
                 <i class="fa fa-download"></i>
                 <span class="ms-2">Descargar</span>
             </button>
@@ -168,13 +168,13 @@ export default {
 .pattern {
     background-image: linear-gradient(
         45deg,
-        rgba(13,110,253,0.08) 0px,
-        rgba(13,110,253,0.08) 5px,
+        rgba(13,110,253,0.05) 0px,
+        rgba(13,110,253,0.05) 5px,
         rgba(255,255,255,1) 5px,
         rgba(255,255,255,1) 10px
-    );
-    background-size: 10px 10px;
-    background-repeat: repeat;
+    ) !important;
+    background-size: 10px 10px !important;
+    background-repeat: repeat !important;
 }
 
 .carnet-card {
