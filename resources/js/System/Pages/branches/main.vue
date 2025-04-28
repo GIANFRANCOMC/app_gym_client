@@ -2,7 +2,7 @@
     <Breadcrumb :list="breadcrumbTitles"/>
 
     <!-- Content -->
-    <div class="row align-items-end g-3 mb-4">
+    <div class="row align-items-end g-3 mb-3 mb-md-4">
         <InputSlot
             hasDiv
             title="Filtrar por"
@@ -14,7 +14,8 @@
                     v-model="lists.entity.filters.filter_by"
                     :options="filterByOptions"
                     :class="config.forms.classes.select2"
-                    :clearable="false"/>
+                    :clearable="false"
+                    :searchable="false"/>
             </template>
         </InputSlot>
         <InputText
@@ -23,19 +24,21 @@
             hasDiv
             title="Búsqueda"
             :titleClass="[config.forms.classes.title]"
+            :placeholder="'Buscar por ' + (lists.entity.filters.filter_by?.label || '...').toLowerCase()"
             xl="4"
             lg="4"/>
         <InputSlot
             hasDiv
             :isInputGroup="false"
+            :divInputClass="['d-flex flex-wrap justify-content-start gap-2 gap-md-3']"
             xl="5"
             lg="4">
             <template v-slot:input>
-                <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})" :disabled="lists.entity.extras.loading">
+                <button type="button" class="btn btn-info-1 waves-effect" @click="listEntity({})" :disabled="lists.entity.extras.loading">
                     <i class="fa fa-search"></i>
                     <span class="ms-2">Buscar</span>
                 </button>
-                <button type="button" class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})" :disabled="lists.entity.extras.loading">
+                <button type="button" class="btn btn-primary waves-effect" @click="modalCreateUpdateEntity({})" :disabled="lists.entity.extras.loading">
                     <i class="fa fa-plus"></i>
                     <span class="ms-2">Agregar</span>
                 </button>
@@ -46,17 +49,17 @@
         <table class="table table-hover">
             <thead class="table-light">
                 <tr class="text-center align-middle">
-                    <th class="fw-bold col-1">NOMBRE</th>
-                    <!-- <th class="fw-bold col-1">ALMACÉN</th> -->
-                    <!-- <th class="fw-bold col-1">SERIES</th> -->
-                    <th class="fw-bold col-1">ESTADO</th>
-                    <th class="fw-bold col-1">ACCIONES</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 50%;">NOMBRE</th>
+                    <!-- <th class="bg-secondary text-white fw-semibold">ALMACÉN</th> -->
+                    <!-- <th class="bg-secondary text-white fw-semibold">SERIES</th> -->
+                    <th class="bg-secondary text-white fw-semibold" style="width: 30%;">ESTADO</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 20%;">ACCIONES</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0 bg-white">
                 <template v-if="lists.entity.extras.loading">
                     <tr class="text-center">
-                        <td colspan="99">
+                        <td colspan="99" class="py-4">
                             <Loader/>
                         </td>
                     </tr>
@@ -73,13 +76,22 @@
                                 </div>
                             </td> -->
                             <td>
-                                <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
+                                <span :class="['badge', 'fw-semibold', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-sm btn-warning waves-effect" @click="modalCreateUpdateEntity({record})">
-                                    <i class="fa fa-pencil"></i>
-                                    <span class="ms-2">Editar</span>
-                                </button>
+                                <InputSlot
+                                    hasDiv
+                                    :isInputGroup="false"
+                                    :divInputClass="['d-flex flex-wrap justify-content-center gap-2 gap-md-1']"
+                                    xl="12"
+                                    lg="12">
+                                    <template v-slot:input>
+                                        <button type="button" class="btn btn-sm btn-warning waves-effect" @click="modalCreateUpdateEntity({record})">
+                                            <i class="fa fa-pencil"></i>
+                                            <span class="ms-2">Editar</span>
+                                        </button>
+                                    </template>
+                                </InputSlot>
                             </td>
                         </tr>
                     </template>
@@ -129,7 +141,8 @@
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.status"
                                     :options="statuses"
-                                    :clearable="false"/>
+                                    :clearable="false"
+                                    :searchable="false"/>
                             </template>
                         </InputSlot>
                     </div>
@@ -401,7 +414,7 @@ export default {
         filterByOptions: function() {
 
             return [
-                {code: "all", label: "Todos"},
+                // {code: "all", label: "Todos"},
                 {code: "name", label: "Nombre"}
             ];
 

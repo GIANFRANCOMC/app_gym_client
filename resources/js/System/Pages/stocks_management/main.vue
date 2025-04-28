@@ -2,7 +2,7 @@
     <Breadcrumb :list="breadcrumbTitles"/>
 
     <!-- Content -->
-    <div class="row align-items-end g-3 mb-4">
+    <div class="row align-items-end g-3 mb-3 mb-md-4">
         <InputSlot
             hasDiv
             title="Almacén"
@@ -14,20 +14,22 @@
                     v-model="lists.entity.filters.warehouse"
                     :options="warehouses"
                     :class="config.forms.classes.select2"
-                    :clearable="false"/>
+                    :clearable="false"
+                    :searchable="false"/>
             </template>
         </InputSlot>
         <InputSlot
             hasDiv
             :isInputGroup="false"
+            :divInputClass="['d-flex flex-wrap justify-content-start gap-2 gap-md-3']"
             xl="6"
             lg="5">
             <template v-slot:input>
-                <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})" :disabled="lists.entity.extras.loading">
+                <button type="button" class="btn btn-info-1 waves-effect" @click="listEntity({})" :disabled="lists.entity.extras.loading">
                     <i class="fa fa-search"></i>
                     <span class="ms-2">Buscar</span>
                 </button>
-                <button v-if="isDefined({value: lists.entity.filters.warehouse?.code})" type="button" class="btn btn-success waves-effect ms-3" @click="createUpdateEntity({})" :disabled="lists.entity.extras.loading">
+                <button type="button" class="btn btn-primary waves-effect" @click="createUpdateEntity({})" :disabled="lists.entity.extras.loading || !isDefined({value: lists.entity.filters.warehouse?.code})">
                     <i class="fa fa-save"></i>
                     <span class="ms-2">Guardar</span>
                 </button>
@@ -36,17 +38,17 @@
     </div>
     <div class="table-responsive">
         <table class="table table-hover">
-            <thead class="table-light">
+            <thead>
                 <tr class="text-center align-middle">
-                    <th class="fw-bold col-1">#</th>
-                    <th class="fw-bold col-3">DETALLE</th>
-                    <th class="fw-bold min-w-150px">CANTIDAD</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 20%;">#</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 50%;">DETALLE</th>
+                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 30%;">CANTIDAD</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0 bg-white">
                 <template v-if="lists.entity.extras.loading">
                     <tr class="text-center">
-                        <td colspan="99">
+                        <td colspan="99" class="py-4">
                             <Loader/>
                         </td>
                     </tr>

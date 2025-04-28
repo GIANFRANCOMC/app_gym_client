@@ -14,7 +14,8 @@
                     v-model="lists.entity.filters.filter_by"
                     :options="filterByOptions"
                     :class="config.forms.classes.select2"
-                    :clearable="false"/>
+                    :clearable="false"
+                    :searchable="false"/>
             </template>
         </InputSlot>
         <InputText
@@ -170,7 +171,8 @@
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.currency"
                                     :options="currencies"
-                                    :clearable="false"/>
+                                    :clearable="false"
+                                    :searchable="false"/>
                             </template>
                         </InputSlot>
                         <InputSlot
@@ -185,7 +187,8 @@
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.status"
                                     :options="statuses"
-                                    :clearable="false"/>
+                                    :clearable="false"
+                                    :searchable="false"/>
                             </template>
                         </InputSlot>
                     </div>

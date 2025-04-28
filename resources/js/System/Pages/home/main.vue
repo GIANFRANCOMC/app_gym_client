@@ -118,14 +118,14 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover">
-                    <thead class="table-light">
+                    <thead>
                         <tr class="text-center align-middle">
-                            <th class="fw-bold col-1">DOCUMENTO</th>
-                            <th class="fw-bold col-1">CLIENTE</th>
-                            <th class="fw-bold col-1">FECHA DE EMISIÓN</th>
-                            <th class="fw-bold col-1">TOTAL</th>
-                            <th class="fw-bold col-1">ESTADO</th>
-                            <th class="fw-bold col-1">ACCIONES</th>
+                            <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 20%;">DOCUMENTO</th>
+                            <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 25%;">CLIENTE</th>
+                            <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 15%;">FECHA DE EMISIÓN</th>
+                            <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 15%;">TOTAL</th>
+                            <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 15%;">ESTADO</th>
+                            <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 10%;">ACCIONES</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0 bg-white">
@@ -147,13 +147,22 @@
                                     <span v-text="separatorNumber(record.total)" class="fw-semibold ms-1"></span>
                                 </td>
                                 <td>
-                                    <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive', 'canceled'].includes(record.status) }]" v-text="record.formatted_status"></span>
+                                    <span :class="['badge', 'fw-semibold', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive', 'canceled'].includes(record.status) }]" v-text="record.formatted_status"></span>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-sm btn-primary waves-effect" @click="modalActionsEntity({record})">
-                                        <i class="fa fa-gear"></i>
-                                        <span class="ms-2">Acciones</span>
-                                    </button>
+                                    <InputSlot
+                                        hasDiv
+                                        :isInputGroup="false"
+                                        :divInputClass="['d-flex flex-wrap justify-content-center gap-2 gap-md-1']"
+                                        xl="12"
+                                        lg="12">
+                                        <template v-slot:input>
+                                            <button type="button" class="btn btn-sm btn-primary waves-effect" @click="modalActionsEntity({record})">
+                                                <i class="fa fa-gear"></i>
+                                                <span class="ms-2">Acciones</span>
+                                            </button>
+                                        </template>
+                                    </InputSlot>
                                 </td>
                             </tr>
                         </template>

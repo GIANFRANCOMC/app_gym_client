@@ -2,7 +2,7 @@
     <Breadcrumb :list="breadcrumbTitles"/>
 
     <!-- Content -->
-    <div class="row align-items-end g-3 mb-4">
+    <div class="row align-items-end g-3 mb-3 mb-md-4">
         <InputSlot
             hasDiv
             title="Serie"
@@ -15,6 +15,7 @@
                     :options="series"
                     :class="config.forms.classes.select2"
                     :clearable="true"
+                    :searchable="false"
                     placeholder="Seleccione">
                     <template #option="{ data }">
                         <span v-text="`${data?.legible_serie} - ${data?.document_type?.name}`" class="d-block fw-bold"></span>
@@ -54,6 +55,7 @@
                     :options="holders"
                     :class="config.forms.classes.select2"
                     :clearable="true"
+                    :searchable="false"
                     placeholder="Seleccione">
                     <template #option="{ label }">
                         <span v-text="truncate({value: label, length: 50})" class="d-block"></span>
@@ -76,12 +78,14 @@
                     :options="statuses"
                     :class="config.forms.classes.select2"
                     :clearable="true"
+                    :searchable="false"
                     placeholder="Seleccione"/>
             </template>
         </InputSlot>
         <InputSlot
             hasDiv
             :isInputGroup="false"
+            :divInputClass="['d-flex flex-wrap justify-content-start gap-2 gap-md-3']"
             xl="3"
             lg="6">
             <template v-slot:input>
@@ -94,20 +98,20 @@
     </div>
     <div class="table-responsive">
         <table class="table table-hover">
-            <thead class="table-light">
+            <thead>
                 <tr class="text-center align-middle">
-                    <th class="fw-bold min-w-150px">DOCUMENTO</th>
-                    <th class="fw-bold min-w-150px">CLIENTE</th>
-                    <th class="fw-bold min-w-150px">FECHA DE EMISIÓN</th>
-                    <th class="fw-bold min-w-150px">TOTAL</th>
-                    <th class="fw-bold min-w-150px">ESTADO</th>
-                    <th class="fw-bold min-w-150px">ACCIONES</th>
+                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 20%;">DOCUMENTO</th>
+                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 25%;">CLIENTE</th>
+                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 15%;">FECHA DE EMISIÓN</th>
+                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 15%;">TOTAL</th>
+                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 15%;">ESTADO</th>
+                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 10%;">ACCIONES</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0 bg-white">
                 <template v-if="lists.entity.extras.loading">
                     <tr class="text-center">
-                        <td colspan="99">
+                        <td colspan="99" class="py-4">
                             <Loader/>
                         </td>
                     </tr>
@@ -125,20 +129,29 @@
                             </td>
                             <td>
                                 <span v-text="record.formatted_issue_date" class="d-block"></span>
-                                <span :class="['badge', 'd-block', 'mt-1',{ 'bg-label-success': record.diff_days_issue_date == 0, 'bg-label-warning': record.diff_days_issue_date != 0 }]" v-text="diffDaysLegible({diff: record.diff_days_issue_date})"></span>
+                                <span :class="['badge', 'fw-semibold', 'mt-1', { 'bg-label-success': record.diff_days_issue_date == 0, 'bg-label-warning': record.diff_days_issue_date != 0 }]" v-text="diffDaysLegible({diff: record.diff_days_issue_date})"></span>
                             </td>
                             <td>
                                 <span v-text="record.currency?.sign ?? ''" class="fw-semibold"></span>
                                 <span v-text="separatorNumber(record.total)" class="fw-semibold ms-1"></span>
                             </td>
                             <td>
-                                <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive', 'canceled'].includes(record.status) }]" v-text="record.formatted_status"></span>
+                                <span :class="['badge', 'fw-semibold', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive', 'canceled'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-sm btn-primary waves-effect" @click="modalActionsEntity({record})">
-                                    <i class="fa fa-gear"></i>
-                                    <span class="ms-2">Acciones</span>
-                                </button>
+                                <InputSlot
+                                    hasDiv
+                                    :isInputGroup="false"
+                                    :divInputClass="['d-flex flex-wrap justify-content-center gap-2 gap-md-1']"
+                                    xl="12"
+                                    lg="12">
+                                    <template v-slot:input>
+                                        <button type="button" class="btn btn-sm btn-primary waves-effect" @click="modalActionsEntity({record})">
+                                            <i class="fa fa-gear"></i>
+                                            <span class="ms-2">Acciones</span>
+                                        </button>
+                                    </template>
+                                </InputSlot>
                             </td>
                         </tr>
                     </template>
@@ -341,7 +354,11 @@ export default {
 
                 Swal.fire({
                     html: `<span class="d-block my-1">¿Desea anular la venta <b>${form?.serie_sequential}</b>?</span>
-                           <span class="d-block mt-2 mb-1"><b>Nota:</b> Si en el detalle de la venta tiene susbscripciones asociadas serán anulados.</span>`,
+                           <div class="d-block text-muted mt-2 mb-1">
+                                <i class="fa fa-warning text-warning"></i>
+                                <span><b>Importante:</b> Si esta venta incluye <u>membresías</u>, estas serán <b>anuladas</b> automáticamente.</span>
+                            </div>
+                           `,
                     icon: "warning",
                     allowOutsideClick: false,
                     showCancelButton: true,

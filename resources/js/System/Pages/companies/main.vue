@@ -17,7 +17,8 @@
                         <v-select
                             v-model="forms.entity.createUpdate.data.identity_document_type"
                             :options="identityDocumentTypes"
-                            :clearable="false"/>
+                            :clearable="false"
+                            :searchable="false"/>
                     </template>
                 </InputSlot>
                 <InputText

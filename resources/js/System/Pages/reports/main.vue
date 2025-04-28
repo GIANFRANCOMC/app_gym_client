@@ -14,7 +14,8 @@
                     v-model="forms.entity.createUpdate.data.report"
                     :options="reports"
                     :class="config.forms.classes.select2"
-                    :clearable="false"/>
+                    :clearable="false"
+                    :searchable="false"/>
             </template>
         </InputSlot>
         <template v-if="isDefined({value: forms.entity.createUpdate.data.report?.code})">
@@ -88,7 +89,8 @@
                             v-model="forms.entity.createUpdate.data.sales.type"
                             :options="salesType"
                             :class="config.forms.classes.select2"
-                            :clearable="false"/>
+                            :clearable="false"
+                            :searchable="false"/>
                     </template>
                 </InputSlot>
                 <template v-if="['by_month'].includes(forms.entity.createUpdate.data.sales.type?.code)">

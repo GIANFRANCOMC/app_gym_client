@@ -2,7 +2,7 @@
     <Breadcrumb :list="breadcrumbTitles"/>
 
     <!-- Content -->
-    <div class="row align-items-end g-3 mb-4">
+    <div class="row align-items-end g-3 mb-3 mb-md-4">
         <InputSlot
             hasDiv
             title="Filtrar por"
@@ -14,7 +14,8 @@
                     v-model="lists.entity.filters.filter_by"
                     :options="filterByOptions"
                     :class="config.forms.classes.select2"
-                    :clearable="false"/>
+                    :clearable="false"
+                    :searchable="false"/>
             </template>
         </InputSlot>
         <InputText
@@ -23,19 +24,21 @@
             hasDiv
             title="Búsqueda"
             :titleClass="[config.forms.classes.title]"
+            :placeholder="'Buscar por ' + (lists.entity.filters.filter_by?.label || '...').toLowerCase()"
             xl="4"
             lg="4"/>
         <InputSlot
             hasDiv
             :isInputGroup="false"
+            :divInputClass="['d-flex flex-wrap justify-content-start gap-2 gap-md-3']"
             xl="5"
             lg="4">
             <template v-slot:input>
-                <button type="button" class="btn btn-primary waves-effect" @click="listEntity({})" :disabled="lists.entity.extras.loading">
+                <button type="button" class="btn btn-info-1 waves-effect" @click="listEntity({})" :disabled="lists.entity.extras.loading">
                     <i class="fa fa-search"></i>
                     <span class="ms-2">Buscar</span>
                 </button>
-                <button type="button" class="btn btn-primary waves-effect ms-3" @click="modalCreateUpdateEntity({})" :disabled="lists.entity.extras.loading">
+                <button type="button" class="btn btn-primary waves-effect" @click="modalCreateUpdateEntity({})" :disabled="lists.entity.extras.loading">
                     <i class="fa fa-plus"></i>
                     <span class="ms-2">Agregar</span>
                 </button>
@@ -44,18 +47,17 @@
     </div>
     <div class="table-responsive">
         <table class="table table-hover">
-            <thead class="table-light">
+            <thead>
                 <tr class="text-center align-middle">
-                    <th class="fw-bold col-1">CÓDIGO INTERNO</th>
-                    <th class="fw-bold col-1">NOMBRE</th>
-                    <!-- <th class="fw-bold col-1">ESTADO</th> -->
-                    <th class="fw-bold col-1">ACCIONES</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 30%;">CÓDIGO INTERNO</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 40%;">NOMBRE</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 30%;">ACCIONES</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0 bg-white">
                 <template v-if="lists.entity.extras.loading">
                     <tr class="text-center">
-                        <td colspan="99">
+                        <td colspan="99" class="py-4">
                             <Loader/>
                         </td>
                     </tr>
@@ -63,16 +65,22 @@
                 <template v-else>
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
-                            <td v-text="record.internal_code"></td>
-                            <td v-text="record.name"></td>
-                            <!-- <td>
-                                <span :class="['badge', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
-                            </td> -->
+                            <td v-text="record.internal_code" class="fw-bold"></td>
+                            <td v-text="record.name" class="text-start"></td>
                             <td>
-                                <button type="button" class="btn btn-sm btn-warning waves-effect" @click="modalCreateUpdateEntity({record})">
-                                    <i class="fa fa-pencil"></i>
-                                    <span class="ms-2">Editar</span>
-                                </button>
+                                <InputSlot
+                                    hasDiv
+                                    :isInputGroup="false"
+                                    :divInputClass="['d-flex flex-wrap justify-content-center gap-2 gap-md-1']"
+                                    xl="12"
+                                    lg="12">
+                                    <template v-slot:input>
+                                        <button type="button" class="btn btn-sm btn-warning waves-effect" @click="modalCreateUpdateEntity({record})">
+                                            <i class="fa fa-pencil"></i>
+                                            <span class="ms-2">Editar</span>
+                                        </button>
+                                    </template>
+                                </InputSlot>
                             </td>
                         </tr>
                     </template>
@@ -133,21 +141,6 @@
                             :textBottomInfo="forms.entity.createUpdate.errors?.description"
                             xl="12"
                             lg="12"/>
-                        <!-- <InputSlot
-                            hasDiv
-                            title="Estado"
-                            isRequired
-                            hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.status"
-                            xl="6"
-                            lg="6">
-                            <template v-slot:input>
-                                <v-select
-                                    v-model="forms.entity.createUpdate.data.status"
-                                    :options="statuses"
-                                    :clearable="false"/>
-                            </template>
-                        </InputSlot> -->
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -2,7 +2,7 @@
     <Breadcrumb :list="breadcrumbTitles"/>
 
     <!-- Content -->
-    <div class="row align-items-end g-3 mb-4">
+    <div class="row align-items-end g-3 mb-3 mb-md-4">
         <div class="col-lg-9 col-12">
             <div class="row g-3">
                 <InputSlot
@@ -16,7 +16,8 @@
                             v-model="lists.entity.filters.branch"
                             :options="branches"
                             :class="config.forms.classes.select2"
-                            :clearable="false"/>
+                            :clearable="false"
+                            :searchable="false"/>
                     </template>
                 </InputSlot>
                 <InputSlot
@@ -100,13 +101,12 @@
         </div>
         <InputSlot
             hasDiv
-            :divClass="['text-center']"
             :isInputGroup="false"
-            :divInputClass="['mt-2']"
+            :divInputClass="['d-flex flex-wrap justify-content-start gap-2 gap-md-3']"
             xl="12"
             lg="12">
             <template v-slot:input>
-                <button type="button" class="btn btn-primary waves-effect my-1" @click="listEntity({})" :disabled="lists.entity.extras.loading">
+                <button type="button" class="btn btn-info-1 waves-effect" @click="listEntity({})" :disabled="lists.entity.extras.loading">
                     <i class="fa fa-sync"></i>
                     <span class="ms-2">Actualizar membresías</span>
                 </button>
@@ -115,20 +115,20 @@
     </div>
     <div class="table-responsive">
         <table class="table table-hover">
-            <thead class="table-light">
+            <thead>
                 <tr class="text-center align-middle">
-                    <th class="fw-bold min-w-150px"></th>
-                    <th class="fw-bold min-w-150px">SUCURSAL</th>
-                    <th class="fw-bold min-w-150px">CLIENTE</th>
-                    <th class="fw-bold min-w-150px">FECHA DE<br/>INICIO</th>
-                    <th class="fw-bold min-w-150px">FECHA DE<br/>FINALIZACIÓN</th>
-                    <th class="fw-bold min-w-150px">ACCIONES</th>
+                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 10%;"></th>
+                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 20%;">SUCURSAL</th>
+                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 25%;">CLIENTE</th>
+                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 15%;">FECHA DE INICIO</th>
+                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 15%;">FECHA DE FINALIZACIÓN</th>
+                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 15%;">ACCIONES</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0 bg-white">
                 <template v-if="lists.entity.extras.loading">
                     <tr class="text-center">
-                        <td colspan="99">
+                        <td colspan="99" class="py-4">
                             <Loader/>
                         </td>
                     </tr>
@@ -137,7 +137,7 @@
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td>
-                                <span :class="['badge', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-primary': ['inactive'].includes(record.status), 'bg-label-danger': ['canceled'].includes(record.status) }]" v-text="record.formatted_status"></span>
+                                <span :class="['badge', 'fw-semibold', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-primary': ['inactive'].includes(record.status), 'bg-label-danger': ['canceled'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
                             <td class="text-start">
                                 <span v-text="record.branch?.name" class="fw-bold d-block"></span>
@@ -155,10 +155,19 @@
                                 <span v-text="legibleFormatDate({dateString: record.end_date, type: 'time'})" class="d-block fw-semibold"></span>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-sm btn-primary waves-effect" @click="modalActionsEntity({record})">
-                                    <i class="fa fa-gear"></i>
-                                    <span class="ms-2">Acciones</span>
-                                </button>
+                                <InputSlot
+                                    hasDiv
+                                    :isInputGroup="false"
+                                    :divInputClass="['d-flex flex-wrap justify-content-center gap-2 gap-md-1']"
+                                    xl="12"
+                                    lg="12">
+                                    <template v-slot:input>
+                                        <button type="button" class="btn btn-sm btn-primary waves-effect" @click="modalActionsEntity({record})">
+                                            <i class="fa fa-gear"></i>
+                                            <span class="ms-2">Acciones</span>
+                                        </button>
+                                    </template>
+                                </InputSlot>
                             </td>
                         </tr>
                     </template>
@@ -181,7 +190,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title text-uppercase fw-bold"></h5>
+                    <h5 class="modal-title text-uppercase fw-bold">Detalle</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">

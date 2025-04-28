@@ -20,6 +20,7 @@
                                     v-model="forms.entity.createUpdate.data.branch"
                                     :options="branches"
                                     :clearable="false"
+                                    :searchable="false"
                                     placeholder="Seleccione"/>
                             </template>
                         </InputSlot>
@@ -36,6 +37,7 @@
                                     v-model="forms.entity.createUpdate.data.serie"
                                     :options="series"
                                     :clearable="false"
+                                    :searchable="false"
                                     placeholder="Seleccione">
                                 </v-select>
                             </template>
@@ -79,6 +81,7 @@
                                     v-model="forms.entity.createUpdate.data.currency"
                                     :options="currencies"
                                     :clearable="false"
+                                    :searchable="false"
                                     placeholder="Seleccione">
                                     <template #option="{ label, data }">
                                         <span v-text="label" class="d-block fw-bold"></span>
@@ -91,14 +94,14 @@
                     <div class="row g-3">
                         <div class="table-responsive">
                             <table class="table table-hover">
-                                <thead class="table-light">
+                                <thead>
                                     <tr class="text-center align-middle">
-                                        <th class="fw-bold col-auto">#</th>
-                                        <th class="fw-bold col-1">DESCRIPCIÓN</th>
-                                        <th class="fw-bold col-3">CANTIDAD</th>
-                                        <th class="fw-bold min-w-150px">PRECIO UNITARIO</th>
-                                        <th class="fw-bold min-w-150px">TOTAL</th>
-                                        <th class="fw-bold col-auto"></th>
+                                        <th class="bg-secondary text-white fw-semibold col-auto">#</th>
+                                        <th class="bg-secondary text-white fw-semibold col-1">DESCRIPCIÓN</th>
+                                        <th class="bg-secondary text-white fw-semibold col-3">CANTIDAD</th>
+                                        <th class="bg-secondary text-white fw-semibold min-w-150px">PRECIO UNITARIO</th>
+                                        <th class="bg-secondary text-white fw-semibold min-w-150px">TOTAL</th>
+                                        <th class="bg-secondary text-white fw-semibold col-auto"></th>
                                     </tr>
                                 </thead>
                                 <tbody class="table-border-bottom-0 bg-white">
@@ -141,20 +144,29 @@
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <button class="btn btn-danger btn-xs waves-effect my-1" type="button" @click="deleteDetail({record, keyRecord})">
-                                                        <i class="fa fa-times"></i>
-                                                        <span class="ms-1">Eliminar</span>
-                                                    </button>
-                                                    <button v-if="['product', 'service'].includes(record?.type)" class="btn btn-info btn-xs waves-effect my-1" type="button" @click="duplicateDetail({record, keyRecord})">
-                                                        <i class="fa fa-copy"></i>
-                                                        <span class="ms-1">Duplicar</span>
-                                                    </button>
-                                                    <!-- <template v-if="isSubscription(record?.type)">
-                                                        <button class="btn btn-success btn-xs waves-effect my-1" type="button" @click="viewDetail({record, keyRecord})">
-                                                            <i :class="record?.extras?.showDetail ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
-                                                            <span class="ms-1" v-text="record?.extras?.showDetail ? 'Ocultar detalle' : 'Mostar detalle'"></span>
-                                                        </button>
-                                                    </template> -->
+                                                    <InputSlot
+                                                        hasDiv
+                                                        :isInputGroup="false"
+                                                        :divInputClass="['d-flex flex-wrap justify-content-center gap-2 gap-md-1']"
+                                                        xl="12"
+                                                        lg="12">
+                                                        <template v-slot:input>
+                                                            <button class="btn btn-danger btn-xs waves-effect" type="button" @click="deleteDetail({record, keyRecord})">
+                                                                <i class="fa fa-times"></i>
+                                                                <span class="ms-1">Eliminar</span>
+                                                            </button>
+                                                            <button v-if="['product', 'service'].includes(record?.type)" class="btn btn-info btn-xs waves-effect" type="button" @click="duplicateDetail({record, keyRecord})">
+                                                                <i class="fa fa-copy"></i>
+                                                                <span class="ms-1">Duplicar</span>
+                                                            </button>
+                                                            <!-- <template v-if="isSubscription(record?.type)">
+                                                                <button class="btn btn-success btn-xs waves-effect" type="button" @click="viewDetail({record, keyRecord})">
+                                                                    <i :class="record?.extras?.showDetail ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
+                                                                    <span class="ms-1" v-text="record?.extras?.showDetail ? 'Ocultar detalle' : 'Mostar detalle'"></span>
+                                                                </button>
+                                                            </template> -->
+                                                        </template>
+                                                    </InputSlot>
                                                 </td>
                                             </tr>
                                             <template v-if="record?.extras?.showDetail">
@@ -372,78 +384,78 @@
                         </InputSlot>
                     </div>
                     <template v-if="isSubscription(forms.entity.createUpdate.extras.modals.details.data.type)">
-                        <div class="accordion mt-4" id="accordionConfigSubscription">
-                            <div class="card accordion-item">
-                                <h2 class="accordion-header d-flex align-items-center border">
-                                    <button type="button" class="accordion-button fw-semibold" data-bs-toggle="collapse" data-bs-target="#accordionConfigSubscription-1" aria-expanded="true">
-                                        <i class="fa fa-info-circle"></i>
-                                        <span class="ms-2">Detalle de la membresía</span>
-                                    </button>
-                                </h2>
-                                <div id="accordionConfigSubscription-1" class="accordion-collapse collapse show">
-                                    <div class="accordion-body">
-                                        <div class="row g-3 mt-1 mb-3">
-                                            <InputDatetime
-                                                v-model="forms.entity.createUpdate.extras.modals.details.data.extras.start_date"
-                                                @change="calculateDuration({record: forms.entity.createUpdate.extras.modals.details.data})"
-                                                hasDiv
-                                                title="Fecha de inicio"
-                                                isRequired
-                                                hasTextBottom
-                                                :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.extras_start_date"
-                                                xl="6"
-                                                lg="6"/>
-                                            <InputDatetime
-                                                v-model="forms.entity.createUpdate.extras.modals.details.data.extras.end_date"
-                                                hasDiv
-                                                title="Fecha de finalización"
-                                                isRequired
-                                                disabled
-                                                hasTextBottom
-                                                :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.extras_end_date"
-                                                xl="6"
-                                                lg="6"/>
-                                            <InputSlot
-                                                :isInputGroup="false"
-                                                :divInputClass="['col-12', 'text-start', 'mt-3']">
-                                                <template v-slot:input>
-                                                    <div class="d-block my-1">
-                                                        <i class="fa fa-calendar text-primary ms-1"></i>
-                                                        <span class="ms-2">Duración base de la membresía:</span>
-                                                        <span v-text="forms.entity.createUpdate.extras.modals.details.data.extras.formatted_duration" class="fw-bold ms-2"></span>
-                                                    </div>
-                                                    <div class="d-block mt-1 mb-2">
-                                                        <i class="fa fa-calculator text-primary ms-1"></i>
-                                                        <span class="ms-2">Duración total calculada:</span>
-                                                        <span v-text="forms.entity.createUpdate.extras.modals.details.data.extras.formatted_total_duration" class="fw-bold ms-2"></span>
-                                                    </div>
-                                                    <div v-if="false  && ['day', 'month', 'year'].includes(forms.entity.createUpdate.extras.modals.details.data.extras?.duration_type)" class="form-check form-check-primary my-1">
-                                                        <label class="form-check-label fw-semibold">
-                                                            <input
-                                                                class="form-check-input"
-                                                                type="checkbox"
-                                                                v-model="forms.entity.createUpdate.extras.modals.details.data.extras.set_end_of_day"
-                                                                @change="calculateDuration({record: forms.entity.createUpdate.extras.modals.details.data})"/>
-                                                            Ajustar la <u>hora de la Fecha de finalización</u> al final del día (23:59 = 11:59 PM)
-                                                        </label>
-                                                    </div>
-                                                    <!--<div class="form-check form-check-primary fw-semibold my-1">
-                                                        <label class="form-check-label">
-                                                            <input
-                                                                class="form-check-input"
-                                                                type="checkbox"
-                                                                v-model="forms.entity.createUpdate.extras.modals.details.data.extras.force"/>
-                                                            Tomar en cuenta la membresías activas
-                                                        </label>
-                                                    </div>-->
-                                                </template>
-                                            </InputSlot>
-                                        </div>
+                        <div class="mt-4">
+                            <div class="card">
+                                <div class="card-header bg-success text-white py-2">
+                                    <span class="fw-semibold">Detalle de la membresía</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3 mt-1 mb-3">
+                                        <InputDatetime
+                                            v-model="forms.entity.createUpdate.extras.modals.details.data.extras.start_date"
+                                            @change="calculateDuration({record: forms.entity.createUpdate.extras.modals.details.data})"
+                                            hasDiv
+                                            title="Fecha de inicio"
+                                            isRequired
+                                            hasTextBottom
+                                            :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.extras_start_date"
+                                            xl="6"
+                                            lg="6"/>
+                                        <InputDatetime
+                                            v-model="forms.entity.createUpdate.extras.modals.details.data.extras.end_date"
+                                            hasDiv
+                                            title="Fecha de finalización"
+                                            isRequired
+                                            disabled
+                                            hasTextBottom
+                                            :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.extras_end_date"
+                                            xl="6"
+                                            lg="6"/>
+                                        <InputSlot
+                                            :isInputGroup="false"
+                                            :divInputClass="['col-12', 'text-start', 'mt-3']">
+                                            <template v-slot:input>
+                                                <div class="d-flex align-items-center my-1 flex-wrap">
+                                                    <h5 class="mb-0 d-flex align-items-center">
+                                                        <div class="badge bg-label-dark fw-semibold">
+                                                            <i class="fa fa-calculator text-dark"></i>
+                                                            <span class="ms-2">Duración total calculada:</span>
+                                                        </div>
+                                                    </h5>
+                                                    <h5 class="ms-2 mb-0 d-flex align-items-center">
+                                                        <span class="" v-text="forms.entity.createUpdate.extras.modals.details.data.extras.formatted_duration"></span>
+                                                        <span class="ms-1">x</span>
+                                                        <span class="ms-1" v-text="(isDefined({value: forms.entity.createUpdate.extras.modals.details.data.quantity}) ? forms.entity.createUpdate.extras.modals.details.data.quantity : '0')+' periodos'"></span>
+                                                        <span class="ms-1">=</span>
+                                                        <span class="fw-bold ms-1" v-text="forms.entity.createUpdate.extras.modals.details.data.extras.formatted_total_duration"></span>
+                                                    </h5>
+                                                </div>
+                                                <!-- <div v-if="false  && ['day', 'month', 'year'].includes(forms.entity.createUpdate.extras.modals.details.data.extras?.duration_type)" class="form-check form-check-primary my-1">
+                                                    <label class="form-check-label fw-semibold">
+                                                        <input
+                                                            class="form-check-input"
+                                                            type="checkbox"
+                                                            v-model="forms.entity.createUpdate.extras.modals.details.data.extras.set_end_of_day"
+                                                            @change="calculateDuration({record: forms.entity.createUpdate.extras.modals.details.data})"/>
+                                                        Ajustar la <u>hora de la Fecha de finalización</u> al final del día (23:59 = 11:59 PM)
+                                                    </label>
+                                                </div> -->
+                                                <!--<div class="form-check form-check-primary fw-semibold my-1">
+                                                    <label class="form-check-label">
+                                                        <input
+                                                            class="form-check-input"
+                                                            type="checkbox"
+                                                            v-model="forms.entity.createUpdate.extras.modals.details.data.extras.force"/>
+                                                        Tomar en cuenta la membresías activas
+                                                    </label>
+                                                </div>-->
+                                            </template>
+                                        </InputSlot>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="accordion mt-3" id="accordionSubscriptions" v-if="isDefined({value: forms.entity.createUpdate.data.holder?.data?.id})">
+                        <div class="accordion mt-3" id="accordionSubscriptions" v-if="false && isDefined({value: forms.entity.createUpdate.data.holder?.data?.id})">
                             <div class="card accordion-item">
                                 <h2 class="accordion-header d-flex align-items-center border">
                                     <button type="button" class="accordion-button fw-semibold collapsed" data-bs-toggle="collapse" data-bs-target="#accordionSubscriptions-1" aria-expanded="false">
@@ -456,12 +468,11 @@
                                     <div class="accordion-body">
                                         <div class="table-responsive my-3">
                                             <table class="table table-sm table-hover">
-                                                <thead class="table-light">
+                                                <thead>
                                                     <tr class="text-center align-middle">
-                                                        <th class="fw-bold col-1">#</th>
-                                                        <th class="fw-bold text-nowrap col-2">FECHA DE INICIO</th>
-                                                        <th class="fw-bold text-nowrap col-2">FECHA DE FINALIZACIÓN</th>
-                                                        <!-- <th class="fw-bold col-1">TIPO</th> -->
+                                                        <th class="bg-secondary text-white fw-semibold col-1">#</th>
+                                                        <th class="bg-secondary text-white fw-semibold text-nowrap col-2">FECHA DE INICIO</th>
+                                                        <th class="bg-secondary text-white fw-semibold text-nowrap col-2">FECHA DE FINALIZACIÓN</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody class="table-border-bottom-0 bg-white">
@@ -469,11 +480,14 @@
                                                         <template v-for="(record, keyRecord) in options?.holders?.subscriptions[forms.entity.createUpdate.data.holder?.data?.id]" :key="record.id">
                                                             <tr class="text-nowrap text-center">
                                                                 <td v-text="keyRecord + 1"></td>
-                                                                <td v-text="legibleFormatDate({dateString: record.start_date})"></td>
-                                                                <td v-text="legibleFormatDate({dateString: record.end_date})"></td>
-                                                                <!-- <td>
-                                                                    <span v-text="record.formatted_type" class="badge bg-label-primary fw-bold"></span>
-                                                                </td> -->
+                                                                <td>
+                                                                    <span v-text="legibleFormatDate({dateString: record.start_date, type: 'date'})" class="d-block fw-semibold"></span>
+                                                                    <span v-text="legibleFormatDate({dateString: record.start_date, type: 'time'})" class="d-block fw-semibold"></span>
+                                                                </td>
+                                                                <td>
+                                                                    <span v-text="legibleFormatDate({dateString: record.end_date, type: 'date'})" class="d-block fw-semibold"></span>
+                                                                    <span v-text="legibleFormatDate({dateString: record.end_date, type: 'time'})" class="d-block fw-semibold"></span>
+                                                                </td>
                                                             </tr>
                                                         </template>
                                                     </template>
@@ -524,18 +538,17 @@
                     <div class="row g-3">
                         <div class="table-responsive">
                             <table class="table table-sm table-hover">
-                                <thead class="table-light">
+                                <thead>
                                     <tr class="text-center align-middle">
-                                        <th class="fw-bold col-1">#</th>
-                                        <th class="fw-bold text-nowrap col-2">FECHA DE INICIO</th>
-                                        <th class="fw-bold text-nowrap col-2">FECHA DE FINALIZACIÓN</th>
-                                        <!-- <th class="fw-bold col-1">TIPO</th> -->
+                                        <th class="bg-secondary text-white fw-semibold col-1">#</th>
+                                        <th class="bg-secondary text-white fw-semibold text-nowrap col-2">FECHA DE INICIO</th>
+                                        <th class="bg-secondary text-white fw-semibold text-nowrap col-2">FECHA DE FINALIZACIÓN</th>
                                     </tr>
                                 </thead>
                                 <tbody class="table-border-bottom-0 bg-white">
                                     <template v-if="forms.entity.createUpdate.extras.modals.subscriptions.data.loading">
                                         <tr class="text-center">
-                                            <td colspan="99">
+                                            <td colspan="99" class="py-4">
                                                 <Loader/>
                                             </td>
                                         </tr>
@@ -545,11 +558,14 @@
                                             <template v-for="(record, keyRecord) in options?.holders?.subscriptions[forms.entity.createUpdate.data.holder?.data?.id]" :key="record.id">
                                                 <tr class="text-nowrap text-center">
                                                     <td v-text="keyRecord + 1"></td>
-                                                    <td v-text="legibleFormatDate({dateString: record.start_date})"></td>
-                                                    <td v-text="legibleFormatDate({dateString: record.end_date})"></td>
-                                                    <!-- <td>
-                                                        <span v-text="record.formatted_type" class="badge bg-label-primary fw-bold"></span>
-                                                    </td> -->
+                                                    <td>
+                                                        <span v-text="legibleFormatDate({dateString: record.start_date, type: 'date'})" class="d-block fw-semibold"></span>
+                                                        <span v-text="legibleFormatDate({dateString: record.start_date, type: 'time'})" class="d-block fw-semibold"></span>
+                                                    </td>
+                                                    <td>
+                                                        <span v-text="legibleFormatDate({dateString: record.end_date, type: 'date'})" class="d-block fw-semibold"></span>
+                                                        <span v-text="legibleFormatDate({dateString: record.end_date, type: 'time'})" class="d-block fw-semibold"></span>
+                                                    </td>
                                                 </tr>
                                             </template>
                                         </template>
