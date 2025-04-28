@@ -86,7 +86,7 @@
                                     lg="12">
                                     <template v-slot:input>
                                         <button type="button" class="btn btn-sm btn-warning waves-effect" @click="modalCreateUpdateEntity({record})">
-                                            <i class="fa-solid fa-pencil"></i>
+                                            <i class="fa fa-pencil"></i>
                                             <span class="ms-2">Editar</span>
                                         </button>
                                         <button type="button" class="btn btn-sm btn-success waves-effect" @click="modalCarnetEntity({record})">
@@ -119,7 +119,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.createUpdate.extras.modals.default.titles[isDefined({value: forms.entity.createUpdate.data?.id}) ? 'update' : 'store']"></h5>
-                    <button type="button" class="btn-close fw-bold" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row g-3">
