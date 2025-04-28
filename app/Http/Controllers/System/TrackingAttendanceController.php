@@ -326,7 +326,8 @@ class TrackingAttendanceController extends Controller {
 
             if(count($activeAttendances) > 0) {
 
-                return response()->json(["bool" => false, "msg" => "$customer->name: Cuenta con un registro de asistencia 'En curso'."], 200);
+                $attendances->push(["bool" => false, "msg" => "$customer->name: Cuenta con un registro de asistencia 'En curso'."], 200);
+                continue;
 
             }
 
@@ -334,7 +335,8 @@ class TrackingAttendanceController extends Controller {
 
             if(count($finalizedAttendances) >= $attendanceLimitPerDay) {
 
-                return response()->json(["bool" => false, "msg" => "$customer->name: Límite excedido."], 200);
+                $attendances->push(["bool" => false, "msg" => "$customer->name: Límite excedido."], 200);
+                continue;
 
             }
 
