@@ -209,7 +209,8 @@
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.status"
                                     :options="statuses"
-                                    :clearable="false"/>
+                                    :clearable="false"
+                                    :searchable="false"/>
                             </template>
                         </InputSlot>
                     </div>

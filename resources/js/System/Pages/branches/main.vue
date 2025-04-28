@@ -47,7 +47,7 @@
     </div>
     <div class="table-responsive">
         <table class="table table-hover">
-            <thead class="table-light">
+            <thead>
                 <tr class="text-center align-middle">
                     <th class="bg-secondary text-white fw-semibold" style="width: 50%;">NOMBRE</th>
                     <!-- <th class="bg-secondary text-white fw-semibold">ALMACÉN</th> -->

@@ -2,7 +2,7 @@
     <Breadcrumb :list="breadcrumbTitles"/>
 
     <!-- Content -->
-    <div class="row align-items-end g-3 mb-3 mb-md-4">
+    <div class="row align-items-start g-3 mb-3 mb-md-4">
         <div class="col-lg-9 col-12">
             <div class="row g-3">
                 <InputSlot
@@ -17,7 +17,8 @@
                             :options="branches"
                             :class="config.forms.classes.select2"
                             :clearable="false"
-                            :searchable="false"/>
+                            :searchable="false"
+                            placeholder="Seleccione una sucursal ..."/>
                     </template>
                 </InputSlot>
                 <InputSlot
@@ -31,7 +32,8 @@
                             v-model="lists.entity.filters.customer"
                             :options="customers"
                             :class="config.forms.classes.select2"
-                            :clearable="true"/>
+                            :clearable="true"
+                            placeholder="Seleccione un cliente ..."/>
                     </template>
                 </InputSlot>
                 <InputDate
@@ -45,47 +47,39 @@
             </div>
         </div>
         <div class="col-lg-3 col-12">
-            <div class="row">
+            <div class="row g-1">
                 <div class="col-xl-12">
                     <label :class="[config.forms.classes.title]">Estado</label>
                 </div>
                 <div class="col-lg-12 col-xl-12">
-                    <div class="form-check custom-option custom-option-basic border-secondary bg-white">
-                        <label class="form-check-label custom-option-content py-2">
+                    <div class="form-check">
+                        <label class="py-1 cursor-pointer">
                             <input :class="['form-check-input', lists.entity.filters.status == '' ? 'bg-secondary border-secondary' : '']" type="radio" value="" v-model="lists.entity.filters.status" @change="listEntity({})"/>
-                            <span class="custom-option-body">
-                                <span class="fw-bold text-secondary">Todos los estados</span>
-                            </span>
+                            <span class="fw-bold text-secondary">Todos los estados</span>
                         </label>
                     </div>
                 </div>
-                <div class="col-lg-12 col-xl-12 mt-2 mb-1">
-                    <div class="form-check custom-option custom-option-basic border-success bg-white">
-                        <label class="form-check-label custom-option-content py-2">
+                <div class="col-lg-12 col-xl-12">
+                    <div class="form-check">
+                        <label class="py-1 cursor-pointer">
                             <input :class="['form-check-input', lists.entity.filters.status == 'active' ? 'bg-success border-success' : '']" type="radio" value="active" v-model="lists.entity.filters.status" @change="listEntity({})"/>
-                            <span class="custom-option-body">
-                                <span class="fw-bold text-success">En curso</span>
-                            </span>
+                            <span class="fw-bold text-success">En curso</span>
                         </label>
                     </div>
                 </div>
-                <div class="col-lg-12 col-xl-12 my-1">
-                    <div class="form-check custom-option custom-option-basic border-primary bg-white">
-                        <label class="form-check-label custom-option-content py-2">
+                <div class="col-lg-12 col-xl-12">
+                    <div class="form-check">
+                        <label class="py-1 cursor-pointer">
                             <input :class="['form-check-input', lists.entity.filters.status == 'finalized' ? 'bg-primary border-primary' : '']" type="radio" value="finalized" v-model="lists.entity.filters.status" @change="listEntity({})"/>
-                            <span class="custom-option-body">
-                                <span class="fw-bold text-primary">Concluida</span>
-                            </span>
+                            <span class="fw-bold text-primary">Concluida</span>
                         </label>
                     </div>
                 </div>
-                <div class="col-lg-12 col-xl-12 my-1">
-                    <div class="form-check custom-option custom-option-basic border-danger bg-white">
-                        <label class="form-check-label custom-option-content py-2">
+                <div class="col-lg-12 col-xl-12">
+                    <div class="form-check">
+                        <label class="py-1 cursor-pointer">
                             <input :class="['form-check-input', lists.entity.filters.status == 'canceled' ? 'bg-danger border-danger' : '']" type="radio" value="canceled" v-model="lists.entity.filters.status" @change="listEntity({})"/>
-                            <span class="custom-option-body">
-                                <span class="fw-bold text-danger">Anulada</span>
-                            </span>
+                            <span class="fw-bold text-danger">Anulada</span>
                         </label>
                     </div>
                 </div>
@@ -99,8 +93,8 @@
             lg="12">
             <template v-slot:input>
                 <button type="button" class="btn btn-info-1 waves-effect" @click="listEntity({})" :disabled="lists.entity.extras.loading">
-                    <i class="fa fa-sync"></i>
-                    <span class="ms-2">Actualizar asistencias</span>
+                    <i class="fa fa-filter"></i>
+                    <span class="ms-2">Filtrar asistencias</span>
                 </button>
                 <button type="button" class="btn btn-primary waves-effect" @click="selectModeEntity()" :disabled="lists.entity.extras.loading">
                     <i class="fa fa-plus"></i>
@@ -213,7 +207,7 @@
                             xl="12"
                             lg="12">
                             <template v-slot:input>
-                                <span v-if="true || isDefined({value: forms.entity.createUpdate.data?.id})" v-text="forms.entity.createUpdate.data?.branch?.data?.name" class="fw-semibold"></span>
+                                <span v-if="isDefined({value: forms.entity.createUpdate.data?.id})" v-text="forms.entity.createUpdate.data?.branch?.data?.name" class="fw-semibold"></span>
                                 <v-select
                                     v-else
                                     v-model="forms.entity.createUpdate.data.branch"
@@ -284,7 +278,7 @@
                             xl="12"
                             lg="12">
                             <template v-slot:input>
-                                <span v-if="true || isDefined({value: forms.entity.qrcode.data?.id})" v-text="forms.entity.qrcode.data?.branch?.data?.name" class="fw-semibold"></span>
+                                <span v-if="isDefined({value: forms.entity.qrcode.data?.id})" v-text="forms.entity.qrcode.data?.branch?.data?.name" class="fw-semibold"></span>
                                 <v-select
                                     v-else
                                     v-model="forms.entity.qrcode.data.branch"
@@ -318,11 +312,11 @@
                             <template v-slot:input>
                                 <div class="table-responsive w-100">
                                     <table class="table table-sm table-hover">
-                                        <thead class="table-light">
+                                        <thead>
                                             <tr class="text-center align-middle">
-                                                <th class="fw-bold col-1">#</th>
-                                                <th class="fw-bold col-1">CLIENTE</th>
-                                                <th class="fw-bold col-1"></th>
+                                                <th class="bg-secondary text-white fw-semibold" style="width: 10%;">#</th>
+                                                <th class="bg-secondary text-white fw-semibold" style="width: 75%;">CLIENTE</th>
+                                                <th class="bg-secondary text-white fw-semibold" style="width: 15%;"></th>
                                             </tr>
                                         </thead>
                                         <tbody class="table-border-bottom-0 bg-white">

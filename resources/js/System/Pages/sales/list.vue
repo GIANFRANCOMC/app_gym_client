@@ -16,7 +16,7 @@
                     :class="config.forms.classes.select2"
                     :clearable="true"
                     :searchable="false"
-                    placeholder="Seleccione">
+                    placeholder="Seleccione una serie ...">
                     <template #option="{ data }">
                         <span v-text="`${data?.legible_serie} - ${data?.document_type?.name}`" class="d-block fw-bold"></span>
                         <small v-text="data?.branch?.name" class="d-block"></small>
@@ -55,8 +55,7 @@
                     :options="holders"
                     :class="config.forms.classes.select2"
                     :clearable="true"
-                    :searchable="false"
-                    placeholder="Seleccione">
+                    placeholder="Seleccione un cliente ...">
                     <template #option="{ label }">
                         <span v-text="truncate({value: label, length: 50})" class="d-block"></span>
                     </template>
@@ -89,7 +88,7 @@
             xl="3"
             lg="6">
             <template v-slot:input>
-                <button class="btn btn-primary waves-effect" type="button" @click="listEntity({})" :disabled="lists.entity.extras.loading">
+                <button type="button" class="btn btn-info-1 waves-effect" @click="listEntity({})" :disabled="lists.entity.extras.loading">
                     <i class="fa fa-search"></i>
                     <span class="ms-2">Buscar</span>
                 </button>
@@ -177,7 +176,7 @@
                     <div class="badge bg-danger p-3 rounded mb-1">
                         <i class="fa-solid fa-rectangle-xmark fs-3"></i>
                     </div>
-                    <span class="d-block fw-semibold">Anular venta</span>
+                    <span class="d-block fw-semibold text-danger">Anular venta</span>
                 </div>
             </div>
             <div class="row g-2 mt-4">

@@ -99,6 +99,12 @@ class TrackingAttendanceController extends Controller {
 
         $userAuth = Auth::user();
 
+        if(!Utilities::isDefined($request->start_date)) {
+
+            return response()->json(["bool" => false, "msg" => "No se ha podido crear la asistencia, debe de diligenciar el ingreso."], 200);
+
+        }
+
         $attendance = null;
 
         $customer = Customer::where("id", $request->customer_id)
@@ -113,10 +119,10 @@ class TrackingAttendanceController extends Controller {
 
         $subscriptions = Subscription::where("company_id", $userAuth->company_id)
                                      ->where("branch_id", $request->branch_id)
-                                     ->where("customer_id", $request->customer_id)
+                                     ->where("customer_id", $customer->id)
                                      ->where("start_date", "<=", $request->start_date)
                                      ->where("end_date", ">=", $request->start_date)
-                                     ->where("status", "!=", "canceled")
+                                     ->where("status", "active")
                                      ->get();
 
         if(count($subscriptions) === 0) {
@@ -127,7 +133,7 @@ class TrackingAttendanceController extends Controller {
 
         $attendanceActive = Attendance::where("company_id", $userAuth->company_id)
                                       ->where("branch_id", $request->branch_id)
-                                      ->where("customer_id", $request->customer_id)
+                                      ->where("customer_id", $customer->id)
                                       ->whereDate("start_date", $request->start_date)
                                       ->where("status", "active")
                                       ->first();
@@ -145,7 +151,7 @@ class TrackingAttendanceController extends Controller {
             $attendance->branch_id   = $request->branch_id;
             $attendance->customer_id = $request->customer_id;
             $attendance->start_date  = $request->start_date;
-            $attendance->end_date    = $request->end_date;
+            $attendance->end_date    = null; // $request->end_date;
             $attendance->observation = $request->observation ?? "";
             $attendance->type        = "manual";
             $attendance->status      = "active";
@@ -186,6 +192,8 @@ class TrackingAttendanceController extends Controller {
 
         $attendance = Attendance::where("id", $id)
                                 ->where("company_id", $userAuth->company_id)
+                                ->where("branch_id", $request->branch_id)
+                                ->where("customer_id", $request->customer_id)
                                 ->where("status", "active")
                                 ->first();
 
@@ -249,6 +257,12 @@ class TrackingAttendanceController extends Controller {
 
         $userAuth = Auth::user();
 
+        if(!Utilities::isDefined($request->start_date)) {
+
+            return response()->json(["bool" => false, "msg" => "No se ha podido crear la asistencia, debe de diligenciar el ingreso."], 200);
+
+        }
+
         $attendances = collect();
 
         foreach($request->customers as $customerRequest) {
@@ -266,10 +280,10 @@ class TrackingAttendanceController extends Controller {
 
             $subscriptions = Subscription::where("company_id", $userAuth->company_id)
                                          ->where("branch_id", $request->branch_id)
-                                         ->where("customer_id", $customerRequest["customer_id"])
+                                         ->where("customer_id", $customer->id)
                                          ->where("start_date", "<=", $request->start_date)
                                          ->where("end_date", ">=", $request->start_date)
-                                         ->where("status", "!=", "canceled")
+                                         ->where("status", "active")
                                          ->get();
 
             if(count($subscriptions) === 0) {
@@ -281,7 +295,7 @@ class TrackingAttendanceController extends Controller {
 
             $attendanceActive = Attendance::where("company_id", $userAuth->company_id)
                                         ->where("branch_id", $request->branch_id)
-                                        ->where("customer_id", $customerRequest["customer_id"])
+                                        ->where("customer_id", $customer->id)
                                         ->whereDate("start_date", $request->start_date)
                                         ->where("status", "active")
                                         ->first();
@@ -298,7 +312,7 @@ class TrackingAttendanceController extends Controller {
             $attendance->branch_id   = $request->branch_id;
             $attendance->customer_id = $customerRequest["customer_id"];
             $attendance->start_date  = $request->start_date;
-            $attendance->end_date    = $request->end_date;
+            $attendance->end_date    = null; // $request->end_date;
             $attendance->observation = $request->observation ?? "";
             $attendance->type        = "qr";
             $attendance->status      = "active";

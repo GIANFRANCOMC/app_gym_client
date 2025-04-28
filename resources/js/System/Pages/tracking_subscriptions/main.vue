@@ -2,7 +2,7 @@
     <Breadcrumb :list="breadcrumbTitles"/>
 
     <!-- Content -->
-    <div class="row align-items-end g-3 mb-3 mb-md-4">
+    <div class="row align-items-start g-3 mb-3 mb-md-4">
         <div class="col-lg-9 col-12">
             <div class="row g-3">
                 <InputSlot
@@ -17,7 +17,8 @@
                             :options="branches"
                             :class="config.forms.classes.select2"
                             :clearable="false"
-                            :searchable="false"/>
+                            :searchable="false"
+                            placeholder="Seleccione una sucursal ..."/>
                     </template>
                 </InputSlot>
                 <InputSlot
@@ -31,7 +32,8 @@
                             v-model="lists.entity.filters.customer"
                             :options="customers"
                             :class="config.forms.classes.select2"
-                            :clearable="true"/>
+                            :clearable="true"
+                            placeholder="Seleccione un cliente ..."/>
                     </template>
                 </InputSlot>
                 <InputDate
@@ -53,47 +55,39 @@
             </div>
         </div>
         <div class="col-lg-3 col-12">
-            <div class="row">
+            <div class="row g-1">
                 <div class="col-xl-12">
                     <label :class="[config.forms.classes.title]">Estado</label>
                 </div>
                 <div class="col-lg-12 col-xl-12">
-                    <div class="form-check custom-option custom-option-basic border-secondary bg-white">
-                        <label class="form-check-label custom-option-content py-2">
+                    <div class="form-check">
+                        <label class="py-1 cursor-pointer">
                             <input :class="['form-check-input', lists.entity.filters.status == '' ? 'bg-secondary border-secondary' : '']" type="radio" value="" v-model="lists.entity.filters.status" @change="listEntity({})"/>
-                            <span class="custom-option-body">
-                                <span class="fw-bold text-secondary">Todos los estados</span>
-                            </span>
+                            <span class="fw-bold text-secondary">Todos los estados</span>
                         </label>
                     </div>
                 </div>
-                <div class="col-lg-12 col-xl-12 mt-2 mb-1">
-                    <div class="form-check custom-option custom-option-basic border-success bg-white">
-                        <label class="form-check-label custom-option-content py-2">
+                <div class="col-lg-12 col-xl-12">
+                    <div class="form-check">
+                        <label class="py-1 cursor-pointer">
                             <input :class="['form-check-input', lists.entity.filters.status == 'active' ? 'bg-success border-success' : '']" type="radio" value="active" v-model="lists.entity.filters.status" @change="listEntity({})"/>
-                            <span class="custom-option-body">
-                                <span class="fw-bold text-success">Vigente</span>
-                            </span>
+                            <span class="fw-bold text-success">Vigente</span>
                         </label>
                     </div>
                 </div>
-                <div class="col-lg-12 col-xl-12 my-1">
-                    <div class="form-check custom-option custom-option-basic border-primary bg-white">
-                        <label class="form-check-label custom-option-content py-2">
+                <div class="col-lg-12 col-xl-12">
+                    <div class="form-check">
+                        <label class="py-1 cursor-pointer">
                             <input :class="['form-check-input', lists.entity.filters.status == 'inactive' ? 'bg-primary border-primary' : '']" type="radio" value="inactive" v-model="lists.entity.filters.status" @change="listEntity({})"/>
-                            <span class="custom-option-body">
-                                <span class="fw-bold text-primary">Vencida</span>
-                            </span>
+                            <span class="fw-bold text-primary">Vencida</span>
                         </label>
                     </div>
                 </div>
-                <div class="col-lg-12 col-xl-12 my-1">
-                    <div class="form-check custom-option custom-option-basic border-danger bg-white">
-                        <label class="form-check-label custom-option-content py-2">
+                <div class="col-lg-12 col-xl-12">
+                    <div class="form-check">
+                        <label class="py-1 cursor-pointer">
                             <input :class="['form-check-input', lists.entity.filters.status == 'canceled' ? 'bg-danger border-danger' : '']" type="radio" value="canceled" v-model="lists.entity.filters.status" @change="listEntity({})"/>
-                            <span class="custom-option-body">
-                                <span class="fw-bold text-danger">Anulada</span>
-                            </span>
+                            <span class="fw-bold text-danger">Anulada</span>
                         </label>
                     </div>
                 </div>
@@ -107,8 +101,8 @@
             lg="12">
             <template v-slot:input>
                 <button type="button" class="btn btn-info-1 waves-effect" @click="listEntity({})" :disabled="lists.entity.extras.loading">
-                    <i class="fa fa-sync"></i>
-                    <span class="ms-2">Actualizar membresías</span>
+                    <i class="fa fa-filter"></i>
+                    <span class="ms-2">Filtrar membresías</span>
                 </button>
             </template>
         </InputSlot>
@@ -225,7 +219,7 @@
                                 <div class="badge bg-danger p-3 rounded mb-1">
                                     <i class="fa-solid fa-rectangle-xmark fs-3"></i>
                                 </div>
-                                <span class="d-block fw-semibold">Anular membresía</span>
+                                <span class="d-block fw-semibold text-danger">Anular membresía</span>
                             </div>
                         </div>
                     </div>
