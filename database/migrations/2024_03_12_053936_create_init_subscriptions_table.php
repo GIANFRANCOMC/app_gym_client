@@ -24,6 +24,7 @@ return new class extends Migration {
             $table->dateTime("end_date");
             $table->boolean("set_end_of_day")->default(false);
             $table->boolean("force")->default(false);
+            $table->integer("attendance_limit_per_day")->default(1);
             $table->text("observation")->nullable();
             $table->text("motive")->nullable();
             $table->enum("type", ["sale", "manual"])->default("sale");

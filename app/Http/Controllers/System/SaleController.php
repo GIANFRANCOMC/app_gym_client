@@ -230,6 +230,7 @@ class SaleController extends Controller {
                             $subscription->end_date       = $extras->end_date;
                             $subscription->set_end_of_day = $extras->set_end_of_day;
                             $subscription->force          = $extras->force;
+                            $subscription->attendance_limit_per_day = 1;
                             $subscription->observation    = $extras->observation;
                             $subscription->motive         = null;
                             $subscription->type           = "sale";

@@ -2,159 +2,204 @@
     <Breadcrumb :list="breadcrumbTitles"/>
 
     <!-- Content -->
-    <div class="card h-100">
-        <div class="card-body">
-            <div class="row g-3">
-                <InputSlot
-                    hasDiv
-                    title="Tipo de documento"
-                    isRequired
-                    hasTextBottom
-                    :textBottomInfo="forms.entity.createUpdate.errors?.identity_document_type"
-                    xl="6"
-                    lg="6">
-                    <template v-slot:input>
-                        <v-select
-                            v-model="forms.entity.createUpdate.data.identity_document_type"
-                            :options="identityDocumentTypes"
-                            :clearable="false"
-                            :searchable="false"/>
-                    </template>
-                </InputSlot>
-                <InputText
-                    v-model="forms.entity.createUpdate.data.document_number"
-                    hasDiv
-                    title="Número de documento"
-                    isRequired
-                    hasTextBottom
-                    :textBottomInfo="forms.entity.createUpdate.errors?.document_number"
-                    xl="6"
-                    lg="6"/>
-                <InputText
-                    v-model="forms.entity.createUpdate.data.legal_name"
-                    hasDiv
-                    title="Nombre legal"
-                    isRequired
-                    hasTextBottom
-                    :textBottomInfo="forms.entity.createUpdate.errors?.legal_name"
-                    xl="6"
-                    lg="6"/>
-                <InputText
-                    v-model="forms.entity.createUpdate.data.commercial_name"
-                    hasDiv
-                    title="Nombre comercial"
-                    isRequired
-                    hasTextBottom
-                    :textBottomInfo="forms.entity.createUpdate.errors?.commercial_name"
-                    xl="6"
-                    lg="6"/>
-                <InputText
-                    v-model="forms.entity.createUpdate.data.address"
-                    hasDiv
-                    title="Dirección"
-                    isRequired
-                    hasTextBottom
-                    :textBottomInfo="forms.entity.createUpdate.errors?.address"
-                    xl="6"
-                    lg="6"/>
-                <InputText
-                    v-model="forms.entity.createUpdate.data.telephone"
-                    hasDiv
-                    title="Teléfono"
-                    isRequired
-                    hasTextBottom
-                    :textBottomInfo="forms.entity.createUpdate.errors?.telephone"
-                    xl="6"
-                    lg="6"/>
-                <InputText
-                    v-model="forms.entity.createUpdate.data.email"
-                    hasDiv
-                    title="Correo electrónico"
-                    hasTextBottom
-                    :textBottomInfo="forms.entity.createUpdate.errors?.email"
-                    xl="6"
-                    lg="6">
-                    <template v-slot:inputGroupPrepend>
-                        <a href="javascript:void(0)" class="btn btn-icon btn-label-dark waves-effect">
-                            <i class="fa fa-envelope fs-5"></i>
-                        </a>
-                    </template>
-                </InputText>
-                <InputText
-                    v-model="forms.entity.createUpdate.data.token_api_misc"
-                    hasDiv
-                    title="Token API - Misc"
-                    hasTextBottom
-                    :textBottomInfo="forms.entity.createUpdate.errors?.token_api_misc"
-                    xl="6"
-                    lg="6"/>
-                <InputText
-                    v-model="forms.entity.createUpdate.data.facebook"
-                    hasDiv
-                    title="Facebook"
-                    hasTextBottom
-                    :textBottomInfo="forms.entity.createUpdate.errors?.facebook"
-                    xl="6"
-                    lg="6">
-                    <template v-slot:inputGroupPrepend>
-                        <a href="javascript:void(0)" class="btn btn-icon btn-label-info waves-effect">
-                            <i class="tf-icons fa-brands fa-facebook-f fs-5"></i>
-                        </a>
-                    </template>
-                </InputText>
-                <InputText
-                    v-model="forms.entity.createUpdate.data.instagram"
-                    hasDiv
-                    title="Instagram"
-                    hasTextBottom
-                    :textBottomInfo="forms.entity.createUpdate.errors?.instagram"
-                    xl="6"
-                    lg="6">
-                    <template v-slot:inputGroupPrepend>
-                        <a href="javascript:void(0)" class="btn btn-icon btn-label-danger waves-effect">
-                            <i class="tf-icons fa-brands fa-instagram fs-5"></i>
-                        </a>
-                    </template>
-                </InputText>
-                <InputText
-                    v-model="forms.entity.createUpdate.data.whatsapp"
-                    hasDiv
-                    title="Whatsapp"
-                    hasTextBottom
-                    :textBottomInfo="forms.entity.createUpdate.errors?.whatsapp"
-                    xl="6"
-                    lg="6">
-                    <template v-slot:inputGroupPrepend>
-                        <a href="javascript:void(0)" class="btn btn-icon btn-label-success waves-effect">
-                            <i class="tf-icons fa-brands fa-whatsapp fs-5"></i>
-                        </a>
-                    </template>
-                </InputText>
-                <InputSlot
-                    v-if="false"
-                    hasDiv
-                    title="Estado"
-                    isRequired
-                    hasTextBottom
-                    :textBottomInfo="forms.entity.createUpdate.errors?.status"
-                    xl="6"
-                    lg="6">
-                    <template v-slot:input>
-                        <v-select
-                            v-model="forms.entity.createUpdate.data.status"
-                            :options="statuses"
-                            :clearable="false"
-                            :disabled="true"/>
-                    </template>
-                </InputSlot>
-            </div>
-        </div>
-        <div class="card-footer">
-            <div class="d-flex flex-row-reverse">
-                <button type="button" class="btn waves-effect btn-primary" @click="createUpdateEntity()">
-                    <i class="fa fa-save"></i>
-                    <span class="ms-2">Guardar</span>
+    <div class="nav-align-top">
+        <ul class="nav nav-tabs nav-fill" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-general" aria-controls="navs-pills-general" aria-selected="false" tabindex="-1">
+                    <span class="d-none d-sm-inline-flex align-items-center fw-bold">
+                        <i class="fa fa-info-circle me-1_5"></i>
+                        <span class="ms-2">General</span>
+                    </span>
+                    <i class="fa fa-info-circle d-sm-none"></i>
                 </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-contacts" aria-controls="navs-pills-contacts" aria-selected="false" tabindex="-1">
+                    <span class="d-none d-sm-inline-flex align-items-center fw-bold">
+                        <i class="fa-solid fa-address-book me-1_5"></i>
+                        <span class="ms-2">Contacto</span>
+                    </span>
+                    <i class="fa-solid fa-address-book d-sm-none"></i>
+                </button>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="navs-pills-general" role="tabpanel">
+                <div class="row g-3">
+                    <InputSlot
+                        hasDiv
+                        title="Tipo de documento"
+                        isRequired
+                        hasTextBottom
+                        :textBottomInfo="forms.entity.createUpdate.errors?.identity_document_type"
+                        xl="6"
+                        lg="6">
+                        <template v-slot:input>
+                            <v-select
+                                v-model="forms.entity.createUpdate.data.identity_document_type"
+                                :options="identityDocumentTypes"
+                                :clearable="false"
+                                :searchable="false"/>
+                        </template>
+                    </InputSlot>
+                    <InputText
+                        v-model="forms.entity.createUpdate.data.document_number"
+                        hasDiv
+                        title="Número de documento"
+                        isRequired
+                        hasTextBottom
+                        :textBottomInfo="forms.entity.createUpdate.errors?.document_number"
+                        xl="6"
+                        lg="6"/>
+                    <InputText
+                        v-model="forms.entity.createUpdate.data.legal_name"
+                        hasDiv
+                        title="Nombre legal"
+                        isRequired
+                        hasTextBottom
+                        :textBottomInfo="forms.entity.createUpdate.errors?.legal_name"
+                        xl="6"
+                        lg="6"/>
+                    <InputText
+                        v-model="forms.entity.createUpdate.data.commercial_name"
+                        hasDiv
+                        title="Nombre comercial"
+                        isRequired
+                        hasTextBottom
+                        :textBottomInfo="forms.entity.createUpdate.errors?.commercial_name"
+                        xl="6"
+                        lg="6"/>
+                    <InputText
+                        v-model="forms.entity.createUpdate.data.address"
+                        hasDiv
+                        title="Dirección"
+                        isRequired
+                        hasTextBottom
+                        :textBottomInfo="forms.entity.createUpdate.errors?.address"
+                        xl="6"
+                        lg="6"/>
+                    <InputText
+                        v-model="forms.entity.createUpdate.data.telephone"
+                        hasDiv
+                        title="Teléfono"
+                        isRequired
+                        hasTextBottom
+                        :textBottomInfo="forms.entity.createUpdate.errors?.telephone"
+                        xl="6"
+                        lg="6"/>
+                    <InputText
+                        v-model="forms.entity.createUpdate.data.email"
+                        hasDiv
+                        title="Correo electrónico"
+                        hasTextBottom
+                        :textBottomInfo="forms.entity.createUpdate.errors?.email"
+                        xl="6"
+                        lg="6">
+                        <template v-slot:inputGroupPrepend>
+                            <a href="javascript:void(0)" class="btn btn-icon btn-label-dark waves-effect">
+                                <i class="fa fa-envelope fs-5"></i>
+                            </a>
+                        </template>
+                    </InputText>
+                    <InputText
+                        v-model="forms.entity.createUpdate.data.token_api_misc"
+                        hasDiv
+                        title="Token API - Misc"
+                        hasTextBottom
+                        :textBottomInfo="forms.entity.createUpdate.errors?.token_api_misc"
+                        xl="6"
+                        lg="6"/>
+                    <InputSlot
+                        v-if="false"
+                        hasDiv
+                        title="Estado"
+                        isRequired
+                        hasTextBottom
+                        :textBottomInfo="forms.entity.createUpdate.errors?.status"
+                        xl="6"
+                        lg="6">
+                        <template v-slot:input>
+                            <v-select
+                                v-model="forms.entity.createUpdate.data.status"
+                                :options="statuses"
+                                :clearable="false"
+                                :disabled="true"/>
+                        </template>
+                    </InputSlot>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="navs-pills-contacts" role="tabpanel">
+                <div class="row g-3">
+                    <InputText
+                        v-model="forms.entity.createUpdate.data.facebook"
+                        hasDiv
+                        title="Facebook"
+                        hasTextBottom
+                        :textBottomInfo="forms.entity.createUpdate.errors?.facebook"
+                        xl="6"
+                        lg="6">
+                        <template v-slot:inputGroupPrepend>
+                            <a href="javascript:void(0)" class="btn btn-icon btn-label-info waves-effect">
+                                <i class="tf-icons fa-brands fa-facebook-f fs-5"></i>
+                            </a>
+                        </template>
+                    </InputText>
+                    <InputText
+                        v-model="forms.entity.createUpdate.data.instagram"
+                        hasDiv
+                        title="Instagram"
+                        hasTextBottom
+                        :textBottomInfo="forms.entity.createUpdate.errors?.instagram"
+                        xl="6"
+                        lg="6">
+                        <template v-slot:inputGroupPrepend>
+                            <a href="javascript:void(0)" class="btn btn-icon btn-label-danger waves-effect">
+                                <i class="tf-icons fa-brands fa-instagram fs-5"></i>
+                            </a>
+                        </template>
+                    </InputText>
+                    <InputText
+                        v-model="forms.entity.createUpdate.data.whatsapp"
+                        hasDiv
+                        title="Whatsapp"
+                        hasTextBottom
+                        :textBottomInfo="forms.entity.createUpdate.errors?.whatsapp"
+                        xl="6"
+                        lg="6">
+                        <template v-slot:inputGroupPrepend>
+                            <a href="javascript:void(0)" class="btn btn-icon btn-label-success waves-effect">
+                                <i class="tf-icons fa-brands fa-whatsapp fs-5"></i>
+                            </a>
+                        </template>
+                    </InputText>
+                    <InputSlot
+                        v-if="false"
+                        hasDiv
+                        title="Estado"
+                        isRequired
+                        hasTextBottom
+                        :textBottomInfo="forms.entity.createUpdate.errors?.status"
+                        xl="6"
+                        lg="6">
+                        <template v-slot:input>
+                            <v-select
+                                v-model="forms.entity.createUpdate.data.status"
+                                :options="statuses"
+                                :clearable="false"
+                                :disabled="true"/>
+                        </template>
+                    </InputSlot>
+                </div>
+            </div>
+            <div class="mt-4">
+                <div class="row g-3">
+                    <div class="d-flex flex-row-reverse">
+                        <button type="button" class="btn waves-effect btn-primary" @click="createUpdateEntity()">
+                            <i class="fa fa-save"></i>
+                            <span class="ms-2">Guardar información</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

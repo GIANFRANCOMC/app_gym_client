@@ -31,6 +31,7 @@ class Subscription extends Model {
         "end_date",
         "set_end_of_day",
         "force",
+        "attendance_limit_per_day",
         "observation",
         "motive",
         "type",

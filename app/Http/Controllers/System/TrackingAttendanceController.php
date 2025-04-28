@@ -123,6 +123,7 @@ class TrackingAttendanceController extends Controller {
                                      ->where("start_date", "<=", $request->start_date)
                                      ->where("end_date", ">=", $request->start_date)
                                      ->where("status", "active")
+                                     ->orderBy("attendance_limit_per_day", "DESC")
                                      ->get();
 
         if(count($subscriptions) === 0) {
@@ -130,6 +131,9 @@ class TrackingAttendanceController extends Controller {
             return response()->json(["bool" => false, "msg" => "$customer->name: No cuenta con una membresía vigente en la sucursal."], 200);
 
         }
+
+        $subscriptionsFirst = $subscriptions->first();
+        $attendanceLimitPerDay = intval($subscriptionsFirst->attendance_limit_per_day);
 
         $attendanceActive = Attendance::where("company_id", $userAuth->company_id)
                                       ->where("branch_id", $request->branch_id)
