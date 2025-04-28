@@ -99,7 +99,9 @@ class TrackingAttendanceController extends Controller {
 
         $userAuth = Auth::user();
 
-        if(!Utilities::isDefined($request->start_date)) {
+        $startDate = str_replace("T", " ", $request->start_date);
+
+        if(!Utilities::isDefined($startDate) || !Utilities::isValidDateFormat($startDate, "Y-m-d H:i")) {
 
             return response()->json(["bool" => false, "msg" => "No se ha podido crear la asistencia, debe de diligenciar el ingreso."], 200);
 
@@ -120,8 +122,8 @@ class TrackingAttendanceController extends Controller {
         $subscriptions = Subscription::where("company_id", $userAuth->company_id)
                                      ->where("branch_id", $request->branch_id)
                                      ->where("customer_id", $customer->id)
-                                     ->where("start_date", "<=", $request->start_date)
-                                     ->where("end_date", ">=", $request->start_date)
+                                     ->where("start_date", "<=", $startDate)
+                                     ->where("end_date", ">=", $startDate)
                                      ->where("status", "active")
                                      ->orderBy("attendance_limit_per_day", "DESC")
                                      ->get();
@@ -135,26 +137,36 @@ class TrackingAttendanceController extends Controller {
         $subscriptionsFirst = $subscriptions->first();
         $attendanceLimitPerDay = intval($subscriptionsFirst->attendance_limit_per_day);
 
-        $attendanceActive = Attendance::where("company_id", $userAuth->company_id)
-                                      ->where("branch_id", $request->branch_id)
-                                      ->where("customer_id", $customer->id)
-                                      ->whereDate("start_date", $request->start_date)
-                                      ->where("status", "active")
-                                      ->first();
+        $attendancesFiltered = Attendance::where("company_id", $userAuth->company_id)
+                                         ->where("branch_id", $request->branch_id)
+                                         ->where("customer_id", $customer->id)
+                                         ->whereDate("start_date", Carbon::createFromFormat("Y-m-d H:i", $startDate)->format("Y-m-d"))
+                                         ->whereIn("status", ["active", "finalized"])
+                                         ->get();
 
-        if(Utilities::isDefined($attendanceActive)) {
+        $activeAttendances = $attendancesFiltered->where("status", "active");
+
+        if(count($activeAttendances) > 0) {
 
             return response()->json(["bool" => false, "msg" => "$customer->name: Cuenta con un registro de asistencia 'En curso'."], 200);
 
         }
 
-        DB::transaction(function() use($request, $userAuth, &$attendance) {
+        $finalizedAttendances = $attendancesFiltered->where("status", "finalized");
+
+        if(count($finalizedAttendances) >= $attendanceLimitPerDay) {
+
+            return response()->json(["bool" => false, "msg" => "$customer->name: Límite excedido."], 200);
+
+        }
+
+        DB::transaction(function() use($request, $userAuth, &$attendance, $customer, $startDate) {
 
             $attendance = new Attendance();
             $attendance->company_id  = $userAuth->company_id;
             $attendance->branch_id   = $request->branch_id;
-            $attendance->customer_id = $request->customer_id;
-            $attendance->start_date  = $request->start_date;
+            $attendance->customer_id = $customer->id;
+            $attendance->start_date  = $startDate;
             $attendance->end_date    = null; // $request->end_date;
             $attendance->observation = $request->observation ?? "";
             $attendance->type        = "manual";
@@ -261,7 +273,9 @@ class TrackingAttendanceController extends Controller {
 
         $userAuth = Auth::user();
 
-        if(!Utilities::isDefined($request->start_date)) {
+        $startDate = str_replace("T", " ", $request->start_date);
+
+        if(!Utilities::isDefined($startDate) || !Utilities::isValidDateFormat($startDate, "Y-m-d H:i")) {
 
             return response()->json(["bool" => false, "msg" => "No se ha podido crear la asistencia, debe de diligenciar el ingreso."], 200);
 
@@ -285,9 +299,10 @@ class TrackingAttendanceController extends Controller {
             $subscriptions = Subscription::where("company_id", $userAuth->company_id)
                                          ->where("branch_id", $request->branch_id)
                                          ->where("customer_id", $customer->id)
-                                         ->where("start_date", "<=", $request->start_date)
-                                         ->where("end_date", ">=", $request->start_date)
+                                         ->where("start_date", "<=", $startDate)
+                                         ->where("end_date", ">=", $startDate)
                                          ->where("status", "active")
+                                         ->orderBy("attendance_limit_per_day", "DESC")
                                          ->get();
 
             if(count($subscriptions) === 0) {
@@ -297,25 +312,37 @@ class TrackingAttendanceController extends Controller {
 
             }
 
-            $attendanceActive = Attendance::where("company_id", $userAuth->company_id)
-                                        ->where("branch_id", $request->branch_id)
-                                        ->where("customer_id", $customer->id)
-                                        ->whereDate("start_date", $request->start_date)
-                                        ->where("status", "active")
-                                        ->first();
+            $subscriptionsFirst = $subscriptions->first();
+            $attendanceLimitPerDay = intval($subscriptionsFirst->attendance_limit_per_day);
 
-            if(Utilities::isDefined($attendanceActive)) {
+            $attendancesFiltered = Attendance::where("company_id", $userAuth->company_id)
+                                             ->where("branch_id", $request->branch_id)
+                                             ->where("customer_id", $customer->id)
+                                             ->whereDate("start_date", Carbon::createFromFormat("Y-m-d H:i", $startDate)->format("Y-m-d"))
+                                             ->whereIn("status", ["active", "finalized"])
+                                             ->first();
 
-                $attendances->push(["bool" => false, "msg" => "$customer->name: Cuenta con un registro de asistencia 'En curso'."]);
-                continue;
+            $activeAttendances = $attendancesFiltered->where("status", "active");
+
+            if(count($activeAttendances) > 0) {
+
+                return response()->json(["bool" => false, "msg" => "$customer->name: Cuenta con un registro de asistencia 'En curso'."], 200);
+
+            }
+
+            $finalizedAttendances = $attendancesFiltered->where("status", "finalized");
+
+            if(count($finalizedAttendances) >= $attendanceLimitPerDay) {
+
+                return response()->json(["bool" => false, "msg" => "$customer->name: Límite excedido."], 200);
 
             }
 
             $attendance = new Attendance();
             $attendance->company_id  = $userAuth->company_id;
             $attendance->branch_id   = $request->branch_id;
-            $attendance->customer_id = $customerRequest["customer_id"];
-            $attendance->start_date  = $request->start_date;
+            $attendance->customer_id = $customer->id;
+            $attendance->start_date  = $startDate;
             $attendance->end_date    = null; // $request->end_date;
             $attendance->observation = $request->observation ?? "";
             $attendance->type        = "qr";
