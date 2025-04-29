@@ -24,7 +24,7 @@
         @csrf
         <div>
             <label for="email" class="form-label colon-at-end fw-semibold">Correo electrónico</label>
-            <input type="text" class="form-control" id="email" name="email" placeholder="usuario@hotmail.com" :value="old('email')" required autofocus autocomplete="username"/>
+            <input type="text" class="form-control" id="email" name="email" placeholder="Ingrese el correo electrónico" :value="old('email')" required autofocus autocomplete="username"/>
             @if ($errors->get('email'))
                 @foreach ((array) $errors->get('email') as $message)
                     <small class="text-danger">{{ $message }}</small>
