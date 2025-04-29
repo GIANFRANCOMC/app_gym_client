@@ -89,7 +89,7 @@
             </div>
         @endif
         <div style="display: block; flex-flow: row;">
-            <div class="cf-turnstile" data-sitekey="0x4AAAAAABD52_nxF5GTrXNM" data-size="flexible"></div>
+            <div class="cf-turnstile" data-sitekey="{{ config("app.CAPTCHA_KEY_FRONTEND") }}" data-size="flexible"></div>
         </div>
         @if ($errors->get('captcha'))
             @foreach ((array) $errors->get('captcha') as $message)

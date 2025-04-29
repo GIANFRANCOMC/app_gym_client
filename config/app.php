@@ -185,4 +185,6 @@ return [
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
+    "CAPTCHA_KEY_FRONTEND" => env("CAPTCHA_KEY_FRONTEND"),
+    "CAPTCHA_KEY_BACKEND" => env("CAPTCHA_KEY_BACKEND")
 ];

@@ -73,7 +73,7 @@ class LoginRequest extends FormRequest {
 
         // Captcha
         $captchaResponse = $this->input("cf-turnstile-response");
-        $secret = "0x4AAAAAABD521CctrZTDhoZBhtGInvookc";
+        $secret = config("app.CAPTCHA_KEY_BACKEND");
 
         $context = stream_context_create([
             "http" => [
