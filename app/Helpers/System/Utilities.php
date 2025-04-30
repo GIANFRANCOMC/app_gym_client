@@ -24,6 +24,26 @@ class Utilities {
         "maxValue" => 99999999
     ];
 
+    public static function getOwnerApp() {
+
+        $data = [
+            "commercial_name" => "BLAPOS",
+            "color_palette " => [
+                "primary" => "#2899E5",
+                "secondary" => "#1A1A35",
+                "text_by_primary" => "#FFFFFF"
+            ],
+            "assets" => [
+                "img" => [
+                    "combination_mark" => "System/assets/img/utils/owner_app/combination_mark.png"
+                ]
+            ]
+        ];
+
+        return json_decode(json_encode($data));
+
+    }
+
     public static function getDefaultData() {
 
         $result = new stdClass();

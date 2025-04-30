@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\SubscriptionExpired;
+use App\Listeners\LogSubscriptionEmail;
 use App\Listeners\StoreSectionsInCache;
 use Illuminate\Auth\Events\{Authenticated, Registered};
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -21,6 +23,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         Registered::class => [
             SendEmailVerificationNotification::class,
+        ],
+        SubscriptionExpired::class => [
+            LogSubscriptionEmail::class,
         ],
     ];
 

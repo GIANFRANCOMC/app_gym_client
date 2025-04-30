@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Events\SubscriptionExpired;
 use App\Models\System\Subscription;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -28,7 +29,7 @@ class CancelExpiredSubscriptions extends Command {
      */
     public function handle() {
 
-        $now = Carbon::now();
+        $now  = Carbon::now();
         $date = $now->format("Y-m-d");
         $year = $now->format("Y");
 
@@ -51,8 +52,6 @@ class CancelExpiredSubscriptions extends Command {
         Log::channel("subscriptions")->info("** Inicio del proceso: Evaluación de membresías");
 
         // Logic
-        $now = Carbon::now();
-
         $subscriptions = Subscription::where("status", "active")
                                      ->where(function($query) use($now) {
 
@@ -74,6 +73,8 @@ class CancelExpiredSubscriptions extends Command {
                 "updated_at" => $now,
                 "updated_by" => null
             ]);
+
+            event(new SubscriptionExpired($subscription));
 
             Log::channel("subscriptions")->info("Membresía ID {$subscription->id} expirada, inicio: {$subscription->start_date} - fin: {$subscription->end_date}");
 
