@@ -25,14 +25,6 @@
         <div class="layout-wrapper layout-content-navbar">
             <div class="layout-container">
                 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-                    {{-- <div class="app-brand demo d-flex justify-content-center mt-3">
-                        <a href="#" class="app-brand-link">
-                            <image src="{{ asset('System/assets/img/utils/admin/app_navbar.png') }}" width="160px" height="45px"/>
-                        </a>
-                    </div> --}}
-
-                    <div class="menu-inner-shadow"></div>
-
                     <ul class="menu-inner my-3">
                         <li class="menu-header mb-3">
                             <span class="menu-header-text" data-i18n="Profile">
@@ -109,11 +101,11 @@
                             <div class="navbar-nav align-items-center">
                                 <div class="nav-item navbar-search-wrapper mb-0">
                                     <a class="nav-item nav-link search-toggler d-flex align-items-center px-0" href="javascript:void(0);">
-                                        <image src="{{ asset('System/assets/img/utils/admin/app_navbar.png') }}" width="160px" height="45px"/>
+                                        <image src="{{ asset('System/assets/img/utils/admin/app_navbar.png') }}" width="130px" height="38px"/>
                                     </a>
                                 </div>
                             </div>
-                            <ul class="navbar-nav flex-row align-items-center ms-auto">
+                            {{-- <ul class="navbar-nav flex-row align-items-center ms-auto">
                                 <li class="nav-item navbar-dropdown dropdown-user dropdown">
                                     <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                                         <div class="avatar avatar-online">
@@ -123,60 +115,42 @@
                                         </div>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end">
-                                    <li>
-                                        <a class="dropdown-item" href="javascript:void(0)">
-                                        <div class="d-flex">
-                                            <div class="flex-shrink-0 me-3">
-                                                <div class="avatar avatar-online">
-                                                    <span class="avatar-initial rounded-circle bg-label-dark">
-                                                        <image src="{{ asset('System/assets/img/utils/admin/app_header.png') }}"/>
-                                                    </span>
+                                        <li>
+                                            <a class="dropdown-item" href="javascript:void(0)">
+                                            <div class="d-flex">
+                                                <div class="flex-shrink-0 me-3">
+                                                    <div class="avatar avatar-online">
+                                                        <span class="avatar-initial rounded-circle bg-label-dark">
+                                                            <image src="{{ asset('System/assets/img/utils/admin/app_header.png') }}"/>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <span class="fw-bold d-block text-break">{{ Str::limit($user->name, 16) }}</span>
+                                                    <span class="fw-medium d-block">{{ Str::limit($company->commercial_name, 16) }}</span>
+                                                    <small class="text-muted">{{ !empty($role) ? $role->name : "" }}</small>
                                                 </div>
                                             </div>
-                                            <div class="flex-grow-1">
-                                                <span class="fw-bold d-block text-break">{{ Str::limit($user->name, 16) }}</span>
-                                                <span class="fw-medium d-block">{{ Str::limit($company->commercial_name, 16) }}</span>
-                                                <small class="text-muted">{{ !empty($role) ? $role->name : "" }}</small>
-                                            </div>
-                                        </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <div class="dropdown-divider"></div>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="javascript:void(0)" onclick="$('#logout').submit();">
-                                            <i class="ti ti-logout ti-sm me-2"></i>
-                                            <span class="align-middle">Cerrar sesión</span>
-                                        </a>
-                                    </li>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <div class="dropdown-divider"></div>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="javascript:void(0)" onclick="$('#logout').submit();">
+                                                <i class="ti ti-logout ti-sm me-2"></i>
+                                                <span class="align-middle">Cerrar sesión</span>
+                                            </a>
+                                        </li>
                                     </ul>
                                 </li>
-                            </ul>
+                            </ul> --}}
                         </div>
                     </nav>
-
                     <div class="content-wrapper">
                         <div class="container-xxl flex-grow-1 container-p-y">
                             @yield('content')
                         </div>
-                        <footer class="content-footer footer bg-footer-theme">
-                            <div class="container-xxl">
-                            <div
-                                class="footer-container d-flex align-items-center justify-content-between py-2 flex-md-row flex-column">
-                                <div>
-                                ©
-                                <script>
-                                    document.write(new Date().getFullYear());
-                                </script>
-                                , Hecho por <a href="javascript:void(0)" class="fw-medium">Gianfranco MC</a>
-                                </div>
-                                {{-- <div class="d-none d-lg-inline-block">
-                                    <a href="https://demos.pixinvent.com/vuexy-html-admin-template/documentation/" target="_blank" class="footer-link me-4">Documentación</a>
-                                </div> --}}
-                            </div>
-                            </div>
-                        </footer>
                         <div class="content-backdrop fade"></div>
                     </div>
                 </div>

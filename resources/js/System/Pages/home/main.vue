@@ -193,17 +193,18 @@
                         </button>
                     </template>
                 </InputText>
-                <!-- <InputText
+                <InputText
+                    v-if="false"
                     hasDiv
                     title="Correo electrónico"
                     v-model="forms.entity.home.extras.modals.actions.data.email">
                     <template v-slot:inputGroupAppend>
-                        <button class="btn btn-info waves-effect" type="button" @click="sendEmail({data: forms.entity.home.extras.modals.actions.data})" :disabled="!isDefined({value: forms.entity.home.extras.modals.actions.data.email})">
+                        <button class="btn btn-info-1 waves-effect" type="button" @click="sendEmail({data: forms.entity.home.extras.modals.actions.data})" :disabled="!isDefined({value: forms.entity.home.extras.modals.actions.data.email})">
                             <i class="fa fa-envelope"></i>
                             <span class="ms-2">Enviar</span>
                         </button>
                     </template>
-                </InputText> -->
+                </InputText>
             </div>
         </template>
     </PrintSale>

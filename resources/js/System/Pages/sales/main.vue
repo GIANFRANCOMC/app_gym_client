@@ -109,7 +109,7 @@
                                         <template v-for="(record, keyRecord) in forms.entity.createUpdate.data.details" :key="record.id">
                                             <tr class="text-center">
                                                 <td>
-                                                    <span v-text="keyRecord + 1" class="badge rounded-pill bg-info fw-bold"></span>
+                                                    <span v-text="keyRecord + 1" class="badge rounded-pill bg-info-1 fw-bold"></span>
                                                 </td>
                                                 <td class="fw-semibold text-start">
                                                     <span class="text-break" v-text="record.name"></span>
@@ -123,7 +123,7 @@
                                                         <button class="btn btn-danger btn-xs waves-effect" type="button" @click="changeQuantityDetail({record, keyRecord, type: 'subtract'})">
                                                             <i class="fa fa-minus"></i>
                                                         </button>
-                                                        <button class="btn btn-info btn-xs waves-effect" type="button" @click="changeQuantityDetail({record, keyRecord, type: 'add'})">
+                                                        <button class="btn btn-info-1 btn-xs waves-effect" type="button" @click="changeQuantityDetail({record, keyRecord, type: 'add'})">
                                                             <i class="fa fa-plus"></i>
                                                         </button>
                                                     </div>
@@ -155,7 +155,7 @@
                                                                 <i class="fa fa-times"></i>
                                                                 <span class="ms-1">Eliminar</span>
                                                             </button>
-                                                            <button v-if="['product', 'service'].includes(record?.type)" class="btn btn-info btn-xs waves-effect" type="button" @click="duplicateDetail({record, keyRecord})">
+                                                            <button v-if="['product', 'service'].includes(record?.type)" class="btn btn-info-1 btn-xs waves-effect" type="button" @click="duplicateDetail({record, keyRecord})">
                                                                 <i class="fa fa-copy"></i>
                                                                 <span class="ms-1">Duplicar</span>
                                                             </button>
@@ -277,7 +277,7 @@
                             title="Observaciones"
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.observation"/>
-                        <button class="btn btn-info waves-effect my-1" @click="viewSubscriptions({})">
+                        <button class="btn btn-info-1 waves-effect my-1" @click="viewSubscriptions({})">
                             <i class="fa-solid fa-binoculars"></i>
                             <span class="ms-2">Ver membresías</span>
                         </button>
@@ -584,7 +584,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" :class="['btn waves-effect', 'btn-primary']" @click="refreshSubscriptions()">
+                    <button type="button" :class="['btn waves-effect', 'btn-info-1']" @click="refreshSubscriptions()">
                         <i class="fa fa-refresh"></i>
                         <span class="ms-2">Actualizar</span>
                     </button>
@@ -631,17 +631,18 @@
                         </button>
                     </template>
                 </InputText>
-                <!-- <InputText
+                <InputText
+                    v-if="false"
                     hasDiv
                     title="Correo electrónico"
                     v-model="forms.entity.createUpdate.extras.modals.finished.data.email">
                     <template v-slot:inputGroupAppend>
-                        <button class="btn btn-info waves-effect" type="button" @click="sendEmail({data: forms.entity.createUpdate.extras.modals.finished.data})" :disabled="!isDefined({value: forms.entity.createUpdate.extras.modals.finished.data.email})">
+                        <button class="btn btn-info-1 waves-effect" type="button" @click="sendEmail({data: forms.entity.createUpdate.extras.modals.finished.data})" :disabled="!isDefined({value: forms.entity.createUpdate.extras.modals.finished.data.email})">
                             <i class="fa fa-envelope"></i>
                             <span class="ms-2">Enviar</span>
                         </button>
                     </template>
-                </InputText> -->
+                </InputText>
             </div>
         </template>
     </PrintSale>
@@ -933,7 +934,7 @@ export default {
                     confirmButtonText: "Sí, duplicar",
                     cancelButtonText: "Cancelar",
                     customClass: {
-                        confirmButton: "btn btn-info waves-effect",
+                        confirmButton: "btn btn-info-1 waves-effect",
                         cancelButton: "btn btn-secondary waves-effect ms-3"
                     }
                 })

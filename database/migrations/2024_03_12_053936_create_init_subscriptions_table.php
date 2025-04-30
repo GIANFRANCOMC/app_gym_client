@@ -68,6 +68,26 @@ return new class extends Migration {
             $table->foreign("customer_id")->references("id")->on("customers")->onDelete("cascade");
         });
 
+        Schema::create("emails", function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger("company_id");
+            $table->string("to");
+            $table->string("subject");
+            $table->text("body")->nullable();
+            $table->text("extras_json")->nullable();
+            $table->string("type")->nullable();
+            $table->string("model_id")->nullable();
+            $table->string("model_type")->nullable();
+            $table->enum("status", ["pending", "sent", "failed"])->default("pending");
+
+            $table->timestamp("created_at")->useCurrent()->nullable();
+            $table->integer("created_by")->nullable();
+            $table->timestamp("updated_at")->nullable();
+            $table->integer("updated_by")->nullable();
+
+            $table->foreign("company_id")->references("id")->on("companies")->onDelete("cascade");
+        });
+
     }
 
     /**
@@ -75,6 +95,7 @@ return new class extends Migration {
      */
     public function down(): void {
 
+        Schema::dropIfExists("emails");
         Schema::dropIfExists("attendances");
         Schema::dropIfExists("subscriptions");
 
