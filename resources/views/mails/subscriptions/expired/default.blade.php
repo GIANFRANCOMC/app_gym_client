@@ -13,7 +13,7 @@
     <table width="100%" cellpadding="0" cellspacing="0">
         <tr>
             <td align="center" style="padding: 40px 0; background: {{ $ownerApp->color_palette->primary }};">
-                <img src="{{ $ownerApp->assets->img->combination_mark }}" alt="Logo" width="150" style="margin-bottom: 10px;">
+                <img src="{{ asset($ownerApp->assets->img->combination_mark) }}" alt="Logo" width="150" style="margin-bottom: 10px;">
                 <small style="color: {{ $ownerApp->color_palette->text_by_primary }};">
                     {{ $company->commercial_name }} by
                     <a href="{{ $ownerApp->web }}" style="color: {{ $ownerApp->color_palette->text_by_primary }}; text-decoration: underline;">
