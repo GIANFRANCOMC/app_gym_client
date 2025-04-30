@@ -211,7 +211,8 @@ return new class extends Migration {
             ["id" => 13, "section_id" => 8, "slug" => "sbc_configuration-branchs", "name" => "configuration-branchs", "dom_id" => "menu-item-configuration-branches", "dom_label" => "Sucursales", "dom_route" => "branches.index"],
             ["id" => 14, "section_id" => 8, "slug" => "sbc_configuration-users", "name" => "configuration-users", "dom_id" => "menu-item-configuration-users", "dom_label" => "Colaboradores", "dom_route" => "users.index"],
             ["id" => 15, "section_id" => 9, "slug" => "sbc_reports-main", "name" => "reports-main", "dom_id" => "menu-item-reports", "dom_label" => "Reportes", "dom_route" => "reports.index"],
-            ["id" => 16, "section_id" => 3, "slug" => "sbc_trackings-attendances", "name" => "trackings-attendances", "dom_id" => "menu-item-trackings-attendances", "dom_label" => "Asistencia", "dom_route" => "tracking_attendances.index"]
+            ["id" => 16, "section_id" => 3, "slug" => "sbc_trackings-attendances", "name" => "trackings-attendances", "dom_id" => "menu-item-trackings-attendances", "dom_label" => "Asistencias", "dom_route" => "tracking_attendances.index"],
+            ["id" => 17, "section_id" => 3, "slug" => "sbc_trackings-notifications", "name" => "trackings-notifications", "dom_id" => "menu-item-trackings-notifications", "dom_label" => "Notificaciones", "dom_route" => "tracking_notifications.index"]
         ]);
 
         DB::table("companies_sub_sections")->insert([
@@ -230,7 +231,8 @@ return new class extends Migration {
             ["company_id" => 1, "sub_section_id" => 13],
             ["company_id" => 1, "sub_section_id" => 14],
             ["company_id" => 1, "sub_section_id" => 15],
-            ["company_id" => 1, "sub_section_id" => 16]
+            ["company_id" => 1, "sub_section_id" => 16],
+            ["company_id" => 1, "sub_section_id" => 17]
         ]);
 
         DB::table("roles")->insert([

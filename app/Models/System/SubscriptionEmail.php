@@ -5,9 +5,9 @@ namespace App\Models\System;
 use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
 
-class Email extends Model {
+class SubscriptionEmail extends Model {
 
-    protected $table               = "emails";
+    protected $table               = "subscription_emails";
     protected $primaryKey          = "id";
     public $incrementing           = true;
     public $timestamps             = true;

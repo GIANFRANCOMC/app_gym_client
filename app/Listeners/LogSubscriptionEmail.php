@@ -4,8 +4,8 @@ namespace App\Listeners;
 
 use App\Events\SubscriptionExpired;
 use App\Helpers\System\Utilities;
-use App\Models\System\Email;
 use App\Models\System\Subscription;
+use App\Models\System\SubscriptionEmail;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
@@ -43,7 +43,7 @@ class LogSubscriptionEmail {
 
         }
 
-        Email::create([
+        SubscriptionEmail::create([
             "company_id"  => $subscription->company_id,
             "to"          => $customer->email ?? "sin-correo@example.com",
             "subject"     => "Tu membresía ha expirado",

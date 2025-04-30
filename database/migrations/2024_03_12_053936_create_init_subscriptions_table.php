@@ -68,7 +68,7 @@ return new class extends Migration {
             $table->foreign("customer_id")->references("id")->on("customers")->onDelete("cascade");
         });
 
-        Schema::create("emails", function (Blueprint $table) {
+        Schema::create("subscription_emails", function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("company_id");
             $table->string("to");
@@ -95,7 +95,7 @@ return new class extends Migration {
      */
     public function down(): void {
 
-        Schema::dropIfExists("emails");
+        Schema::dropIfExists("subscription_emails");
         Schema::dropIfExists("attendances");
         Schema::dropIfExists("subscriptions");
 
