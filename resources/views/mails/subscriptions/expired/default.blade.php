@@ -13,10 +13,10 @@
     <table width="100%" cellpadding="0" cellspacing="0">
         <tr>
             <td align="center" style="padding: 40px 0; background: {{ $ownerApp->color_palette->primary }};">
-                <div style="display: inline-block; vertical-align: middle; color: {{ $ownerApp->color_palette->text_by_primary }}; font-size: 14px;">
+                <div style="display: inline-block; vertical-align: middle; color: {{ $ownerApp->color_palette->text_by_primary }}; font-size: 18px;">
                     {{ $company->commercial_name }} by
                 </div>
-                <a href="{{ $ownerApp->web }}" style="display: inline-block; vertical-align: middle; margin-left: 8px;">
+                <a href="{{ $ownerApp->web }}" style="display: inline-block; vertical-align: middle; margin-left: 2px;">
                     <img src="{{ asset($ownerApp->assets->img->logotype) }}" alt="Logo" width="100" style="vertical-align: middle; display: inline-block;"/>
                 </a>
                 <h1 style="color: {{ $ownerApp->color_palette->text_by_primary }}; font-size: 24px; margin: 10px 0 0;">¡Te extrañamos, {{ $customer->name }}!</h1>
