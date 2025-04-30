@@ -18,9 +18,12 @@ use Illuminate\Support\Facades\Artisan;
 */
 
 use App\Http\Controllers\System\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\System\NotificationController;
 
 Route::middleware(["web"])
      ->group(function() {
+
+        Route::get('/send-subscription-emails',  [NotificationController::class, 'sendSubscriptionEmails'])->name('send-subscription-emails');
 
         $rutaDefecto = __DIR__.'/System';
 
