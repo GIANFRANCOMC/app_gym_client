@@ -28,7 +28,8 @@ class Utilities {
 
         $data = [
             "commercial_name" => "BLAPOS",
-            "color_palette " => [
+            "web" => "https://blapos.com",
+            "color_palette" => [
                 "primary" => "#2899E5",
                 "secondary" => "#1A1A35",
                 "text_by_primary" => "#FFFFFF"

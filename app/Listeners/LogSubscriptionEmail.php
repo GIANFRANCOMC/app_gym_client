@@ -26,6 +26,7 @@ class LogSubscriptionEmail {
     public function handle(SubscriptionExpired $event) {
 
         $subscription = $event->subscription;
+        $branch       = $subscription->branch;
         $customer     = $subscription->customer;
         $ownerApp     = Utilities::getOwnerApp();
 
@@ -46,7 +47,7 @@ class LogSubscriptionEmail {
             "company_id"  => $subscription->company_id,
             "to"          => $customer->email ?? "sin-correo@example.com",
             "subject"     => "Tu membresía ha expirado",
-            "body"        => view("mails.subscriptions.expired.default", compact("subscription", "company", "customer", "ownerApp", "touchpoints"))->render(),
+            "body"        => view("mails.subscriptions.expired.default", compact("subscription", "branch", "company", "customer", "ownerApp", "touchpoints"))->render(),
             "extras_json" => null,
             "type"        => "SubscriptionExpired",
             "model_id"    => $subscription->id,

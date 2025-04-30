@@ -3,6 +3,7 @@
 namespace App\Models\System;
 
 use App\Helpers\System\Utilities;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Subscription extends Model {
