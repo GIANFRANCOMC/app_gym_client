@@ -16,7 +16,7 @@
                 <div style="display: inline-block; vertical-align: middle; color: {{ $ownerApp->color_palette->text_by_primary }}; font-size: 18px;">
                     {{ $company->commercial_name }} by
                 </div>
-                <a href="{{ $ownerApp->web }}" style="display: inline-block; vertical-align: middle; margin-left: 2px;" target="_blank">
+                <a href="{{ $ownerApp->web }}" style="display: inline-block; vertical-align: middle; margin-left: 3px;" target="_blank">
                     <img src="{{ asset($ownerApp->assets->img->logotype) }}" alt="Logo" width="100" style="vertical-align: middle; display: inline-block;"/>
                 </a>
                 <h1 style="color: {{ $ownerApp->color_palette->text_by_primary }}; font-size: 24px; margin: 10px 0 0;">¡Te extrañamos, {{ $customer->name }}!</h1>
