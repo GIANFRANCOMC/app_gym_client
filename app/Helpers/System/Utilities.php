@@ -36,7 +36,8 @@ class Utilities {
             ],
             "assets" => [
                 "img" => [
-                    "combination_mark" => "System/assets/img/utils/owner_app/combination_mark.png"
+                    "combination_mark" => "System/assets/img/utils/owner_app/combination_mark.png",
+                    "logotype" => "System/assets/img/utils/owner_app/logotype.png"
                 ]
             ]
         ];
