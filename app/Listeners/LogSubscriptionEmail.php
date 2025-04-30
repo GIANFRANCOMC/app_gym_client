@@ -45,9 +45,9 @@ class LogSubscriptionEmail {
 
         SubscriptionEmail::create([
             "company_id"  => $subscription->company_id,
-            "to"          => $customer->email ?? "sin-correo@example.com",
+            "to"          => $customer->email ?? "",
             "subject"     => "Tu membresía ha expirado",
-            "body"        => view("mails.subscriptions.expired.default", compact("subscription", "branch", "company", "customer", "ownerApp", "touchpoints"))->render(),
+            "body"        => view("emails.subscriptions.expired.default", compact("subscription", "branch", "company", "customer", "ownerApp", "touchpoints"))->render(),
             "extras_json" => null,
             "type"        => "SubscriptionExpired",
             "model_id"    => $subscription->id,

@@ -16,7 +16,7 @@
                 <div style="display: inline-block; vertical-align: middle; color: {{ $ownerApp->color_palette->text_by_primary }}; font-size: 18px;">
                     {{ $company->commercial_name }} by
                 </div>
-                <a href="{{ $ownerApp->web }}" style="display: inline-block; vertical-align: middle; margin-left: 2px;">
+                <a href="{{ $ownerApp->web }}" style="display: inline-block; vertical-align: middle; margin-left: 2px;" target="_blank">
                     <img src="{{ asset($ownerApp->assets->img->logotype) }}" alt="Logo" width="100" style="vertical-align: middle; display: inline-block;"/>
                 </a>
                 <h1 style="color: {{ $ownerApp->color_palette->text_by_primary }}; font-size: 24px; margin: 10px 0 0;">¡Te extrañamos, {{ $customer->name }}!</h1>
@@ -31,7 +31,7 @@
 
                 <div style="text-align: center; margin: 25px 0;">
                     @foreach ($touchpoints as $touchpoint)
-                        <a href="{{ $touchpoint->link }}" style="background-color: {{ $ownerApp->color_palette->secondary }}; color: white; padding: 14px 25px; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold; box-shadow: 0 3px 6px rgba(0,0,0,0.15);">
+                        <a href="{{ $touchpoint->link }}" target="_blank" style="background-color: {{ $ownerApp->color_palette->secondary }}; color: white; padding: 14px 25px; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold; box-shadow: 0 3px 6px rgba(0,0,0,0.15);">
                             Renovar ahora
                         </a>
                     @endforeach
@@ -60,7 +60,7 @@
                 </ul>
                 @if (!empty($whatsapp?->link))
                     <p style="font-size: 14px; color: #555; margin-top: 20px;">
-                        ¿Tienes dudas? <a href="{{ $whatsapp->link }}" style="color: #2899E5; text-decoration: none;">Escríbenos por WhatsApp</a>, responde este correo o visítanos.
+                        ¿Tienes dudas? <a href="{{ $whatsapp->link }}" target="_blank" style="color: #2899E5; text-decoration: none;">Escríbenos por WhatsApp</a>, responde este correo o visítanos.
                     </p>
                 @endif
             </td>

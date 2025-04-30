@@ -26,6 +26,7 @@ export default defineConfig({
                 'resources/js/System/Pages/subscriptions/main.js',
                 'resources/js/System/Pages/tracking_subscriptions/main.js',
                 'resources/js/System/Pages/tracking_attendances/main.js',
+                'resources/js/System/Pages/tracking_notifications/main.js',
                 'resources/js/System/Pages/users/main.js',
 
 

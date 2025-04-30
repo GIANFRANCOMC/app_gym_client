@@ -41,7 +41,7 @@ class SaleMail extends Mailable {
     public function content(): Content {
 
         return new Content(
-            view: 'mails/saleMail',
+            view: 'emails/saleMail',
             with: ['mail' => $this->mail]
         );
 

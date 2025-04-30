@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
-// use App\Http\Requests\System\TrackingSubscriptions\{CancelTrackingSubscriptionRequest, StoreTrackingSubscriptionRequest, UpdateTrackingSubscriptionRequest};
-use App\Models\System\{Branch, Customer, SubscriptionEmail, Subscription};
+// use App\Http\Requests\System\TrackingNotifications\{CancelTrackingNotificationRequest, StoreTrackingNotificationRequest, UpdateTrackingNotificationRequest};
+use App\Models\System\{SubscriptionEmail};
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class TrackingNotificationController extends Controller {
@@ -24,11 +24,7 @@ class TrackingNotificationController extends Controller {
 
         if(in_array($page, ["main"])) {
 
-            $config->branches = new stdClass();
-            $config->branches->records = Branch::getAll("tracking_subscription");
-
-            $config->customers = new stdClass();
-            $config->customers->records = Customer::getAll("tracking_subscription");
+            //
 
         }
 
@@ -43,57 +39,18 @@ class TrackingNotificationController extends Controller {
 
         $userAuth = Auth::user();
 
-        $branch = Branch::where("id", $request->branch_id)
-                        ->where("company_id", $userAuth->company_id)
-                        ->first();
+        $list = SubscriptionEmail::when(Utilities::isDefined($request->status), function($query) use($request) {
 
-        if(!Utilities::isDefined($branch)) {
+                                    $query->where(function($query) use($request) {
 
-            return new LengthAwarePaginator([], 0, 1, 1, ["path" => ""]);
+                                        $query->where("status", $request->status);
 
-        }
+                                    });
 
-        $list = Subscription::when(Utilities::isDefined($request->customer_id), function($query) use($request) {
-
-                                $query->where(function($query) use($request) {
-
-                                    $query->where("customer_id", $request->customer_id);
-
-                                });
-
-                            })
-                            ->when(Utilities::isDefined($request->start_date), function($query) use($request) {
-
-                                $query->where(function($query) use($request) {
-
-                                    $query->where("start_date", ">=", $request->start_date." 00:00:00");
-
-                                });
-
-                            })
-                            ->when(Utilities::isDefined($request->end_date), function($query) use($request) {
-
-                                $query->where(function($query) use($request) {
-
-                                    $query->where("end_date", "<=", $request->end_date." 23:59:59");
-
-                                });
-
-                            })
-                            ->when(Utilities::isDefined($request->status), function($query) use($request) {
-
-                                $query->where(function($query) use($request) {
-
-                                    $query->where("status", $request->status);
-
-                                });
-
-                            })
-                            ->where("company_id", $userAuth->company_id)
-                            ->where("branch_id", $branch->id)
-                            ->orderBy("id", "DESC")
-                            ->with(["branch", "saleHeader", "customer"])
-                            ->paginate($request->per_page ?? Utilities::$per_page_default);
+                                 })
+                                 ->where("company_id", $userAuth->company_id)
+                                 ->orderBy("id", "DESC")
+                                 ->paginate($request->per_page ?? Utilities::$per_page_default);
 
         return $list;
 
@@ -111,7 +68,7 @@ class TrackingNotificationController extends Controller {
 
     }
 
-    public function store(Request $request) { // StoreTrackingSubscriptionRequest
+    public function store(Request $request) { // StoreTrackingNotificationRequest
 
         //
 
@@ -129,7 +86,7 @@ class TrackingNotificationController extends Controller {
 
     }
 
-    public function update(Request $request, $id) { // UpdateTrackingSubscriptionRequest
+    public function update(Request $request, $id) { // UpdateTrackingNotificationRequest
 
         //
 
