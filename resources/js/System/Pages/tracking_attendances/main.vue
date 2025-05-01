@@ -3,6 +3,42 @@
 
     <!-- Content -->
     <div class="row align-items-start g-3 mb-3 mb-md-4">
+        <div class="col-xl-9 col-12">
+            <div class="card">
+                <div class="card-header d-flex align-items-center justify-content-between pt-3 pb-1">
+                    <div class="card-title mb-0">
+                        <span class="fw-semibold">General</span>
+                    </div>
+                    <div v-show="false">
+                        <button class="btn btn-xs btn-primary" @click="initChart('default')" type="button">
+                            <span>Refrescar</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <canvas id="defaultChartId" class="chartjs" data-height="180"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-12">
+            <div class="card">
+                <div class="card-header d-flex align-items-center justify-content-between pt-3 pb-1">
+                    <div class="card-title mb-0">
+                        <span class="fw-semibold">Actividad</span>
+                    </div>
+                    <div v-show="false">
+                        <button class="btn btn-xs btn-primary" @click="initChart('doughnut')" type="button">
+                            <span>Refrescar</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <canvas id="doughnutChartId" class="chartjs" data-height="180"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row align-items-start g-3 mb-3 mb-md-4">
         <div class="col-lg-9 col-12">
             <div class="row g-3">
                 <InputSlot
@@ -383,6 +419,9 @@ import * as Constants from "../../Helpers/Constants.js";
 import * as Requests  from "../../Helpers/Requests.js";
 import * as Utils     from "../../Helpers/Utils.js";
 
+let defaultChartInstance = null;
+let doughnutChartInstance = null;
+
 export default {
     components: {
         //
@@ -574,9 +613,239 @@ export default {
                 this.lists.entity.filters.branch     = this.branches[0];
                 this.lists.entity.filters.start_date = Utils.getCurrentDate("date");
 
+                // Ajust height
+                const chartList = document.querySelectorAll(".chartjs");
+
+                chartList.forEach(function(chartListItem) {
+
+                    chartListItem.height = chartListItem.dataset.height;
+
+                });
+
                 resolve(true);
 
             });
+
+        },
+        initChart(type = "default") {
+
+            if(type === "default") {
+
+                // Utils
+                const roundUpToNearest = (value) => {
+                    if (value <= 20) return 20;
+                    if (value <= 50) return 50;
+                    if (value <= 100) return 100;
+                    return Math.ceil(value / 500) * 500;
+                };
+
+                // Config
+                const intervals = [
+                    { label: "12:00 AM", start: 0, end: 3 },
+                    { label: "03:00 AM", start: 3, end: 6 },
+                    { label: "06:00 AM", start: 6, end: 9 },
+                    { label: "09:00 AM", start: 9, end: 12 },
+                    { label: "12:00 PM", start: 12, end: 15 },
+                    { label: "03:00 PM", start: 15, end: 18 },
+                    { label: "06:00 PM", start: 18, end: 21 },
+                    { label: "09:00 PM", start: 21, end: 24 }
+                ];
+
+                const totalsByIntervalStart = intervals.map(e => ({ label: e.label, total: 0 }));
+                const totalsByIntervalEnd   = intervals.map(e => ({ label: e.label, total: 0 }));
+
+                // Process data
+                const records = this.lists.entity.records.data;
+
+                records.forEach(record => {
+
+                    const startHour = new Date(record.start_date).getHours();
+                    const startInterval = intervals.find(i => startHour >= i.start && startHour < i.end);
+
+                    if(this.isDefined({value: startInterval})) {
+
+                        const index = intervals.indexOf(startInterval);
+                        totalsByIntervalStart[index].total += 1;
+
+                    }
+
+                    if(this.isDefined({value: record.end_date})) {
+
+                        const endHour = new Date(record.end_date).getHours();
+                        const endInterval = intervals.find(i => endHour >= i.start && endHour < i.end);
+
+                        if(endInterval) {
+
+                            const index = intervals.indexOf(endInterval);
+                            totalsByIntervalEnd[index].total += 1;
+
+                        }
+
+                    }
+
+                });
+
+                // Get information
+                let dataStart = totalsByIntervalStart.map(i => i.total);
+                let dataEnd = totalsByIntervalEnd.map(i => i.total)
+
+                const defaultChart = document.getElementById("defaultChartId");
+                const labels = totalsByIntervalStart.map(i => i.label);
+                const yMax   = roundUpToNearest(Math.max(...dataStart));
+
+                if(defaultChart) {
+
+                    if(defaultChartInstance) {
+
+                        defaultChartInstance.destroy();
+
+                    }
+
+                    defaultChartInstance = new Chart(defaultChart, {
+                        type: "line",
+                        data: {
+                            labels: labels,
+                            datasets: [
+                                {
+                                    label: "Entradas",
+                                    data: dataStart,
+                                    fill: false,
+                                    borderColor: this.config.colors.charts.default.defaultColor,
+                                    pointBackgroundColor: "#fff",
+                                    pointBorderColor: this.config.colors.charts.default.defaultColor,
+                                    tension: 0.2
+                                },
+                                {
+                                    label: "Salidas",
+                                    data: dataEnd,
+                                    fill: false,
+                                    borderColor: this.config.colors.charts.default.dangerColor,
+                                    pointBackgroundColor: "#fff",
+                                    pointBorderColor: this.config.colors.charts.default.dangerColor,
+                                    tension: 0.2
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            animation: {
+                                duration: 500
+                            },
+                            plugins: {
+                                tooltip: {
+                                    backgroundColor: this.config.colors.charts.default.backgroundColor,
+                                    bodyColor: this.config.colors.charts.default.bodyColor,
+                                    borderColor: this.config.colors.charts.default.borderColor,
+                                    borderWidth: 1,
+                                    rtl: false,
+                                    titleColor: this.config.colors.charts.default.titleColor
+                                },
+                                legend: {
+                                    display: true,
+                                    labels: {
+                                        color: this.config.colors.charts.default.labelColor
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    grid: {
+                                        color: this.config.colors.charts.default.borderColor,
+                                        drawBorder: false,
+                                        borderColor: this.config.colors.charts.default.borderColor
+                                    },
+                                    ticks: {
+                                        color: this.config.colors.charts.default.labelColor
+                                    }
+                                },
+                                y: {
+                                    min: 0,
+                                    max: yMax,
+                                    grid: {
+                                        color: this.config.colors.charts.default.borderColor,
+                                        drawBorder: false,
+                                        borderColor: this.config.colors.charts.default.borderColor
+                                    },
+                                    ticks: {
+                                        stepSize: yMax / 4,
+                                        color: this.config.colors.charts.default.labelColor
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                };
+
+            }else if(type === "doughnut") {
+
+                // Config
+                const keyDoughnut = {
+                    active: 0,
+                    finalized: 0,
+                    canceled: 0
+                };
+
+                // Process data
+                const records = this.lists.entity.records.data;
+
+                records.forEach(record => {
+                    if (record.status === "active") keyDoughnut.active++;
+                    if (record.status === "finalized") keyDoughnut.finalized++;
+                    if (record.status === "canceled") keyDoughnut.canceled++;
+                });
+
+                const doughnutChart = document.getElementById("doughnutChartId");
+
+                if(doughnutChart) {
+
+                    if(doughnutChartInstance) {
+
+                        doughnutChartInstance.destroy();
+
+                    }
+
+                    doughnutChartInstance = new Chart(doughnutChart, {
+                        type: "doughnut",
+                        data: {
+                            labels: [`En curso (${keyDoughnut.active})`, `Concluida (${keyDoughnut.finalized})`, `Anulada (${keyDoughnut.canceled})`],
+                            datasets: [{
+                                data: [
+                                    keyDoughnut.active,
+                                    keyDoughnut.finalized,
+                                    keyDoughnut.canceled
+                                ],
+                                backgroundColor: [
+                                    this.config.colors.charts.default.successColor,
+                                    this.config.colors.charts.default.primaryColor,
+                                    this.config.colors.charts.default.dangerColor
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: "bottom",
+                                    labels: {
+                                        color: this.config.colors.charts.default.labelColor
+                                    }
+                                },
+                                tooltip: {
+                                    backgroundColor: this.config.colors.charts.default.backgroundColor,
+                                    bodyColor: this.config.colors.charts.default.bodyColor,
+                                    borderColor: this.config.colors.charts.default.borderColor,
+                                    borderWidth: 1
+                                }
+                            }
+                        }
+                    });
+                }
+
+            }
 
         },
         // Entity forms
@@ -588,6 +857,9 @@ export default {
             this.lists.entity.extras.loading = true;
             this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: filterJson}))?.data;
             this.lists.entity.extras.loading = false;
+
+            this.initChart("default");
+            this.initChart("doughnut");
 
         },
         // Forms

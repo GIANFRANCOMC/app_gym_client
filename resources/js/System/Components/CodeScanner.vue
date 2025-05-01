@@ -164,7 +164,8 @@
             .catch(err => {
 
                 console.error("Error al obtener cámaras:", err);
-                Alerts.generateAlert({ type: "error", msgContent: `Error al obtener cámaras.` });
+                Alerts.toastrs({type: "error", subtitle: "No se detectaron cámaras."});
+                // Alerts.generateAlert({ type: "error", msgContent: `No se detectaron cámaras.` });
 
             });
 

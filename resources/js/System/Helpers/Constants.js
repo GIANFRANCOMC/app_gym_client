@@ -36,9 +36,13 @@ export const generalConfig = {
             default: {
                 backgroundColor: "#ffffff",
                 bodyColor: "#6f6b7d",
-                labelColor: "#a5a3ae",
+                labelColor: "#7a7883",
                 borderColor: "#dbdade",
                 titleColor: "#5d596c",
+                defaultColor: "#1da1f2",
+                primaryColor: "#7367F0",
+                successColor: "#28C76F",
+                dangerColor: "#EA5455"
             }
         }
     }

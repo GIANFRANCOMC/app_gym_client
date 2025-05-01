@@ -88,7 +88,7 @@
                         </h5>
                     </div>
                     <div v-show="false">
-                        <button class="btn btn-sm btn-primary" @click="initChart()">
+                        <button class="btn btn-sm btn-primary" @click="initChart()" type="button">
                             <i class="fa-solid fa-sync"></i>
                             <span class="ms-2">Actualizar</span>
                         </button>
