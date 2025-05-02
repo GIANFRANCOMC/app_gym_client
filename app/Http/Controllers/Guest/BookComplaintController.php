@@ -71,7 +71,7 @@ class BookComplaintController extends Controller {
             $bookComplaint = new BookComplaint();
             $bookComplaint->company_id                = $company->id;
             $bookComplaint->identity_document_type_id = $request->input("identity_document_type_id", "");
-            $bookComplaint->document_number           = $request->input("document_number ", "");
+            $bookComplaint->document_number           = $request->input("document_number", "");
             $bookComplaint->name                      = $request->input("name", "");
             $bookComplaint->email                     = $request->input("email", "");
             $bookComplaint->phone_number              = $request->input("phone_number", "");
