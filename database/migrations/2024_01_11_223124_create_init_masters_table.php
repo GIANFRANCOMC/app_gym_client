@@ -52,10 +52,13 @@ return new class extends Migration {
 
         Schema::create("companies", function(Blueprint $table) {
             $table->id();
+            $table->string("slug")->unique();
             $table->unsignedBigInteger("identity_document_type_id");
             $table->string("document_number");
             $table->string("legal_name");
             $table->string("commercial_name");
+            $table->string("tagline")->nullable();
+            $table->string("description")->nullable();
             $table->string("address")->nullable();
             $table->string("telephone")->nullable();
             $table->string("email")->nullable();
@@ -180,7 +183,7 @@ return new class extends Migration {
         ]);
 
         DB::table("companies")->insert([
-            ["id" => 1, "identity_document_type_id" => 1, "document_number" => "999999999", "legal_name" => "PAGAPE S.A.", "commercial_name" => "PAGAPE", "address" => "-", "telephone" => "-", "email" => ""]
+            ["id" => 1, "slug" => "pagape", "identity_document_type_id" => 1, "document_number" => "999999999", "legal_name" => "PAGAPE S.A.", "commercial_name" => "PAGAPE", "address" => "-", "telephone" => "-", "email" => ""]
         ]);
 
         DB::table("sections")->insert([

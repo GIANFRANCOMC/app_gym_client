@@ -32,7 +32,7 @@
                                     <div class="col col-auto">
                                         <div class="avatar avatar-online mt-2">
                                             <span class="avatar-initial rounded-circle bg-label-dark">
-                                                <image src="{{ asset('System/assets/img/utils/admin/app_header.png') }}"/>
+                                                <img src="{{ asset('System/assets/img/utils/admin/app_header.png') }}"/>
                                             </span>
                                         </div>
                                     </div>
