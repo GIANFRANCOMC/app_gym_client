@@ -101,6 +101,8 @@ class CompanyController extends Controller {
                 $company->document_number           = $request->document_number;
                 $company->legal_name                = $request->legal_name;
                 $company->commercial_name           = $request->commercial_name;
+                $company->tagline                   = $request->tagline;
+                $company->description               = $request->description;
                 $company->address                   = $request->address;
                 $company->telephone                 = $request->telephone;
                 $company->email                     = $request->email;

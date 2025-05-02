@@ -19,10 +19,13 @@ class Company extends Model {
     ];
 
     protected $fillable = [
+        "slug",
         "identity_document_type_id",
         "document_number",
         "legal_name",
         "commercial_name",
+        "tagline",
+        "description",
         "address",
         "telephone",
         "email",

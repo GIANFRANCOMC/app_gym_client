@@ -7,24 +7,42 @@
             <li class="nav-item" role="presentation">
                 <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-general" aria-controls="navs-pills-general" aria-selected="false" tabindex="-1">
                     <span class="d-none d-sm-inline-flex align-items-center fw-bold">
-                        <i class="fa fa-info-circle me-1_5"></i>
-                        <span class="ms-2">General</span>
+                        <i class="fa-solid fa-building me-1_5"></i>
+                        <span class="ms-2">Mi empresa</span>
                     </span>
-                    <i class="fa fa-info-circle d-sm-none"></i>
+                    <i class="fa-solid fa-building d-sm-none"></i>
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-contacts" aria-controls="navs-pills-contacts" aria-selected="false" tabindex="-1">
                     <span class="d-none d-sm-inline-flex align-items-center fw-bold">
-                        <i class="fa-solid fa-address-book me-1_5"></i>
+                        <i class="fa fa-address-book me-1_5"></i>
                         <span class="ms-2">Contacto</span>
                     </span>
-                    <i class="fa-solid fa-address-book d-sm-none"></i>
+                    <i class="fa fa-address-book d-sm-none"></i>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-socials-media" aria-controls="navs-pills-socials-media" aria-selected="false" tabindex="-1">
+                    <span class="d-none d-sm-inline-flex align-items-center fw-bold">
+                        <i class="fa-solid fa-mobile-screen-button me-1_5"></i>
+                        <span class="ms-2">Redes sociales</span>
+                    </span>
+                    <i class="fa-solid fa-mobile-screen-button d-sm-none"></i>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-configuration" aria-controls="navs-pills-configuration" aria-selected="false" tabindex="-1">
+                    <span class="d-none d-sm-inline-flex align-items-center fw-bold">
+                        <i class="fa-solid fa-gear me-1_5"></i>
+                        <span class="ms-2">Configuración</span>
+                    </span>
+                    <i class="fa-solid fa-gear d-sm-none"></i>
                 </button>
             </li>
         </ul>
         <div class="tab-content">
-            <div class="tab-pane fade show active" id="navs-pills-general" role="tabpanel">
+            <div class="tab-pane fade" id="navs-pills-general" role="tabpanel">
                 <div class="row g-3">
                     <InputSlot
                         hasDiv
@@ -50,7 +68,13 @@
                         hasTextBottom
                         :textBottomInfo="forms.entity.createUpdate.errors?.document_number"
                         xl="6"
-                        lg="6"/>
+                        lg="6">
+                        <template v-slot:inputGroupPrepend>
+                            <a href="javascript:void(0)" class="btn btn-icon btn-label-dark waves-effect">
+                                <i class="fa fa-hashtag fs-5"></i>
+                            </a>
+                        </template>
+                    </InputText>
                     <InputText
                         v-model="forms.entity.createUpdate.data.legal_name"
                         hasDiv
@@ -70,43 +94,19 @@
                         xl="6"
                         lg="6"/>
                     <InputText
-                        v-model="forms.entity.createUpdate.data.address"
+                        v-model="forms.entity.createUpdate.data.tagline"
                         hasDiv
-                        title="Dirección"
-                        isRequired
+                        title="Slogan"
                         hasTextBottom
-                        :textBottomInfo="forms.entity.createUpdate.errors?.address"
+                        :textBottomInfo="forms.entity.createUpdate.errors?.tagline"
                         xl="6"
                         lg="6"/>
                     <InputText
-                        v-model="forms.entity.createUpdate.data.telephone"
+                        v-model="forms.entity.createUpdate.data.description"
                         hasDiv
-                        title="Teléfono"
-                        isRequired
+                        title="Descripción general"
                         hasTextBottom
-                        :textBottomInfo="forms.entity.createUpdate.errors?.telephone"
-                        xl="6"
-                        lg="6"/>
-                    <InputText
-                        v-model="forms.entity.createUpdate.data.email"
-                        hasDiv
-                        title="Correo electrónico"
-                        hasTextBottom
-                        :textBottomInfo="forms.entity.createUpdate.errors?.email"
-                        xl="6"
-                        lg="6">
-                        <template v-slot:inputGroupPrepend>
-                            <a href="javascript:void(0)" class="btn btn-icon btn-label-dark waves-effect">
-                                <i class="fa fa-envelope fs-5"></i>
-                            </a>
-                        </template>
-                    </InputText>
-                    <InputText
-                        v-model="forms.entity.createUpdate.data.token_api_misc"
-                        hasDiv
-                        title="Token API - Misc"
-                        hasTextBottom
-                        :textBottomInfo="forms.entity.createUpdate.errors?.token_api_misc"
+                        :textBottomInfo="forms.entity.createUpdate.errors?.description"
                         xl="6"
                         lg="6"/>
                     <InputSlot
@@ -129,6 +129,54 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="navs-pills-contacts" role="tabpanel">
+                <div class="row g-3">
+                    <InputText
+                        v-model="forms.entity.createUpdate.data.address"
+                        hasDiv
+                        title="Dirección"
+                        isRequired
+                        hasTextBottom
+                        :textBottomInfo="forms.entity.createUpdate.errors?.address"
+                        xl="6"
+                        lg="6">
+                        <template v-slot:inputGroupPrepend>
+                            <a href="javascript:void(0)" class="btn btn-icon btn-label-dark waves-effect">
+                                <i class="fa fa-location-dot fs-5"></i>
+                            </a>
+                        </template>
+                    </InputText>
+                    <InputText
+                        v-model="forms.entity.createUpdate.data.telephone"
+                        hasDiv
+                        title="Teléfono"
+                        isRequired
+                        hasTextBottom
+                        :textBottomInfo="forms.entity.createUpdate.errors?.telephone"
+                        xl="6"
+                        lg="6">
+                        <template v-slot:inputGroupPrepend>
+                            <a href="javascript:void(0)" class="btn btn-icon btn-label-dark waves-effect">
+                                <i class="fa fa-phone fs-5"></i>
+                            </a>
+                        </template>
+                    </InputText>
+                    <InputText
+                        v-model="forms.entity.createUpdate.data.email"
+                        hasDiv
+                        title="Correo electrónico"
+                        hasTextBottom
+                        :textBottomInfo="forms.entity.createUpdate.errors?.email"
+                        xl="6"
+                        lg="6">
+                        <template v-slot:inputGroupPrepend>
+                            <a href="javascript:void(0)" class="btn btn-icon btn-label-dark waves-effect">
+                                <i class="fa fa-envelope fs-5"></i>
+                            </a>
+                        </template>
+                    </InputText>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="navs-pills-socials-media" role="tabpanel">
                 <div class="row g-3">
                     <InputText
                         v-model="forms.entity.createUpdate.data.facebook"
@@ -191,7 +239,35 @@
                     </InputSlot>
                 </div>
             </div>
-            <div class="mt-4">
+            <div class="tab-pane fade" id="navs-pills-configuration" role="tabpanel">
+                <div class="row g-3">
+                    <InputText
+                        v-model="forms.entity.createUpdate.data.slug"
+                        hasDiv
+                        title="Acceso MI WEB"
+                        isRequired
+                        :disabled="true"
+                        hasTextBottom
+                        :textBottomInfo="forms.entity.createUpdate.errors?.slug"
+                        xl="4"
+                        lg="4">
+                        <template v-slot:inputGroupPrepend>
+                            <a href="javascript:void(0)" class="btn btn-icon btn-label-dark waves-effect">
+                                <i class="fa fa-globe fs-5"></i>
+                            </a>
+                        </template>
+                    </InputText>
+                    <InputText
+                        v-model="forms.entity.createUpdate.data.token_api_misc"
+                        hasDiv
+                        title="Token API - Misc"
+                        hasTextBottom
+                        :textBottomInfo="forms.entity.createUpdate.errors?.token_api_misc"
+                        xl="8"
+                        lg="8"/>
+                </div>
+            </div>
+            <div class="mt-4" v-if="isDefined({value: forms.entity.createUpdate.data.id})">
                 <div class="row g-3">
                     <div class="d-flex flex-row-reverse">
                         <button type="button" class="btn waves-effect btn-primary" @click="createUpdateEntity()">
@@ -249,10 +325,13 @@ export default {
                         },
                         data: {
                             id: null,
+                            slug: "",
                             identity_document_type: null,
                             document_number: "",
                             legal_name: "",
                             commercial_name: "",
+                            tagline: "",
+                            description: "",
                             address: "",
                             telephone: "",
                             email: "",
@@ -305,10 +384,13 @@ export default {
                     status               = this.statuses.filter(e => e.code === company?.status)[0];
 
                 this.forms.entity.createUpdate.data.id                     = company?.id;
+                this.forms.entity.createUpdate.data.slug                   = company?.slug;
                 this.forms.entity.createUpdate.data.identity_document_type = identityDocumentType;
                 this.forms.entity.createUpdate.data.document_number        = company?.document_number;
                 this.forms.entity.createUpdate.data.legal_name             = company?.legal_name;
                 this.forms.entity.createUpdate.data.commercial_name        = company?.commercial_name;
+                this.forms.entity.createUpdate.data.tagline                = company?.tagline;
+                this.forms.entity.createUpdate.data.description            = company?.description;
                 this.forms.entity.createUpdate.data.address                = company?.address;
                 this.forms.entity.createUpdate.data.telephone              = company?.telephone;
                 this.forms.entity.createUpdate.data.email                  = company?.email;
@@ -317,6 +399,10 @@ export default {
                 this.forms.entity.createUpdate.data.instagram              = company?.instagram;
                 this.forms.entity.createUpdate.data.whatsapp               = company?.whatsapp;
                 this.forms.entity.createUpdate.data.status                 = status;
+
+                const tabTrigger = document.querySelector('[data-bs-target="#navs-pills-general"]');
+                const tab = new bootstrap.Tab(tabTrigger);
+                tab.show();
 
                 resolve(true);
 
@@ -348,8 +434,9 @@ export default {
                 if(Requests.valid({result: createUpdate})) {
 
                     Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
-                    Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
-                    Alerts.swals({show: false});
+                    // Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
+                    // Alerts.swals({show: false});
+                    Alerts.generateAlert({type: "success", msgContent: createUpdate?.data?.msg});
 
                     this.clearForm({functionName});
 
@@ -398,6 +485,7 @@ export default {
 
             if(["createUpdateEntity"].includes(functionName)) {
 
+                result.slug                   = [];
                 result.identity_document_type = [];
                 result.document_number        = [];
                 result.legal_name             = [];
@@ -407,6 +495,13 @@ export default {
                 result.email                  = [];
                 result.token_api_misc         = [];
                 result.status                 = [];
+
+                if(!this.isDefined({value: form?.slug})) {
+
+                    result.slug.push(this.config.forms.errors.labels.required);
+                    result.bool = false;
+
+                }
 
                 if(!this.isDefined({value: form?.identity_document_type})) {
 
