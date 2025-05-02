@@ -9,9 +9,15 @@ export function route() {
 
 }
 
-export function config({entity = "", type = ""}) {
+export function config({entity = "", type = "", extras = null}) {
 
     let requestRoute = route({});
+
+    if(entity === "myUrl") {
+
+        return `${requestRoute}/${extras?.slug}/home`;
+
+    }
 
     let config = {
         routes: generateRoutes({entity, requestRoute})

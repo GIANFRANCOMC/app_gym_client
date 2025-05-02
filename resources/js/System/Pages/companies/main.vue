@@ -256,6 +256,12 @@
                                 <i class="fa fa-globe fs-5"></i>
                             </a>
                         </template>
+                        <template v-slot:inputGroupAppend>
+                            <a href="javascript:void(0)" class="btn btn-success waves-effect" @click="generateMyUrl()">
+                                <i class="fa fa-share fs-5"></i>
+                                <span class="ms-2">Ir a MI WEB</span>
+                            </a>
+                        </template>
                     </InputText>
                     <InputText
                         v-model="forms.entity.createUpdate.data.token_api_misc"
@@ -580,6 +586,11 @@ export default {
         fixedNumber(value) {
 
             return Utils.fixedNumber(value);
+
+        },
+        generateMyUrl() {
+
+            window.open(Requests.config({entity: "myUrl", extras: {slug: this.forms.entity.createUpdate.data.slug}}), "_blank");
 
         }
     },
