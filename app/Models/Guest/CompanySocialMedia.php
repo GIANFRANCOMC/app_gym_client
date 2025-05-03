@@ -3,12 +3,11 @@
 namespace App\Models\Guest;
 
 use App\Helpers\System\Utilities;
-use Exception;
 use Illuminate\Database\Eloquent\Model;
 
-class Company extends Model {
+class CompanySocialMedia extends Model {
 
-    protected $table               = "companies";
+    protected $table               = "company_socials_media";
     protected $primaryKey          = "id";
     public $incrementing           = true;
     public $timestamps             = true;
@@ -19,16 +18,9 @@ class Company extends Model {
     ];
 
     protected $fillable = [
-        "slug",
-        "identity_document_type_id",
-        "document_number",
-        "legal_name",
-        "commercial_name",
-        "tagline",
-        "description",
-        "address",
-        "telephone",
-        "email",
+        "company_id",
+        "type",
+        "link",
         "status",
         "created_at",
         "created_by",
@@ -56,16 +48,9 @@ class Company extends Model {
     }
 
     // Relationships
-    public function identityDocumentType() {
+    public function company() {
 
-        return $this->belongsTo(IdentityDocumentType::class, "identity_document_type_id", "id");
-
-    }
-
-    public function socialsMedia() {
-
-        return $this->hasMany(CompanySocialMedia::class, "company_id", "id")
-                    ->whereIn("status", ["active"]);
+        return $this->belongsTo(Company::class, "company_id", "id");
 
     }
 

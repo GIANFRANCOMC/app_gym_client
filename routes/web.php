@@ -29,7 +29,7 @@ Route::middleware(["web"])
         $guestRoute = __DIR__.'/Guest';
 
         Route::prefix('/reports')->group($systemRoute.'/Report.php');
-        Route::prefix('{company_slug}/home')->middleware('company.exists')->group($guestRoute.'/BookComplaint.php');
+        Route::prefix('{company_slug}/home')->middleware('company.exists')->group($guestRoute.'/Home.php');
         Route::prefix('{company_slug}/book_complaints')->middleware('company.exists')->group($guestRoute.'/BookComplaint.php');
 
         Route::middleware('guest')->group(function() use($guestRoute) {

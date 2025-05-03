@@ -31,7 +31,10 @@
                         </button>
                         <ul class="navbar-nav me-auto">
                             <li class="nav-item">
-                                <a class="nav-link fw-medium" href="javascript:void(0)">Libro de reclamaciones y sugerencias</a>
+                                <a class="nav-link fw-medium" href="home">Inicio</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link fw-medium" href="book_complaints">Libro de reclamaciones y sugerencias</a>
                             </li>
                         </ul>
                     </div>
