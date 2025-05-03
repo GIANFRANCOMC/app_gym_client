@@ -47,8 +47,9 @@
                 <tr class="text-center align-middle">
                     <th class="bg-secondary text-white fw-semibold" style="width: 15%;"></th>
                     <th class="bg-secondary text-white fw-semibold" style="width: 20%;">NÚMERO DE DOCUMENTO</th>
-                    <th class="bg-secondary text-white fw-semibold" style="width: 30%;">NOMBRE</th>
-                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 35%;">CONTACTO</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 28%;">NOMBRE</th>
+                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 27%;">CONTACTO</th>
+                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 10%;">ACCIONES</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0 bg-white">
@@ -90,6 +91,21 @@
                                     <span v-text="isDefined({value: record.phone_number}) ? record.phone_number : 'N/A'" class="ms-2"></span>
                                 </div>
                             </td>
+                            <td>
+                                <InputSlot
+                                    hasDiv
+                                    :isInputGroup="false"
+                                    :divInputClass="['d-flex flex-wrap justify-content-center gap-2 gap-md-1']"
+                                    xl="12"
+                                    lg="12">
+                                    <template v-slot:input>
+                                        <button type="button" class="btn btn-sm btn-info-1 waves-effect" @click="modalCreateUpdateEntity({record})">
+                                            <i class="fa fa-info-circle"></i>
+                                            <span class="ms-2">Detalle</span>
+                                        </button>
+                                    </template>
+                                </InputSlot>
+                            </td>
                         </tr>
                     </template>
                     <template v-else>
@@ -105,6 +121,61 @@
     </div>
     <div class="d-flex justify-content-center" v-if="!lists.entity.extras.loading && lists.entity.records?.total > 0">
         <Paginator :links="lists.entity.records.links" @clickPage="listEntity"/>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal fade" :id="forms.entity.createUpdate.extras.modals.default.id" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.createUpdate.extras.modals.default.titles[isDefined({value: forms.entity.createUpdate.data?.id}) ? 'update' : 'store']"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row justify-content-center g-1">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                            <span class="fw-semibold colon-at-end">• Tipo de documento</span>
+                            <span class="ms-2" v-text="forms.entity.createUpdate.data?.identity_document_type?.label"></span>
+                        </div>
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                            <span class="fw-semibold colon-at-end">• Número de documento</span>
+                            <span class="ms-2" v-text="forms.entity.createUpdate.data?.document_number"></span>
+                        </div>
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                            <span class="fw-semibold colon-at-end">• Nombre</span>
+                            <span class="ms-2" v-text="forms.entity.createUpdate.data?.name"></span>
+                        </div>
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                            <span class="fw-semibold colon-at-end">• Correo electrónico</span>
+                            <span class="ms-2" v-text="forms.entity.createUpdate.data?.email"></span>
+                        </div>
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                            <span class="fw-semibold colon-at-end">• Celular</span>
+                            <span class="ms-2" v-text="forms.entity.createUpdate.data?.phone_number"></span>
+                        </div>
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                            <span class="fw-semibold colon-at-end">• Descripción</span>
+                            <span class="ms-2" v-text="forms.entity.createUpdate.data?.description"></span>
+                        </div>
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                            <span class="fw-semibold colon-at-end">• Pedido del cliente</span>
+                            <span class="ms-2" v-text="forms.entity.createUpdate.data?.request"></span>
+                        </div>
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                            <span class="fw-semibold colon-at-end">• Estado</span>
+                            <span class="ms-2" v-text="forms.entity.createUpdate.data?.status?.label"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
+                    <!-- <button type="button" :class="['btn waves-effect', isDefined({value: forms.entity.createUpdate.data?.id}) ? 'btn-warning' : 'btn-primary']" @click="createUpdateEntity()">
+                        <i class="fa fa-save"></i>
+                        <span class="ms-2">Guardar</span>
+                    </button> -->
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -161,7 +232,7 @@ export default {
                                     id: Utils.uuid(),
                                     titles: {
                                         store: "Agregar",
-                                        update: "Editar"
+                                        update: "Detalle"
                                     }
                                 }
                             }
@@ -246,11 +317,15 @@ export default {
 
                 let status = this.statuses.filter(e => e.code === record?.status)[0];
 
-                this.forms.entity.createUpdate.data.id            = record?.id;
-                this.forms.entity.createUpdate.data.internal_code = record?.internal_code;
-                this.forms.entity.createUpdate.data.name          = record?.name;
-                this.forms.entity.createUpdate.data.description   = record?.description;
-                this.forms.entity.createUpdate.data.status        = status;
+                this.forms.entity.createUpdate.data.id              = record?.id;
+                this.forms.entity.createUpdate.data.identity_document_type = {code: record?.identity_document_type?.id, label: record?.identity_document_type?.name};
+                this.forms.entity.createUpdate.data.document_number = record?.document_number;
+                this.forms.entity.createUpdate.data.name            = record?.name;
+                this.forms.entity.createUpdate.data.email           = record?.email;
+                this.forms.entity.createUpdate.data.phone_number    = record?.phone_number;
+                this.forms.entity.createUpdate.data.description     = record?.description;
+                this.forms.entity.createUpdate.data.request         = record?.request;
+                this.forms.entity.createUpdate.data.status          = status;
 
             }else {
 
