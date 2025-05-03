@@ -75,6 +75,10 @@
                                     <span class="fw-semibold colon-at-end">Estado</span>
                                     <span :class="['badge ms-2', 'fw-semibold', { 'bg-label-primary': ['in_progress'].includes(record.status), 'bg-label-success': ['resolved'].includes(record.status), 'bg-label-danger': ['pending'].includes(record.status) }]" v-text="record.formatted_status"></span>
                                 </div>
+                                <div class="d-flex flex-wrap align-items-center justify-content-start my-1">
+                                    <span class="fw-semibold colon-at-end">Creado</span>
+                                    <span v-text="legibleFormatDate({dateString: record.formatted_created_at, type: 'datetime'})" class="ms-2"></span>
+                                </div>
                             </td>
                             <td>
                                 <span v-text="record.document_number" class="d-block fw-bold"></span>
@@ -139,27 +143,27 @@
                         </div>
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                             <span class="fw-semibold colon-at-end">• Número de documento</span>
-                            <span class="ms-2" v-text="forms.entity.createUpdate.data?.document_number"></span>
+                            <span class="ms-2" v-text="isDefined({value: forms.entity.createUpdate.data?.document_number}) ? forms.entity.createUpdate.data?.document_number : 'N/A'"></span>
                         </div>
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                             <span class="fw-semibold colon-at-end">• Nombre</span>
-                            <span class="ms-2" v-text="forms.entity.createUpdate.data?.name"></span>
+                            <span class="ms-2" v-text="isDefined({value: forms.entity.createUpdate.data?.name}) ? forms.entity.createUpdate.data?.name : 'N/A'"></span>
                         </div>
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                             <span class="fw-semibold colon-at-end">• Correo electrónico</span>
-                            <span class="ms-2" v-text="forms.entity.createUpdate.data?.email"></span>
+                            <span class="ms-2" v-text="isDefined({value: forms.entity.createUpdate.data?.email}) ? forms.entity.createUpdate.data?.email : 'N/A'"></span>
                         </div>
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                             <span class="fw-semibold colon-at-end">• Celular</span>
-                            <span class="ms-2" v-text="forms.entity.createUpdate.data?.phone_number"></span>
+                            <span class="ms-2" v-text="isDefined({value: forms.entity.createUpdate.data?.phone_number}) ? forms.entity.createUpdate.data?.phone_number : 'N/A'"></span>
                         </div>
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                             <span class="fw-semibold colon-at-end">• Descripción</span>
-                            <span class="ms-2" v-text="forms.entity.createUpdate.data?.description"></span>
+                            <span class="ms-2" v-text="isDefined({value: forms.entity.createUpdate.data?.description}) ? forms.entity.createUpdate.data?.description : 'N/A'"></span>
                         </div>
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                             <span class="fw-semibold colon-at-end">• Pedido del cliente</span>
-                            <span class="ms-2" v-text="forms.entity.createUpdate.data?.request"></span>
+                            <span class="ms-2" v-text="isDefined({value: forms.entity.createUpdate.data?.request}) ? forms.entity.createUpdate.data?.request : 'N/A'"></span>
                         </div>
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                             <span class="fw-semibold colon-at-end">• Estado</span>
@@ -387,6 +391,11 @@ export default {
         tooltips({show = true, time = 10}) {
 
             Alerts.tooltips({show, time});
+
+        },
+        legibleFormatDate({dateString = null, type = "datetime"}) {
+
+            return Utils.legibleFormatDate({dateString, type});
 
         }
     },

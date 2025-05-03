@@ -101,10 +101,21 @@
                             <div class="navbar-nav align-items-center">
                                 <div class="nav-item navbar-search-wrapper mb-0">
                                     <a class="nav-item nav-link search-toggler d-flex align-items-center px-0" href="javascript:void(0);">
-                                        <image src="{{ asset('System/assets/img/utils/admin/app_navbar.png') }}" width="130px" height="38px"/>
+                                        <img src="{{ asset('System/assets/img/utils/owner_app/logotype.png') }}" class="d-none d-md-block" width="130" height="38" alt="Logo" />
+                                        <img src="{{ asset('System/assets/img/utils/owner_app/logomark.png') }}" class="d-block d-md-none" width="55" height="45" alt="Logo" />
                                     </a>
                                 </div>
                             </div>
+                            <ul class="navbar-nav flex-row align-items-center ms-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link px-0" href="javascript:void(0);" onclick='generateMyUrl(@json($company))'>
+                                        <div class="btn btn-success btn-sm rounded-pill shadow-sm">
+                                            <i class="fa fa-globe"></i>
+                                            <span class="ms-2">Visitar mi página</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
                             {{-- <ul class="navbar-nav flex-row align-items-center ms-auto">
                                 <li class="nav-item navbar-dropdown dropdown-user dropdown">
                                     <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">

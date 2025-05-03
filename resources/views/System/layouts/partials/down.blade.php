@@ -23,4 +23,5 @@
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 <script src="{{ asset('System/assets/js/main.js') }}"></script>
+<script src="{{ asset('System/assets/js/custom.js') }}"></script>
 <!-- Page JS -->

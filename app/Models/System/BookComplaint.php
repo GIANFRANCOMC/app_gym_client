@@ -3,6 +3,7 @@
 namespace App\Models\System;
 
 use App\Helpers\System\Utilities;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class BookComplaint extends Model {
@@ -15,7 +16,9 @@ class BookComplaint extends Model {
 
     protected $appends = [
         "formatted_type",
-        "formatted_status"
+        "formatted_status",
+        "formatted_created_at",
+        "formatted_updated_at"
     ];
 
     protected $fillable = [
@@ -47,6 +50,18 @@ class BookComplaint extends Model {
     public function getFormattedStatusAttribute() {
 
         return self::getStatuses("first", $this->attributes["status"])["label"] ?? "";
+
+    }
+
+    public function getFormattedCreatedAtAttribute() {
+
+        return Carbon::parse($this->attributes["created_at"])->format("Y-m-d H:i:s");
+
+    }
+
+    public function getFormattedUpdatedAtAttribute() {
+
+        return Carbon::parse($this->attributes["updated_at"])->format("Y-m-d H:i:s");
 
     }
 

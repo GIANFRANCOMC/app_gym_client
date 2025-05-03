@@ -249,8 +249,8 @@
                         :disabled="true"
                         hasTextBottom
                         :textBottomInfo="forms.entity.createUpdate.errors?.slug"
-                        xl="4"
-                        lg="4">
+                        xl="6"
+                        lg="6">
                         <template v-slot:inputGroupPrepend>
                             <a href="javascript:void(0)" class="btn btn-icon btn-label-dark waves-effect">
                                 <i class="fa fa-globe fs-5"></i>
@@ -258,8 +258,8 @@
                         </template>
                         <template v-slot:inputGroupAppend>
                             <a href="javascript:void(0)" class="btn btn-success waves-effect" @click="generateMyUrl()">
-                                <i class="fa fa-share fs-5"></i>
-                                <span class="ms-2">Ir a MI WEB</span>
+                                <span>Visitar mi página</span>
+                                <i class="fa fa-share fs-5 ms-2"></i>
                             </a>
                         </template>
                     </InputText>
@@ -269,8 +269,8 @@
                         title="Token API - Misc"
                         hasTextBottom
                         :textBottomInfo="forms.entity.createUpdate.errors?.token_api_misc"
-                        xl="8"
-                        lg="8"/>
+                        xl="6"
+                        lg="6"/>
                 </div>
             </div>
             <div class="mt-4" v-if="isDefined({value: forms.entity.createUpdate.data.id})">
@@ -590,7 +590,7 @@ export default {
         },
         generateMyUrl() {
 
-            window.open(Requests.config({entity: "myUrl", extras: {slug: this.forms.entity.createUpdate.data.slug}}), "_blank");
+            generateMyUrl(this.forms.entity.createUpdate.data);
 
         }
     },
