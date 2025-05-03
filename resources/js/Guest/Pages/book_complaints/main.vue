@@ -1,10 +1,10 @@
 <template>
     <div class="container flex-grow-1 container-p-y">
         <div class="text-end mt-4 mt-md-2 mb-3">
-            <span class="badge bg-label-primary">Libro de Quejas, Reclamos y Sugerencias</span>
+            <span class="badge bg-label-primary">Libro de reclamaciones y sugerencias</span>
         </div>
         <h4 class="text-center mb-1">
-            <span class="position-relative fw-extrabold z-1">Registra tu Queja, Reclamo o Sugerencia</span>
+            <span class="position-relative fw-extrabold z-1">Registra tu queja, reclamo o sugerencia</span>
         </h4>
         <div class="text-center text-muted pb-2 mb-3">
             <span class="d-block fw-regular">Cuéntanos lo ocurrido o propon ideas para mejorar nuestro servicio.</span>
@@ -189,9 +189,9 @@
                             lg="12"/>
                     </div>
                     <div class="d-flex flex-wrap flex-row-reverse gap-2 mt-4">
-                        <button type="button" class="btn waves-effect btn-success" @click="createUpdateEntity()" :disabled="!isDefined({value: forms.entity.createUpdate.data.description})">
+                        <button type="button" class="btn waves-effect btn-success" @click="createUpdateEntity()" :disabled="!isDefined({value: forms.entity.createUpdate.data.description})" v-if="isDefined({value: forms.entity.createUpdate.data.type})">
                             <i class="fa fa-check-circle"></i>
-                            <span class="ms-2">Enviar</span>
+                            <span class="ms-2" v-text="'Enviar '+(currentType?.label).toLowerCase()"></span>
                         </button>
                         <button type="button" class="btn waves-effect btn-secondary" @click="changeStep('2')">
                             <i class="fa fa-arrow-left"></i>
@@ -369,7 +369,7 @@ export default {
 
             let form = Utils.cloneJson(this.forms.entity.createUpdate.data);
 
-            const validateForm = this.validateForm({functionName, form});
+            const validateForm = this.validateForm({functionName, form, extras: {type: "descriptive"}});
 
             if(validateForm?.bool) {
 
@@ -382,13 +382,14 @@ export default {
 
                 if(Requests.valid({result: createUpdate})) {
 
-                    Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
+                    // Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
                     // Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
                     // Alerts.swals({show: false});
                     Alerts.generateAlert({type: "success", msgContent: createUpdate?.data?.msg});
 
                     this.clearForm({functionName});
                     // this.listEntity({url: `${this.lists.entity.extras.route}?page=${this.lists.entity.records?.current_page ?? 1}`});
+                    this.changeStep("1");
 
                 }else {
 
@@ -401,9 +402,10 @@ export default {
 
             }else {
 
-                this.formErrors({functionName, type: "set", errors: validateForm});
-                Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
-                Alerts.swals({show: false});
+                // this.formErrors({functionName, type: "set", errors: validateForm});
+                // Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
+                // Alerts.swals({show: false});
+                Alerts.generateAlert({messages: Utils.getErrors({errors: validateForm}), msgContent: `<div class="fw-semibold mb-2">${this.config.messages.errorValidate}</div>`});
 
             }
 
@@ -444,46 +446,48 @@ export default {
 
             if(["createUpdateEntity"].includes(functionName)) {
 
+                result.type                   = [];
                 result.identity_document_type = [];
                 result.document_number        = [];
                 result.name                   = [];
                 result.email                  = [];
                 result.phone_number           = [];
-                result.type                   = [];
                 result.description            = [];
                 result.request                = [];
 
+                const isDescriptive = ["descriptive"].includes(extras?.type);
+
+                if(!this.isDefined({value: form?.type})) {
+
+                    result.type.push(`${isDescriptive ? "Tipo:" : ""} ${this.config.forms.errors.labels.required}`);
+                    result.bool = false;
+
+                }
+
                 if(!this.isDefined({value: form?.identity_document_type})) {
 
-                    result.identity_document_type.push(this.config.forms.errors.labels.required);
+                    result.identity_document_type.push(`${isDescriptive ? "Tipo de documento:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }
 
                 if(!this.isDefined({value: form?.document_number})) {
 
-                    result.document_number.push(this.config.forms.errors.labels.required);
+                    result.document_number.push(`${isDescriptive ? "Número de documento:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }
 
                 if(!this.isDefined({value: form?.name})) {
 
-                    result.name.push(this.config.forms.errors.labels.required);
-                    result.bool = false;
-
-                }
-
-                if(!this.isDefined({value: form?.type})) {
-
-                    result.type.push(this.config.forms.errors.labels.required);
+                    result.name.push(`${isDescriptive ? "Nombre:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }
 
                 if(!this.isDefined({value: form?.description})) {
 
-                    result.description.push(this.config.forms.errors.labels.required);
+                    result.description.push(`${isDescriptive ? "Descripción:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }
@@ -533,6 +537,13 @@ export default {
         types: function() {
 
             return this.options?.bookComplaints?.types.map(e => ({code: e.code, label: e.label, data: e}));
+
+        },
+        currentType() {
+
+            const currentType = (this.types ?? []).filter(e => e.code == this.forms.entity.createUpdate.data.type);
+
+            return currentType.length > 0 ? currentType[0] : null;
 
         }
     },

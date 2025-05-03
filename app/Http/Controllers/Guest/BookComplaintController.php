@@ -88,7 +88,7 @@ class BookComplaintController extends Controller {
         });
 
         $bool = Utilities::isDefined($bookComplaint);
-        $msg  = $bool ? "Registro creado correctamente." : "No se ha podido crear el registro.";
+        $msg  = $bool ? "Su mensaje ha sido registrado con éxito. Gracias por su comunicación." : "No se ha podido crear el registro.";
 
         return response()->json(["bool" => $bool, "msg" => $msg, "bookComplaint" => $bookComplaint], 200);
 
