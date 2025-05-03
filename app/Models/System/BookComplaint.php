@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Guest;
+namespace App\Models\System;
 
 use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
@@ -79,6 +79,12 @@ class BookComplaint extends Model {
     public function company() {
 
         return $this->belongsTo(Company::class, "company_id", "id");
+
+    }
+
+    public function identityDocumentType() {
+
+        return $this->belongsTo(IdentityDocumentType::class, "identity_document_type_id", "id");
 
     }
 

@@ -194,8 +194,9 @@ return new class extends Migration {
             ["id" => 5, "slug" => "sc_inventories", "name" => "inventories", "order" => 6, "dom_id" => "menu-item-inventories", "dom_label" => "Inventario", "dom_icon" => "fa-solid fa-arrow-right-arrow-left", "has_sub_menu" => true],
             ["id" => 6, "slug" => "sc_infrastructure", "name" => "infrastructure", "order" => 7, "dom_id" => "menu-item-infrastructure", "dom_label" => "Infraestructura", "dom_icon" => "fa-solid fa-industry", "has_sub_menu" => true],
             ["id" => 7, "slug" => "sc_customers", "name" => "customers", "order" => 3, "dom_id" => "menu-item-customers", "dom_label" => "Clientes", "dom_icon" => "fa fa-user", "has_sub_menu" => false],
-            ["id" => 8, "slug" => "sc_configuration", "name" => "configuration", "order" => 8, "dom_id" => "menu-item-configuration", "dom_label" => "Configuración", "dom_icon" => "fa fa-gear", "has_sub_menu" => true],
-            ["id" => 9, "slug" => "sc_reports", "name" => "reports", "order" => 9, "dom_id" => "menu-item-reports", "dom_label" => "Reportes", "dom_icon" => "fa fa-print", "has_sub_menu" => false]
+            ["id" => 8, "slug" => "sc_configuration", "name" => "configuration", "order" => 9, "dom_id" => "menu-item-configuration", "dom_label" => "Configuración", "dom_icon" => "fa fa-gear", "has_sub_menu" => true],
+            ["id" => 9, "slug" => "sc_reports", "name" => "reports", "order" => 10, "dom_id" => "menu-item-reports", "dom_label" => "Reportes", "dom_icon" => "fa fa-print", "has_sub_menu" => false],
+            ["id" => 10, "slug" => "sc_customer_care", "name" => "customer_care", "order" => 8, "dom_id" => "menu-item-customer_care", "dom_label" => "Atención al cliente", "dom_icon" => "fa fa-headset", "has_sub_menu" => true]
         ]);
 
         DB::table("sub_sections")->insert([
@@ -215,7 +216,8 @@ return new class extends Migration {
             ["id" => 14, "section_id" => 8, "slug" => "sbc_configuration-users", "name" => "configuration-users", "dom_id" => "menu-item-configuration-users", "dom_label" => "Colaboradores", "dom_route" => "users.index"],
             ["id" => 15, "section_id" => 9, "slug" => "sbc_reports-main", "name" => "reports-main", "dom_id" => "menu-item-reports", "dom_label" => "Reportes", "dom_route" => "reports.index"],
             ["id" => 16, "section_id" => 3, "slug" => "sbc_trackings-attendances", "name" => "trackings-attendances", "dom_id" => "menu-item-trackings-attendances", "dom_label" => "Asistencias", "dom_route" => "tracking_attendances.index"],
-            ["id" => 17, "section_id" => 3, "slug" => "sbc_trackings-notifications", "name" => "trackings-notifications", "dom_id" => "menu-item-trackings-notifications", "dom_label" => "Notificaciones", "dom_route" => "tracking_notifications.index"]
+            ["id" => 17, "section_id" => 3, "slug" => "sbc_trackings-notifications", "name" => "trackings-notifications", "dom_id" => "menu-item-trackings-notifications", "dom_label" => "Notificaciones", "dom_route" => "tracking_notifications.index"],
+            ["id" => 18, "section_id" => 10, "slug" => "sbc_customer_care-book_complaints", "name" => "customer_care-book_complaints", "dom_id" => "menu-item-customer_care-book_complaints", "dom_label" => "Libro de reclamaciones y sugerencias", "dom_route" => "book_complaints.index"]
         ]);
 
         DB::table("companies_sub_sections")->insert([
@@ -235,7 +237,8 @@ return new class extends Migration {
             ["company_id" => 1, "sub_section_id" => 14],
             ["company_id" => 1, "sub_section_id" => 15],
             ["company_id" => 1, "sub_section_id" => 16],
-            ["company_id" => 1, "sub_section_id" => 17]
+            ["company_id" => 1, "sub_section_id" => 17],
+            ["company_id" => 1, "sub_section_id" => 18]
         ]);
 
         DB::table("roles")->insert([

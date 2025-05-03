@@ -529,14 +529,14 @@ export default {
             return this.options?.identityDocumentTypes?.records.map(e => ({code: e.id, label: e.name}));
 
         },
-        statuses: function() {
-
-            return this.options?.bookComplaints?.statuses.map(e => ({code: e.code, label: e.label}));
-
-        },
         types: function() {
 
             return this.options?.bookComplaints?.types.map(e => ({code: e.code, label: e.label, data: e}));
+
+        },
+        statuses: function() {
+
+            return this.options?.bookComplaints?.statuses.map(e => ({code: e.code, label: e.label}));
 
         },
         currentType() {

@@ -3,7 +3,7 @@
 use App\Http\Controllers\Guest\{BookComplaintController};
 use Illuminate\Support\Facades\Route;
 
-$entity = "book_complaints";
+$entity = "guest.book_complaints";
 
 Route::get('',            [BookComplaintController::class, 'index'])->name("$entity.index");
 Route::get('/initParams', [BookComplaintController::class, 'initParams'])->name("$entity.initParams");
