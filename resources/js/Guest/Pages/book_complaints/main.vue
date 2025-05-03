@@ -1,113 +1,201 @@
 <template>
-    <Breadcrumb :list="breadcrumbTitles"/>
+    <div class="container flex-grow-1 container-p-y">
+        <div class="text-end mt-4 mt-md-2 mb-3">
+            <span class="badge bg-label-primary">Libro de Quejas, Reclamos y Sugerencias</span>
+        </div>
+        <h4 class="text-center mb-1">
+            <span class="position-relative fw-extrabold z-1">Registra tu Queja, Reclamo o Sugerencia</span>
+        </h4>
+        <div class="text-center text-muted pb-2 mb-3">
+            <span class="d-block fw-regular">Cuéntanos lo ocurrido o propon ideas para mejorar nuestro servicio.</span>
+            <div class="d-block fw-regular"> Todos los campos con <span class="text-danger">*</span> son obligatorios. </div>
+        </div>
 
-    <!-- Content -->
-    <div class="nav-align-top">
-        <ul class="nav nav-tabs nav-fill" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-general" aria-controls="navs-pills-general" aria-selected="false" tabindex="-1">
-                    <span class="d-none d-sm-inline-flex align-items-center fw-bold">
-                        <i class="fa fa-info-circle me-1_5"></i>
-                        <span class="ms-2">Registrar reclamo</span>
-                    </span>
-                    <i class="fa fa-info-circle d-sm-none"></i>
-                </button>
-            </li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane fade show active" id="navs-pills-general" role="tabpanel">
-                <div class="row g-3">
-                    <InputSlot
-                        hasDiv
-                        title="Tipo de documento"
-                        isRequired
-                        hasTextBottom
-                        :textBottomInfo="forms.entity.createUpdate.errors?.identity_document_type"
-                        xl="6"
-                        lg="6">
-                        <template v-slot:input>
-                            <v-select
-                                v-model="forms.entity.createUpdate.data.identity_document_type"
-                                :options="identityDocumentTypes"
-                                :clearable="false"
-                                :searchable="false"/>
-                        </template>
-                    </InputSlot>
-                    <InputText
-                        v-model="forms.entity.createUpdate.data.document_number"
-                        hasDiv
-                        title="Número de documento"
-                        isRequired
-                        hasTextBottom
-                        :textBottomInfo="forms.entity.createUpdate.errors?.document_number"
-                        xl="6"
-                        lg="6"/>
-                    <InputText
-                        v-model="forms.entity.createUpdate.data.name"
-                        hasDiv
-                        title="Nombre"
-                        isRequired
-                        hasTextBottom
-                        :textBottomInfo="forms.entity.createUpdate.errors?.name"
-                        xl="6"
-                        lg="6"/>
-                    <InputText
-                        v-model="forms.entity.createUpdate.data.email"
-                        hasDiv
-                        title="Correo electrónico"
-                        hasTextBottom
-                        :textBottomInfo="forms.entity.createUpdate.errors?.email"
-                        xl="6"
-                        lg="6"/>
-                    <InputText
-                        v-model="forms.entity.createUpdate.data.phone_number"
-                        hasDiv
-                        title="Celular"
-                        hasTextBottom
-                        :textBottomInfo="forms.entity.createUpdate.errors?.phone_number"
-                        xl="6"
-                        lg="6"/>
-                    <InputSlot
-                        hasDiv
-                        title="Tipo de solicitud"
-                        isRequired
-                        hasTextBottom
-                        :textBottomInfo="forms.entity.createUpdate.errors?.type"
-                        xl="6"
-                        lg="6">
-                        <template v-slot:input>
-                            <v-select
-                                v-model="forms.entity.createUpdate.data.type"
-                                :options="types"
-                                :clearable="false"
-                                :searchable="false"/>
-                        </template>
-                    </InputSlot>
-                    <InputText
-                        v-model="forms.entity.createUpdate.data.description"
-                        hasDiv
-                        title="Descripción"
-                        isRequired
-                        hasTextBottom
-                        :textBottomInfo="forms.entity.createUpdate.errors?.description"
-                        xl="6"
-                        lg="6"/>
-                    <InputText
-                        v-model="forms.entity.createUpdate.data.request"
-                        hasDiv
-                        title="Pedido del cliente"
-                        hasTextBottom
-                        :textBottomInfo="forms.entity.createUpdate.errors?.request"
-                        xl="6"
-                        lg="6"/>
+        <!-- Content -->
+        <div class="nav-align-top mt-3 shadow-lg">
+            <ul class="nav nav-tabs nav-fill" role="tablist" v-show="false">
+                <li class="nav-item" role="presentation">
+                    <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-1" aria-controls="navs-pills-1" aria-selected="false" tabindex="-1">
+                        <span class="d-none d-sm-inline-flex align-items-center fw-bold">
+                            <i class="fa fa-info-circle me-1_5"></i>
+                            <span class="ms-2">Tipo</span>
+                        </span>
+                        <i class="fa fa-info-circle d-sm-none"></i>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-2" aria-controls="navs-pills-2" aria-selected="false" tabindex="-1">
+                        <span class="d-none d-sm-inline-flex align-items-center fw-bold">
+                            <i class="fa fa-info-circle me-1_5"></i>
+                            <span class="ms-2">Identificación</span>
+                        </span>
+                        <i class="fa fa-info-circle d-sm-none"></i>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-3" aria-controls="navs-pills-3" aria-selected="false" tabindex="-1">
+                        <span class="d-none d-sm-inline-flex align-items-center fw-bold">
+                            <i class="fa fa-info-circle me-1_5"></i>
+                            <span class="ms-2">Detalle</span>
+                        </span>
+                        <i class="fa fa-info-circle d-sm-none"></i>
+                    </button>
+                </li>
+            </ul>
+            <div class="tab-content px-5">
+                <ul class="list-inline d-flex flex-wrap justify-content-center align-items-center mb-4 mt-3">
+                    <li class="list-inline-item me-4 text-center">
+                        <span :class="['badge rounded-pill px-3 py-2', forms.entity.createUpdate.data.step >= 1 ? 'bg-primary' : 'bg-secondary']">1</span>
+                        <small class="d-block mt-1">Tipo</small>
+                    </li>
+                    <li class="list-inline-item me-4  text-center">
+                        <span :class="['badge rounded-pill px-3 py-2', forms.entity.createUpdate.data.step >= 2 ? 'bg-primary' : 'bg-secondary']">2</span>
+                        <small class="d-block mt-1">Identificación</small>
+                    </li>
+                    <li class="list-inline-item  text-center">
+                        <span :class="['badge rounded-pill px-3 py-2', forms.entity.createUpdate.data.step >= 3 ? 'bg-primary' : 'bg-secondary']">3</span>
+                        <small class="d-block mt-1">Detalle</small>
+                    </li>
+                </ul>
+                <div class="tab-pane fade" id="navs-pills-1" role="tabpanel">
+                    <h2 class="fw-bold text-heading my-0 text-center">¿Qué tipo de comunicación deseas realizar?</h2>
+                    <p class="text-muted fw-semibold text-center mb-4">Selecciona una de las opciones que mejor describa tu solicitud.</p>
+                    <div class="row g-3 py-8">
+                        <div class="col-xl-4 col-lg-6 col-md-12 col-sm-12" v-for="record in types" :key="record.code">
+                            <div class="form-check custom-option custom-option-basic">
+                                <label class="form-check-label custom-option-content form-check-input-payment gap-4 align-items-center">
+                                    <input v-model="forms.entity.createUpdate.data.type" class="form-check-input my-2" type="radio" :value="record.code">
+                                    <span class="custom-option-body">
+                                        <div class="ms-3 fw-bold text-heading fs-5">
+                                            <span :class="[record?.data?.icon]"></span>
+                                            <span v-text="record?.label" class="ms-3"></span>
+                                        </div>
+                                        <p class="ms-1 mt-2 fw-semibold text-muted" v-text="record?.data?.description"></p>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap flex-row-reverse mt-4">
+                        <button type="button" class="btn waves-effect btn-primary" @click="changeStep('2')" :disabled="!isDefined({value: forms.entity.createUpdate.data.type})">
+                            <span class="ms-2">Siguiente: Identificación</span>
+                            <i class="fa fa-arrow-right ms-2"></i>
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <div class="mt-4">
-                <div class="row g-3">
-                    <div class="d-flex flex-row-reverse">
-                        <button type="button" class="btn waves-effect btn-primary" @click="createUpdateEntity()">
-                            <i class="fa fa-save"></i>
-                            <span class="ms-2">Guardar información</span>
+                <div class="tab-pane fade" id="navs-pills-2" role="tabpanel">
+                    <legend class="fw-bold text-heading my-0 text-center">Completa tus datos personales</legend>
+                    <p class="text-muted fw-semibold text-center mb-4">Necesitamos esta información para continuar con tu solicitud</p>
+                    <div class="row g-3">
+                        <InputSlot
+                            hasDiv
+                            title="Tipo de documento"
+                            isRequired
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.identity_document_type"
+                            xl="6"
+                            lg="6">
+                            <template v-slot:input>
+                                <v-select
+                                    v-model="forms.entity.createUpdate.data.identity_document_type"
+                                    @close="validateForm({functionName: 'createUpdateEntity', form: forms.entity.createUpdate.data, extras: {setErrors: true}})"
+                                    :options="identityDocumentTypes"
+                                    :clearable="false"
+                                    :searchable="false"/>
+                            </template>
+                        </InputSlot>
+                        <InputText
+                            v-model="forms.entity.createUpdate.data.document_number"
+                            @input="validateForm({functionName: 'createUpdateEntity', form: forms.entity.createUpdate.data, extras: {setErrors: true}})"
+                            hasDiv
+                            title="Número de documento"
+                            isRequired
+                            placeholder="Ej. 12345678"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.document_number"
+                            xl="6"
+                            lg="6"/>
+                        <InputText
+                            v-model="forms.entity.createUpdate.data.name"
+                            @input="validateForm({functionName: 'createUpdateEntity', form: forms.entity.createUpdate.data, extras: {setErrors: true}})"
+                            hasDiv
+                            title="Nombre"
+                            placeholder="Ej. Juan Pérez"
+                            isRequired
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.name"
+                            xl="6"
+                            lg="6"/>
+                        <InputText
+                            v-model="forms.entity.createUpdate.data.email"
+                            @input="validateForm({functionName: 'createUpdateEntity', form: forms.entity.createUpdate.data, extras: {setErrors: true}})"
+                            hasDiv
+                            title="Correo electrónico"
+                            placeholder="Ej. juan@hotmail.com"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.email"
+                            xl="6"
+                            lg="6"/>
+                        <InputText
+                            v-model="forms.entity.createUpdate.data.phone_number"
+                            @input="validateForm({functionName: 'createUpdateEntity', form: forms.entity.createUpdate.data, extras: {setErrors: true}})"
+                            hasDiv
+                            title="Celular"
+                            placeholder="Ej. 987876762"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.phone_number"
+                            xl="6"
+                            lg="6"/>
+                    </div>
+                    <div class="d-flex flex-wrap flex-row-reverse gap-2 mt-4">
+                        <button type="button" class="btn waves-effect btn-primary" @click="changeStep('3')" :disabled="!isDefined({value: forms.entity.createUpdate.data.identity_document_type}) || !isDefined({value: forms.entity.createUpdate.data.document_number}) || !isDefined({value: forms.entity.createUpdate.data.name})">
+                            <span>Siguiente: Detalle</span>
+                            <i class="fa fa-arrow-right ms-2"></i>
+                        </button>
+                        <button type="button" class="btn waves-effect btn-secondary" @click="changeStep('1')">
+                            <i class="fa fa-arrow-left"></i>
+                            <span class="ms-2">Anterior: Tipo</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="navs-pills-3" role="tabpanel">
+                    <h2 class="fw-bold text-heading my-0 text-center">Describe lo ocurrido</h2>
+                    <p class="text-muted fw-semibold text-center mb-4">Proporciónanos los detalles de lo sucedido y lo que deseas que hagamos al respecto.</p>
+                    <div class="row g-3">
+                        <InputTextArea
+                            v-model="forms.entity.createUpdate.data.description"
+                            @input="validateForm({functionName: 'createUpdateEntity', form: forms.entity.createUpdate.data, extras: {setErrors: true}})"
+                            hasDiv
+                            title="Descripción"
+                            isRequired
+                            placeholder="Ej: El producto llegó dañado"
+                            maxlength="200"
+                            rows="3"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.description"
+                            xl="12"
+                            lg="12"/>
+                        <InputTextArea
+                            v-model="forms.entity.createUpdate.data.request"
+                            @input="validateForm({functionName: 'createUpdateEntity', form: forms.entity.createUpdate.data, extras: {setErrors: true}})"
+                            hasDiv
+                            title="Pedido del cliente"
+                            placeholder="Ej: Solicito un reemplazo o reembolso"
+                            maxlength="200"
+                            rows="3"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.request"
+                            xl="12"
+                            lg="12"/>
+                    </div>
+                    <div class="d-flex flex-wrap flex-row-reverse gap-2 mt-4">
+                        <button type="button" class="btn waves-effect btn-success" @click="createUpdateEntity()" :disabled="!isDefined({value: forms.entity.createUpdate.data.description})">
+                            <i class="fa fa-check-circle"></i>
+                            <span class="ms-2">Enviar</span>
+                        </button>
+                        <button type="button" class="btn waves-effect btn-secondary" @click="changeStep('2')">
+                            <i class="fa fa-arrow-left"></i>
+                            <span class="ms-2">Anterior: Detalle</span>
                         </button>
                     </div>
                 </div>
@@ -174,6 +262,7 @@ export default {
                         },
                         data: {
                             id: null,
+                            step: 0,
                             identity_document_type: null,
                             document_number: "",
                             name: "",
@@ -192,11 +281,7 @@ export default {
             config: {
                 ...Constants.generalConfig,
                 entity: {
-                    ...Requests.config({entity: "book_complaints"}),
-                    page: {
-                        title: "Libro de reclamaciones",
-                        active: true
-                    }
+                    ...Requests.config({entity: "book_complaints"})
                 }
             }
         };
@@ -218,7 +303,8 @@ export default {
             return new Promise(resolve => {
 
                 this.forms.entity.createUpdate.data.identity_document_type = (this.identityDocumentTypes).length > 0 ? this.identityDocumentTypes[0] : null;
-                this.forms.entity.createUpdate.data.type                   = (this.types).length > 0 ? this.types[0] : null;
+
+                this.changeStep("1");
 
                 resolve(true);
 
@@ -237,6 +323,17 @@ export default {
 
         },
         // Forms
+        changeStep(step) {
+
+            this.formErrors({functionName: "createUpdateEntity", type: "clear"});
+
+            const tabTrigger = document.querySelector(`[data-bs-target="#navs-pills-${step}"]`);
+            const tab = new bootstrap.Tab(tabTrigger);
+            tab.show();
+
+            this.forms.entity.createUpdate.data.step = step;
+
+        },
         modalCreateUpdateEntity({record = null}) {
 
             const functionName = "modalCreateUpdateEntity";
@@ -277,7 +374,6 @@ export default {
             if(validateForm?.bool) {
 
                 form.identity_document_type_id = form?.identity_document_type?.code;
-                form.type = form?.type?.code;
 
                 delete form.identity_document_type;
 
@@ -287,8 +383,9 @@ export default {
                 if(Requests.valid({result: createUpdate})) {
 
                     Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
-                    Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
-                    Alerts.swals({show: false});
+                    // Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
+                    // Alerts.swals({show: false});
+                    Alerts.generateAlert({type: "success", msgContent: createUpdate?.data?.msg});
 
                     this.clearForm({functionName});
                     // this.listEntity({url: `${this.lists.entity.extras.route}?page=${this.lists.entity.records?.current_page ?? 1}`});
@@ -296,8 +393,9 @@ export default {
                 }else {
 
                     this.formErrors({functionName, type: "set", errors: createUpdate?.errors ?? []});
-                    Alerts.toastrs({type: "error", subtitle: createUpdate?.data?.msg});
-                    Alerts.swals({show: false});
+                    // Alerts.toastrs({type: "error", subtitle: createUpdate?.data?.msg});
+                    // Alerts.swals({show: false});
+                    Alerts.generateAlert({type: "error", msgContent: createUpdate?.data?.msg});
 
                 }
 
@@ -390,6 +488,12 @@ export default {
 
                 }
 
+                if(extras?.setErrors) {
+
+                    this.formErrors({functionName, type: "set", errors: result});
+
+                }
+
             }
 
             return result;
@@ -408,11 +512,6 @@ export default {
         }
     },
     computed: {
-        breadcrumbTitles: function() {
-
-            return [this.config.entity.page];
-
-        },
         filterByOptions: function() {
 
             return [
@@ -433,7 +532,7 @@ export default {
         },
         types: function() {
 
-            return this.options?.bookComplaints?.types.map(e => ({code: e.code, label: e.label}));
+            return this.options?.bookComplaints?.types.map(e => ({code: e.code, label: e.label, data: e}));
 
         }
     },

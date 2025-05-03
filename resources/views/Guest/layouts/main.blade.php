@@ -10,17 +10,15 @@
     <head>
         @include('Guest.layouts.partials.up')
     </head>
-    <body>
+    <body style="background-color: #f8f7fa;">
         <nav class="layout-navbar shadow-none py-0">
             <div class="container">
-                <div class="navbar navbar-expand-lg landing-navbar px-3 px-md-4">
+                <div class="navbar navbar-expand-lg landing-navbar px-3 px-md-4 bg-white">
                     <div class="navbar-brand app-brand demo d-flex py-0 py-lg-2 me-4">
-                        <button class="navbar-toggler border-0 px-0 me-2" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                            aria-expanded="false" aria-label="Toggle navigation">
+                        <button class="navbar-toggler border-0 px-0 me-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                             <i class="ti ti-menu-2 ti-sm align-middle"></i>
                         </button>
-                        <a href="landing-page.html" class="app-brand-link">
+                        <a href="javascript:void(0)" class="app-brand-link">
                             <span class="app-brand-logo demo">
                                 <img src="{{ asset('System/assets/img/utils/owner_app/logomark.png') }}" width="100%"/>
                             </span>
@@ -54,9 +52,7 @@
                 <div class="landing-hero-blank"></div>
             </section> --}}
             <div class="section-py position-relative">
-                <section class="container flex-grow-1 container-p-y">
-                    @yield('content')
-                </section>
+                @yield('content')
                 <div class="content-backdrop fade"></div>
             </div>
         </div>

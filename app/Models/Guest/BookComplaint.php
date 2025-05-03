@@ -54,9 +54,9 @@ class BookComplaint extends Model {
     public static function getTypes($type = "all", $code = "") {
 
         $types = [
-            ["code" => "complaint", "label" => "Queja"],
-            ["code" => "claim", "label" => "Reclamo"],
-            ["code" => "suggestion", "label" => "Sugerencia"]
+            ["code" => "complaint", "label" => "Queja", "description" => "Cuéntanos algo que no te gustó.", "icon" => "fa-solid fa-exclamation-circle"],
+            ["code" => "claim", "label" => "Reclamo", "description" => "Pide que solucionemos un problema.", "icon" => "fa-solid fa-gavel"],
+            ["code" => "suggestion", "label" => "Sugerencia", "description" => "Idea o recomendación para mejorar.", "icon" => "fa-solid fa-lightbulb"]
         ];
 
         return Utilities::getValues($types, $type, $code);
