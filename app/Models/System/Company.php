@@ -20,6 +20,7 @@ class Company extends Model {
 
     protected $fillable = [
         "slug",
+        "internal_code",
         "identity_document_type_id",
         "document_number",
         "legal_name",

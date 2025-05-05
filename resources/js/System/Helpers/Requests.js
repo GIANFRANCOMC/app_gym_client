@@ -136,8 +136,23 @@ export function patch({route = "", data = {}, id = "", formData = null}) {
 
         }
 
+        const isFormData = formData !== null;
+        const method = isFormData ? "POST" : "PATCH";
+        const requestConfig = isFormData  ? { headers: { "Content-Type": "multipart/form-data" } } : { headers: { "Content-Type": "application/json" } };
+
+        if(isFormData) {
+
+			formData.append("_method", "PATCH");
+
+		}
+
 		axios
-		.patch(requestURL, requestData)
+        axios({
+            method: method,
+            url: requestURL,
+            data: requestData,
+            headers: requestConfig.headers
+        })
 		.then(response => {
 
 			resolve({data: response.data, bool: true});

@@ -126,6 +126,15 @@
                                 :disabled="true"/>
                         </template>
                     </InputSlot>
+                    <InputSlot
+                        hasDiv
+                        title="Logo"
+                        xl="6"
+                        lg="6">
+                        <template v-slot:input>
+                            <input type="file" class="form-control" id="logoFileId"/>
+                        </template>
+                    </InputSlot>
                 </div>
             </div>
             <div class="tab-pane fade" id="navs-pills-contacts" role="tabpanel">
@@ -434,8 +443,28 @@ export default {
 
                 delete form.identity_document_type;
 
-                let createUpdate = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: form.id}) :
-                                                                             Requests.post({route: this.config.entity.routes.store, data: form}));
+                let formData = new FormData();
+
+                for(let key in form) {
+
+                    if(form.hasOwnProperty(key)) {
+
+                        formData.append(key, form[key] ?? "");
+
+                    }
+
+                }
+
+                const logoFile = document.getElementById("logoFileId");
+
+                if(logoFile && logoFile.files && logoFile.files.length > 0) {
+
+                    formData.append("logo", logoFile.files[0]);
+
+                }
+
+                let createUpdate = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.update, formData: formData, id: form.id}) :
+                                                                             Requests.post({route: this.config.entity.routes.store, formData: formData}));
 
                 if(Requests.valid({result: createUpdate})) {
 

@@ -35,7 +35,8 @@ class UpdateCompanyRequest extends FormRequest {
             "address"                   => "required|string|max:100",
             "telephone"                 => "required|string|max:50",
             "email"                     => "nullable|email",
-            "status"                    => "required|string"
+            "status"                    => "required|string",
+            "logo"                      => "nullable|file|image|mimes:jpeg,png,jpg|max:2048"
         ];
 
     }
