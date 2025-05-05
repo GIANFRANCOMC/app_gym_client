@@ -10,6 +10,8 @@ use stdClass;
 
 use App\Http\Requests\System\Companies\{StoreCompanyRequest, UpdateCompanyRequest};
 use App\Models\System\{Company, CompanySocialMedia, IdentityDocumentType};
+use App\Services\GoogleCalendarService;
+use App\Services\GoogleDriveService;
 
 class CompanyController extends Controller {
 
@@ -94,6 +96,12 @@ class CompanyController extends Controller {
                           ->first();
 
         if(Utilities::isDefined($company)) {
+
+            if($request->hasFile("logo") && $request->file("logo")) {
+
+                //
+
+            }
 
             DB::transaction(function() use($request, $userAuth, &$company) {
 

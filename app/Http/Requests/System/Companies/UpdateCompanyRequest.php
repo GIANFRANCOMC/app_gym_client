@@ -31,7 +31,7 @@ class UpdateCompanyRequest extends FormRequest {
             "legal_name"                => "required|string|max:100",
             "commercial_name"           => "required|string|max:100",
             "tagline"                   => "nullable|string|max:100",
-            "description"               => "nullable|string|max:200",
+            "description"               => "nullable|string|max:500",
             "address"                   => "required|string|max:100",
             "telephone"                 => "required|string|max:50",
             "email"                     => "nullable|email",

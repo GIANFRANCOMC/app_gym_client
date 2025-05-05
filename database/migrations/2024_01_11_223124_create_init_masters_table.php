@@ -59,7 +59,7 @@ return new class extends Migration {
             $table->string("legal_name");
             $table->string("commercial_name");
             $table->string("tagline")->nullable();
-            $table->string("description")->nullable();
+            $table->string("description", 500)->nullable();
             $table->string("address")->nullable();
             $table->string("telephone")->nullable();
             $table->string("email")->nullable();

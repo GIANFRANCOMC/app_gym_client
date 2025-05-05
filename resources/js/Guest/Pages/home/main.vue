@@ -1,40 +1,83 @@
 <template>
-    <div class="container flex-grow-1 container-p-y">
-        <div class="text-end mt-4 mt-md-2 mb-3">
-            <span class="badge bg-label-primary">Síguenos</span>
+    <div class="container-xxl flex-grow-1 container-p-y mt-5">
+        <div class="landing-hero hero-text-box text-center position-relative py-4">
+            <div class="my-5">
+                <h1 class="text-primary hero-title display-6 fw-extrabold" v-text="forms.entity.home.data.tagline"></h1>
+                <h2 class="hero-sub-title h5 mb-6 px-4" v-text="forms.entity.home.data.description"></h2>
+            </div>
         </div>
+    </div>
+    <div class="container flex-grow-1 container-p-y">
+        <div class="row align-items-center bg-white p-5 p-md-4 rounded shadow-lg">
+            <div class="col-lg-6 text-start text-sm-center text-lg-start">
+                <h3 class="cta-title text-primary fw-bold mb-1">¡Es tu momento!</h3>
+                <h5 class="text-body mb-8">Empieza hoy tu transformación.<br/>No esperes más para alcanzar tu mejor versión.</h5>
+                <a href="javascript:void(0)" class="btn btn-lg btn-success waves-effect" @click="openUrl(forms.entity.home.data.whatsapp)">
+                    <i class="tf-icons fa-brands fa-whatsapp fs-5"></i>
+                    <span class="ms-2">Contáctanos en Whatsapp</span>
+                </a>
+            </div>
+            <div class="col-lg-6 pt-lg-12 text-center text-lg-end">
+                <img src="https://static.vecteezy.com/system/resources/previews/017/504/043/non_2x/bodybuilding-emblem-and-gym-logo-design-template-vector.jpg" alt="Logo" class="img-fluid" width="40%">
+            </div>
+        </div>
+    </div>
+    <div class="container flex-grow-1 container-p-y">
         <h4 class="text-center mb-1">
-            <span class="position-relative fw-extrabold z-1">Conecta con nosotros</span>
+            <span class="position-relative fs-2 fw-extrabold z-1">Conecta con nosotros</span>
         </h4>
         <div class="text-center text-muted pb-2 mb-3">
             <span class="d-block fw-regular">Estamos activos en redes sociales. ¡Escríbenos o síguenos para estar al tanto de nuestras novedades!</span>
         </div>
         <div class="row g-6">
-            <div class="col-lg-5">
+            <div class="col-lg-4">
                 <div class="contact-img-box position-relative border p-2 h-100">
-                    <img :src="'../'+forms.entity.home.data?.ownerApp?.assets?.img?.contact_us" alt="logo" class="contact-img w-100 scaleX-n1-rtl"/>
+                    <img :src="'../'+forms.entity.home.data?.ownerApp?.assets?.img?.contact_us" alt="logo" class="contact-img w-100 scaleX-n1-rtl" width="40%"/>
                 </div>
             </div>
-            <div class="col-lg-7">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row g-2 justify-content-center align-items-center">
-                            <div class="col-xl-auto col-lg-6 col-md-12 col-sm-12">
+            <div class="col-lg-8">
+                <div class="card shadow-lg">
+                    <div class="card-body px-5">
+                        <div class="row g-1 justify-content-start align-items-center my-3">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                <p class="fs-6">
+                                    <i class="fa fa-location-dot"></i>
+                                    <span class="colon-at-end fw-semibold ms-2">Dirección</span>
+                                    <span class="ms-2" v-text="forms.entity.home.data.address"></span>
+                                </p>
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                <p class="fs-6">
+                                    <i class="fa fa-phone"></i>
+                                    <span class="colon-at-end fw-semibold ms-2">Teléfono</span>
+                                    <span class="ms-2" v-text="forms.entity.home.data.telephone"></span>
+                                </p>
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                <p class="fs-6">
+                                    <i class="fa fa-envelope"></i>
+                                    <span class="colon-at-end fw-semibold ms-2">Correo electrónico</span>
+                                    <span class="ms-2" v-text="forms.entity.home.data.email"></span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row g-md-4 g-2 justify-content-center align-items-center mb-3">
+                            <div class="col-xl-auto col-lg-6 col-md-12 col-sm-12 text-center">
                                 <a href="javascript:void(0)" class="btn btn-info waves-effect" @click="openUrl(forms.entity.home.data.facebook)">
-                                    <span>Visítanos en Facebook</span>
-                                    <i class="tf-icons fa-brands fa-facebook-f fs-5 ms-2"></i>
+                                    <i class="tf-icons fa-brands fa-facebook-f fs-5"></i>
+                                    <span class="ms-2">Visítanos en Facebook</span>
                                 </a>
                             </div>
-                            <div class="col-xl-auto col-lg-6 col-md-12 col-sm-12">
+                            <div class="col-xl-auto col-lg-6 col-md-12 col-sm-12 text-center">
                                 <a href="javascript:void(0)" class="btn btn-danger waves-effect" @click="openUrl(forms.entity.home.data.instagram)">
-                                    <span>Visítanos en Instagram</span>
-                                    <i class="tf-icons fa-brands fa-instagram fs-5 ms-2"></i>
+                                    <i class="tf-icons fa-brands fa-instagram fs-5"></i>
+                                    <span class="ms-2">Visítanos en Instagram</span>
                                 </a>
                             </div>
-                            <div class="col-xl-auto col-lg-6 col-md-12 col-sm-12">
+                            <div class="col-xl-auto col-lg-12 col-md-12 col-sm-12 text-center">
                                 <a href="javascript:void(0)" class="btn btn-success waves-effect" @click="openUrl(forms.entity.home.data.whatsapp)">
-                                    <span>Visítanos en Whatsapp</span>
-                                    <i class="tf-icons fa-brands fa-whatsapp fs-5 ms-2"></i>
+                                    <i class="tf-icons fa-brands fa-whatsapp fs-5"></i>
+                                    <span class="ms-2">Contáctanos en Whatsapp</span>
                                 </a>
                             </div>
                         </div>

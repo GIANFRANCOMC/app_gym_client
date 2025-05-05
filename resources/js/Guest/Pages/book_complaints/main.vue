@@ -1,6 +1,6 @@
 <template>
-    <div class="container flex-grow-1 container-p-y">
-        <div class="text-end mt-4 mt-md-2 mb-3">
+    <div class="container flex-grow-1 container-p-y mt-5">
+        <div class="text-end mt-1 mt-md-2 mb-2 py-4">
             <span class="badge bg-label-primary">Libro de reclamaciones y sugerencias</span>
         </div>
         <h4 class="text-center mb-1">
@@ -67,8 +67,8 @@
                                     <input v-model="forms.entity.createUpdate.data.type" class="form-check-input my-2" type="radio" :value="record.code">
                                     <span class="custom-option-body">
                                         <div class="ms-3 fw-bold text-heading fs-5">
-                                            <span :class="[record?.data?.icon]"></span>
-                                            <span v-text="record?.label" class="ms-3"></span>
+                                            <span :class="[record?.data?.icon, 'text-'+record?.data?.color]"></span>
+                                            <span v-text="record?.label" :class="['ms-3', 'text-'+record?.data?.color]"></span>
                                         </div>
                                         <p class="ms-1 mt-2 fw-semibold text-muted" v-text="record?.data?.description"></p>
                                     </span>

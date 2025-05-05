@@ -22,7 +22,7 @@
                             <span class="app-brand-logo demo">
                                 <img src="{{ asset('System/assets/img/utils/owner_app/logomark.png') }}" width="100%"/>
                             </span>
-                            <span class="app-brand-text demo menu-text fw-bold ms-2 ps-1">{{ $company->commercial_name }}</span>
+                            <span class="app-brand-text demo menu-text fw-bold ms-2 ps-1 fw-regular">{{ $company->commercial_name }}</span>
                         </a>
                     </div>
                     <div class="collapse navbar-collapse landing-nav-menu" id="navbarSupportedContent">
@@ -54,7 +54,7 @@
                 </div>
                 <div class="landing-hero-blank"></div>
             </section> --}}
-            <div class="section-py position-relative">
+            <div>
                 @yield('content')
                 <div class="content-backdrop fade"></div>
             </div>
