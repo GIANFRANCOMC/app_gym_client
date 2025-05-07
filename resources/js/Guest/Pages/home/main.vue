@@ -9,7 +9,7 @@
     </div>
     <div class="container flex-grow-1 container-p-y">
         <div class="row align-items-center bg-white px-5 px-md-4 rounded shadow-lg mx-0">
-            <div class="col-lg-6">
+            <div class="col-lg-6 pt-3">
                 <h3 class="text-primary fw-bold mb-1">¡Es tu momento!</h3>
                 <h5 class="mb-8">Empieza hoy tu transformación.<br/>No esperes más para alcanzar tu mejor versión.</h5>
                 <a href="javascript:void(0)" class="btn btn-lg btn-success waves-effect" @click="openUrl(forms.entity.home.data.whatsapp)">
