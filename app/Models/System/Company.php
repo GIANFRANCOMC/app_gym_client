@@ -30,6 +30,8 @@ class Company extends Model {
         "address",
         "telephone",
         "email",
+        "token_api_misc",
+        "logotype",
         "status",
         "created_at",
         "created_by",

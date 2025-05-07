@@ -6,7 +6,7 @@ use App\Exports\{BranchExport, CustomerExport, ItemExport, SaleExport, UserExpor
 use App\Helpers\System\Utilities;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Auth, DB};
+use Illuminate\Support\Facades\{Auth, DB, Storage};
 use stdClass;
 
 use App\Models\System\{Branch, Company, Customer, Item, SaleBody, SaleHeader, User};
@@ -91,13 +91,12 @@ class ReportController extends Controller {
 
                     try {
 
-                        $logoImg = null;
-                        // $logoPath = public_path("System/assets/img/avatars/1.png");
-                        // $logoImg  = "data:image/".pathinfo($logoPath, PATHINFO_EXTENSION).";base64,".base64_encode(file_get_contents($logoPath));
+                        $logotypeRoute = public_path("storage/".$company->logotype);
+                        $logotypeImg   = "data:image/".pathinfo($logotypeRoute, PATHINFO_EXTENSION).";base64,".base64_encode(file_get_contents($logotypeRoute));
 
                     }catch(Exception $e) {
 
-                        $logoImg = null;
+                        $logotypeImg = null;
 
                     }
 
@@ -110,7 +109,8 @@ class ReportController extends Controller {
                             "saleHeader"  => $saleHeader,
                             "company"     => $company,
                             "extras"      => $saleHeader,
-                            "logoImg"     => $logoImg,
+                            // Assets
+                            "logotypeImg" => $logotypeImg,
                             "canceledImg" => $canceledImg
                         ];
 

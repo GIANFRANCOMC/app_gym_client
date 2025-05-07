@@ -13,14 +13,14 @@
     <body style="background-color: #f8f7fa;">
         <nav class="layout-navbar shadow-none py-0">
             <div class="container">
-                <div class="navbar navbar-expand-lg landing-navbar px-3 px-md-4 bg-white mt-2 shadow-sm">
+                <div class="navbar navbar-expand-lg landing-navbar px-3 px-md-4 bg-white mt-3 shadow-sm">
                     <div class="navbar-brand app-brand demo d-flex py-0 py-lg-2 me-4">
                         <button class="navbar-toggler border-0 px-0 me-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                             <i class="ti ti-menu-2 ti-sm align-middle"></i>
                         </button>
                         <a href="javascript:void(0)" class="app-brand-link">
                             <span class="app-brand-logo demo">
-                                <img src="{{ asset('System/assets/img/utils/owner_app/logomark.png') }}" width="100%"/>
+                                <img src="{{ asset('storage/'.$company->logotype) }}" class="img-fluid"/>
                             </span>
                             <span class="app-brand-text demo menu-text fw-bold ms-2 ps-1 fw-regular">{{ $company->commercial_name }}</span>
                         </a>

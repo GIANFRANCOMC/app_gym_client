@@ -165,7 +165,7 @@
             </tbody>
         </table>
     </div>
-    <div class="d-flex justify-content-center" v-if="!lists.entity.extras.loading">
+    <div class="d-flex justify-content-center" v-if="!lists.entity.extras.loading && lists.entity.records?.total > 0">
         <Paginator :links="lists.entity.records.links" @clickPage="listEntity"/>
     </div>
 

@@ -656,6 +656,7 @@
         <table class="full-width mt-2">
             <tr>
                 <td class="text-center">
+                    <img src="{{ $logotypeImg }}" width="50px" height="50px">
                     <p class="m-0 font-lg font-bold">{{ $company->commercial_name }}</p>
                     <p class="m-0 font-lg font-bold">{{ $company->identityDocumentType->name }} {{ $company->document_number }}</p>
                 </td>

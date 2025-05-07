@@ -45,6 +45,15 @@
             <div class="tab-pane fade" id="navs-pills-general" role="tabpanel">
                 <div class="row g-3">
                     <InputSlot
+                        :hasDiv="false"
+                        :divInputClass="['d-flex justify-content-center']"
+                        xl="12"
+                        lg="12">
+                        <template v-slot:input>
+                            <img v-if="isDefined({value: forms.entity.createUpdate.data.logotype})" :src="getAsset(forms.entity.createUpdate.data.logotype)" alt="Logo" width="200px" height="200px" class="img-fluid"/>
+                        </template>
+                    </InputSlot>
+                    <InputSlot
                         hasDiv
                         title="Tipo de documento"
                         isRequired
@@ -128,11 +137,11 @@
                     </InputSlot>
                     <InputSlot
                         hasDiv
-                        title="Logo"
+                        title="Cambiar logotipo"
                         xl="6"
                         lg="6">
                         <template v-slot:input>
-                            <input type="file" class="form-control" id="logoFileId"/>
+                            <input type="file" class="form-control" id="logotypeFileId" accept="image/png, image/jpg, image/jpeg"/>
                         </template>
                     </InputSlot>
                 </div>
@@ -265,12 +274,6 @@
                                 <i class="fa fa-globe fs-5"></i>
                             </a>
                         </template>
-                        <template v-slot:inputGroupAppend>
-                            <a href="javascript:void(0)" class="btn btn-success waves-effect" @click="generateMyUrl()">
-                                <span>Visitar mi página</span>
-                                <i class="fa fa-share fs-5 ms-2"></i>
-                            </a>
-                        </template>
                     </InputText>
                     <InputText
                         v-model="forms.entity.createUpdate.data.token_api_misc"
@@ -351,6 +354,7 @@ export default {
                             telephone: "",
                             email: "",
                             token_api_misc: "",
+                            logotype: "",
                             facebook: "",
                             instagram: "",
                             whatsapp: "",
@@ -410,6 +414,7 @@ export default {
                 this.forms.entity.createUpdate.data.telephone              = company?.telephone;
                 this.forms.entity.createUpdate.data.email                  = company?.email;
                 this.forms.entity.createUpdate.data.token_api_misc         = company?.token_api_misc;
+                this.forms.entity.createUpdate.data.logotype               = company?.logotype;
                 this.forms.entity.createUpdate.data.facebook               = company?.facebook;
                 this.forms.entity.createUpdate.data.instagram              = company?.instagram;
                 this.forms.entity.createUpdate.data.whatsapp               = company?.whatsapp;
@@ -455,11 +460,11 @@ export default {
 
                 }
 
-                const logoFile = document.getElementById("logoFileId");
+                const logotypeFile = document.getElementById("logotypeFileId");
 
-                if(logoFile && logoFile.files && logoFile.files.length > 0) {
+                if(logotypeFile && logotypeFile.files && logotypeFile.files.length > 0) {
 
-                    formData.append("logo", logoFile.files[0]);
+                    formData.append("logotype", logotypeFile.files[0]);
 
                 }
 
@@ -468,7 +473,9 @@ export default {
 
                 if(Requests.valid({result: createUpdate})) {
 
-                    Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
+                    this.forms.entity.createUpdate.data.logotype = createUpdate.data.company?.logotype;
+
+                    // Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
                     // Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
                     // Alerts.swals({show: false});
                     Alerts.generateAlert({type: "success", msgContent: createUpdate?.data?.msg});
@@ -498,7 +505,7 @@ export default {
             switch(functionName) {
                 case "modalCreateUpdateEntity":
                 case "createUpdateEntity":
-                    //
+                    document.getElementById("logotypeFileId").value = "";
                     break;
             }
 
@@ -620,6 +627,13 @@ export default {
         generateMyUrl() {
 
             generateMyUrl(this.forms.entity.createUpdate.data);
+
+        },
+        getAsset(path) {
+
+            const baseUrl = "/storage/";
+
+            return `${baseUrl}${path}`;
 
         }
     },

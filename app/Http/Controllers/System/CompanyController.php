@@ -97,9 +97,16 @@ class CompanyController extends Controller {
 
         if(Utilities::isDefined($company)) {
 
-            if($request->hasFile("logo") && $request->file("logo")) {
+            $logotypeRoute = null;
 
-                //
+            if($request->hasFile("logotype") && $request->file("logotype")) {
+
+                $logotype = $request->file("logotype");
+
+                $logotypeName  = "logotype.".$logotype->getClientOriginalExtension();
+                $logotypeRoute = $logotype->storeAs($company->internal_code, $logotypeName, "public");
+
+                $company->logotype = $logotypeRoute;
 
             }
 

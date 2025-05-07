@@ -655,7 +655,10 @@
         @endif
         <table class="full-width mt-3">
             <tr>
-                <td width="70%">
+                <td width="20%" class="text-center">
+                    <img src="{{ $logotypeImg }}" width="100px" height="100px">
+                </td>
+                <td width="50%">
                     <p class="m-0 font-xlg font-bold">{{ $company->commercial_name }}</p>
                     <p class="m-0 font-lg font-bold">{{ $company->identityDocumentType->name }} {{ $company->document_number }}</p>
                     <p class="m-0 uppercase">• Dirección: {{ $company->address ?? "N/A" }}</p>
