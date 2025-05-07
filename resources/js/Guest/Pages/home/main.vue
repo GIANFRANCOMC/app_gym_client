@@ -1,6 +1,6 @@
 <template>
     <div class="container-xxl flex-grow-1 container-p-y mt-5">
-        <div class="landing-hero hero-text-box text-center position-relative py-4">
+        <div class="landing-hero hero-text-box text-center position-relative rounded py-4">
             <div class="my-5">
                 <h1 class="text-primary hero-title display-6 fw-extrabold" v-text="forms.entity.home.data.tagline"></h1>
                 <h2 class="hero-sub-title h5 mb-6 px-4" v-text="forms.entity.home.data.description"></h2>
@@ -8,30 +8,67 @@
         </div>
     </div>
     <div class="container flex-grow-1 container-p-y">
-        <div class="row align-items-center bg-white p-5 p-md-4 rounded shadow-lg">
-            <div class="col-lg-6 text-start text-sm-center text-lg-start">
-                <h3 class="cta-title text-primary fw-bold mb-1">¡Es tu momento!</h3>
-                <h5 class="text-body mb-8">Empieza hoy tu transformación.<br/>No esperes más para alcanzar tu mejor versión.</h5>
+        <div class="row align-items-center bg-white p-5 p-md-4 rounded shadow-lg mx-0">
+            <div class="col-lg-6">
+                <h3 class="text-primary fw-bold mb-1">¡Es tu momento!</h3>
+                <h5 class="mb-8">Empieza hoy tu transformación.<br/>No esperes más para alcanzar tu mejor versión.</h5>
                 <a href="javascript:void(0)" class="btn btn-lg btn-success waves-effect" @click="openUrl(forms.entity.home.data.whatsapp)">
                     <i class="tf-icons fa-brands fa-whatsapp fs-5"></i>
                     <span class="ms-2">Contáctanos en Whatsapp</span>
                 </a>
             </div>
             <div class="col-lg-6 pt-lg-12 text-center text-lg-end">
-                <img src="https://static.vecteezy.com/system/resources/previews/017/504/043/non_2x/bodybuilding-emblem-and-gym-logo-design-template-vector.jpg" alt="Logo" class="img-fluid" width="40%">
+                <img :src="getAsset(forms.entity.home.data.logotype)" alt="Logo" class="img-fluid" width="40%">
+            </div>
+        </div>
+    </div>
+    <div class="container flex-grow-1 container-p-y" v-if="items.length > 0">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="card mx-1 my-3">
+                    <div class="card-body d-flex flex-column justify-content-between h-100">
+                        <h4 class="mb-1">
+                            <span class="text-dark position-relative fw-bold z-1">Nuestros productos destacados</span>
+                        </h4>
+                        <p class="mb-md-12">Conoce nuestros productos y planes<br class="d-none d-xl-block"> y encuentra el ideal para ti.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3" v-for="item in items" :key="item.id">
+                <div class="card mx-1 my-3 shadow-lg">
+                    <div class="card-body d-flex flex-column justify-content-between h-100">
+                        <div>
+                            <span v-text="item?.name" class="fw-bold d-block fs-5 text-dark"></span>
+                            <span v-text="item?.formatted_type" class="badge bg-primary"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card mx-1 my-3 shadow-lg">
+                    <div class="card-body d-flex flex-column justify-content-between h-100">
+                        <div>
+                            <span class="fw-bold fs-5 text-dark">¡Y más opciones para ti!</span>
+                            <a href="javascript:void(0)" class="btn btn-success waves-effect ms-3" @click="openUrl(forms.entity.home.data.whatsapp)">
+                                <i class="tf-icons fa-brands fa-whatsapp fs-5"></i>
+                                <span class="ms-2">Contáctanos en Whatsapp</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <div class="container flex-grow-1 container-p-y">
         <h4 class="text-center mb-1">
-            <span class="position-relative fs-2 fw-extrabold z-1">Conecta con nosotros</span>
+            <span class="position-relative fs-2 fw-extrabold z-1 text-dark">Conecta con nosotros</span>
         </h4>
         <div class="text-center text-muted pb-2 mb-3">
             <span class="d-block fw-regular">Estamos activos en redes sociales. ¡Escríbenos o síguenos para estar al tanto de nuestras novedades!</span>
         </div>
         <div class="row g-6">
             <div class="col-lg-4">
-                <div class="contact-img-box position-relative border p-2 h-100">
+                <div class="contact-img-box position-relative p-2 h-100">
                     <img :src="'../'+forms.entity.home.data?.ownerApp?.assets?.img?.contact_us" alt="logo" class="contact-img w-100 scaleX-n1-rtl" width="40%"/>
                 </div>
             </div>
@@ -40,21 +77,21 @@
                     <div class="card-body px-5">
                         <div class="row g-1 justify-content-start align-items-center my-3">
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                                <p class="fs-6">
+                                <p class="fs-6 text-dark">
                                     <i class="fa fa-location-dot"></i>
                                     <span class="colon-at-end fw-semibold ms-2">Dirección</span>
                                     <span class="ms-2" v-text="forms.entity.home.data.address"></span>
                                 </p>
                             </div>
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                                <p class="fs-6">
+                                <p class="fs-6 text-dark">
                                     <i class="fa fa-phone"></i>
                                     <span class="colon-at-end fw-semibold ms-2">Teléfono</span>
                                     <span class="ms-2" v-text="forms.entity.home.data.telephone"></span>
                                 </p>
                             </div>
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                                <p class="fs-6">
+                                <p class="fs-6 text-dark">
                                     <i class="fa fa-envelope"></i>
                                     <span class="colon-at-end fw-semibold ms-2">Correo electrónico</span>
                                     <span class="ms-2" v-text="forms.entity.home.data.email"></span>
@@ -93,8 +130,6 @@ import * as Alerts    from "../../Helpers/Alerts.js";
 import * as Constants from "../../Helpers/Constants.js";
 import * as Requests  from "../../Helpers/Requests.js";
 import * as Utils     from "../../Helpers/Utils.js";
-
-let barChartInstance = null;
 
 export default {
     components: {
@@ -143,6 +178,7 @@ export default {
                             address: "",
                             telephone: "",
                             email: "",
+                            logotype: "",
                             facebook: "",
                             instagram: "",
                             whatsapp: "",
@@ -168,6 +204,7 @@ export default {
 
             this.options.companies = initParams.data?.config?.companies;
             this.options.company   = initParams.data?.config?.company;
+            this.options.items     = initParams.data?.config?.items;
 
             return Requests.valid({result: initParams});
 
@@ -186,6 +223,7 @@ export default {
                 this.forms.entity.home.data.address         = company?.address;
                 this.forms.entity.home.data.telephone       = company?.telephone;
                 this.forms.entity.home.data.email           = company?.email;
+                this.forms.entity.home.data.logotype        = company?.logotype;
                 this.forms.entity.home.data.facebook        = company?.facebook;
                 this.forms.entity.home.data.instagram       = company?.instagram;
                 this.forms.entity.home.data.whatsapp        = company?.whatsapp;
@@ -261,6 +299,13 @@ export default {
 
             window.open(url, "_blank")
 
+        },
+        getAsset(path) {
+
+            const baseUrl = "/storage/";
+
+            return `${baseUrl}${path}`;
+
         }
     },
     computed: {
@@ -269,9 +314,9 @@ export default {
             return [this.config.entity.page];
 
         },
-        lastSales: function() {
+        items: function() {
 
-            return (this.forms.entity.home.data.sales?.all?.records ?? []).slice(0, 10);
+            return (this.options?.items?.records ?? []).slice(0, 8);
 
         }
     }
