@@ -35,7 +35,7 @@ class HomeController extends Controller {
             $company->ownerApp  = Utilities::getOwnerApp();
 
             $config->items = new stdClass();
-            $config->items->records = Item::getAll("home");
+            $config->items->records = Item::getAll("home", $company);
 
             $config->company = new stdClass();
             $config->company->records = [$company];

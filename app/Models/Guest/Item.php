@@ -110,11 +110,9 @@ class Item extends Model {
 
     }
 
-    public static function getAll($type = "default") {
+    public static function getAll($type = "default", $company) {
 
-        $userAuth = Auth::user();
-
-        return Item::where("company_id", $userAuth->company_id)
+        return Item::where("company_id", $company->id)
                    ->when(in_array($type, ["home"]), function($query) {
 
                         $query->whereIn("status", ["active"])

@@ -124,6 +124,9 @@
                         @endswitch
                     @endif
                 @endforeach
+                <a href="javascript:void(0);" onclick='generateMyUrl(@json($data->company))' class="btn btn-icon btn-label-secondary me-3" target="_blank">
+                    <i class="fa fa-globe fs-5"></i>
+                </a>
             </div>
         @endif
     </form>

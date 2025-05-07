@@ -8,7 +8,7 @@
         </div>
     </div>
     <div class="container flex-grow-1 container-p-y">
-        <div class="row align-items-center bg-white p-5 p-md-4 rounded shadow-lg mx-0">
+        <div class="row align-items-center bg-white px-5 px-md-4 rounded shadow-lg mx-0">
             <div class="col-lg-6">
                 <h3 class="text-primary fw-bold mb-1">¡Es tu momento!</h3>
                 <h5 class="mb-8">Empieza hoy tu transformación.<br/>No esperes más para alcanzar tu mejor versión.</h5>
@@ -23,29 +23,25 @@
         </div>
     </div>
     <div class="container flex-grow-1 container-p-y" v-if="items.length > 0">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <div class="card mx-1 my-3">
-                    <div class="card-body d-flex flex-column justify-content-between h-100">
-                        <h4 class="mb-1">
-                            <span class="text-dark position-relative fw-bold z-1">Nuestros productos destacados</span>
-                        </h4>
-                        <p class="mb-md-12">Conoce nuestros productos y planes<br class="d-none d-xl-block"> y encuentra el ideal para ti.</p>
-                    </div>
-                </div>
-            </div>
+        <h4 class="text-center mb-1">
+            <span class="position-relative fs-2 fw-extrabold z-1 text-dark">Nuestros productos destacados</span>
+        </h4>
+        <div class="text-center text-muted pb-2 mb-3">
+            <span class="d-block fw-regular">Conoce nuestros productos y planes y encuentra el ideal para ti.</span>
+        </div>
+        <div class="row g-6">
             <div class="col-lg-3" v-for="item in items" :key="item.id">
-                <div class="card mx-1 my-3 shadow-lg">
+                <div class="card shadow-lg my-2">
                     <div class="card-body d-flex flex-column justify-content-between h-100">
                         <div>
                             <span v-text="item?.name" class="fw-bold d-block fs-5 text-dark"></span>
-                            <span v-text="item?.formatted_type" class="badge bg-primary"></span>
+                            <span v-text="item?.formatted_type" class="badge bg-label-primary fw-semibold"></span>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-lg-6">
-                <div class="card mx-1 my-3 shadow-lg">
+                <div class="card shadow-lg my-2">
                     <div class="card-body d-flex flex-column justify-content-between h-100">
                         <div>
                             <span class="fw-bold fs-5 text-dark">¡Y más opciones para ti!</span>
@@ -68,8 +64,8 @@
         </div>
         <div class="row g-6">
             <div class="col-lg-4">
-                <div class="contact-img-box position-relative p-2 h-100">
-                    <img :src="'../'+forms.entity.home.data?.ownerApp?.assets?.img?.contact_us" alt="logo" class="contact-img w-100 scaleX-n1-rtl" width="40%"/>
+                <div class="contact-img-box position-relative p-2 h-100 pt-0">
+                    <img :src="'../'+forms.entity.home.data?.ownerApp?.assets?.img?.contact_us" alt="logo" class="contact-img w-100 scaleX-n1-rtl rounded" width="40%"/>
                 </div>
             </div>
             <div class="col-lg-8">
