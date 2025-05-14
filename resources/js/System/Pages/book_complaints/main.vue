@@ -71,7 +71,7 @@
                                         <span v-text="getType({record})?.label" class="ms-2"></span>
                                     </span>
                                 </div>
-                                <div class="d-flex flex-nowrap align-items-center justify-content-start my-1">
+                                <div class="d-flex flex-nowrap align-items-center justify-content-start my-1" v-if="false">
                                     <span class="fw-semibold colon-at-end">Estado</span>
                                     <span :class="['badge ms-2', 'fw-semibold', { 'bg-label-primary': ['in_progress'].includes(record.status), 'bg-label-success': ['resolved'].includes(record.status), 'bg-label-danger': ['pending'].includes(record.status) }]" v-text="record.formatted_status"></span>
                                 </div>
