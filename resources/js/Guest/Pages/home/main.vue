@@ -7,11 +7,11 @@
             </div>
         </div>
     </div>
-    <div class="container flex-grow-1 container-p-y">
-        <div class="row align-items-center bg-white px-5 px-md-4 rounded shadow-lg mx-0">
-            <div class="col-lg-6 pt-3">
-                <h3 class="text-primary fw-bold mb-1">¡Es tu momento!</h3>
-                <h5 class="mb-8">Empieza hoy tu transformación.<br/>No esperes más para alcanzar tu mejor versión.</h5>
+    <div class="container flex-grow-1 container-p-y" v-if="isDefined({value: forms.entity.home.data.document_number})">
+        <div class="row align-items-center bg-white px-5 px-md-4 rounded shadow-lg mx-0 py-xl-0 py-md-3 py-sm-3 py-3">
+            <div class="col-lg-6">
+                <h4 class="text-primary fw-bold mb-1">¡Es tu momento!</h4>
+                <h6 class="mb-8">Empieza hoy tu transformación.<br/>No esperes más para alcanzar tu mejor versión.</h6>
                 <a href="javascript:void(0)" class="btn btn-lg btn-success waves-effect" @click="openUrl(forms.entity.home.data.whatsapp)">
                     <i class="tf-icons fa-brands fa-whatsapp fs-5"></i>
                     <span class="ms-2">Contáctanos en Whatsapp</span>
@@ -24,40 +24,39 @@
     </div>
     <div class="container flex-grow-1 container-p-y" v-if="items.length > 0">
         <h4 class="text-center mb-1">
-            <span class="position-relative fs-2 fw-extrabold z-1 text-dark">Nuestros productos destacados</span>
+            <span class="position-relative fs-3 fw-extrabold z-1 text-dark">Nuestros productos destacados</span>
         </h4>
         <div class="text-center text-muted pb-2 mb-3">
             <span class="d-block fw-regular">Conoce nuestros productos y planes y encuentra el ideal para ti.</span>
         </div>
         <div class="row g-6">
-            <div class="col-lg-3" v-for="item in items" :key="item.id">
-                <div class="card shadow-lg my-2">
-                    <div class="card-body d-flex flex-column justify-content-between h-100">
-                        <div>
-                            <span v-text="item?.name" class="fw-bold d-block fs-5 text-dark"></span>
-                            <span v-text="item?.formatted_type" class="badge bg-label-primary fw-semibold"></span>
+            <div class="col-12">
+                <div class="swiper" id="swiper-items">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide" v-for="item in items" :key="item.id">
+                            <div class="card">
+                                <div class="card-body d-flex flex-column justify-content-between h-100">
+                                    <div>
+                                        <div class="d-flex align-items-center">
+                                            <span class="fw-bold fs-5 text-dark" v-text="item?.name"></span>
+                                        </div>
+                                        <div class="badge mt-1" :class="{'bg-label-success': item.type === 'product', 'bg-label-primary': item.type === 'service', 'bg-label-info': item.type === 'subscription'}">
+                                            <i :class="{'fa fa-box': item.type === 'product', 'fa fa-gear': item.type === 'service', 'fa-solid fa-dumbbell': item.type === 'subscription'}"></i>
+                                            <span v-text="item?.formatted_type" class="ms-2"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="card shadow-lg my-2">
-                    <div class="card-body d-flex flex-column justify-content-between h-100">
-                        <div>
-                            <span class="fw-bold fs-5 text-dark">¡Y más opciones para ti!</span>
-                            <a href="javascript:void(0)" class="btn btn-success waves-effect ms-3" @click="openUrl(forms.entity.home.data.whatsapp)">
-                                <i class="tf-icons fa-brands fa-whatsapp fs-5"></i>
-                                <span class="ms-2">Contáctanos en Whatsapp</span>
-                            </a>
-                        </div>
-                    </div>
+                    <div class="swiper-pagination swiper-pagination-custom"></div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="container flex-grow-1 container-p-y">
+    <div class="container flex-grow-1 container-p-y" v-if="isDefined({value: forms.entity.home.data.document_number})">
         <h4 class="text-center mb-1">
-            <span class="position-relative fs-2 fw-extrabold z-1 text-dark">Conecta con nosotros</span>
+            <span class="position-relative fs-3 fw-extrabold z-1 text-dark">Conecta con nosotros</span>
         </h4>
         <div class="text-center text-muted pb-2 mb-3">
             <span class="d-block fw-regular">Estamos activos en redes sociales. ¡Escríbenos o síguenos para estar al tanto de nuestras novedades!</span>
@@ -71,32 +70,32 @@
             <div class="col-lg-8">
                 <div class="card shadow-lg">
                     <div class="card-body px-5">
-                        <div class="row g-1 justify-content-start align-items-center my-3">
+                        <div class="row justify-content-start align-items-center my-3">
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                                 <p class="fs-6 text-dark">
                                     <i class="fa fa-location-dot"></i>
-                                    <span class="colon-at-end fw-semibold ms-2">Dirección</span>
+                                    <span class="colon-at-end fw-regular ms-2">Dirección</span>
                                     <span class="ms-2" v-text="forms.entity.home.data.address"></span>
                                 </p>
                             </div>
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                                 <p class="fs-6 text-dark">
                                     <i class="fa fa-phone"></i>
-                                    <span class="colon-at-end fw-semibold ms-2">Teléfono</span>
+                                    <span class="colon-at-end fw-regular ms-2">Teléfono</span>
                                     <span class="ms-2" v-text="forms.entity.home.data.telephone"></span>
                                 </p>
                             </div>
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                                 <p class="fs-6 text-dark">
                                     <i class="fa fa-envelope"></i>
-                                    <span class="colon-at-end fw-semibold ms-2">Correo electrónico</span>
+                                    <span class="colon-at-end fw-regular ms-2">Correo electrónico</span>
                                     <span class="ms-2" v-text="forms.entity.home.data.email"></span>
                                 </p>
                             </div>
                         </div>
                         <div class="row g-md-4 g-2 justify-content-center align-items-center mb-3">
                             <div class="col-xl-auto col-lg-6 col-md-12 col-sm-12 text-center">
-                                <a href="javascript:void(0)" class="btn btn-info waves-effect" @click="openUrl(forms.entity.home.data.facebook)">
+                                <a href="javascript:void(0)" class="btn btn-info-1 waves-effect" @click="openUrl(forms.entity.home.data.facebook)">
                                     <i class="tf-icons fa-brands fa-facebook-f fs-5"></i>
                                     <span class="ms-2">Visítanos en Facebook</span>
                                 </a>
@@ -133,15 +132,14 @@ export default {
     },
     mounted: async function() {
 
-        Alerts.swals({type: "initParams"});
+        // Alerts.swals({type: "initParams"});
 
         let initParams = await this.initParams({}),
             initOthers = await this.initOthers({});
 
         if(initParams && initOthers) {
 
-            Alerts.swals({show: false});
-            // this.initData({});
+            // Alerts.swals({show: false});
 
         }
 
@@ -225,38 +223,39 @@ export default {
                 this.forms.entity.home.data.whatsapp        = company?.whatsapp;
                 this.forms.entity.home.data.ownerApp        = company?.ownerApp;
 
+                const swiper = new Swiper('#swiper-items', {
+                    direction: "horizontal",
+                    loop: true,
+                    slidesPerView: 4,
+                    spaceBetween: 10,
+                    speed: 400,
+                    autoplay: {
+                        delay: 2000,
+                        disableOnInteraction: false
+                    },
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true
+                    },
+                    breakpoints: {
+                        0: {
+                            slidesPerView: 1,
+                        },
+                        576: {
+                            slidesPerView: 2,
+                        },
+                        768: {
+                            slidesPerView: 3,
+                        },
+                        992: {
+                            slidesPerView: 4,
+                        },
+                    }
+                });
+
                 resolve(true);
 
             });
-
-        },
-        async initData({loading = false}) {
-
-            if(loading) {
-
-                Alerts.swals({type: "consult"});
-
-            }
-
-            if(!this.isDefined({value: this.forms.entity.home.data.date})) {
-
-                this.forms.entity.home.data.date = Utils.getCurrentDate();
-
-            }
-
-            let initData = await Requests.get({route: this.config.entity.routes.initData, data: {page: "main", date: this.forms.entity.home.data.date}, showAlert: true});
-
-            this.forms.entity.home.data.sales    = initData.data?.data?.sales;
-            this.forms.entity.home.data.branches = initData.data?.data?.branches;
-            this.forms.entity.home.data.users    = initData.data?.data?.users;
-
-            if(loading) {
-
-                Alerts.swals({show: false});
-
-            }
-
-            return Requests.valid({result: initData});
 
         },
         // Entity forms

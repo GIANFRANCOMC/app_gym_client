@@ -30,6 +30,7 @@ class Item extends Model {
         "type",
         "duration_type",
         "duration_value",
+        "see_my_web",
         "status",
         "created_at",
         "created_by",
@@ -115,7 +116,8 @@ class Item extends Model {
         return Item::where("company_id", $company->id)
                    ->when(in_array($type, ["home"]), function($query) {
 
-                        $query->whereIn("status", ["active"])
+                        $query->where("see_my_web", true)
+                              ->whereIn("status", ["active"])
                               ->orderBy("type", "DESC")
                               ->orderBy("name", "ASC");
 

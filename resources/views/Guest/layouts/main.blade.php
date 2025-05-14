@@ -20,9 +20,9 @@
                         </button>
                         <a href="javascript:void(0)" class="app-brand-link">
                             <span class="app-brand-logo demo">
-                                <img src="{{ asset('storage/'.$company->logotype) }}" class="img-fluid"/>
+                                <img src="{{ asset('storage/'.$company->logotype) }}" class="img-fluid w-100"/>
                             </span>
-                            <span class="app-brand-text demo menu-text fw-bold ms-2 ps-1 fw-regular">{{ $company->commercial_name }}</span>
+                            <span class="app-brand-text demo menu-text ms-2 ps-1 fw-semibold text-dark">{{ $company->commercial_name }}</span>
                         </a>
                     </div>
                     <div class="collapse navbar-collapse landing-nav-menu" id="navbarSupportedContent">
@@ -31,10 +31,42 @@
                         </button>
                         <ul class="navbar-nav me-auto">
                             <li class="nav-item">
-                                <a class="nav-link fw-medium" href="home">Inicio</a>
+                                <a class="nav-link fw-regular text-dark" href="home">
+                                    <i class="fa fa-home"></i>
+                                    <span class="ms-1">Inicio</span>
+                                </a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link fw-medium" href="book_complaints">Libro de reclamaciones y sugerencias</a>
+                            <li class="nav-item mega-dropdown ms-1">
+                                <a href="javascript:void(0);" class="nav-link dropdown-toggle navbar-ex-14-mega-dropdown mega-dropdown fw-regular text-dark" aria-expanded="false" data-bs-toggle="mega-dropdown" data-trigger="hover">
+                                    <i class="fa fa-headset"></i>
+                                    <span class="ms-1">Servicio al cliente</span>
+                                </a>
+                                <div class="dropdown-menu p-4 p-xl-8">
+                                    <div class="row gy-4">
+                                        <div class="col-12 col-lg">
+                                            <ul class="nav flex-column">
+                                                <li class="nav-item">
+                                                    <a class="nav-link mega-dropdown-link" href="book_complaints">
+                                                        <span>Libro de reclamaciones y sugerencias</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-lg-4 d-none d-lg-block">
+                                            <div class="bg-body nav-img-col p-2">
+                                                <img src="{{ asset('storage/'.$company->logotype) }}" alt="Logo" class="w-100">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav flex-row align-items-center ms-auto">
+                            <li>
+                                <a href="https://{{ request()->getHost() }}?company={{ base64_encode($company->id) }}" class="btn btn-info-1 btn-sm rounded-pill shadow-sm waves-effect waves-light" target="_blank">
+                                    <i class="fa fa-globe"></i>
+                                    <span class="ms-2">Ingresar a mi plataforma</span>
+                                </a>
                             </li>
                         </ul>
                     </div>
@@ -43,17 +75,6 @@
             </div>
         </nav>
         <div data-bs-spy="scroll" class="scrollspy-example">
-            {{-- <section id="hero-animation">
-                <div id="landingHero" class="section-py landing-hero position-relative">
-                    <div class="container">
-                        <div class="hero-text-box text-center">
-                            <h1 class="text-primary hero-title display-6 fw-bold">{{ $company->commercial_name }}</h1>
-                            <h2 class="hero-sub-title h6 mb-4 pb-1">{{ $company->description }}</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="landing-hero-blank"></div>
-            </section> --}}
             <div>
                 @yield('content')
                 <div class="content-backdrop fade"></div>

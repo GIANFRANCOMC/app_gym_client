@@ -33,6 +33,7 @@ class Item extends Model {
         "type",
         "duration_type",
         "duration_value",
+        "see_my_web",
         "status",
         "created_at",
         "created_by",
