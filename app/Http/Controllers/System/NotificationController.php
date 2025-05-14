@@ -20,7 +20,7 @@ class NotificationController extends Controller {
 
     public function sendSubscriptionEmails() {
 
-        $now  = Carbon::now();
+        $now = Carbon::now();
 
         $records = SubscriptionEmail::where("status", "pending")
                                     ->get();

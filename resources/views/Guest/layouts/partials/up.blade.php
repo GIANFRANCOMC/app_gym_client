@@ -2,7 +2,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 <meta name="description" content="" />
 
-<title>{{ config('app.name', 'NombreSistema') }}</title>
+<title>{{ $company->commercial_name }}</title>
 
 <!-- Favicon -->
 <link rel="icon" type="image/x-icon" href="{{ asset('storage/'.$company->logotype) }}"/>

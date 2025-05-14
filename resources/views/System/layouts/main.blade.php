@@ -5,6 +5,7 @@
     $company  = $user->company;
     $role     = $user->role;
     $sections = Cache::get("active_sections_{$company->id}");
+    $ownerApp = config("app.owner_app");
 
     // Cache data
     $hasActiveSections  = Cache::get("has_active_sections_{$company->id}");
@@ -20,6 +21,10 @@
     data-template="vertical-menu-template-starter">
     <head>
         @include("System.layouts.partials.up")
+        <script>
+            window.ownerApp = @json($ownerApp);
+            window.company = @json($company);
+        </script>
     </head>
     <body>
         <div class="layout-wrapper layout-content-navbar">
@@ -32,7 +37,7 @@
                                     <div class="col col-auto">
                                         <div class="avatar avatar-online mt-2">
                                             <span class="avatar-initial rounded-circle bg-label-dark">
-                                                <img src="{{ asset('System/assets/img/utils/admin/app_header.png') }}"/>
+                                                <img src="{{ asset($ownerApp->assets->img->logomark) }}"/>
                                             </span>
                                         </div>
                                     </div>
@@ -100,9 +105,9 @@
                         <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
                             <div class="navbar-nav align-items-center">
                                 <div class="nav-item navbar-search-wrapper mb-0">
-                                    <a class="nav-item nav-link search-toggler d-flex align-items-center px-0" href="javascript:void(0);">
-                                        <img src="{{ asset('System/assets/img/utils/owner_app/logotype.png') }}" class="d-none d-md-block" width="130" height="38" alt="Logo" />
-                                        <img src="{{ asset('System/assets/img/utils/owner_app/logomark.png') }}" class="d-block d-md-none" width="55" height="45" alt="Logo" />
+                                    <a class="nav-item nav-link search-toggler d-flex align-items-center px-0" href="{{ $ownerApp->web }}" target="_blank">
+                                        <img src="{{ asset($ownerApp->assets->img->logotype) }}" class="d-none d-md-block" width="130" height="38" alt="Logo" />
+                                        <img src="{{ asset($ownerApp->assets->img->logomark) }}" class="d-block d-md-none" width="55" height="45" alt="Logo" />
                                     </a>
                                 </div>
                             </div>
@@ -116,46 +121,6 @@
                                     </a>
                                 </li>
                             </ul>
-                            {{-- <ul class="navbar-nav flex-row align-items-center ms-auto">
-                                <li class="nav-item navbar-dropdown dropdown-user dropdown">
-                                    <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
-                                        <div class="avatar avatar-online">
-                                            <span class="avatar-initial rounded-circle bg-label-dark">
-                                                <image src="{{ asset('System/assets/img/utils/admin/app_header.png') }}"/>
-                                            </span>
-                                        </div>
-                                    </a>
-                                    <ul class="dropdown-menu dropdown-menu-end">
-                                        <li>
-                                            <a class="dropdown-item" href="javascript:void(0)">
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0 me-3">
-                                                    <div class="avatar avatar-online">
-                                                        <span class="avatar-initial rounded-circle bg-label-dark">
-                                                            <image src="{{ asset('System/assets/img/utils/admin/app_header.png') }}"/>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <span class="fw-bold d-block text-break">{{ Str::limit($user->name, 16) }}</span>
-                                                    <span class="fw-medium d-block">{{ Str::limit($company->commercial_name, 16) }}</span>
-                                                    <small class="text-muted">{{ !empty($role) ? $role->name : "" }}</small>
-                                                </div>
-                                            </div>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <div class="dropdown-divider"></div>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="javascript:void(0)" onclick="$('#logout').submit();">
-                                                <i class="ti ti-logout ti-sm me-2"></i>
-                                                <span class="align-middle">Cerrar sesión</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul> --}}
                         </div>
                     </nav>
                     <div class="content-wrapper">

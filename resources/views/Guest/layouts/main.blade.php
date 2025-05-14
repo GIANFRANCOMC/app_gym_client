@@ -31,13 +31,13 @@
                         </button>
                         <ul class="navbar-nav me-auto">
                             <li class="nav-item">
-                                <a class="nav-link fw-regular text-dark" href="home">
+                                <a class="nav-link" href="home">
                                     <i class="fa fa-home"></i>
                                     <span class="ms-1">Inicio</span>
                                 </a>
                             </li>
                             <li class="nav-item mega-dropdown ms-1">
-                                <a href="javascript:void(0);" class="nav-link dropdown-toggle navbar-ex-14-mega-dropdown mega-dropdown fw-regular text-dark" aria-expanded="false" data-bs-toggle="mega-dropdown" data-trigger="hover">
+                                <a href="javascript:void(0);" class="nav-link dropdown-toggle navbar-ex-14-mega-dropdown mega-dropdown" aria-expanded="false" data-bs-toggle="mega-dropdown" data-trigger="hover">
                                     <i class="fa fa-headset"></i>
                                     <span class="ms-1">Servicio al cliente</span>
                                 </a>

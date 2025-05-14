@@ -125,7 +125,7 @@ class HelperController extends Controller {
             if(Utilities::isDefined($email) && Utilities::isDefined($message)) {
 
                 $mail = new stdClass();
-                $mail->subject = "Venta creada en ".env("APP_NAME");
+                $mail->subject = "Venta creada en ".config("APP_NAME");
                 $mail->message = $message;
 
                 Mail::to($email)->send(new SaleMail($mail));

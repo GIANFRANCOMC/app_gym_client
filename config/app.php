@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\System\Utilities;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
 
@@ -16,7 +17,8 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'AppSport'),
+    'owner_app' => Utilities::getOwnerApp(),
 
     /*
     |--------------------------------------------------------------------------

@@ -1,26 +1,29 @@
 <x-system-guest-layout>
     @php
+        $ownerApp     = config("app.owner_app");
         $hasCompany   = isset($data->company) && !empty($data->company);
         $hasCompanies = isset($data->companies) && !empty($data->companies) && count($data->companies) > 0;
     @endphp
-    <div class="d-flex flex-column justify-content-center">
+    <div>
         @if ($hasCompany)
-            <span class="text-center mb-3">
-                <img src="{{ asset('System/assets/img/utils/admin/app_navbar.png') }}" class="img-fluid" width="50%"/>
-            </span>
-            <span class="h5 text-center fw-semibold mb-4">
-                Bienvenido a <span class="fw-bold">{{ $data->company->commercial_name }}</span>
-            </span>
+            <div class="d-flex justify-content-center align-items-center">
+                <span class="fs-3 text-center fw-semibold mb-1">
+                    Bienvenido a <span class="fw-bold">{{ $data->company->commercial_name }}</span>
+                </span>
+            </div>
         @else
-            <span class="text-center mb-1">
-                <img src="{{ asset('System/assets/img/utils/admin/app_login.png') }}" class="img-fluid" width="85%"/>
-            </span>
-            <span class="h5 text-center fw-semibold mb-4">
-                Bienvenido
-            </span>
+            <div class="d-flex justify-content-center align-items-center">
+                <span class="fs-3 text-center fw-semibold mb-1">
+                    Bienvenido
+                </span>
+            </div>
         @endif
     </div>
-    <form method="POST" action="{{ route('login') }}">
+    <a href="{{ $ownerApp->web }}" target="_blank" class="d-flex justify-content-center align-items-center">
+        <span class="fs-6 fw-semibold text-secondary">{{ config("app.name") }} by</span>
+        <img src="{{ asset($ownerApp->assets->img->logotype) }}" alt="Logo" class="img-fluid border rounded-pill border-secondary px-1 ms-1" width="30%"/>
+    </a>
+    <form method="POST" action="{{ route('login') }}" class="mt-4">
         @csrf
         <div>
             <label for="email" class="form-label colon-at-end fw-semibold">Correo electrónico</label>
@@ -102,19 +105,19 @@
                     @if (!empty($socialMedia->link))
                         @switch ($socialMedia->type)
                             @case ("facebook")
-                                <a href="{{ $socialMedia->link }}" class="btn btn-icon btn-label-info me-3" target="_blank">
+                                <a href="{{ $socialMedia->link }}" class="btn btn-icon btn-info-1 me-3" target="_blank">
                                     <i class="tf-icons fa-brands fa-facebook-f fs-5"></i>
                                 </a>
                                 @break
 
                             @case ("instagram")
-                                <a href="{{ $socialMedia->link }}" class="btn btn-icon btn-label-danger me-3" target="_blank">
+                                <a href="{{ $socialMedia->link }}" class="btn btn-icon btn-danger me-3" target="_blank">
                                     <i class="tf-icons fa-brands fa-instagram fs-5"></i>
                                 </a>
                                 @break
 
                             @case ("whatsapp")
-                                <a href="{{ $socialMedia->link }}" class="btn btn-icon btn-label-success me-3" target="_blank">
+                                <a href="{{ $socialMedia->link }}" class="btn btn-icon btn-success me-3" target="_blank">
                                     <i class="tf-icons fa-brands fa-whatsapp fs-5"></i>
                                 </a>
                                 @break
@@ -124,7 +127,7 @@
                         @endswitch
                     @endif
                 @endforeach
-                <a href="javascript:void(0);" onclick='generateMyUrl(@json($data->company))' class="btn btn-icon btn-label-secondary me-3" target="_blank">
+                <a href="javascript:void(0);" onclick='generateMyUrl(@json($data->company))' class="btn btn-icon btn-secondary me-3" target="_blank">
                     <i class="fa fa-globe fs-5"></i>
                 </a>
             </div>

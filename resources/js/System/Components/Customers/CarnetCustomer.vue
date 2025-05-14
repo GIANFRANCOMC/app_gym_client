@@ -1,10 +1,10 @@
 <template>
     <div>
         <div class="overflow-auto">
-            <div id="carnet" ref="carnet" class="card carnet-card mx-auto shadow-sm position-relative overflow-hidden border border-light" style="min-width: 450px;">
-                <img src="/public/System/assets/img/utils/admin/app_navbar_transparent.png" class="watermark-logo img-fluid" style="width: 22%;" />
+            <div id="carnet" ref="carnet" class="card carnet-card mx-auto shadow-sm position-relative overflow-hidden border border-light shadow" style="min-width: 450px;">
+                <!-- <img :src="fallbackUrl" class="watermark-logo img-fluid" style="width: 22%;" @error="onImageError($event)"/> -->
                 <div class="card-header bg-dark border-light py-2 d-flex justify-content-center align-items-center">
-                    <span class="text-white my-0 fw-bold">CARNET</span>
+                    <span class="text-white my-0 fw-bold" v-text="header"></span>
                 </div>
                 <div class="card-body d-flex align-items-center p-3 carnet-body pattern">
                     <div class="flex-shrink-0 p-1 bg-white border border-secondary rounded">
@@ -46,13 +46,26 @@ export default {
     },
     data() {
         return {
-            qrImage: ""
+            qrImage: "",
+            fallbackUrl: "/System/assets/img/utils/owner_app/logomark.png"
         };
+    },
+    computed: {
+        header() {
+
+            return "Carnet / "+(window?.company?.commercial_name ?? "");
+
+        }
     },
     mounted() {
         this.generarQR();
     },
     methods: {
+        onImageError(event) {
+
+            event.target.src = this.fallbackUrl;
+
+        },
         generarQR() {
 
             const dataJson = {
