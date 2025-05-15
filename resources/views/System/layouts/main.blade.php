@@ -113,7 +113,7 @@
                             </div>
                             <ul class="navbar-nav flex-row align-items-center ms-auto">
                                 <li class="nav-item">
-                                    <a class="nav-link px-0" href="javascript:void(0);" onclick='generateMyUrl(@json($company), true, "my_dashboard")'>
+                                    <a class="nav-link px-0" href="javascript:void(0);" onclick='generateMyUrl(@json($company), true, "my_web")'>
                                         <div class="btn btn-success btn-sm rounded-pill shadow-sm">
                                             <i class="fa fa-globe"></i>
                                             <span class="ms-2">Visitar mi página</span>
