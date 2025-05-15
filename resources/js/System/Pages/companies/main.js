@@ -15,6 +15,8 @@ import InputText    from "../../Components/InputText.vue";
 import Paginator    from "../../Components/Paginator.vue";
 import Loader       from "../../Components/Loader.vue";
 import WithoutData  from "../../Components/WithoutData.vue";
+import MyDashboardCompany from "../../Components/Companies/MyDashboardCompany.vue";
+import MyWebCompany from "../../Components/Companies/MyWebCompany.vue";
 
 // App creation and mounted
 createApp(App)
@@ -29,4 +31,6 @@ createApp(App)
 .component("Paginator", Paginator)
 .component("Loader", Loader)
 .component("WithoutData", WithoutData)
+.component("MyDashboardCompany", MyDashboardCompany)
+.component("MyWebCompany", MyWebCompany)
 .mount("#app");

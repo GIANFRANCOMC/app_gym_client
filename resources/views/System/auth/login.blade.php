@@ -127,7 +127,7 @@
                         @endswitch
                     @endif
                 @endforeach
-                <a href="javascript:void(0);" onclick='generateMyUrl(@json($data->company))' class="btn btn-icon btn-secondary me-3" target="_blank">
+                <a href="javascript:void(0);" onclick='generateMyUrl(@json($data->company), true, "my_web")' class="btn btn-icon btn-secondary me-3">
                     <i class="fa fa-globe fs-5"></i>
                 </a>
             </div>

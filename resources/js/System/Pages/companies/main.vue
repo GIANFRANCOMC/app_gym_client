@@ -5,6 +5,15 @@
     <div class="nav-align-top">
         <ul class="nav nav-tabs nav-fill" role="tablist">
             <li class="nav-item" role="presentation">
+                <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-share" aria-controls="navs-pills-share" aria-selected="false" tabindex="-1">
+                    <span class="d-none d-sm-inline-flex align-items-center fw-bold">
+                        <i class="fa-solid fa-share-nodes me-1_5"></i>
+                        <span class="ms-2">Compartir</span>
+                    </span>
+                    <i class="fa-solid fa-share-nodes d-sm-none"></i>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
                 <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-general" aria-controls="navs-pills-general" aria-selected="false" tabindex="-1">
                     <span class="d-none d-sm-inline-flex align-items-center fw-bold">
                         <i class="fa-solid fa-building me-1_5"></i>
@@ -42,6 +51,30 @@
             </li>
         </ul>
         <div class="tab-content">
+            <div class="tab-pane fade" id="navs-pills-share" role="tabpanel">
+                <div class="row g-3">
+                    <InputSlot
+                        hasDiv
+                        :isInputGroup="false"
+                        :divInputClass="['d-flex justify-content-center']"
+                        xl="6"
+                        lg="6">
+                        <template v-slot:input>
+                            <MyDashboardCompany/>
+                        </template>
+                    </InputSlot>
+                    <InputSlot
+                        hasDiv
+                        :isInputGroup="false"
+                        :divInputClass="['d-flex justify-content-center']"
+                        xl="6"
+                        lg="6">
+                        <template v-slot:input>
+                            <MyWebCompany/>
+                        </template>
+                    </InputSlot>
+                </div>
+            </div>
             <div class="tab-pane fade" id="navs-pills-general" role="tabpanel">
                 <div class="row g-3">
                     <InputSlot
@@ -50,7 +83,7 @@
                         xl="12"
                         lg="12">
                         <template v-slot:input>
-                            <img v-if="isDefined({value: forms.entity.createUpdate.data.logotype})" :src="getAsset(forms.entity.createUpdate.data.logotype)" alt="Logo" width="200px" height="200px" class="img-fluid"/>
+                            <img v-if="isDefined({value: forms.entity.createUpdate.data.logotype})" :src="getAsset(forms.entity.createUpdate.data.logotype)" alt="Logo" width="200px" height="200px" class="img-fluid border"/>
                         </template>
                     </InputSlot>
                     <InputSlot
@@ -622,11 +655,6 @@ export default {
         fixedNumber(value) {
 
             return Utils.fixedNumber(value);
-
-        },
-        generateMyUrl() {
-
-            generateMyUrl(this.forms.entity.createUpdate.data);
 
         },
         getAsset(path) {
