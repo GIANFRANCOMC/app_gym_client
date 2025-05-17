@@ -18,6 +18,7 @@ import Paginator     from "../../Components/Paginator.vue";
 import Loader        from "../../Components/Loader.vue";
 import WithoutData   from "../../Components/WithoutData.vue";
 import PrintSale     from "../../Components/Sales/PrintSale.vue";
+import AddCustomer   from "../../Components/Customers/AddCustomer.vue";
 
 // App creation and mounted
 createApp(App)
@@ -35,4 +36,5 @@ createApp(App)
 .component("Loader", Loader)
 .component("WithoutData", WithoutData)
 .component("PrintSale", PrintSale)
+.component("AddCustomer", AddCustomer)
 .mount("#app");

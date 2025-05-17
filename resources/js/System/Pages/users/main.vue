@@ -189,6 +189,7 @@
                             xl="6"
                             lg="6"/>
                         <InputText
+                            v-if="!isDefined({value: forms.entity.createUpdate.data?.id})"
                             v-model="forms.entity.createUpdate.data.password"
                             hasDiv
                             :title="isDefined({value: forms.entity.createUpdate.data?.id}) ? 'Cambiar contraseña' : 'Contraseña'"

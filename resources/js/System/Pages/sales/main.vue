@@ -60,6 +60,11 @@
                             :textBottomInfo="forms.entity.createUpdate.errors?.holder"
                             xl="9"
                             lg="12">
+                            <template v-slot:default>
+                                <AddCustomer
+                                    :options="options"
+                                    @postAction="addCustomerPostAction"/>
+                            </template>
                             <template v-slot:input>
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.holder"
@@ -775,6 +780,7 @@ export default {
             this.options.branches    = initParams.data?.config?.branches;
             this.options.currencies  = initParams.data?.config?.currencies;
             this.options.holders     = {subscriptions: {}, ...initParams.data?.config?.customers};
+            this.options.identityDocumentTypes = initParams.data?.config?.identityDocumentTypes;
             this.options.items       = initParams.data?.config?.items;
             this.options.salesHeader = initParams.data?.config?.salesHeader;
 
@@ -1056,6 +1062,15 @@ export default {
 
         },
         // Forms utils
+        addCustomerPostAction({response = nul}) {
+
+            if(Requests.valid({result: response}) && this.isDefined({value: response?.data?.customer})) {
+
+                (this.options.holders.records).push(response?.data?.customer);
+
+            }
+
+        },
         clearForm({functionName}) {
 
             switch(functionName) {

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\Sales\{CancelSaleRequest, StoreSaleRequest, UpdateSaleRequest};
-use App\Models\System\{Branch, Currency, Customer, Item, SaleBody, SaleHeader, Subscription, Warehouse, WarehouseItem};
+use App\Models\System\{Branch, Currency, Customer, IdentityDocumentType, Item, SaleBody, SaleHeader, Subscription, Warehouse, WarehouseItem};
 
 class SaleController extends Controller {
 
@@ -42,6 +42,9 @@ class SaleController extends Controller {
 
             $config->customers = new stdClass();
             $config->customers->records = Customer::getAll("sale");
+
+            $config->identityDocumentTypes = new stdClass();
+            $config->identityDocumentTypes->records = IdentityDocumentType::getAll("sale");
 
             $config->items = new stdClass();
             $config->items->durationTypes = Item::getDurationTypes();
