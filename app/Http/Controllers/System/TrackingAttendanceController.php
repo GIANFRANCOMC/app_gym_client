@@ -320,7 +320,7 @@ class TrackingAttendanceController extends Controller {
                                              ->where("customer_id", $customer->id)
                                              ->whereDate("start_date", Carbon::createFromFormat("Y-m-d H:i", $startDate)->format("Y-m-d"))
                                              ->whereIn("status", ["active", "finalized"])
-                                             ->first();
+                                             ->get();
 
             $activeAttendances = $attendancesFiltered->where("status", "active");
 
