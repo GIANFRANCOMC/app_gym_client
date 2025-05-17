@@ -91,7 +91,7 @@ class Item extends Model {
         $types = [
             ["code" => "hour", "label" => "Hora", "plural" => "Horas"],
             ["code" => "day", "label" => "Día", "plural" => "Días"],
-            ["code" => "today", "label" => "Día de hoy", "plural" => "Días de hoy"],
+            ["code" => "today", "label" => "Rutina", "plural" => "Rutinas"],
             ["code" => "month", "label" => "Mes", "plural" => "Meses"],
             ["code" => "year", "label" => "Año", "plural" => "Años"]
         ];
