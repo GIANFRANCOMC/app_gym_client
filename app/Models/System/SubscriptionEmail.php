@@ -15,6 +15,7 @@ class SubscriptionEmail extends Model {
     public static $snakeAttributes = true;
 
     protected $appends = [
+        "formatted_extras_json",
         "formatted_type",
         "formatted_status",
         "formatted_created_at",
@@ -38,6 +39,12 @@ class SubscriptionEmail extends Model {
     ];
 
     // Appends
+    public function getFormattedExtrasJsonAttribute() {
+
+        return json_decode($this->attributes["extras_json"] ?? "");
+
+    }
+
     public function getFormattedTypeAttribute() {
 
         return self::getTypes("first", $this->attributes["type"])["label"] ?? "";

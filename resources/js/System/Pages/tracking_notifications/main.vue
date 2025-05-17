@@ -25,7 +25,17 @@
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td class="text-start">
-                                <span v-text="record.to" class="fw-bold d-block"></span>
+                                <span class="ms-2" v-text="isDefined({value: record?.formatted_extras_json?.customer?.name}) ? record?.formatted_extras_json?.customer?.name : 'N/A'"></span>
+                                <ul>
+                                    <li>
+                                        <i class="fa fa-envelope"></i>
+                                        <span class="ms-2" v-text="isDefined({value: record.to}) ? record.to : 'N/A'"></span>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-phone"></i>
+                                        <span class="ms-2" v-text="isDefined({value: record?.formatted_extras_json?.customer?.phone}) ? record?.formatted_extras_json?.customer?.phone : 'N/A'"></span>
+                                    </li>
+                                </ul>
                             </td>
                             <td class="text-start">
                                 <span v-text="record.subject" class="fw-bold d-block"></span>

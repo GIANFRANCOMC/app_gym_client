@@ -8,6 +8,7 @@ use App\Models\System\Subscription;
 use App\Models\System\SubscriptionEmail;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use stdClass;
 
 class LogSubscriptionEmail {
 
@@ -43,12 +44,23 @@ class LogSubscriptionEmail {
 
         }
 
+        $extrasJson = [
+            "customer" => [
+                "id" => $customer->id,
+                "identity_document_type_id" => $customer->identity_document_type_id,
+                "document_number" => $customer->document_number,
+                "name" => $customer->name,
+                "email" => $customer->email,
+                "phone_number" => $customer->phone_number
+            ]
+        ];
+
         SubscriptionEmail::create([
             "company_id"  => $subscription->company_id,
             "to"          => $customer->email ?? "",
             "subject"     => "Tu membresía ha expirado",
             "body"        => view("emails.subscriptions.expired.default", compact("subscription", "branch", "company", "customer", "ownerApp", "touchpoints"))->render(),
-            "extras_json" => null,
+            "extras_json" => json_encode($extrasJson),
             "type"        => "SubscriptionExpired",
             "model_id"    => $subscription->id,
             "model_type"  => Subscription::class,
