@@ -136,6 +136,10 @@
                     <i class="fa fa-plus"></i>
                     <span class="ms-2">Agregar asistencia</span>
                 </button>
+                <button type="button" class="btn btn-success waves-effect" @click="modalAutomaticEntity({type: 'generate'})" :disabled="lists.entity.extras.loading">
+                    <i class="fa fa-user"></i>
+                    <span class="ms-2">Modo automático</span>
+                </button>
             </template>
         </InputSlot>
     </div>
@@ -411,6 +415,66 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" :id="forms.entity.automatic.extras.modals.default.id" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.automatic.extras.modals.default.titles[forms.entity.automatic.extras.modals.default.type]"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr class="text-center align-middle">
+                                        <th class="bg-secondary text-white fw-semibold" style="width: 15%;">#</th>
+                                        <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 30%;">SUCURSAL</th>
+                                        <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 55%;">ACCIONES</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-border-bottom-0 bg-white">
+                                    <template v-if="(forms.entity.automatic.extras.modals.default.config.branches).length > 0">
+                                        <tr v-for="(record, indexRecord) in forms.entity.automatic.extras.modals.default.config.branches" :key="record.code" class="text-center">
+                                            <td v-text="indexRecord + 1"></td>
+                                            <td class="text-start">
+                                                <span v-text="record.label" class="fw-bold d-block"></span>
+                                            </td>
+                                            <td>
+                                                <InputSlot
+                                                    hasDiv
+                                                    :isInputGroup="false"
+                                                    :divInputClass="['d-flex flex-wrap justify-content-center gap-2 gap-md-1']"
+                                                    xl="12"
+                                                    lg="12">
+                                                    <template v-slot:input>
+                                                        <button type="button" class="btn btn-sm btn-success waves-effect">
+                                                            <i class="fa fa-qrcode"></i>
+                                                            <span class="ms-2 text-nowrap">Abrir modo Automático (QR)</span>
+                                                        </button>
+                                                    </template>
+                                            </InputSlot>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                    <template v-else>
+                                        <tr>
+                                            <td class="text-center" colspan="99">
+                                                <WithoutData type="image"/>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -574,6 +638,24 @@ export default {
                             end_date: "",
                             status: null
                         },
+                        errors: {}
+                    },
+                    automatic: {
+                        extras: {
+                            modals: {
+                                default: {
+                                    id: Utils.uuid(),
+                                    type: "",
+                                    titles: {
+                                        generate: "Sucursales"
+                                    },
+                                    config: {
+                                        branches: []
+                                    }
+                                }
+                            }
+                        },
+                        data: {},
                         errors: {}
                     }
                 }
@@ -949,7 +1031,7 @@ export default {
             }
 
             // Alerts.swals({show: false});
-            Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.default.id, timeout: 300});
+            Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.default.id});
 
         },
         async createUpdateEntity() {
@@ -1038,7 +1120,7 @@ export default {
             }
 
             // Alerts.swals({show: false});
-            Alerts.modals({type: "show", id: this.forms.entity.qrcode.extras.modals.default.id, timeout: 300});
+            Alerts.modals({type: "show", id: this.forms.entity.qrcode.extras.modals.default.id});
 
         },
         onScanCustomer(decodedText, decodedResult) {
@@ -1287,6 +1369,23 @@ export default {
             }
 
             Alerts.tooltips({show: false});
+
+        },
+        // Automatic: URL by Branch
+        modalAutomaticEntity({type = "store"}) {
+
+            const functionName = "modalAutomaticEntity";
+
+            this.forms.entity.automatic.extras.modals.default.type = type;
+
+            // Alerts.swals({});
+            this.clearForm({functionName});
+            this.formErrors({functionName, type: "clear"});
+
+            this.forms.entity.automatic.extras.modals.default.config.branches = this.branches;
+
+            // Alerts.swals({show: false});
+            Alerts.modals({type: "show", id: this.forms.entity.automatic.extras.modals.default.id});
 
         },
         // Forms utils

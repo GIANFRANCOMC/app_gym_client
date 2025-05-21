@@ -31,6 +31,7 @@ Route::middleware(["web"])
         Route::prefix('/reports')->group($systemRoute.'/Report.php');
         Route::prefix('{company_slug}/home')->middleware('company.exists')->group($guestRoute.'/Home.php');
         Route::prefix('{company_slug}/book_complaints')->middleware('company.exists')->group($guestRoute.'/BookComplaint.php');
+        Route::prefix('{company_slug}/tracking_attendances')->middleware('company.exists')->group($guestRoute.'/TrackingAttendance.php');
 
         Route::middleware('guest')->group(function() use($guestRoute) {
 
