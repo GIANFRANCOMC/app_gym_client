@@ -9,6 +9,10 @@
     data-template="front-pages-no-customizer">
     <head>
         @include('Guest.layouts.partials.up')
+        <script>
+            window.company = @json($company);
+            window.branch = @json($branch ?? null);
+        </script>
     </head>
     <body style="background-color: #f8f7fa;">
         <nav class="layout-navbar shadow-none py-0">

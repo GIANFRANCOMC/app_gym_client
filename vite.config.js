@@ -13,6 +13,7 @@ export default defineConfig({
 
                 'resources/js/Guest/Pages/home/main.js',
                 'resources/js/Guest/Pages/book_complaints/main.js',
+                'resources/js/Guest/Pages/tracking_attendances/main.js',
 
                 'resources/js/System/Pages/book_complaints/main.js',
                 'resources/js/System/Pages/assets/main.js',

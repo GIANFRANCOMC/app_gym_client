@@ -1,8 +1,25 @@
-function generateMyUrl(data = null, redirect = true, type = "my_web") {
+function base64Encode(value) {
+
+    const bytes = new TextEncoder().encode(value);
+    const base64 = btoa(String.fromCharCode(...bytes));
+
+    return base64;
+
+}
+
+function generateMyUrl(data = null, redirect = true, type = "my_web", extras = null) {
 
     if(type === "my_web") {
 
-        const url = `${window.location.protocol}//${window.location.hostname}/${data?.slug}/home`;
+        let section = extras?.section ?? "home";
+
+        let url = `${window.location.protocol}//${window.location.hostname}/${data?.slug}/${section}`;
+
+        if(["tracking_attendances"].includes(extras?.section)) {
+
+            url = `${url}?branch=${base64Encode(extras?.branch?.id)}`;
+
+        }
 
         if(redirect) {
 
@@ -16,10 +33,7 @@ function generateMyUrl(data = null, redirect = true, type = "my_web") {
 
     }else if(type === "my_dashboard") {
 
-        const bytes = new TextEncoder().encode(data?.id);
-        const base64 = btoa(String.fromCharCode(...bytes));
-
-        const url = `${window.location.protocol}//${window.location.hostname}?company=${base64}`;
+        let url = `${window.location.protocol}//${window.location.hostname}?company=${base64Encode(data?.id)}`;
 
         if(redirect) {
 

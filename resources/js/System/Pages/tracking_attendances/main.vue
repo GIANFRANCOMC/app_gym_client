@@ -448,7 +448,7 @@
                                                     xl="12"
                                                     lg="12">
                                                     <template v-slot:input>
-                                                        <button type="button" class="btn btn-sm btn-success waves-effect">
+                                                        <button type="button" class="btn btn-sm btn-success waves-effect" @click="openAutomaticEntity({record})">
                                                             <i class="fa fa-qrcode"></i>
                                                             <span class="ms-2 text-nowrap">Abrir modo Automático (QR)</span>
                                                         </button>
@@ -1386,6 +1386,17 @@ export default {
 
             // Alerts.swals({show: false});
             Alerts.modals({type: "show", id: this.forms.entity.automatic.extras.modals.default.id});
+
+        },
+        openAutomaticEntity({record = null}) {
+
+            if(this.isDefined({value: record})) {
+
+                const url = generateMyUrl(window.company, false, "my_web", {section: "tracking_attendances", branch: {id: record?.code}});
+
+                window.open(url, "_blank");
+
+            }
 
         },
         // Forms utils
