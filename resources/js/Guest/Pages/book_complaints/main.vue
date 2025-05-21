@@ -8,7 +8,7 @@
         </h4>
         <div class="text-center text-muted pb-2 mb-3">
             <span class="d-block fw-regular">Cuéntanos lo ocurrido o propon ideas para mejorar nuestro servicio.</span>
-            <div class="d-block fw-regular"> Todos los campos con <span class="text-danger">*</span> son obligatorios. </div>
+            <div class="d-block fw-regular">Todos los campos con <span class="text-danger">*</span> son obligatorios. </div>
         </div>
 
         <!-- Content -->

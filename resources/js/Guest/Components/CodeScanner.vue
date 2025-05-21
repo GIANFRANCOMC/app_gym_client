@@ -1,6 +1,6 @@
 <template>
     <div>
-        <select v-model="selectedCameraId" class="form-select mb-2" v-if="cameras.length > 0">
+        <select v-model="selectedCameraId" class="form-select mb-2" v-if="cameras.length > 1">
             <template v-for="camera in cameras" :key="camera.id">
                 <option :value="camera.id" v-text="camera.label || 'Cámara ' + camera.id"></option>
             </template>

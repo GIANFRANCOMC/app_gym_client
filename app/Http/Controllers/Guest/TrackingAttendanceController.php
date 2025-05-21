@@ -43,7 +43,7 @@ class TrackingAttendanceController extends Controller {
 
         if(Utilities::isDefined($branch)) {
 
-            return view("Guest/general/tracking_attendances/main", ["company" => $company, "branch" => $branch]);
+            return view("Guest/general/tracking_attendances/main", ["company" => $company, "branch" => $branch, "withMenu" => false]);
 
         }else {
 

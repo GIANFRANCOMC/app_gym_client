@@ -1,22 +1,50 @@
 <template>
-    <div class="container flex-grow-1 container-p-y mt-5">
+    <div :class="['container flex-grow-1 container-p-y', withMenu ? 'mt-5' : '']">
+        <div class="text-end mb-3 mb-md-1">
+            <span class="badge bg-label-success">Control de Asistencia</span>
+        </div>
+        <div class="text-center mb-2 mb-md-1">
+            <img :src="'/storage/'+company.logotype" alt="Logo" style="max-height: 80px;" class="border border-light shadow-sm">
+        </div>
+        <h4 class="text-center mb-2 mb-md-2">
+            <span class="position-relative fw-extrabold z-1">Escanea tu carnet para registrar tu ingreso</span>
+        </h4>
+
         <!-- Content -->
-        <div class="row g-3 mt-3">
-            <InputSlot
-                hasDiv
-                title="Cámara"
-                :isInputGroup="false"
-                xl="12"
-                lg="12">
-                <template v-slot:input>
-                    <div class="w-100">
-                        <CodeScanner
-                            ref="scannerQr"
-                            :limitScan="1"
-                            @result="onScanCustomer"/>
-                    </div>
-                </template>
-            </InputSlot>
+        <div class="card shadow-sm p-3">
+            <div class="row g-3">
+                <InputSlot
+                    :hasDiv="false"
+                    :isInputGroup="false"
+                    :divInputClass="['d-flex justify-content-center']"
+                    xl="12"
+                    lg="12">
+                    <template v-slot:input>
+                        <div class="w-100">
+                            <div class="text-center text-muted">
+                                <span class="fw-regular text-dark colon-at-end">Sucursal</span>
+                                <span class="fw-bold text-dark ms-1" v-text="branch?.name"></span>
+                            </div>
+                        </div>
+                    </template>
+                </InputSlot>
+                <InputSlot
+                    :hasDiv="false"
+                    :isInputGroup="false"
+                    :divInputClass="['d-flex justify-content-center']"
+                    xl="12"
+                    lg="12">
+                    <template v-slot:input>
+                        <div class="w-100">
+                            <CodeScanner
+                                ref="scannerQr"
+                                :qrbox="300"
+                                :limitScan="1"
+                                @result="onScanCustomer"/>
+                        </div>
+                    </template>
+                </InputSlot>
+            </div>
         </div>
     </div>
 </template>
@@ -33,8 +61,6 @@ export default {
     },
     mounted: async function() {
 
-        let el = this;
-
         Alerts.swals({type: "initParams"});
 
         let initParams = await this.initParams({}),
@@ -45,9 +71,9 @@ export default {
             Alerts.swals({show: false});
             // this.listEntity({});
 
-            if(el.$refs?.scannerQr?.startScanner) {
+            if(this.$refs?.scannerQr?.startScanner) {
 
-                el.$refs.scannerQr.startScanner();
+                this.$refs.scannerQr.startScanner();
 
             }
 
@@ -273,6 +299,16 @@ export default {
         }
     },
     computed: {
+        withMenu: function() {
+
+            return window?.withMenu ?? true;
+
+        },
+        company: function() {
+
+            return window?.company ?? null;
+
+        },
         branch: function() {
 
             return window?.branch ?? null;
