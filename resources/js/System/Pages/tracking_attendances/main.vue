@@ -1443,7 +1443,7 @@ export default {
 
             }else if(["modalQrcodeEntity", "qrcodeEntity"].includes(functionName)) {
 
-                this.forms.entity.createUpdate.errors = ["set"].includes(type) ? errors : [];
+                this.forms.entity.qrcode.errors = ["set"].includes(type) ? errors : [];
 
             }
 
