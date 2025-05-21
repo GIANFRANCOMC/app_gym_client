@@ -60,15 +60,15 @@
                             <td class="text-start">
                                 <ul>
                                     <li>
-                                        <span v-text="'Código interno:'" class="fw-bold"></span>
+                                        <span class="fw-bold text-nowrap colon-at-end">Código interno</span>
                                         <span v-text="record.internal_code" class="ms-2"></span>
                                     </li>
                                     <li>
-                                        <span v-text="'Nombre:'" class="fw-bold"></span>
+                                        <span class="fw-bold colon-at-end">Nombre</span>
                                         <span v-text="record.name" class="ms-2"></span>
                                     </li>
                                     <li>
-                                        <span v-text="'Descripción:'" class="fw-bold"></span>
+                                        <span class="fw-bold colon-at-end">Descripción</span>
                                         <span v-text="isDefined({value: record.description}) ? record.description : 'N/A'" class="ms-2"></span>
                                     </li>
                                 </ul>

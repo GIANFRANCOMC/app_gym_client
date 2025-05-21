@@ -40,11 +40,12 @@
         <table class="table table-hover">
             <thead>
                 <tr class="text-center align-middle">
-                    <th class="bg-secondary text-white fw-semibold" style="width: 10%;">#</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 5%;">#</th>
                     <th class="bg-secondary text-white fw-semibold" style="width: 30%;">DETALLE</th>
-                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 20%;">CANTIDAD</th>
-                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 20%;">VALOR DE ADQUISICIÓN</th>
-                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 20%;">FECHA DE ADQUISICIÓN</th>
+                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 15%;">CANTIDAD</th>
+                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 15%;">VALOR DE ADQUISICIÓN</th>
+                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 15%;">FECHA DE ADQUISICIÓN</th>
+                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 20%;">ESTADO</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0 bg-white">
@@ -63,15 +64,15 @@
                                 <td class="text-start">
                                     <ul>
                                         <li>
-                                            <span v-text="'Código interno:'" class="fw-bold"></span>
+                                            <span class="fw-bold text-nowrap colon-at-end">Código interno</span>
                                             <span v-text="record?.asset_internal_code" class="ms-2"></span>
                                         </li>
                                         <li>
-                                            <span v-text="'Nombre:'" class="fw-bold"></span>
+                                            <span class="fw-bold colon-at-end">Nombre</span>
                                             <span v-text="record?.asset_name" class="ms-2"></span>
                                         </li>
                                         <li>
-                                            <span v-text="'Descripción:'" class="fw-bold"></span>
+                                            <span class="fw-bold colon-at-end">Descripción</span>
                                             <span v-text="isDefined({value: record?.asset_description}) ? record?.asset_description : 'N/A'" class="ms-2"></span>
                                         </li>
                                     </ul>
@@ -96,6 +97,16 @@
                                 <td>
                                     <InputDate
                                         v-model="record.branch_asset_acquisition_date"/>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center justify-content-start" v-for="status in statuses" :key="status.code">
+                                        <div class="form-check">
+                                            <label class="py-1 cursor-pointer text-nowrap">
+                                                <input v-model="record.branch_asset_status" class="form-check-input" type="radio" :value="status.code">
+                                                <span v-text="status?.label"></span>
+                                            </label>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         </template>
@@ -194,7 +205,8 @@ export default {
 
             let initParams = await Requests.get({route: this.config.entity.routes.initParams, data: {page: "main"}, showAlert: true});
 
-            this.options.branches = initParams.data?.config?.branches;
+            this.options.branches     = initParams.data?.config?.branches;
+            this.options.branchAssets = initParams.data?.config?.branchAssets;
 
             return Requests.valid({result: initParams});
 
@@ -358,6 +370,11 @@ export default {
         branches: function() {
 
             return this.options?.branches?.records.map(e => ({code: e.id, label: e.name}));
+
+        },
+        statuses: function() {
+
+            return this.options?.branchAssets?.statuses.map(e => ({code: e.code, label: e.label}));
 
         }
     },

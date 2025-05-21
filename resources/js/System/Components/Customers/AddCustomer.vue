@@ -113,7 +113,7 @@ export default {
                                 default: {
                                     id: Utils.uuid(),
                                     titles: {
-                                        store: "Agregar"
+                                        store: "Agregar cliente"
                                     }
                                 }
                             }

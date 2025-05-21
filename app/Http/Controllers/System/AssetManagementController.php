@@ -26,6 +26,9 @@ class AssetManagementController extends Controller {
             $config->branches = new stdClass();
             $config->branches->records = Branch::getAll("asset_management");
 
+            $config->branchAssets = new stdClass();
+            $config->branchAssets->statuses = BranchAsset::getStatuses();
+
         }
 
         $initParams->config = $config;
@@ -154,7 +157,7 @@ class AssetManagementController extends Controller {
                     $branchAsset->acquisition_value = Utilities::round(floatval($item["branch_asset_acquisition_value"] ?? 0));
                     $branchAsset->acquisition_date  = $item["branch_asset_acquisition_date"] ?? null;
                     $branchAsset->note              = $item["branch_asset_note"] ?? "";
-                    // $branchAsset->status            = $item["branch_asset_status"];
+                    $branchAsset->status            = $item["branch_asset_status"] ?? "active";
                     $branchAsset->updated_at        = now();
                     $branchAsset->updated_by        = $userAuth->id ?? null;
                     $branchAsset->save();
@@ -169,7 +172,7 @@ class AssetManagementController extends Controller {
                     $branchAsset->acquisition_value = Utilities::round(floatval($item["branch_asset_acquisition_value"] ?? 0));
                     $branchAsset->acquisition_date  = $item["branch_asset_acquisition_date"] ?? null;
                     $branchAsset->note              = $item["branch_asset_notes"] ?? "";
-                    $branchAsset->status            = "active"; // $item["branch_asset_status"];
+                    $branchAsset->status            = $item["branch_asset_status"] ?? "active";
                     $branchAsset->created_at        = now();
                     $branchAsset->created_by        = $userAuth->id ?? null;
                     $branchAsset->save();

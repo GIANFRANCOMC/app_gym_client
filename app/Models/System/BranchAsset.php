@@ -43,9 +43,9 @@ class BranchAsset extends Model {
     public static function getStatuses($type = "all", $code = "") {
 
         $statuses = [
-            ["code" => "active", "label" => "Activo"],
+            ["code" => "active", "label" => "Disponible"],
             ["code" => "maintenance", "label" => "En mantenimiento"],
-            ["code" => "inactive", "label" => "Retirado"]
+            ["code" => "retired", "label" => "Retirado"]
         ];
 
         return Utilities::getValues($statuses, $type, $code);
