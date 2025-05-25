@@ -38,6 +38,7 @@
                         <div class="w-100">
                             <CodeScanner
                                 ref="scannerQr"
+                                :showControls="false"
                                 :qrbox="300"
                                 :limitScan="1"
                                 @result="onScanCustomer"/>
@@ -149,7 +150,7 @@ export default {
 
         },
         // Qrcode
-        onScanCustomer(decodedText, decodedResult) {
+        async onScanCustomer(decodedText, decodedResult) {
 
             try {
 
@@ -170,10 +171,49 @@ export default {
 
                     if(id > 0) {
 
-                        this.forms.entity.qrcode.data.customer = {id: id};
-                        Alerts.generateAlert({type: "success", msgContent: `<span class="d-block">Cliente escaneado.</span><span class="d-block fw-semibold mt-1">Se ha agregado a los clientes escaneados.</span>`});
+                        this.$refs.scannerQr.stopScanner();
 
-                        // Logic - qr
+                        let el = this;
+
+                        Alerts.swals({});
+
+                        this.forms.entity.qrcode.data.branch   = this.branch;
+                        this.forms.entity.qrcode.data.customer = {id: id};
+
+                        let form = Utils.cloneJson(this.forms.entity.qrcode.data);
+
+                        form.branch_id = form?.branch?.id;
+                        form.customers = [{customer_id: form?.customer?.id}];
+
+                        delete form.branch;
+                        delete form.customer;
+
+                        const qrcode = await Requests.post({route: this.config.entity.routes.qrcodeStore, data: form});
+
+                        if(Requests.valid({result: qrcode})) {
+
+                            // Alerts.toastrs({type: "success", subtitle: qrcode?.data?.msg});
+                            // Alerts.swals({show: false});
+                            Alerts.generateAlert({type: "success", messages: qrcode?.data?.attendances.map(e => `${e.bool ? "<i class='fa fa-check-circle text-success'></i>" : "<i class='fa fa-times-circle text-danger'></i>"} <span class='ms-1'>${e.msg}</span>`), msgContent: `<div class="fw-semibold mb-2">${qrcode?.data?.msg}</div>`});
+
+                            // this.clearForm({functionName});
+                            this.forms.entity.qrcode.data.customer = null;
+
+                        }else {
+
+                            // this.formErrors({functionName, type: "set", errors: qrcode?.errors ?? []});
+                            // Alerts.toastrs({type: "error", subtitle: qrcode?.data?.msg});
+                            // Alerts.swals({show: false});
+                            Alerts.generateAlert({type: "error", messages: qrcode?.data?.attendances.map(e => `${e.bool ? "<i class='fa fa-check-circle text-success'></i>" : "<i class='fa fa-times-circle text-danger'></i>"} <span class='ms-1'>${e.msg}</span>`), msgContent: `<div class="fw-semibold mb-2">${qrcode?.data?.msg}</div>`});
+
+                        }
+
+                        setTimeout(() => {
+
+                            Alerts.swals({show: false});
+                            el.$refs.scannerQr.startScanner();
+
+                        }, 3000);
 
                     }else {
 

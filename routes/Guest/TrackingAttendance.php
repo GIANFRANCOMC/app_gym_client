@@ -13,3 +13,5 @@ Route::get('/list',       [TrackingAttendanceController::class, 'list'])->name("
 // Route::get('/{id}/edit',  [TrackingAttendanceController::class, 'edit'])->name("$entity.edit");
 // Route::get('/{id}',       [TrackingAttendanceController::class, 'show'])->name("$entity.show");
 // Route::patch('/{id}',     [TrackingAttendanceController::class, 'update'])->name("$entity.update");
+
+Route::post('qrcodeStore',   [TrackingAttendanceController::class, 'qrcodeStore'])->name("$entity.qrcodeStore");
