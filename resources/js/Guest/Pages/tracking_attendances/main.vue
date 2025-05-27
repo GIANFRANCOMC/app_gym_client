@@ -1,50 +1,43 @@
 <template>
-    <div :class="['container flex-grow-1 container-p-y', withMenu ? 'mt-5' : '']">
+    <div :class="['container flex-grow-1 container-p-y', config.essential?.withMenu ? 'mt-5' : '']">
         <div class="text-end mb-3 mb-md-1">
-            <span class="badge bg-label-success">Control de Asistencia</span>
+            <div class="badge bg-info-1 rounded-pill ">
+                <i class="fa-solid fa-location-dot"></i>
+                <span class="ms-2" v-text="config.essential?.branch?.name"></span>
+            </div>
         </div>
         <div class="text-center mb-2 mb-md-1">
-            <img :src="'/storage/'+company.logotype" alt="Logo" style="max-height: 80px;" class="border border-light shadow-sm">
+            <img :src="'/storage/'+config.essential?.company?.logotype" alt="Logo" style="max-height: 80px;" class="border border-light shadow-sm">
         </div>
-        <h4 class="text-center mb-2 mb-md-2">
-            <span class="position-relative fw-extrabold z-1">Escanea tu carnet para registrar tu ingreso</span>
-        </h4>
+        <div class="text-center mb-2 mb-md-2">
+            <span class="position-relative fw-extrabold z-1 h5">Escanea tu carnet para registrar tu ingreso o salida</span>
+        </div>
 
         <!-- Content -->
-        <div class="card shadow-sm p-3">
-            <div class="row g-3">
-                <InputSlot
-                    :hasDiv="false"
-                    :isInputGroup="false"
-                    :divInputClass="['d-flex justify-content-center']"
-                    xl="12"
-                    lg="12">
-                    <template v-slot:input>
-                        <div class="w-100">
-                            <div class="text-center text-muted">
-                                <span class="fw-regular text-dark colon-at-end">Sucursal</span>
-                                <span class="fw-bold text-dark ms-1" v-text="branch?.name"></span>
-                            </div>
-                        </div>
-                    </template>
-                </InputSlot>
-                <InputSlot
-                    :hasDiv="false"
-                    :isInputGroup="false"
-                    :divInputClass="['d-flex justify-content-center']"
-                    xl="12"
-                    lg="12">
-                    <template v-slot:input>
-                        <div class="w-100">
-                            <CodeScanner
-                                ref="scannerQr"
-                                :showControls="false"
-                                :qrbox="300"
-                                :limitScan="1"
-                                @result="onScanCustomer"/>
-                        </div>
-                    </template>
-                </InputSlot>
+        <div class="row justify-content-center g-3">
+            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                <div class="card shadow-sm p-3">
+                    <div class="row justify-content-center g-3">
+                        <InputSlot
+                            :hasDiv="true"
+                            :isInputGroup="false"
+                            xl="10"
+                            lg="10">
+                            <template v-slot:input>
+                                <div class="w-100">
+                                    <CodeScanner
+                                        ref="scannerQr"
+                                        :showControls="true"
+                                        :qrbox="290"
+                                        :fps="23"
+                                        :limitScan="-1"
+                                        :canProcess="!forms.entity.qrcode.config.isProcessing"
+                                        @result="onScanCustomer"/>
+                                </div>
+                            </template>
+                        </InputSlot>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -101,9 +94,11 @@ export default {
                 entity: {
                     qrcode: {
                         data: {
-                            id: null,
                             branch: null,
-                            customer: null
+                            customers: []
+                        },
+                        config: {
+                            isProcessing: false
                         },
                         errors: {}
                     }
@@ -131,7 +126,8 @@ export default {
 
             return new Promise(resolve => {
 
-                this.lists.entity.filters.branch = {code: this.branch?.id, label: this.branch?.name};
+                this.lists.entity.filters.branch     = {code: this.config.essential?.branch?.id, label: this.config.essential?.branch?.name};
+                this.forms.entity.qrcode.data.branch = this.config.essential?.branch;
 
                 resolve(true);
 
@@ -152,7 +148,13 @@ export default {
         // Qrcode
         async onScanCustomer(decodedText, decodedResult) {
 
+            const functionName = "onScanCustomer";
+
+            if(this.forms.entity.qrcode.config.isProcessing) return;
+
             try {
+
+                Utils.playSound("attendances/scan.mp3");
 
                 console.log(decodedText, decodedResult);
                 let dataScan = JSON.parse(decodedResult?.result?.text);
@@ -167,53 +169,62 @@ export default {
 
                 }else {
 
+                    let el = this;
+
                     const id = parseInt(bp?.id);
 
                     if(id > 0) {
 
-                        this.$refs.scannerQr.stopScanner();
-
-                        let el = this;
-
                         Alerts.swals({});
 
-                        this.forms.entity.qrcode.data.branch   = this.branch;
-                        this.forms.entity.qrcode.data.customer = {id: id};
+                        // Set data
+                        this.forms.entity.qrcode.config.isProcessing = true;
 
+                        this.forms.entity.qrcode.data.customers = [{customer_id: id}];
+
+                        // Validate form
                         let form = Utils.cloneJson(this.forms.entity.qrcode.data);
 
                         form.branch_id = form?.branch?.id;
-                        form.customers = [{customer_id: form?.customer?.id}];
 
                         delete form.branch;
-                        delete form.customer;
 
                         const qrcode = await Requests.post({route: this.config.entity.routes.qrcodeStore, data: form});
 
-                        if(Requests.valid({result: qrcode})) {
+                        const isValid = Requests.valid({result: qrcode});
+
+                        if(isValid) {
 
                             // Alerts.toastrs({type: "success", subtitle: qrcode?.data?.msg});
                             // Alerts.swals({show: false});
-                            Alerts.generateAlert({type: "success", messages: qrcode?.data?.attendances.map(e => `${e.bool ? "<i class='fa fa-check-circle text-success'></i>" : "<i class='fa fa-times-circle text-danger'></i>"} <span class='ms-1'>${e.msg}</span>`), msgContent: `<div class="fw-semibold mb-2">${qrcode?.data?.msg}</div>`});
 
-                            // this.clearForm({functionName});
-                            this.forms.entity.qrcode.data.customer = null;
+                            this.clearForm({functionName});
 
                         }else {
 
                             // this.formErrors({functionName, type: "set", errors: qrcode?.errors ?? []});
                             // Alerts.toastrs({type: "error", subtitle: qrcode?.data?.msg});
                             // Alerts.swals({show: false});
-                            Alerts.generateAlert({type: "error", messages: qrcode?.data?.attendances.map(e => `${e.bool ? "<i class='fa fa-check-circle text-success'></i>" : "<i class='fa fa-times-circle text-danger'></i>"} <span class='ms-1'>${e.msg}</span>`), msgContent: `<div class="fw-semibold mb-2">${qrcode?.data?.msg}</div>`});
+
+                        }
+
+                        // Show response
+                        if((qrcode?.data?.attendances).length === 1) {
+
+                            Alerts.generateAlert({type: qrcode?.data?.attendances[0]?.bool ? "success" : "error", msgContent: qrcode?.data?.attendances[0]?.msg});
+
+                        }else {
+
+                            Alerts.generateAlert({type: isValid ? "success" : "error", messages: qrcode?.data?.attendances.map(e => `${e.bool ? "<i class='fa fa-check-circle text-success'></i>" : "<i class='fa fa-times-circle text-danger'></i>"} <span class='ms-1'>${e.msg}</span>`), msgContent: `<div class="fw-semibold mb-2">${qrcode?.data?.msg}</div>`});
 
                         }
 
                         setTimeout(() => {
 
                             Alerts.swals({show: false});
-                            el.$refs.scannerQr.startScanner();
+                            el.forms.entity.qrcode.config.isProcessing = false;
 
-                        }, 3000);
+                        }, 5000);
 
                     }else {
 
@@ -233,80 +244,21 @@ export default {
             }
 
         },
-        async qrcodeEntity() {
-
-            const functionName = "qrcodeEntity";
-
-            Alerts.swals({});
-            this.formErrors({functionName, type: "clear"});
-
-            let form = Utils.cloneJson(this.forms.entity.qrcode.data);
-
-            const validateForm = this.validateForm({functionName, form, extras: {type: "descriptive", modal: this.forms.entity.qrcode.extras.modals.default}});
-
-            if(validateForm?.bool) {
-
-                form.branch_id = form?.branch?.code;
-
-                delete form.branch;
-
-                form.customers.forEach(customer => {
-
-                    customer.customer_id = customer.code;
-
-                    delete customer.code;
-                    delete customer.label;
-                    delete customer.data;
-
-                });
-
-                const qrcode = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.qrcodeUpdate, data: form, id: form.id}) :
-                                                                         Requests.post({route: this.config.entity.routes.qrcodeStore, data: form}));
-
-                if(Requests.valid({result: qrcode})) {
-
-                    // Alerts.toastrs({type: "success", subtitle: qrcode?.data?.msg});
-                    // Alerts.swals({show: false});
-                    Alerts.generateAlert({type: "success", messages: qrcode?.data?.attendances.map(e => `${e.bool ? "<i class='fa fa-check-circle text-success'></i>" : "<i class='fa fa-times-circle text-danger'></i>"} <span class='ms-1'>${e.msg}</span>`), msgContent: `<div class="fw-semibold mb-2">${qrcode?.data?.msg}</div>`});
-
-                    this.clearForm({functionName});
-                    this.forms.entity.qrcode.data.customers = [];
-
-                    this.listEntity({url: `${this.lists.entity.extras.route}?page=${this.lists.entity.records?.current_page ?? 1}`});
-
-                }else {
-
-                    this.formErrors({functionName, type: "set", errors: qrcode?.errors ?? []});
-                    // Alerts.toastrs({type: "error", subtitle: qrcode?.data?.msg});
-                    // Alerts.swals({show: false});
-                    Alerts.generateAlert({type: "error", messages: qrcode?.data?.attendances.map(e => `${e.bool ? "<i class='fa fa-check-circle text-success'></i>" : "<i class='fa fa-times-circle text-danger'></i>"} <span class='ms-1'>${e.msg}</span>`), msgContent: `<div class="fw-semibold mb-2">${qrcode?.data?.msg}</div>`});
-
-                }
-
-            }else {
-
-                // this.formErrors({functionName, type: "set", errors: validateForm});
-                // Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
-                Alerts.generateAlert({messages: Utils.getErrors({errors: validateForm}), msgContent: `<div class="fw-semibold mb-2">${this.config.messages.errorValidate}</div>`});
-
-            }
-
-        },
         // Forms utils
         clearForm({functionName}) {
 
             switch(functionName) {
-                case "qrcodeEntity":
-                    //
+                case "onScanCustomer":
+                    this.forms.entity.qrcode.data.customers = [];
                     break;
             }
 
         },
         formErrors({functionName, type = "clear", errors = []}) {
 
-            if(["qrcodeEntity"].includes(functionName)) {
+            if(["onScanCustomer"].includes(functionName)) {
 
-                //
+                this.forms.entity.qrcode.errors = ["set"].includes(type) ? errors : [];
 
             }
 
@@ -317,7 +269,7 @@ export default {
                 bool: true
             };
 
-            if(["qrcodeEntity"].includes(functionName)) {
+            if(["onScanCustomer"].includes(functionName)) {
 
                 //
 
@@ -335,23 +287,6 @@ export default {
         legibleFormatDate({dateString = null, type = "datetime"}) {
 
             return Utils.legibleFormatDate({dateString, type});
-
-        }
-    },
-    computed: {
-        withMenu: function() {
-
-            return window?.withMenu ?? true;
-
-        },
-        company: function() {
-
-            return window?.company ?? null;
-
-        },
-        branch: function() {
-
-            return window?.branch ?? null;
 
         }
     }

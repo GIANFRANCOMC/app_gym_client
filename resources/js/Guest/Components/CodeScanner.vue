@@ -8,9 +8,9 @@
         <div ref="scannerContainer" style="width: 100%;"></div>
         <template v-if="cameras.length > 0">
             <template v-if="showControls">
-                <div class="controls mt-2">
+                <div class="d-flex gap-2 mt-2">
                     <button @click="startScanner()" v-if="!isScanning" type="button" class="btn btn-success waves-effect">📷 Escanear QR</button>
-                    <button @click="stopScanner(false)" v-if="isScanning" type="button" class="btn btn-danger waves-effect">🛑 Detener</button>
+                    <button @click="stopScanner()" v-if="isScanning" type="button" class="btn btn-danger waves-effect">🛑 Detener escáner</button>
                 </div>
             </template>
         </template>
@@ -43,15 +43,23 @@
             },
             qrbox: {
                 type: Number,
+                required: false,
                 default: 250
             },
             fps: {
                 type: Number,
+                required: false,
                 default: 10
             },
             limitScan: {
                 type: Number,
+                required: false,
                 default: -1
+            },
+            canProcess: {
+                type: Boolean,
+                required: false,
+                default: true
             }
         },
         data() {
@@ -88,6 +96,8 @@
                         config,
                         (decodedText, decodedResult) => {
 
+                            if(!this.canProcess) return;
+
                             if(this.limitScan != -1) {
 
                                 this.counterScan++;
@@ -95,7 +105,12 @@
                             }
 
                             this.$emit("result", decodedText, decodedResult);
-                            this.stopScanner(true);
+
+                            if(!this.canScan) {
+
+                                this.stopScanner();
+
+                            }
 
                         }
                     );
@@ -109,7 +124,7 @@
                 }
 
             },
-            stopScanner(initPostValidated = false) {
+            stopScanner() {
 
                 if(this.scanner && this.isScanning) {
 
@@ -124,12 +139,6 @@
                         console.error("Error al detener escáner", err);
 
                     });
-
-                    if(initPostValidated && this.canScan) {
-
-                        this.startScanner();
-
-                    }
 
                 }
 
@@ -182,7 +191,7 @@
 
                 if(this.isScanning && newVal !== oldVal) {
 
-                    this.stopScanner(true);
+                    this.stopScanner();
 
                 }
 
@@ -190,10 +199,3 @@
         }
     };
 </script>
-
-<style scoped>
-    .controls {
-        display: flex;
-        gap: 10px;
-    }
-</style>

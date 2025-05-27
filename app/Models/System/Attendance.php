@@ -52,7 +52,9 @@ class Attendance extends Model {
     public static function getTypes($type = "all", $code = "") {
 
         $types = [
-            ["code" => "manual", "label" => "Manual"]
+            ["code" => "form_manual", "label" => "Formulario Manual"],
+            ["code" => "qr_manual", "label" => "QR manual"],
+            ["code" => "qr_automatic", "label" => "QR automático"]
         ];
 
         return Utilities::getValues($types, $type, $code);

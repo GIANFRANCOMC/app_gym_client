@@ -4,6 +4,16 @@ import { toastrs } from "./Alerts.js";
 
 import axios from "axios";
 
+export function getEssential() {
+
+    return {
+        withMenu: window?.withMenu ?? true,
+        company: window?.company ?? null,
+        branch: window?.branch ?? null
+    };
+
+}
+
 export function navbarItem(id, {type = "active", addClass = null}) {
 
     try {
@@ -387,5 +397,19 @@ export function decodeBase64UTF8(base64) {
     const text = new TextDecoder().decode(bytes);
 
     return text;
+
+}
+
+
+export function playSound(soundRoute) {
+
+    const audio = new Audio(`${Requests.config({onlyBase: true})}/System/assets/audio/utils/${soundRoute}`);
+
+    audio.play()
+    .catch(err => {
+
+        console.warn("Error playing audio:", err);
+
+    });
 
 }

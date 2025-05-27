@@ -9,9 +9,15 @@ export function route() {
 
 }
 
-export function config({entity = "", type = ""}) {
+export function config({entity = "", type = "", onlyBase = false}) {
 
     let requestRoute = route({});
+
+    if(onlyBase) {
+
+        return requestRoute;
+
+    }
 
     try {
 
