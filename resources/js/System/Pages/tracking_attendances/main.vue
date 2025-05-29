@@ -133,8 +133,8 @@
                     <span class="ms-2">Filtrar asistencias</span>
                 </button>
                 <button type="button" class="btn btn-primary waves-effect" @click="selectModeEntity()" :disabled="lists.entity.extras.loading">
-                    <i class="fa fa-plus"></i>
-                    <span class="ms-2">Agregar asistencia</span>
+                    <i class="fa fa-check"></i>
+                    <span class="ms-2">Registrar asistencia</span>
                 </button>
                 <button type="button" class="btn btn-success waves-effect" @click="modalAutomaticEntity({type: 'generate'})" :disabled="lists.entity.extras.loading">
                     <i class="fa fa-user"></i>
@@ -194,9 +194,9 @@
                                     xl="12"
                                     lg="12">
                                     <template v-slot:input>
-                                        <button v-if="['active'].includes(record?.status)" type="button" class="btn btn-sm btn-primary waves-effect my-1" @click="modalCreateUpdateEntity({record, type: 'finalized'})">
-                                            <i class="fa fa-check"></i>
-                                            <span class="ms-2">Finalizar</span>
+                                        <button v-if="['active'].includes(record?.status)" type="button" class="btn btn-sm btn-warning waves-effect my-1" @click="modalCreateUpdateEntity({record, type: 'finalized'})">
+                                            <i class="fa-solid fa-person-walking-arrow-right"></i>
+                                            <span class="ms-2">Concluir</span>
                                         </button>
                                         <button v-if="['finalized'].includes(record?.status)" type="button" class="btn btn-sm btn-danger waves-effect my-1" @click="modalCreateUpdateEntity({record, type: 'canceled'})">
                                             <i class="fa fa-times"></i>
@@ -291,6 +291,9 @@
                             xl="6"
                             lg="6"/>
                     </div>
+                    <div v-if="['store'].includes(forms.entity.createUpdate.extras.modals.default.type)" class="alert alert-secondary small mt-3 mb-0" role="alert">
+                        El sistema detectará automáticamente si estás registrando un ingreso o una salida.
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
@@ -344,6 +347,7 @@
                             </template>
                         </InputSlot>
                         <InputSlot
+                            v-if="(forms.entity.qrcode.data.customers).length > 1"
                             hasDiv
                             title="Clientes"
                             isRequired
@@ -403,6 +407,9 @@
                             :disabled="['canceled'].includes(forms.entity.qrcode.extras.modals.default.type) || !isDefined({value: forms.entity.qrcode.data?.id})"
                             xl="6"
                             lg="6"/>
+                    </div>
+                    <div v-if="['store'].includes(forms.entity.qrcode.extras.modals.default.type)" class="alert alert-secondary small mt-3 mb-0" role="alert">
+                        El sistema detectará automáticamente si estás registrando un ingreso o una salida.
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -557,28 +564,28 @@ export default {
                                     id: Utils.uuid(),
                                     type: "",
                                     titles: {
-                                        store: "Agregar",
+                                        store: "Registrar",
                                         update: "Editar",
-                                        finalized: "Finalizar",
+                                        finalized: "Concluir",
                                         canceled: "Anular"
                                     },
                                     config: {
                                         buttons: {
                                             store: "btn-primary",
                                             update: "btn-warning",
-                                            finalized: "btn-primary",
+                                            finalized: "btn-warning",
                                             canceled: "btn-danger"
                                         },
                                         icons: {
-                                            store: "fa fa-plus",
+                                            store: "fa fa-check",
                                             update: "fa fa-save",
-                                            finalized: "fa fa-check",
+                                            finalized: "fa-solid fa-person-walking-arrow-right",
                                             canceled: "fa fa-times"
                                         },
                                         labels: {
-                                            store: "Agregar asistencia",
+                                            store: "Registrar asistencia",
                                             update: "Editar asistencia",
-                                            finalized: "Finalizar asistencia",
+                                            finalized: "Concluir asistencia",
                                             canceled: "Anular asistencia"
                                         }
                                     }
@@ -602,28 +609,28 @@ export default {
                                     id: Utils.uuid(),
                                     type: "",
                                     titles: {
-                                        store: "Agregar",
+                                        store: "Registrar",
                                         update: "Editar",
-                                        finalized: "Finalizar",
+                                        finalized: "Concluir",
                                         canceled: "Anular"
                                     },
                                     config: {
                                         buttons: {
                                             store: "btn-primary",
                                             update: "btn-warning",
-                                            finalized: "btn-primary",
+                                            finalized: "btn-warning",
                                             canceled: "btn-danger"
                                         },
                                         icons: {
-                                            store: "fa fa-plus",
+                                            store: "fa fa-check",
                                             update: "fa fa-save",
-                                            finalized: "fa fa-check",
+                                            finalized: "fa-solid fa-person-walking-arrow-right",
                                             canceled: "fa fa-times"
                                         },
                                         labels: {
-                                            store: "Agregar asistencia",
+                                            store: "Registrar asistencia",
                                             update: "Editar asistencia",
-                                            finalized: "Finalizar asistencia",
+                                            finalized: "Concluir asistencia",
                                             canceled: "Anular asistencia"
                                         }
                                     }
@@ -1031,7 +1038,7 @@ export default {
             }
 
             // Alerts.swals({show: false});
-            Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.default.id});
+            Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.default.id, timeout: 300});
 
         },
         async createUpdateEntity() {
@@ -1056,7 +1063,9 @@ export default {
                 const createUpdate = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: form.id}) :
                                                                                Requests.post({route: this.config.entity.routes.store, data: form}));
 
-                if(Requests.valid({result: createUpdate})) {
+                const isValid = Requests.valid({result: createUpdate});
+
+                if(isValid) {
 
                     if(["finalized"].includes(this.forms.entity.createUpdate.extras.modals.default.type)) {
 
@@ -1066,7 +1075,6 @@ export default {
 
                     // Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
                     // Alerts.swals({show: false});
-                    Alerts.generateAlert({type: "success", msgContent: createUpdate?.data?.msg});
 
                     this.clearForm({functionName});
                     this.listEntity({url: `${this.lists.entity.extras.route}?page=${this.lists.entity.records?.current_page ?? 1}`});
@@ -1076,7 +1084,21 @@ export default {
                     this.formErrors({functionName, type: "set", errors: createUpdate?.errors ?? []});
                     // Alerts.toastrs({type: "error", subtitle: createUpdate?.data?.msg});
                     // Alerts.swals({show: false});
-                    Alerts.generateAlert({type: "error", msgContent: createUpdate?.data?.msg});
+
+                }
+
+                // Show response
+                if((createUpdate?.data?.attendances ?? []).length === 0) {
+
+                    Alerts.generateAlert({type: isValid ? "success" : "error", msgContent: createUpdate?.data?.msg});
+
+                }else if((createUpdate?.data?.attendances ?? []).length === 1) {
+
+                    Alerts.generateAlert({type: createUpdate?.data?.attendances[0]?.bool ? "success" : "error", msgContent: createUpdate?.data?.attendances[0]?.msg});
+
+                }else {
+
+                    Alerts.generateAlert({type: isValid ? "success" : "error", messages: createUpdate?.data?.attendances.map(e => `${e.bool ? "<i class='fa fa-check-circle text-success'></i>" : "<i class='fa fa-times-circle text-danger'></i>"} <span class='ms-1'>${e.msg}</span>`), msgContent: `<div class="fw-semibold mb-2">${createUpdate?.data?.msg}</div>`});
 
                 }
 
@@ -1120,7 +1142,7 @@ export default {
             }
 
             // Alerts.swals({show: false});
-            Alerts.modals({type: "show", id: this.forms.entity.qrcode.extras.modals.default.id});
+            Alerts.modals({type: "show", id: this.forms.entity.qrcode.extras.modals.default.id, timeout: 300});
 
         },
         onScanCustomer(decodedText, decodedResult) {
@@ -1156,7 +1178,8 @@ export default {
                             if(customersFiltered.length == 1) {
 
                                 this.forms.entity.qrcode.data.customers.push(customersFiltered[0]);
-                                Alerts.generateAlert({type: "success", msgContent: `<span class="d-block">Cliente escaneado: ${dataScan.name}.</span><span class="d-block fw-semibold mt-1">Se ha agregado a los clientes escaneados.</span>`});
+                                // Alerts.generateAlert({type: "success", msgContent: `<span class="d-block">Cliente escaneado: ${dataScan.name}.</span><span class="d-block fw-semibold mt-1">Se ha agregado a los clientes escaneados.</span>`});
+                                this.qrcodeEntity();
 
                             }else {
 
@@ -1215,7 +1238,9 @@ export default {
                 const qrcode = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.qrcodeUpdate, data: form, id: form.id}) :
                                                                          Requests.post({route: this.config.entity.routes.qrcodeStore, data: form}));
 
-                if(Requests.valid({result: qrcode})) {
+                const isValid = Requests.valid({result: qrcode});
+
+                if(isValid) {
 
                     if(["finalized"].includes(this.forms.entity.qrcode.extras.modals.default.type)) {
 
@@ -1225,7 +1250,6 @@ export default {
 
                     // Alerts.toastrs({type: "success", subtitle: qrcode?.data?.msg});
                     // Alerts.swals({show: false});
-                    Alerts.generateAlert({type: "success", messages: qrcode?.data?.attendances.map(e => `${e.bool ? "<i class='fa fa-check-circle text-success'></i>" : "<i class='fa fa-times-circle text-danger'></i>"} <span class='ms-1'>${e.msg}</span>`), msgContent: `<div class="fw-semibold mb-2">${qrcode?.data?.msg}</div>`});
 
                     this.clearForm({functionName});
                     this.forms.entity.qrcode.data.customers = [];
@@ -1237,7 +1261,21 @@ export default {
                     this.formErrors({functionName, type: "set", errors: qrcode?.errors ?? []});
                     // Alerts.toastrs({type: "error", subtitle: qrcode?.data?.msg});
                     // Alerts.swals({show: false});
-                    Alerts.generateAlert({type: "error", messages: qrcode?.data?.attendances.map(e => `${e.bool ? "<i class='fa fa-check-circle text-success'></i>" : "<i class='fa fa-times-circle text-danger'></i>"} <span class='ms-1'>${e.msg}</span>`), msgContent: `<div class="fw-semibold mb-2">${qrcode?.data?.msg}</div>`});
+
+                }
+
+                // Show response
+                if((qrcode?.data?.attendances ?? []).length === 0) {
+
+                    Alerts.generateAlert({type: isValid ? "success" : "error", msgContent: qrcode?.data?.msg});
+
+                }else if((qrcode?.data?.attendances ?? []).length === 1) {
+
+                    Alerts.generateAlert({type: qrcode?.data?.attendances[0]?.bool ? "success" : "error", msgContent: qrcode?.data?.attendances[0]?.msg});
+
+                }else {
+
+                    Alerts.generateAlert({type: isValid ? "success" : "error", messages: qrcode?.data?.attendances.map(e => `${e.bool ? "<i class='fa fa-check-circle text-success'></i>" : "<i class='fa fa-times-circle text-danger'></i>"} <span class='ms-1'>${e.msg}</span>`), msgContent: `<div class="fw-semibold mb-2">${qrcode?.data?.msg}</div>`});
 
                 }
 
@@ -1419,9 +1457,11 @@ export default {
                     break;
 
                 case "modalQrcodeEntity":
+                    break;
+
                 case "qrcodeEntity":
                     // this.forms.entity.qrcode.data.id        = null;
-                    // this.forms.entity.qrcode.data.customers = [];
+                    this.forms.entity.qrcode.data.customers = [];
                     // this.forms.entity.qrcode.data.end_date  = "";
                     // this.forms.entity.qrcode.data.status    = null;
 

@@ -209,7 +209,11 @@ export default {
                         }
 
                         // Show response
-                        if((qrcode?.data?.attendances).length === 1) {
+                        if((qrcode?.data?.attendances ?? []).length === 0) {
+
+                            Alerts.generateAlert({type: isValid ? "success" : "error", msgContent: qrcode?.data?.msg});
+
+                        }else if((qrcode?.data?.attendances ?? []).length === 1) {
 
                             Alerts.generateAlert({type: qrcode?.data?.attendances[0]?.bool ? "success" : "error", msgContent: qrcode?.data?.attendances[0]?.msg});
 

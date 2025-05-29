@@ -76,8 +76,6 @@ class AttendanceService {
     // Flow
     public function validateAndCreateAttendance(array $data): array {
 
-        // Config: qr_automatic
-
         $companyId   = $data["company_id"];
         $branchId    = $data["branch_id"];
         $customerId  = $data["customer_id"];
@@ -91,7 +89,7 @@ class AttendanceService {
 
         if(!Utilities::isDefined($customer)) {
 
-            return ["bool" => false, "msg" => "El cliente seleccionado no es correcto."];
+            return ["bool" => false, "msg" => "El cliente ingresado no es correcto."];
 
         }
 
@@ -117,7 +115,7 @@ class AttendanceService {
 
         if($subscriptions->isEmpty()) {
 
-            return ["bool" => false, "msg" => "No cuenta con una membresía vigente en la sucursal.", "customer" => ["name" => $customer->name]];
+            return ["bool" => false, "msg" => "$customer->name: No cuenta con una membresía vigente en la sucursal.", "customer" => ["name" => $customer->name]];
 
         }
 
@@ -128,13 +126,13 @@ class AttendanceService {
 
         if($check["hasActive"]) {
 
-            return ["bool" => false, "msg" => "Cuenta con un registro de asistencia 'En curso'.", "customer" => ["name" => $customer->name]];
+            return ["bool" => false, "msg" => "$customer->name: Cuenta con un registro de asistencia 'En curso'.", "customer" => ["name" => $customer->name]];
 
         }
 
         if($check["exceedsLimit"]) {
 
-            return ["bool" => false, "msg" => "Límite de ingresos excedido ($limitPerDay por día).", "customer" => ["name" => $customer->name]];
+            return ["bool" => false, "msg" => "$customer->name: Límite de ingresos excedido ($limitPerDay por día).", "customer" => ["name" => $customer->name]];
 
         }
 

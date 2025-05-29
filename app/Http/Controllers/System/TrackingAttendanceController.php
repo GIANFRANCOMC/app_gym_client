@@ -10,6 +10,7 @@ use stdClass;
 
 use App\Http\Requests\System\TrackingAttendances\{CancelTrackingAttendanceRequest};
 use App\Models\System\{Attendance, Branch, Customer, Subscription};
+use App\Services\AttendanceService;
 use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -95,92 +96,32 @@ class TrackingAttendanceController extends Controller {
 
     }
 
-    public function store(Request $request) { // StoreTrackingAttendanceRequest
+    public function store(Request $request, AttendanceService $attendanceService) { // StoreTrackingAttendanceRequest
 
         $userAuth = Auth::user();
 
-        $startDate = str_replace("T", " ", $request->start_date);
+        $startDate = Utilities::isDefined($request->start_date) ? Carbon::parse(str_replace("T", " ", $request->start_date)) : now();
+        $endDate   = Utilities::isDefined($request->end_date) ? Carbon::parse(str_replace("T", " ", $request->end_date)) : now();
 
-        if(!Utilities::isDefined($startDate) || !Utilities::isValidDateFormat($startDate, "Y-m-d H:i")) {
+        $attendances = collect();
 
-            return response()->json(["bool" => false, "msg" => "No se ha podido crear la asistencia, debe de diligenciar el ingreso."], 200);
+        $result = $attendanceService->validateAndCreateAttendance([
+            "company_id"  => $userAuth->company_id,
+            "branch_id"   => $request->branch_id,
+            "customer_id" => $request->customer_id,
+            "start_date"  => $startDate,
+            "end_date"    => $endDate,
+            "observation" => $request->observation ?? "",
+            "user_id"     => $userAuth->id,
+            "type"        => "form_manual"
+        ]);
 
-        }
+        $attendances->push($result);
 
-        $attendance = null;
+        $bool = count($attendances->where("bool", true)) > 0;
+        $msg  = $bool ? "Asistencias creadas correctamente." : "No se han podido crear las asistencias.";
 
-        $customer = Customer::where("id", $request->customer_id)
-                            ->where("company_id", $userAuth->company_id)
-                            ->first();
-
-        if(!Utilities::isDefined($customer)) {
-
-            return response()->json(["bool" => false, "msg" => "El cliente seleccionado no es correcto."], 200);
-
-        }
-
-        $subscriptions = Subscription::where("company_id", $userAuth->company_id)
-                                     ->where("branch_id", $request->branch_id)
-                                     ->where("customer_id", $customer->id)
-                                     ->where("start_date", "<=", $startDate)
-                                     ->where("end_date", ">=", $startDate)
-                                     ->where("status", "active")
-                                     ->orderBy("attendance_limit_per_day", "DESC")
-                                     ->get();
-
-        if(count($subscriptions) === 0) {
-
-            return response()->json(["bool" => false, "msg" => "$customer->name: No cuenta con una membresía vigente en la sucursal."], 200);
-
-        }
-
-        $subscriptionsFirst = $subscriptions->first();
-        $attendanceLimitPerDay = intval($subscriptionsFirst->attendance_limit_per_day);
-
-        $attendancesFiltered = Attendance::where("company_id", $userAuth->company_id)
-                                         ->where("branch_id", $request->branch_id)
-                                         ->where("customer_id", $customer->id)
-                                         ->whereDate("start_date", Carbon::createFromFormat("Y-m-d H:i", $startDate)->format("Y-m-d"))
-                                         ->whereIn("status", ["active", "finalized"])
-                                         ->get();
-
-        $activeAttendances = $attendancesFiltered->where("status", "active");
-
-        if(count($activeAttendances) > 0) {
-
-            return response()->json(["bool" => false, "msg" => "$customer->name: Cuenta con un registro de asistencia 'En curso'."], 200);
-
-        }
-
-        $finalizedAttendances = $attendancesFiltered->where("status", "finalized");
-
-        if(count($finalizedAttendances) >= $attendanceLimitPerDay) {
-
-            return response()->json(["bool" => false, "msg" => "$customer->name: Límite de ingresos excedido ($attendanceLimitPerDay por día)."], 200);
-
-        }
-
-        DB::transaction(function() use($request, $userAuth, &$attendance, $customer, $startDate) {
-
-            $attendance = new Attendance();
-            $attendance->company_id  = $userAuth->company_id;
-            $attendance->branch_id   = $request->branch_id;
-            $attendance->customer_id = $customer->id;
-            $attendance->start_date  = $startDate;
-            $attendance->end_date    = null; // $request->end_date;
-            $attendance->observation = $request->observation ?? "";
-            $attendance->type        = "manual";
-            $attendance->status      = "active";
-            $attendance->created_at  = now();
-            $attendance->created_by  = $userAuth->id ?? null;
-            $attendance->save();
-
-        });
-
-        $bool = Utilities::isDefined($attendance);
-        $msg  = $bool ? "$customer->name: Asistencia creada correctamente." : "$customer->name: No se ha podido crear la asistencia.";
-
-        return response()->json(["bool" => $bool, "msg" => $msg, "attendance" => $attendance], 200);
+        return response()->json(["bool" => $bool, "msg" => $msg, "attendances" => $attendances], 200);
 
     }
 
@@ -200,11 +141,7 @@ class TrackingAttendanceController extends Controller {
 
         $userAuth = Auth::user();
 
-        if(!Utilities::isDefined($request->end_date)) {
-
-            return response()->json(["bool" => false, "msg" => "No se ha podido finalizar la asistencia, debe de diligenciar la salida."], 200);
-
-        }
+        $endDate = Utilities::isDefined($request->end_date) ? Carbon::parse(str_replace("T", " ", $request->end_date)) : now();
 
         $attendance = Attendance::where("id", $id)
                                 ->where("company_id", $userAuth->company_id)
@@ -215,9 +152,9 @@ class TrackingAttendanceController extends Controller {
 
         if(Utilities::isDefined($attendance)) {
 
-            DB::transaction(function() use($request, $userAuth, &$attendance) {
+            DB::transaction(function() use($request, $userAuth, &$attendance, $endDate) {
 
-                $attendance->end_date   = $request->end_date;
+                $attendance->end_date   = $endDate;
                 $attendance->status     = "finalized";
                 $attendance->updated_at = now();
                 $attendance->updated_by = $userAuth->id ?? null;
@@ -228,7 +165,7 @@ class TrackingAttendanceController extends Controller {
         }
 
         $bool = Utilities::isDefined($attendance);
-        $msg  = $bool ? "Asistencia finalizada correctamente." : "No se ha podido finalizar la asistencia.";
+        $msg  = $bool ? "Asistencia concluida correctamente." : "No se ha podido concluir la asistencia.";
 
         return response()->json(["bool" => $bool, "msg" => $msg, "attendance" => $attendance], 200);
 
@@ -269,91 +206,29 @@ class TrackingAttendanceController extends Controller {
 
     }
 
-    public function qrcodeStore(Request $request) { // StoreTrackingAttendanceRequest
+    public function qrcodeStore(Request $request, AttendanceService $attendanceService) { // StoreTrackingAttendanceRequest
 
         $userAuth = Auth::user();
 
-        $startDate = str_replace("T", " ", $request->start_date);
-
-        if(!Utilities::isDefined($startDate) || !Utilities::isValidDateFormat($startDate, "Y-m-d H:i")) {
-
-            return response()->json(["bool" => false, "msg" => "No se ha podido crear la asistencia, debe de diligenciar el ingreso."], 200);
-
-        }
+        $startDate = Utilities::isDefined($request->start_date) ? Carbon::parse(str_replace("T", " ", $request->start_date)) : now();
+        $endDate   = Utilities::isDefined($request->end_date) ? Carbon::parse(str_replace("T", " ", $request->end_date)) : now();
 
         $attendances = collect();
 
         foreach($request->customers as $customerRequest) {
 
-            $customer = Customer::where("id", $customerRequest["customer_id"])
-                                ->where("company_id", $userAuth->company_id)
-                                ->first();
+            $result = $attendanceService->validateAndCreateAttendance([
+                "company_id"  => $userAuth->company_id,
+                "branch_id"   => $request->branch_id,
+                "customer_id" => $customerRequest["customer_id"],
+                "start_date"  => $startDate,
+                "end_date"    => $endDate,
+                "observation" => $request->observation ?? "",
+                "user_id"     => $userAuth->id,
+                "type"        => "qr_manual"
+            ]);
 
-            if(!Utilities::isDefined($customer)) {
-
-                $attendances->push(["bool" => false, "msg" => "El cliente seleccionado no es correcto."]);
-                continue;
-
-            }
-
-            $subscriptions = Subscription::where("company_id", $userAuth->company_id)
-                                         ->where("branch_id", $request->branch_id)
-                                         ->where("customer_id", $customer->id)
-                                         ->where("start_date", "<=", $startDate)
-                                         ->where("end_date", ">=", $startDate)
-                                         ->where("status", "active")
-                                         ->orderBy("attendance_limit_per_day", "DESC")
-                                         ->get();
-
-            if(count($subscriptions) === 0) {
-
-                $attendances->push(["bool" => false, "msg" => "$customer->name: No cuenta con una membresía vigente en la sucursal."]);
-                continue;
-
-            }
-
-            $subscriptionsFirst = $subscriptions->first();
-            $attendanceLimitPerDay = intval($subscriptionsFirst->attendance_limit_per_day);
-
-            $attendancesFiltered = Attendance::where("company_id", $userAuth->company_id)
-                                             ->where("branch_id", $request->branch_id)
-                                             ->where("customer_id", $customer->id)
-                                             ->whereDate("start_date", Carbon::createFromFormat("Y-m-d H:i", $startDate)->format("Y-m-d"))
-                                             ->whereIn("status", ["active", "finalized"])
-                                             ->get();
-
-            $activeAttendances = $attendancesFiltered->where("status", "active");
-
-            if(count($activeAttendances) > 0) {
-
-                $attendances->push(["bool" => false, "msg" => "$customer->name: Cuenta con un registro de asistencia 'En curso'."]);
-                continue;
-
-            }
-
-            $finalizedAttendances = $attendancesFiltered->where("status", "finalized");
-
-            if(count($finalizedAttendances) >= $attendanceLimitPerDay) {
-
-                $attendances->push(["bool" => false, "msg" => "$customer->name: Límite de ingresos excedido ($attendanceLimitPerDay por día)."]);
-                continue;
-
-            }
-
-            $attendance = new Attendance();
-            $attendance->company_id  = $userAuth->company_id;
-            $attendance->branch_id   = $request->branch_id;
-            $attendance->customer_id = $customer->id;
-            $attendance->start_date  = $startDate;
-            $attendance->end_date    = null; // $request->end_date;
-            $attendance->observation = $request->observation ?? "";
-            $attendance->type        = "qr";
-            $attendance->status      = "active";
-            $attendance->created_at  = now();
-            $attendance->created_by  = $userAuth->id ?? null;
-            $attendance->save();
-
-            $attendances->push(["bool" => true, "msg" => "$customer->name: Asistencia creada correctamente."]);
+            $attendances->push($result);
 
         }
 
