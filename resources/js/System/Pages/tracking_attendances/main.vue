@@ -256,10 +256,10 @@
                                 </button>
                             </template>
                         </div>
-                        <a class="text-muted" @click="rememberModeEntity('manual')" href="javascript:void(0)">
+                        <!-- <a class="text-muted" @click="rememberModeEntity('manual')" href="javascript:void(0)">
                             <span>¿Recordar modalidad?</span>
                             <span :class="[forms.entity.createUpdate.config.rememberMode ? 'text-success' : 'text-primary', 'fw-bold ms-1']" v-text="forms.entity.createUpdate.config.rememberMode ? 'Sí' : 'No'"></span>
-                        </a>
+                        </a> -->
                     </div>
                     <div class="row g-3">
                         <InputSlot
@@ -359,10 +359,10 @@
                                 </button>
                             </template>
                         </div>
-                        <a class="text-muted" @click="rememberModeEntity('qrcode')" href="javascript:void(0)">
+                        <!-- <a class="text-muted" @click="rememberModeEntity('qrcode')" href="javascript:void(0)">
                             <span>¿Recordar modalidad?</span>
                             <span :class="[forms.entity.createUpdate.config.rememberMode ? 'text-success' : 'text-primary', 'fw-bold ms-1']" v-text="forms.entity.createUpdate.config.rememberMode ? 'Sí' : 'No'"></span>
-                        </a>
+                        </a> -->
                     </div>
                     <div class="row g-3">
                         <InputSlot
