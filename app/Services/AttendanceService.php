@@ -141,7 +141,7 @@ class AttendanceService {
             "branch_id"   => $branchId,
             "customer_id" => $customer->id,
             "start_date"  => $startDate,
-            "end_date"    => $endDate,
+            "end_date"    => null, // $endDate,
             "observation" => $observation,
             "user_id"     => $userId,
             "type"        => $type
