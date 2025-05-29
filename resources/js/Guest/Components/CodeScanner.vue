@@ -8,7 +8,7 @@
         <div ref="scannerContainer" style="width: 100%;"></div>
         <template v-if="cameras.length > 0">
             <template v-if="showControls">
-                <div class="d-flex gap-2 mt-2">
+                <div :class="['d-flex gap-2', isScanning ? 'mt-2' : '']">
                     <button @click="startScanner()" v-if="!isScanning" type="button" class="btn btn-success waves-effect">📷 Escanear QR</button>
                     <button @click="stopScanner()" v-if="isScanning" type="button" class="btn btn-danger waves-effect">🛑 Detener escáner</button>
                 </div>

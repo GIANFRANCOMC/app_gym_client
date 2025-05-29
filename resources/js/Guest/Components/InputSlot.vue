@@ -4,6 +4,7 @@
             <slot name="default"></slot>
             <label v-if="!!title" v-text="title" :class="[...titleClass]"></label>
             <label v-if="isRequired" v-text="requiredLabel" :class="[...requiredClass]"></label>
+            <slot name="defaultAppend"></slot>
             <div :class="[isInputGroup ? 'input-group' : '', ...divInputClass]">
                 <slot name="inputGroupPrepend"></slot>
                 <slot name="input"></slot>
@@ -18,6 +19,7 @@
         <slot name="default"></slot>
         <label v-if="!!title" v-text="title" :class="[...titleClass]"></label>
         <label v-if="isRequired" v-text="requiredLabel" :class="[...requiredClass]"></label>
+        <slot name="defaultAppend"></slot>
         <div :class="[isInputGroup ? 'input-group' : '', ...divInputClass]">
             <slot name="inputGroupPrepend"></slot>
             <slot name="input"></slot>

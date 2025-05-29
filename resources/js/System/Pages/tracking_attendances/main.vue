@@ -2,12 +2,20 @@
     <Breadcrumb :list="breadcrumbTitles"/>
 
     <!-- Content -->
+     <div class="row justify-content-end g-3 mb-1" v-if="!lists.entity.extras.loading">
+        <div class="col-lg-auto col-sm-auto">
+            <a href="javascript:void(0)" @click="selectModeEntity('manual', true)" class="fw-bold">
+                <i class="fa fa-check-circle"></i>
+                <span class="ms-1">Registrar asistencia</span>
+            </a>
+        </div>
+    </div>
     <div class="row align-items-start g-3 mb-3 mb-md-4">
         <div class="col-xl-9 col-12">
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between pt-3 pb-1">
                     <div class="card-title mb-0">
-                        <span class="fw-semibold">General</span>
+                        <span class="fw-semibold">Asistencias</span>
                     </div>
                     <div v-show="false">
                         <button class="btn btn-xs btn-primary" @click="initChart('default')" type="button">
@@ -16,7 +24,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <canvas id="defaultChartId" class="chartjs" data-height="180"></canvas>
+                    <canvas id="defaultChartId" class="chartjs" data-height="150"></canvas>
                 </div>
             </div>
         </div>
@@ -33,7 +41,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <canvas id="doughnutChartId" class="chartjs" data-height="180"></canvas>
+                    <canvas id="doughnutChartId" class="chartjs" data-height="150"></canvas>
                 </div>
             </div>
         </div>
@@ -132,7 +140,7 @@
                     <i class="fa fa-filter"></i>
                     <span class="ms-2">Filtrar asistencias</span>
                 </button>
-                <button type="button" class="btn btn-primary waves-effect" @click="selectModeEntity()" :disabled="lists.entity.extras.loading">
+                <button type="button" class="btn btn-primary waves-effect" @click="selectModeEntity('manual', true)" :disabled="lists.entity.extras.loading">
                     <i class="fa fa-check"></i>
                     <span class="ms-2">Registrar asistencia</span>
                 </button>
@@ -218,11 +226,11 @@
             </tbody>
         </table>
     </div>
-    <div class="row justify-content-end g-3 my-1" v-if="!lists.entity.extras.loading">
+    <div class="row justify-content-end g-3 mt-1" v-if="!lists.entity.extras.loading">
         <div class="col-lg-auto col-sm-auto">
-            <a href="javascript:void(0)" @click="modalCreateUpdateEntity({type: 'store'})" class="fw-bold ms-3">
-                <i class="fa fa-plus-circle"></i>
-                <span class="ms-1">Agregar asistencia</span>
+            <a href="javascript:void(0)" @click="selectModeEntity('manual', true)" class="fw-bold">
+                <i class="fa fa-check-circle"></i>
+                <span class="ms-1">Registrar asistencia</span>
             </a>
         </div>
     </div>
@@ -239,6 +247,20 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <div v-if="['store'].includes(forms.entity.createUpdate.extras.modals.default.type)" class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+                        <div class="d-flex gap-3">
+                            <template v-for="record in formModes" :key="record.code">
+                                <button :class="['btn btn-sm', [forms.entity.createUpdate.config.currentMode].includes(record?.code) ? 'btn-outline-success fw-bold' : 'btn-outline-secondary']" @click="selectModeEntity(record?.code, false)" :disabled="[forms.entity.createUpdate.config.currentMode].includes(record?.code)">
+                                    <i :class="['fa', record?.icon]"></i>
+                                    <span v-text="record?.label" class="ms-2"></span>
+                                </button>
+                            </template>
+                        </div>
+                        <a class="text-muted" @click="rememberModeEntity('manual')" href="javascript:void(0)">
+                            <span>¿Recordar modalidad?</span>
+                            <span :class="[forms.entity.createUpdate.config.rememberMode ? 'text-success' : 'text-primary', 'fw-bold ms-1']" v-text="forms.entity.createUpdate.config.rememberMode ? 'Sí' : 'No'"></span>
+                        </a>
+                    </div>
                     <div class="row g-3">
                         <InputSlot
                             hasDiv
@@ -313,6 +335,20 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <div v-if="['store'].includes(forms.entity.qrcode.extras.modals.default.type)" class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+                        <div class="d-flex gap-3">
+                            <template v-for="record in formModes" :key="record.code">
+                                <button :class="['btn btn-sm', [forms.entity.createUpdate.config.currentMode].includes(record?.code) ? 'btn-outline-success fw-bold' : 'btn-outline-secondary']" @click="selectModeEntity(record?.code, false)" :disabled="[forms.entity.createUpdate.config.currentMode].includes(record?.code)">
+                                    <i :class="['fa', record?.icon]"></i>
+                                    <span v-text="record?.label" class="ms-2"></span>
+                                </button>
+                            </template>
+                        </div>
+                        <a class="text-muted" @click="rememberModeEntity('qrcode')" href="javascript:void(0)">
+                            <span>¿Recordar modalidad?</span>
+                            <span :class="[forms.entity.createUpdate.config.rememberMode ? 'text-success' : 'text-primary', 'fw-bold ms-1']" v-text="forms.entity.createUpdate.config.rememberMode ? 'Sí' : 'No'"></span>
+                        </a>
+                    </div>
                     <div class="row g-3">
                         <InputSlot
                             hasDiv
@@ -341,13 +377,17 @@
                                 <div class="w-100">
                                     <CodeScanner
                                         ref="scannerQr"
-                                        :limitScan="1"
+                                        :showControls="true"
+                                        :qrbox="290"
+                                        :fps="23"
+                                        :limitScan="-1"
+                                        :canProcess="!forms.entity.qrcode.config.isProcessing"
                                         @result="onScanCustomer"/>
                                 </div>
                             </template>
                         </InputSlot>
                         <InputSlot
-                            v-if="(forms.entity.qrcode.data.customers).length > 1"
+                            v-if="(forms.entity.qrcode.data.customers).length > 0"
                             hasDiv
                             title="Clientes"
                             isRequired
@@ -516,20 +556,12 @@ export default {
             $(`#${this.forms.entity.qrcode.extras.modals.default.id}`)
             .on("shown.bs.modal", () => {
 
-                if(el.$refs?.scannerQr?.startScanner) {
-
-                    el.$refs.scannerQr.startScanner();
-
-                }
+                //
 
             })
             .on("hidden.bs.modal", () => {
 
-                if(el.$refs?.scannerQr?.stopScanner) {
-
-                    el.$refs.scannerQr.stopScanner(false);
-
-                }
+                el.forms.entity.qrcode.config.isProcessing = true;
 
             });
 
@@ -600,6 +632,11 @@ export default {
                             end_date: "",
                             status: null
                         },
+                        config: {
+                            rememberMode: true,
+                            currentMode: "",
+                            historyMode: []
+                        },
                         errors: {}
                     },
                     qrcode: {
@@ -644,6 +681,9 @@ export default {
                             start_date: "",
                             end_date: "",
                             status: null
+                        },
+                        config: {
+                            isProcessing: true
                         },
                         errors: {}
                     },
@@ -952,61 +992,59 @@ export default {
 
         },
         // Forms
-        selectModeEntity() {
+        rememberModeEntity(mode = "manual") {
+
+            this.forms.entity.createUpdate.config.rememberMode = !this.forms.entity.createUpdate.config.rememberMode;
+
+            if(this.forms.entity.createUpdate.config.rememberMode) {
+
+                this.addModeEntity(mode);
+
+            }
+
+        },
+        addModeEntity(mode = "manual") {
+
+            this.forms.entity.createUpdate.config.historyMode.push(mode);
+
+        },
+        selectModeEntity(mode = "manual", validateRemember = true) {
 
             let el = this;
 
-            Swal.fire({
-                html: `<span class="fw-bold d-block my-3">Elige una forma para registrar la asistencia.</span>
-                       <div class="form-group text-start">
-                            <div class="mb-3">
-                                <p class="mb-1">Escanea el código QR del carnet para registrar la asistencia de forma rápida y segura.</p>
-                                <button id="btn-qr" type="button" class="btn btn-primary w-100 waves-effect">
-                                    <i class="fa fa-qrcode"></i>
-                                    <span class="ms-2">Escanear QR</span>
-                                </button>
-                            </div>
-                            <div class="mb-3">
-                                <p class="mb-1">Ingresa los datos manualmente si no puedes escanear el QR o si el carnet no está disponible.</p>
-                                <button id="btn-manual" type="button" class="btn btn-primary w-100 waves-effect">
-                                    <i class="fa fa-hand"></i>
-                                    <span class="ms-2">Ingreso Manual</span>
-                                </button>
-                            </div>
-                       </div>`,
-                allowOutsideClick: false,
-                showConfirmButton: false,
-                showCancelButton: true,
-                cancelButtonText: "Cancelar",
-                customClass: {
-                    cancelButton: "btn btn-secondary waves-effect ms-3"
-                },
-                didOpen: () => {
+            let configMode = "";
 
-                    document.getElementById("btn-qr").addEventListener("click", () => {
+            if(validateRemember && this.forms.entity.createUpdate.config.rememberMode) {
 
-                        Swal.close();
-                        el.modalQrcodeEntity({type: "store"});
+                configMode = this.forms.entity.createUpdate.config.historyMode[this.forms.entity.createUpdate.config.historyMode.length - 1] ?? "manual";
 
-                    });
+                this.addModeEntity(configMode);
+                this.forms.entity.createUpdate.config.currentMode = configMode;
 
-                    document.getElementById("btn-manual").addEventListener("click", () => {
+            }else {
 
-                        Swal.close();
-                        el.modalCreateUpdateEntity({type: "store"});
+                configMode = mode;
 
-                    });
+                this.addModeEntity(configMode);
+                this.forms.entity.createUpdate.config.currentMode = configMode;
 
-                }
-            }).then(async function(result) {
+            }
 
-                if(result.isConfirmed) {
+            this.forms.entity.qrcode.config.isProcessing = true;
 
-                    //
+            if(configMode == "manual") {
 
-                }
+                Alerts.modals({type: "hide", id: this.forms.entity.qrcode.extras.modals.default.id});
 
-            });
+                el.modalCreateUpdateEntity({type: "store"});
+
+            }else if(configMode == "qrcode") {
+
+                Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
+
+                el.modalQrcodeEntity({type: "store"});
+
+            }
 
         },
         modalCreateUpdateEntity({record = null, type = "store"}) {
@@ -1038,7 +1076,7 @@ export default {
             }
 
             // Alerts.swals({show: false});
-            Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.default.id, timeout: 300});
+            Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.default.id});
 
         },
         async createUpdateEntity() {
@@ -1117,7 +1155,7 @@ export default {
             const functionName = "modalQrcodeEntity";
 
             this.forms.entity.qrcode.extras.modals.default.type = type;
-            this.$refs.scannerQr.stopScanner(false); // Reset, scan show => open modal
+            this.forms.entity.qrcode.config.isProcessing = false;
 
             // Alerts.swals({});
             this.clearForm({functionName});
@@ -1142,10 +1180,12 @@ export default {
             }
 
             // Alerts.swals({show: false});
-            Alerts.modals({type: "show", id: this.forms.entity.qrcode.extras.modals.default.id, timeout: 300});
+            Alerts.modals({type: "show", id: this.forms.entity.qrcode.extras.modals.default.id});
 
         },
         onScanCustomer(decodedText, decodedResult) {
+
+            if(this.forms.entity.qrcode.config.isProcessing) return;
 
             try {
 
@@ -1162,9 +1202,13 @@ export default {
 
                 }else {
 
+                    let el = this;
+
                     const id = parseInt(bp?.id);
 
                     if(id > 0) {
+
+                        this.forms.entity.qrcode.config.isProcessing = true;
 
                         if(this.forms.entity.qrcode.data.customers.some(e => e.code == id)) {
 
@@ -1189,6 +1233,12 @@ export default {
                             }
 
                         }
+
+                        setTimeout(() => {
+
+                            el.forms.entity.qrcode.config.isProcessing = false;
+
+                        }, 5000);
 
                     }else {
 
@@ -1646,6 +1696,11 @@ export default {
         customers: function() {
 
             return this.options?.customers?.records.map(e => ({code: e.id, label: `${e.document_number} - ${e.name}`, data: e}));
+
+        },
+        formModes: function() {
+
+            return [{code: "manual", label: "Manual", icon: "fa-hand"}, {code: "qrcode", label: "QR", icon: "fa-qrcode"}];
 
         }
     },
