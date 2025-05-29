@@ -247,10 +247,10 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div v-if="['store'].includes(forms.entity.createUpdate.extras.modals.default.type)" class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
-                        <div class="d-flex gap-3">
+                    <div v-if="['store'].includes(forms.entity.createUpdate.extras.modals.default.type)" class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                        <div class="d-flex gap-2">
                             <template v-for="record in formModes" :key="record.code">
-                                <button :class="['btn btn-sm', [forms.entity.createUpdate.config.currentMode].includes(record?.code) ? 'btn-outline-success fw-bold' : 'btn-outline-secondary']" @click="selectModeEntity(record?.code, false)" :disabled="[forms.entity.createUpdate.config.currentMode].includes(record?.code)">
+                                <button :class="['btn btn-sm', [forms.entity.createUpdate.config.currentMode].includes(record?.code) ? 'btn-dark fw-bold' : 'btn-outline-dark fw-semibold']" @click="selectModeEntity(record?.code, false)" :disabled="[forms.entity.createUpdate.config.currentMode].includes(record?.code)">
                                     <i :class="['fa', record?.icon]"></i>
                                     <span v-text="record?.label" class="ms-2"></span>
                                 </button>
@@ -295,27 +295,42 @@
                                     :clearable="true"/>
                             </template>
                         </InputSlot>
-                        <InputDatetime
-                            v-model="forms.entity.createUpdate.data.start_date"
+                        <InputSlot
+                            v-if="['store', 'finalized', 'canceled'].includes(forms.entity.createUpdate.extras.modals.default.type)"
                             hasDiv
-                            title="Ingreso"
+                            :title="['store'].includes(forms.entity.createUpdate.extras.modals.default.type) ? 'Ingreso / salida' : 'Ingreso'"
                             isRequired
-                            :disabled="['canceled'].includes(forms.entity.createUpdate.extras.modals.default.type) || isDefined({value: forms.entity.createUpdate.data?.id})"
                             xl="6"
-                            lg="6"/>
-                        <InputDatetime
-                            v-if="isDefined({value: forms.entity.createUpdate.data?.id})"
-                            v-model="forms.entity.createUpdate.data.end_date"
+                            lg="6">
+                            <template v-slot:defaultAppend>
+                                <small v-if="['store'].includes(forms.entity.createUpdate.extras.modals.default.type)" class="mt-1 text-muted fw-semibold ms-2">Es referencial</small>
+                            </template>
+                            <template v-slot:input>
+                                <AnalogClock
+                                    :time="forms.entity.createUpdate.data.start_date"
+                                    :isDynamic="['store'].includes(forms.entity.createUpdate.extras.modals.default.type)"/>
+                            </template>
+                        </InputSlot>
+                        <InputSlot
+                            v-if="['finalized', 'canceled'].includes(forms.entity.createUpdate.extras.modals.default.type)"
                             hasDiv
-                            title="Salida"
-                            :isRequired="isDefined({value: forms.entity.createUpdate.data?.id})"
-                            :disabled="['canceled'].includes(forms.entity.createUpdate.extras.modals.default.type) || !isDefined({value: forms.entity.createUpdate.data?.id})"
+                            :title="['finalized'].includes(forms.entity.createUpdate.extras.modals.default.type) ? 'Salida' : 'Salida'"
+                            isRequired
                             xl="6"
-                            lg="6"/>
+                            lg="6">
+                            <template v-slot:defaultAppend>
+                                <small v-if="['finalized'].includes(forms.entity.createUpdate.extras.modals.default.type)" class="mt-1 text-muted fw-semibold ms-2">Es referencial</small>
+                            </template>
+                            <template v-slot:input>
+                                <AnalogClock
+                                    :time="forms.entity.createUpdate.data.end_date"
+                                    :isDynamic="['finalized'].includes(forms.entity.createUpdate.extras.modals.default.type)"/>
+                            </template>
+                        </InputSlot>
                     </div>
-                    <div v-if="['store'].includes(forms.entity.createUpdate.extras.modals.default.type)" class="alert alert-secondary small mt-3 mb-0" role="alert">
+                    <!-- <div v-if="['store'].includes(forms.entity.createUpdate.extras.modals.default.type)" class="alert alert-secondary small mt-3 mb-0" role="alert">
                         El sistema detectará automáticamente si estás registrando un ingreso o una salida.
-                    </div>
+                    </div> -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
@@ -336,9 +351,9 @@
                 </div>
                 <div class="modal-body">
                     <div v-if="['store'].includes(forms.entity.qrcode.extras.modals.default.type)" class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
-                        <div class="d-flex gap-3">
+                        <div class="d-flex gap-2">
                             <template v-for="record in formModes" :key="record.code">
-                                <button :class="['btn btn-sm', [forms.entity.createUpdate.config.currentMode].includes(record?.code) ? 'btn-outline-success fw-bold' : 'btn-outline-secondary']" @click="selectModeEntity(record?.code, false)" :disabled="[forms.entity.createUpdate.config.currentMode].includes(record?.code)">
+                                <button :class="['btn btn-sm', [forms.entity.createUpdate.config.currentMode].includes(record?.code) ? 'btn-dark fw-bold' : 'btn-outline-dark fw-semibold']" @click="selectModeEntity(record?.code, false)" :disabled="[forms.entity.createUpdate.config.currentMode].includes(record?.code)">
                                     <i :class="['fa', record?.icon]"></i>
                                     <span v-text="record?.label" class="ms-2"></span>
                                 </button>
@@ -430,27 +445,42 @@
                                 </div>
                             </template>
                         </InputSlot>
-                        <InputDatetime
-                            v-model="forms.entity.qrcode.data.start_date"
+                        <InputSlot
+                            v-if="['store', 'finalized', 'canceled'].includes(forms.entity.qrcode.extras.modals.default.type)"
                             hasDiv
-                            title="Ingreso"
+                            :title="['store'].includes(forms.entity.qrcode.extras.modals.default.type) ? 'Ingreso / salida' : 'Ingreso'"
                             isRequired
-                            :disabled="['canceled'].includes(forms.entity.qrcode.extras.modals.default.type) || isDefined({value: forms.entity.qrcode.data?.id})"
                             xl="6"
-                            lg="6"/>
-                        <InputDatetime
-                            v-if="isDefined({value: forms.entity.qrcode.data?.id})"
-                            v-model="forms.entity.qrcode.data.end_date"
+                            lg="6">
+                            <template v-slot:defaultAppend>
+                                <small v-if="['store'].includes(forms.entity.qrcode.extras.modals.default.type)" class="mt-1 text-muted fw-semibold ms-2">Es referencial</small>
+                            </template>
+                            <template v-slot:input>
+                                <AnalogClock
+                                    :time="forms.entity.qrcode.data.start_date"
+                                    :isDynamic="['store'].includes(forms.entity.qrcode.extras.modals.default.type)"/>
+                            </template>
+                        </InputSlot>
+                        <InputSlot
+                            v-if="['finalized', 'canceled'].includes(forms.entity.qrcode.extras.modals.default.type)"
                             hasDiv
-                            title="Salida"
-                            :isRequired="isDefined({value: forms.entity.qrcode.data?.id})"
-                            :disabled="['canceled'].includes(forms.entity.qrcode.extras.modals.default.type) || !isDefined({value: forms.entity.qrcode.data?.id})"
+                            :title="['finalized'].includes(forms.entity.qrcode.extras.modals.default.type) ? 'Salida' : 'Salida'"
+                            isRequired
                             xl="6"
-                            lg="6"/>
+                            lg="6">
+                            <template v-slot:defaultAppend>
+                                <small v-if="['finalized'].includes(forms.entity.qrcode.extras.modals.default.type)" class="mt-1 text-muted fw-semibold ms-2">Es referencial</small>
+                            </template>
+                            <template v-slot:input>
+                                <AnalogClock
+                                    :time="forms.entity.qrcode.data.end_date"
+                                    :isDynamic="['finalized'].includes(forms.entity.qrcode.extras.modals.default.type)"/>
+                            </template>
+                        </InputSlot>
                     </div>
-                    <div v-if="['store'].includes(forms.entity.qrcode.extras.modals.default.type)" class="alert alert-secondary small mt-3 mb-0" role="alert">
+                    <!-- <div v-if="['store'].includes(forms.entity.qrcode.extras.modals.default.type)" class="alert alert-secondary small mt-3 mb-0" role="alert">
                         El sistema detectará automáticamente si estás registrando un ingreso o una salida.
-                    </div>
+                    </div> -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>

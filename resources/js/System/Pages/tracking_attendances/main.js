@@ -17,6 +17,7 @@ import Paginator     from "../../Components/Paginator.vue";
 import Loader        from "../../Components/Loader.vue";
 import CodeScanner from "../../Components/CodeScanner.vue";
 import WithoutData   from "../../Components/WithoutData.vue";
+import AnalogClock   from "../../Components/AnalogClock.vue";
 
 // App creation and mounted
 createApp(App)
@@ -33,4 +34,5 @@ createApp(App)
 .component("Loader", Loader)
 .component("CodeScanner", CodeScanner)
 .component("WithoutData", WithoutData)
+.component("AnalogClock", AnalogClock)
 .mount("#app");
