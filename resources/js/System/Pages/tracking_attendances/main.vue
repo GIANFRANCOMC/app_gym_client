@@ -8,7 +8,7 @@
             <span class="ms-1">Registrar asistencia</span>
         </a>
     </div>
-    <div class="row align-items-start g-4 mb-3 mb-md-4">
+    <div class="row align-items-start g-2 g-md-4 mb-4 mb-md-4">
         <div class="col-xl-9 col-12">
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between pt-3 pb-1">
