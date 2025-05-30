@@ -3,9 +3,7 @@
         <div class="date">{{ displayDate }}</div>
         <div class="time">
             <span class="digits">{{ displayHour }}</span>
-            <span class="colon" :class="{ blink: isDynamic && blinkColon }"
-                >:</span
-            >
+            <span class="colon" :class="{ blink: isDynamic && blinkColon }">:</span>
             <span class="digits">{{ displayMinute }}</span>
             <span class="ampm">{{ displayMeridian }}</span>
         </div>
@@ -126,13 +124,13 @@ export default {
     background-color: #000;
     color: #0f0;
     font-weight: bold;
-    padding: 8px 14px;
+    padding: 4px 14px;
     border-radius: 6px;
     display: inline-flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 6px #0f0;
+    /* box-shadow: 0 0 6px #0f0; */
     max-width: 250px;
     transition: background-color 0.4s, color 0.4s, box-shadow 0.4s;
 }
@@ -141,12 +139,12 @@ export default {
 .digital-clock.static {
     background-color: #000814;
     color: #00f0ff;
-    box-shadow: 0 0 6px #00f0ff;
+    /* box-shadow: 0 0 6px #00f0ff; */
 }
 
 .date {
     font-size: 12px;
-    margin-bottom: 4px;
+    /* margin-bottom: 4px; */
     letter-spacing: 1px;
     opacity: 0.85;
     text-align: center;
