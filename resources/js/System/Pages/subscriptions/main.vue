@@ -52,7 +52,7 @@
                     <th class="bg-secondary text-white fw-semibold" style="width: 20%;">CÓDIGO INTERNO</th>
                     <th class="bg-secondary text-white fw-semibold" style="width: 20%;">NOMBRE</th>
                     <th class="bg-secondary text-white fw-semibold" style="width: 15%;">DURACIÓN</th>
-                    <th class="bg-secondary text-white fw-semibold" style="width: 15%;">PRECIO</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 15%;">PRECIO DE VENTA</th>
                     <th class="bg-secondary text-white fw-semibold" style="width: 10%;">ESTADO</th>
                     <th class="bg-secondary text-white fw-semibold" style="width: 20%;">ACCIONES</th>
                 </tr>
@@ -189,13 +189,34 @@
                         <InputNumber
                             v-model="forms.entity.createUpdate.data.price"
                             hasDiv
-                            title="Precio"
+                            title="Precio de venta"
                             isRequired
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.price"
                             xl="6"
                             lg="6"/>
+                        <InputNumber
+                            v-model="forms.entity.createUpdate.data.min_price"
+                            hasDiv
+                            title="Precio mínimo"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.min_price"
+                            xl="4"
+                            lg="4"
+                            md="6"
+                            sm="6"/>
+                        <InputNumber
+                            v-model="forms.entity.createUpdate.data.max_price"
+                            hasDiv
+                            title="Precio máximo"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.max_price"
+                            xl="4"
+                            lg="4"
+                            md="6"
+                            sm="6"/>
                         <InputSlot
+                            v-if="false"
                             hasDiv
                             title="Moneda"
                             isRequired
@@ -307,6 +328,8 @@ export default {
                             duration_type: null,
                             duration_value: "",
                             price: "",
+                            min_price: "",
+                            max_price: "",
                             currency: null,
                             status: null
                         },
@@ -411,6 +434,8 @@ export default {
                 this.forms.entity.createUpdate.data.duration_type  = durationType;
                 this.forms.entity.createUpdate.data.duration_value = record?.duration_value;
                 this.forms.entity.createUpdate.data.price          = record?.price;
+                this.forms.entity.createUpdate.data.min_price      = record?.min_price ?? "";
+                this.forms.entity.createUpdate.data.max_price      = record?.max_price ?? "";
                 this.forms.entity.createUpdate.data.currency       = currency;
                 this.forms.entity.createUpdate.data.status         = status;
 
@@ -487,6 +512,8 @@ export default {
                     this.forms.entity.createUpdate.data.duration_type  = null;
                     this.forms.entity.createUpdate.data.duration_value = "";
                     this.forms.entity.createUpdate.data.price          = "";
+                    this.forms.entity.createUpdate.data.min_price      = "";
+                    this.forms.entity.createUpdate.data.max_price      = "";
                     this.forms.entity.createUpdate.data.currency       = null;
                     this.forms.entity.createUpdate.data.status         = null;
                     break;
@@ -516,6 +543,8 @@ export default {
                 result.duration_type  = [];
                 result.duration_value = [];
                 result.price          = [];
+                result.min_price      = [];
+                result.max_price      = [];
                 result.currency       = [];
                 result.status         = [];
 
@@ -561,6 +590,43 @@ export default {
 
                     result.price.push(this.config.forms.errors.labels.min_number_0);
                     result.bool = false;
+
+                }
+
+                let isValidatedMinPrice = this.isDefined({value: form?.min_price}) && Number(form?.min_price) > 0,
+                    isValidatedMaxPrice = this.isDefined({value: form?.max_price}) && Number(form?.max_price) > 0;
+
+                if(isValidatedMinPrice && isValidatedMaxPrice) {
+
+                    if(Number(form?.max_price) < Number(form?.min_price)) {
+
+                        result.max_price.push(this.config.forms.errors.functions.min.numeric(form?.min_price));
+                        result.bool = false;
+
+                    }else if(Number(form?.price) < Number(form?.min_price) || Number(form?.price) > Number(form?.max_price)) {
+
+                        result.price.push(this.config.forms.errors.functions.beetwen.numeric(form?.min_price, form?.max_price));
+                        result.bool = false;
+
+                    }
+
+                }else if(isValidatedMinPrice) {
+
+                    if(Number(form?.price) < Number(form?.min_price)) {
+
+                        result.price.push(this.config.forms.errors.functions.min.numeric(form?.min_price));
+                        result.bool = false;
+
+                    }
+
+                }else if(isValidatedMaxPrice) {
+
+                    if(Number(form?.price) > Number(form?.max_price)) {
+
+                        result.price.push(this.config.forms.errors.functions.max.numeric(form?.max_price));
+                        result.bool = false;
+
+                    }
 
                 }
 
@@ -613,7 +679,7 @@ export default {
                 {code: "internal_code", label: "Código interno"},
                 {code: "name", label: "Nombre"},
                 {code: "description", label: "Descripción"},
-                {code: "price", label: "Precio"}
+                {code: "price", label: "Precio de venta"}
             ];
 
         },

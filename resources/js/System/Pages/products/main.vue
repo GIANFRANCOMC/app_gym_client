@@ -380,8 +380,8 @@ export default {
                 this.forms.entity.createUpdate.data.name          = record?.name;
                 this.forms.entity.createUpdate.data.description   = record?.description;
                 this.forms.entity.createUpdate.data.price         = record?.price;
-                this.forms.entity.createUpdate.data.min_price     = record?.min_price;
-                this.forms.entity.createUpdate.data.max_price     = record?.max_price;
+                this.forms.entity.createUpdate.data.min_price     = record?.min_price ?? "";
+                this.forms.entity.createUpdate.data.max_price     = record?.max_price ?? "";
                 this.forms.entity.createUpdate.data.currency      = currency;
                 this.forms.entity.createUpdate.data.status        = status;
 
