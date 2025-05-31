@@ -1,19 +1,27 @@
 <template>
     <div>
         <div class="overflow-auto">
-            <div id="carnet" ref="carnet" class="card carnet-card mx-auto shadow-sm position-relative overflow-hidden border border-light shadow" style="min-width: 450px;">
-                <!-- <img :src="fallbackUrl" class="watermark-logo img-fluid" style="width: 22%;" @error="onImageError($event)"/> -->
-                <div class="card-header bg-dark border-light py-2 d-flex justify-content-center align-items-center">
-                    <span class="text-white my-0 fw-bold" v-text="header"></span>
+            <div id="carnet" ref="carnet" class="card carnet-card-entity mx-auto shadow-sm border border-light" style="min-width: 400px;" :style="{ backgroundImage: backgroundUrl }">
+                <img :src="fallbackUrl" class="carnet-watermark-entity img-fluid" style="width: 25%;" @error="onImageError($event)"/>
+                <div class="card-header d-flex align-items-center justify-content-start carnet-header-entity pb-0 pt-3">
+                    <span class="text-white fw-semibold h5" v-text="header"></span>
                 </div>
-                <div class="card-body d-flex align-items-center p-3 carnet-body pattern">
-                    <div class="flex-shrink-0 p-1 bg-white border border-secondary rounded">
-                        <img :src="qrImage" alt="QR" class="img-fluid" style="width: 100px; height: 100px;" />
-                    </div>
-                    <div class="flex-grow-1 ms-4">
-                        <p class="h5 text-dark mb-1" v-text="customer?.name"></p>
-                        <p class="text-secondary fw-bold mb-0">N° {{ customer?.document_number }}</p>
-                    </div>
+                <div class="card-body d-flex flex-column align-items-center py-3">
+                    <template v-if="isLoading">
+                        <Loader/>
+                    </template>
+                    <template v-else>
+                        <div class="carnet-qr-entity flex-shrink-0 p-2 bg-white rounded-4 shadow-sm">
+                            <img :src="qrImage" alt="QR" class="img-fluid" style="width: 320px; height: 320px;"/>
+                        </div>
+                        <div class="mt-3 text-center text-dark text-shadow-dark-1">
+                            <p class="h6 mb-1 fw-bold">
+                                <i class="fa fa-user"></i>
+                                <span class="ms-2" v-text="title"></span>
+                            </p>
+                            <p class="h6 mb-0 fw-semibold text-opacity-75" v-text="subtitle"></p>
+                        </div>
+                    </template>
                 </div>
             </div>
         </div>
@@ -47,18 +55,40 @@ export default {
     data() {
         return {
             qrImage: "",
-            fallbackUrl: "/System/assets/img/utils/owner_app/logomark.png"
+            isLoading: true
         };
     },
     computed: {
         header() {
 
-            return "Carnet / "+(window?.company?.commercial_name ?? "");
+            return window?.company?.commercial_name ?? "";
+
+        },
+        title() {
+
+            return this.customer?.name ?? "";
+
+        },
+        subtitle() {
+
+            return `N° ${this.customer?.document_number ?? ""}`;
+
+        },
+        backgroundUrl() {
+
+            return `url('${"/System/assets/img/utils/customers/carnet/2.png"}')`;
+
+        },
+        fallbackUrl() {
+
+            return window.ownerApp.assets.img.logotype;
 
         }
     },
     mounted() {
+
         this.generarQR();
+
     },
     methods: {
         onImageError(event) {
@@ -68,26 +98,44 @@ export default {
         },
         generarQR() {
 
-            const dataJson = {
-                bp: encodeBase64UTF8(JSON.stringify({id: this.customer?.id ?? ""})),
-                identificator: this.customer?.document_number ?? "",
-                name: this.customer?.name ?? ""
-            };
+            if(this.customer?.id) {
 
-            const qr = new QRCodeStyling({
-                width: 300,
-                height: 300,
-                data: JSON.stringify(dataJson),
-                dotsOptions: { color: "#000000", type: "rounded" },
-                backgroundOptions: { color: "#ffffff" },
-            });
+                this.isLoading = true;
 
-            qr.getRawData("png")
-            .then((blob) => {
+                const dataJson = {
+                    bp: encodeBase64UTF8(JSON.stringify({id: this.customer?.id ?? ""})),
+                    identificator: this.customer?.document_number ?? "",
+                    name: this.customer?.name ?? ""
+                };
 
-                this.qrImage = URL.createObjectURL(blob);
+                const qr = new QRCodeStyling({
+                    width: 2000,
+                    height: 2000,
+                    data: JSON.stringify(dataJson),
+                    image: "/storage/"+window.company.logotype,
+                    dotsOptions: {
+                        color: "#000000",
+                        type: "rounded"
+                    },
+                    backgroundOptions: {
+                        color: "#ffffff"
+                    },
+                    imageOptions: {
+                        crossOrigin: "anonymous",
+                        imageSize: 0.30
+                    },
+                });
 
-            });
+                qr.getRawData("png")
+                .then((blob) => {
+
+                    this.qrImage = URL.createObjectURL(blob);
+
+                    this.isLoading = false;
+
+                });
+
+            }
 
         },
         async compartirCarnet() {
@@ -178,39 +226,30 @@ export default {
 </script>
 
 <style scoped>
-.pattern {
-    background-image: linear-gradient(
-        45deg,
-        rgba(13,110,253,0.05) 0px,
-        rgba(13,110,253,0.05) 5px,
-        rgba(255,255,255,1) 5px,
-        rgba(255,255,255,1) 10px
-    ) !important;
-    background-size: 10px 10px !important;
-    background-repeat: repeat !important;
-}
-
-.carnet-card {
-    max-width: 450px;
+.carnet-card-entity {
+    max-width: 300px;
+    min-width: 300px;
     background-color: #ffffff;
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
-.carnet-body {
-    position: relative;
-    z-index: 2;
+.carnet-header-entity {
+    background: linear-gradient(135deg, #2899E5, #1A1A35);
 }
 
-.watermark {
+.carnet-qr-entity {
+    border: 3px solid #a19ca9;
+    border-radius: 1rem;
+    box-shadow: inset 0 0 8px rgba(157, 140, 140, 0.05);
+    backdrop-filter: blur(2px);
+}
+
+.carnet-watermark-entity {
     position: absolute;
-    bottom: 10px;
-    right: 10px;
-    font-size: 1rem;
-    z-index: 1;
-}
-
-.watermark-logo {
-    position: absolute;
-    bottom: 14px;
+    top: 15px;
     right: 10px;
     z-index: 5;
     pointer-events: none;
