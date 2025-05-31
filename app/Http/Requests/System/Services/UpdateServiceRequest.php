@@ -26,13 +26,15 @@ class UpdateServiceRequest extends FormRequest {
     public function rules(): array {
 
         $round    = Utilities::$inputs["round"];
-        $maxValue = Utilities::$inputs["maxValue"];
+        $minValue = Utilities::isDefined($this->min_price) && floatval($this->min_price) > 0 ? floatval($this->min_price) : "0.1";
+        $maxValue = Utilities::isDefined($this->max_price) && floatval($this->max_price) > 0 ? floatval($this->max_price) : Utilities::$inputs["maxValue"];
 
         return [
             "internal_code" => "required|string|max:100",
             "name"          => "required|string|max:100",
             "description"   => "nullable|string|max:300",
-            "price"         => "required|numeric|min:0.1|max:$maxValue|decimal:0,$round",
+            "price"         => "required|numeric|min:$minValue|max:$maxValue|decimal:0,$round",
+            "max_price"     => "nullable|numeric|min:$minValue|decimal:0,$round",
             "currency_id"   => "required|integer",
             "status"        => "required|string"
         ];

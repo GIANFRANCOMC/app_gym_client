@@ -114,6 +114,8 @@ class ServiceController extends Controller {
             $item->name          = $request->name;
             $item->description   = $request->description ?? "";
             $item->price         = $request->price;
+            $item->min_price     = $request->min_price;
+            $item->max_price     = $request->max_price;
             $item->currency_id   = $request->currency_id;
             $item->type          = "service";
             $item->status        = $request->status;
@@ -170,6 +172,8 @@ class ServiceController extends Controller {
                 $item->name          = $request->name;
                 $item->description   = $request->description ?? "";
                 $item->price         = $request->price;
+                $item->min_price     = $request->min_price;
+                $item->max_price     = $request->max_price;
                 $item->currency_id   = $request->currency_id;
                 $item->status        = $request->status;
                 $item->updated_at    = now();
