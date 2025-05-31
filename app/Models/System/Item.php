@@ -29,6 +29,8 @@ class Item extends Model {
         "name",
         "description",
         "price",
+        "min_price",
+        "max_price",
         "currency_id",
         "type",
         "duration_type",

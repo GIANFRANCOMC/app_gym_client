@@ -21,6 +21,17 @@ export const generalConfig = {
             maxValue: 9999999
         },
         errors: {
+            functions: {
+                beetwen: {
+                    numeric: (min = "", max = "") => `Debe estar entre ${min} y ${max}`
+                },
+                min: {
+                    numeric: (min = "") => `Debe ser al menos ${min}`
+                },
+                max: {
+                    numeric: (min = "") => `No debe ser mayor que ${min}`
+                }
+            },
             labels: {
                 required: "Es obligatorio",
                 min_number_0: "Debe ser mayor a 0",

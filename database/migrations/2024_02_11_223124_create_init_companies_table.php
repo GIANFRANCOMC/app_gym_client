@@ -66,6 +66,8 @@ return new class extends Migration {
             $table->string("name");
             $table->text("description")->nullable();
             $table->decimal("price", 10, 2);
+            $table->decimal("min_price", 10, 2)->nullable();
+            $table->decimal("max_price", 10, 2)->nullable();
             $table->unsignedBigInteger("currency_id");
             $table->enum("type", ["product", "service", "subscription"])->default("product");
             $table->enum("duration_type", ["hour", "day", "today", "month", "year"])->nullable();
