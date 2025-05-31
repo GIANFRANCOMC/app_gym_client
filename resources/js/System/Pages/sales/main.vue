@@ -332,6 +332,14 @@
                                             <small v-text="data?.currency?.sign" class="ms-2"></small>
                                             <small v-text="separatorNumber(data?.price)" class="ms-1"></small>
                                         </div>
+                                        <div class="d-block" v-if="isDefined({value: data?.min_price}) || isDefined({value: data?.max_price})">
+                                            <small>
+                                                <i class="fa fa-money-bill text-success"></i>
+                                            </small>
+                                            <small class="ms-2 colon-at-end">Rango de precios</small>
+                                            <small v-if="isDefined({value: data?.min_price})" v-text="'Min: '+data?.currency?.sign+data?.min_price" class="ms-2 text-danger fw-bold"></small>
+                                            <small v-if="isDefined({value: data?.max_price})" v-text="'Max: '+data?.currency?.sign+data?.max_price" class="ms-2 text-success fw-bold"></small>
+                                        </div>
                                         <template v-if="isSubscription(data?.type)">
                                             <div class="d-block">
                                                 <small>
@@ -343,6 +351,19 @@
                                         </template>
                                     </template>
                                 </v-select>
+                            </template>
+                        </InputSlot>
+                        <InputSlot
+                            v-if="isDefined({value: forms.entity.createUpdate.extras.modals.details.data.extras?.min_price}) || isDefined({value: forms.entity.createUpdate.extras.modals.details.data.extras?.max_price})"
+                            hasDiv
+                            :isInputGroup="false"
+                            :divInputClass="['d-flex flex-wrap justify-content-start align-items-center gap-2 gap-md-2']"
+                            xl="12"
+                            lg="12">
+                            <template v-slot:input>
+                                <span class="fw-bold colon-at-end">Rango de precios</span>
+                                <span v-if="isDefined({value: forms.entity.createUpdate.extras.modals.details.data.extras?.min_price})" v-text="'Min: '+forms.entity.createUpdate.extras.modals.details.data.item?.data?.currency?.sign+' '+separatorNumber(forms.entity.createUpdate.extras.modals.details.data.extras?.min_price)" class="fw-semibold text-danger"></span>
+                                <span v-if="isDefined({value: forms.entity.createUpdate.extras.modals.details.data.extras?.max_price})" v-text="'Max: '+forms.entity.createUpdate.extras.modals.details.data.item?.data?.currency?.sign+' '+separatorNumber(forms.entity.createUpdate.extras.modals.details.data.extras?.max_price)" class="fw-semibold text-success"></span>
                             </template>
                         </InputSlot>
                         <InputNumber
@@ -361,6 +382,8 @@
                             hasDiv
                             title="Precio"
                             isRequired
+                            :minValue="forms.entity.createUpdate.extras.modals.details.data.extras?.min_price"
+                            :maxValue="forms.entity.createUpdate.extras.modals.details.data.extras?.max_price"
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.extras.modals.details.errors?.price"
                             xl="4"
@@ -375,7 +398,6 @@
                             hasDiv
                             title="Total"
                             isRequired
-                            disabled
                             xl="4"
                             lg="4">
                             <template v-slot:inputGroupPrepend>
@@ -702,6 +724,8 @@ export default {
                                         price: 0,
                                         observation: "",
                                         extras: {
+                                            min_price: "",
+                                            max_price: "",
                                             duration_type: "",
                                             duration_value: "",
                                             start_date: "",
@@ -1534,6 +1558,8 @@ export default {
 
             // Set extras
             let extras = {
+                min_price: data?.min_price ?? "",
+                max_price: data?.max_price ?? "",
                 duration_type: "",
                 duration_value: "",
                 start_date: "",
@@ -1555,6 +1581,8 @@ export default {
 
                 // Set extras
                 extras = {
+                    min_price: data?.min_price ?? "",
+                    max_price: data?.max_price ?? "",
                     duration_type: data?.duration_type,
                     duration_value: data?.duration_value,
                     start_date: Utils.isDefined({value: modalData.extras.start_date}) ? modalData.extras.start_date : Utils.getCurrentDate("datetime"),

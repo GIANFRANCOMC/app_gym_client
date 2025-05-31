@@ -114,8 +114,8 @@ class ProductController extends Controller {
             $item->name          = $request->name;
             $item->description   = $request->description ?? "";
             $item->price         = $request->price;
-            $item->min_price     = $request->min_price;
-            $item->max_price     = $request->max_price;
+            $item->min_price     = floatval($request->min_price) <= 0 ? null : $request->min_price;
+            $item->max_price     = floatval($request->max_price) <= 0 ? null : $request->max_price;
             $item->currency_id   = $request->currency_id;
             $item->type          = "product";
             $item->status        = $request->status;
@@ -192,8 +192,8 @@ class ProductController extends Controller {
                 $item->name          = $request->name;
                 $item->description   = $request->description ?? "";
                 $item->price         = $request->price;
-                $item->min_price     = $request->min_price;
-                $item->max_price     = $request->max_price;
+                $item->min_price     = floatval($request->min_price) <= 0 ? null : $request->min_price;
+                $item->max_price     = floatval($request->max_price) <= 0 ? null : $request->max_price;
                 $item->currency_id   = $request->currency_id;
                 $item->status        = $request->status;
                 $item->updated_at    = now();

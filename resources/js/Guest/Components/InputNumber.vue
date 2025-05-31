@@ -4,6 +4,7 @@
             <slot name="default"></slot>
             <label v-if="!!title" v-text="title" :class="[...titleClass]"></label>
             <label v-if="isRequired" v-text="requiredLabel" :class="[...requiredClass]"></label>
+            <slot name="defaultAppend"></slot>
             <div class="input-group">
                 <slot name="inputGroupPrepend"></slot>
                 <input
@@ -11,7 +12,7 @@
                     :value="isEditing ? modelValue : formattedValue"
                     @focus="handleFocus"
                     @blur="handleBlur"
-                    @input="updateValue($event.target.value)"
+                    @input="handleTyping($event.target.value)"
                     @keydown="handleKeyDown"
                     :class="[...inputClass]"
                     :placeholder="placeholder"
@@ -28,6 +29,7 @@
         <slot name="default"></slot>
         <label v-if="!!title" v-text="title" :class="[...titleClass]"></label>
         <label v-if="isRequired" v-text="requiredLabel" :class="[...requiredClass]"></label>
+        <slot name="defaultAppend"></slot>
         <div class="input-group">
             <slot name="inputGroupPrepend"></slot>
             <input
@@ -35,7 +37,7 @@
                 :value="isEditing ? modelValue : formattedValue"
                 @focus="handleFocus"
                 @blur="handleBlur"
-                @input="updateValue($event.target.value)"
+                @input="handleTyping($event.target.value)"
                 @keydown="handleKeyDown"
                 :class="[...inputClass]"
                 :placeholder="placeholder"
@@ -51,7 +53,7 @@
 
 <script>
 import { generalConfig } from "../Helpers/Constants.js";
-import { separatorNumber } from "../Helpers/Utils.js";
+import { isDefined, separatorNumber } from "../Helpers/Utils.js";
 
 export default {
     name: "InputNumber",
@@ -209,23 +211,33 @@ export default {
         }
     },
     methods: {
+        handleTyping(value) {
+
+            // Update without validation
+            this.emitValue({reset: false, result: value})
+
+        },
         updateValue(value) {
+
+            const isDefinedMinValue = isDefined({value: this.minValue});
+            const isDefinedMaxValue = isDefined({value: this.maxValue});
+
+            const maxValue = isDefinedMaxValue ? this.maxValue : generalConfig.forms.inputs.maxValue;
+            const minValue = isDefinedMinValue ? this.minValue : generalConfig.forms.inputs.minValue;
+
+            const defaultValue = minValue;
 
             let valueString = String(value).trim();
 
             if(valueString === "") {
 
-                this.emitValue({result: valueString});
+                // console.log(valueString);
+                this.emitValue({reset: false, result: defaultValue});
 
             }else {
 
                 const hasFormattedNumber = this.hasNegative ? /^-?\d+(\.\d+)?$/.test(valueString) : /^\d+(\.\d+)?$/.test(valueString); // Case: 1  2  3.1  5.67  0.329
                 const hasDecimalInitNumber = this.decimals > 0 && (this.hasNegative ? /^-?\d+\.$/.test(valueString) : /^\d+\.$/.test(valueString)); // Case: With decimals (Input: 12. 3134. 23461.)
-
-                let defaultValue = this.hasNegative ? this.minValue : this.minValue;
-
-                const minValue = this.hasNegative ? -this.maxValue : this.minValue,
-                      maxValue = this.maxValue;
 
                 if(this.hasNegative && value == "-") {
 
@@ -238,17 +250,17 @@ export default {
                     if(isNaN(numericValue)) {
 
                         // console.log("isNaN");
-                        this.emitValue({result: defaultValue});
+                        this.emitValue({reset: false, result: defaultValue});
 
                     }else if(numericValue < minValue) {
 
                         // console.log("minValue");
-                        this.emitValue({result: minValue});
+                        this.emitValue({reset: false, result: minValue});
 
                     }else if(numericValue > maxValue) {
 
                         // console.log("maxValue");
-                        this.emitValue({result: maxValue});
+                        this.emitValue({reset: false, result: maxValue});
 
                     }else {
 
@@ -257,13 +269,16 @@ export default {
 
                         const hasFormattedDecimal = regexDecimals.test(valueString);
 
+                        // hasFormattedDecimal 23.1  43.12 (1.n decimals limit)
+                        // hasDecimalInitNumber 23.  65.
+
                         if(this.decimals > 0) {
 
-                            hasFormattedDecimal || hasDecimalInitNumber ? this.emitValue({reset: false, result: numericValue}) : this.emitValue({result: Number(numericValue.toFixed(this.decimals))});
+                            hasFormattedDecimal || hasDecimalInitNumber ? this.emitValue({reset: false, result: numericValue}) : this.emitValue({reset: false, result: Number(numericValue.toFixed(this.decimals))});
 
                         }else {
 
-                            hasFormattedDecimal ? this.emitValue({reset: false, result: numericValue}) : this.emitValue({result: Number(numericValue.toFixed(this.decimals))});
+                            hasFormattedDecimal ? this.emitValue({reset: false, result: numericValue}) : this.emitValue({reset: false, result: Number(numericValue.toFixed(this.decimals))});
 
                         }
 
@@ -272,7 +287,7 @@ export default {
                 }else {
 
                     // console.error("Sin formato correcto");
-                    this.emitValue({result: defaultValue});
+                    this.emitValue({reset: false, result: defaultValue});
 
                 }
 
@@ -308,6 +323,13 @@ export default {
         handleBlur() {
 
             this.isEditing = false;
+            this.updateValue(this.modelValue);
+
+        },
+        handleEnterKey() {
+
+            this.updateValue(this.modelValue);
+            this.$emit("enterKeyPressed");
 
         },
         handleKeyDown(event) {
@@ -331,11 +353,6 @@ export default {
                 event.preventDefault();
 
             }
-
-        },
-        handleEnterKey() {
-
-            this.$emit("enterKeyPressed");
 
         }
     }
