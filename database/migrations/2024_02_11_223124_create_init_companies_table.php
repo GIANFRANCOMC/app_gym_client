@@ -31,6 +31,7 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger("company_id");
             $table->string("name");
+            $table->string("address")->nullable();
             $table->enum("status", ["active", "inactive"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();

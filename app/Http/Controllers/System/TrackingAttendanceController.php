@@ -111,9 +111,10 @@ class TrackingAttendanceController extends Controller {
             "customer_id" => $request->customer_id,
             "start_date"  => $startDate,
             "end_date"    => $endDate,
-            "observation" => $request->observation ?? "",
+            "observation" => $request->observation,
             "user_id"     => $userAuth->id,
-            "type"        => "form_manual"
+            "type"        => "form_manual",
+            "action"      => "automatic"
         ]);
 
         $attendances->push($result);
@@ -137,37 +138,31 @@ class TrackingAttendanceController extends Controller {
 
     }
 
-    public function update(Request $request, $id) { // UpdateTrackingAttendanceRequest
+    public function update(Request $request, $id, AttendanceService $attendanceService) { // UpdateTrackingAttendanceRequest
 
         $userAuth = Auth::user();
 
         $endDate = Utilities::isDefined($request->end_date) ? Carbon::parse(str_replace("T", " ", $request->end_date)) : now();
 
-        $attendance = Attendance::where("id", $id)
-                                ->where("company_id", $userAuth->company_id)
-                                ->where("branch_id", $request->branch_id)
-                                ->where("customer_id", $request->customer_id)
-                                ->where("status", "active")
-                                ->first();
+        $attendances = collect();
 
-        if(Utilities::isDefined($attendance)) {
+        $result = $attendanceService->validateAndCreateAttendance([
+            "company_id"  => $userAuth->company_id,
+            "branch_id"   => $request->branch_id,
+            "customer_id" => $request->customer_id,
+            "start_date"  => null,
+            "end_date"    => $endDate,
+            "observation" => null,
+            "user_id"     => $userAuth->id,
+            "action"      => "checkout"
+        ]);
 
-            DB::transaction(function() use($request, $userAuth, &$attendance, $endDate) {
+        $attendances->push($result);
 
-                $attendance->end_date   = $endDate;
-                $attendance->status     = "finalized";
-                $attendance->updated_at = now();
-                $attendance->updated_by = $userAuth->id ?? null;
-                $attendance->save();
+        $bool = count($attendances->where("bool", true)) > 0;
+        $msg  = $bool ? "Asistencias concluidas correctamente." : "No se han podido concluir las asistencias.";
 
-            });
-
-        }
-
-        $bool = Utilities::isDefined($attendance);
-        $msg  = $bool ? "Asistencia concluida correctamente." : "No se ha podido concluir la asistencia.";
-
-        return response()->json(["bool" => $bool, "msg" => $msg, "attendance" => $attendance], 200);
+        return response()->json(["bool" => $bool, "msg" => $msg, "attendances" => $attendances], 200);
 
     }
 
@@ -177,7 +172,7 @@ class TrackingAttendanceController extends Controller {
 
         $attendance = Attendance::findOrFail($id);
 
-        if(Utilities::isDefined($attendance) && in_array($attendance->status, ["finalized"])) {
+        if(Utilities::isDefined($attendance) && in_array($attendance->status, ["active", "finalized"])) {
 
             if(Utilities::isDefined($attendance) && $attendance->company_id == $userAuth->company_id) {
 
@@ -223,9 +218,10 @@ class TrackingAttendanceController extends Controller {
                 "customer_id" => $customerRequest["customer_id"],
                 "start_date"  => $startDate,
                 "end_date"    => $endDate,
-                "observation" => $request->observation ?? "",
+                "observation" => $request->observation,
                 "user_id"     => $userAuth->id,
-                "type"        => "qr_manual"
+                "type"        => "qr_manual",
+                "action"      => "automatic"
             ]);
 
             $attendances->push($result);

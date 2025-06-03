@@ -76,38 +76,89 @@ class AttendanceService {
     // Flow
     public function validateAndCreateAttendance(array $data): array {
 
+        $response = [
+            "bool" => false,
+            "msg" => ""
+        ];
+
         $companyId   = $data["company_id"];
         $branchId    = $data["branch_id"];
         $customerId  = $data["customer_id"];
-        $startDate   = $data["start_date"] ?? null;
-        $endDate     = $data["end_date"] ?? null;
+        $startDate   = $data["start_date"] ?? null; // Carbon
+        $endDate     = $data["end_date"] ?? null;   // Carbon
         $observation = $data["observation"] ?? "";
         $userId      = $data["user_id"] ?? null;
         $type        = $data["type"] ?? "form_manual";
+        $action      = $data["action"] ?? "automatic";
 
         $customer = $this->getValidCustomer($customerId, $companyId);
 
         if(!Utilities::isDefined($customer)) {
 
-            return ["bool" => false, "msg" => "El cliente ingresado no es correcto."];
+            $response["msg"] = "No se ha encontrado el cliente solicitado.";
+
+            return $response;
 
         }
+
+        $response["customer"] = $customer;
 
         $activeAttendance = Attendance::where("company_id", $companyId)
                                       ->where("branch_id", $branchId)
                                       ->where("customer_id", $customerId)
                                       ->where("status", "active")
+                                      ->latest("start_date")
                                       ->first();
+
+        if(in_array($action, ["checkout"]) && !Utilities::isDefined($activeAttendance)) {
+
+            $response["msg"] = "$customer->name: No se ha podido concluir la asistencia.";
+
+            return $response;
+
+        }
 
         if(Utilities::isDefined($activeAttendance)) {
 
-            $activeAttendance->end_date   = $endDate ?? now();
+            $proposedStartDate = Carbon::parse($activeAttendance->start_date);
+            $proposedEndDate   = $endDate;
+
+            if(!$proposedEndDate->greaterThan($proposedStartDate)) {
+
+                $response["msg"] = "$customer->name: La salida debe ser mayor al ingreso ".$proposedStartDate->format("d-m-Y h:i A").".";
+
+                return $response;
+
+            }
+
+            if($proposedEndDate->diffInMinutes($proposedStartDate) < 2) {
+
+                $response["msg"] = "$customer->name: La salida debe ser al menos 2 minutos después del ingreso ".$proposedStartDate->format("d-m-Y h:i A").".";
+
+                return $response;
+
+            }
+
+            $activeAttendance->end_date   = $proposedEndDate;
             $activeAttendance->status     = "finalized";
             $activeAttendance->updated_at = now();
             $activeAttendance->updated_by = $userId;
             $activeAttendance->save();
 
-            return ["bool" => true, "msg" => "¡Hasta pronto, $customer->name! Gracias por visitarnos.", "customer" => ["name" => $customer->name], "action" => "checkout"];
+            $response["bool"]   = true;
+            $response["msg"]    = "¡Hasta pronto, $customer->name! Gracias por visitarnos.";
+            $response["action"] = "checkout";
+
+            return $response;
+
+        }
+
+        // Break: Checkout
+        if(in_array($action, ["checkout"])) {
+
+            $response["msg"] = "$customer->name: Sin respuesta.";
+
+            return $response;
 
         }
 
@@ -115,7 +166,9 @@ class AttendanceService {
 
         if($subscriptions->isEmpty()) {
 
-            return ["bool" => false, "msg" => "$customer->name: No cuenta con una membresía vigente en la sucursal.", "customer" => ["name" => $customer->name]];
+            $response["msg"] = "$customer->name: No cuenta con una membresía vigente en la sucursal.";
+
+            return $response;
 
         }
 
@@ -126,15 +179,19 @@ class AttendanceService {
 
         if($check["hasActive"]) {
 
-            return ["bool" => false, "msg" => "$customer->name: Cuenta con un registro de asistencia 'En curso'.", "customer" => ["name" => $customer->name]];
+            $response["msg"] = "$customer->name: Cuenta con un registro de asistencia 'En curso'.";
+
+            return $response;
 
         }
 
-        if($check["exceedsLimit"]) {
+        /* if($check["exceedsLimit"]) {
 
-            return ["bool" => false, "msg" => "$customer->name: Límite de ingresos excedido ($limitPerDay por día).", "customer" => ["name" => $customer->name]];
+            $response["msg"] = "$customer->name: Límite de ingresos excedido ($limitPerDay por día).";
 
-        }
+            return $response;
+
+        } */
 
         $result = $this->createAttendance([
             "company_id"  => $companyId,
@@ -147,7 +204,11 @@ class AttendanceService {
             "type"        => $type
         ]);
 
-        return ["bool" => true, "msg" => "¡Bienvenido, $customer->name! Disfruta tu rutina.", "customer" => ["name" => $customer->name], "action" => "checkin"];
+        $response["bool"]   = true;
+        $response["msg"]    = "¡Bienvenido, $customer->name! Disfruta tu rutina.";
+        $response["action"] = "checkin";
+
+        return $response;
 
     }
 

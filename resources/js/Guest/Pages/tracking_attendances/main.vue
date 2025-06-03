@@ -3,7 +3,7 @@
         <div class="text-end mb-3 mb-md-1">
             <div class="badge bg-info-1 rounded-pill ">
                 <i class="fa-solid fa-location-dot"></i>
-                <span class="ms-2" v-text="config.essential?.branch?.name"></span>
+                <span class="ms-2" v-text="config.essential?.branch?.name+(isDefined({value: config.essential?.branch?.address}) ? ' / '+config.essential?.branch?.address : '')"></span>
             </div>
         </div>
         <div class="text-center mb-2 mb-md-1">

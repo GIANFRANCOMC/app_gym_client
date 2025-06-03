@@ -26,8 +26,9 @@ class StoreBranchRequest extends FormRequest {
     public function rules(): array {
 
         return [
-            "name"   => "required|string|max:100",
-            "status" => "required|string"
+            "name"    => "required|string|max:100",
+            "address" => "required|string|max:100",
+            "status"  => "required|string"
         ];
 
     }

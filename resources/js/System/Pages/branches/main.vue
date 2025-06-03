@@ -49,10 +49,11 @@
         <table class="table table-hover">
             <thead>
                 <tr class="text-center align-middle">
-                    <th class="bg-secondary text-white fw-semibold" style="width: 50%;">NOMBRE</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 40%;">NOMBRE</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 20%;">DIRECCIÓN</th>
                     <!-- <th class="bg-secondary text-white fw-semibold">ALMACÉN</th> -->
                     <!-- <th class="bg-secondary text-white fw-semibold">SERIES</th> -->
-                    <th class="bg-secondary text-white fw-semibold" style="width: 30%;">ESTADO</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 20%;">ESTADO</th>
                     <th class="bg-secondary text-white fw-semibold" style="width: 20%;">ACCIONES</th>
                 </tr>
             </thead>
@@ -68,6 +69,7 @@
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td v-text="record.name"></td>
+                            <td v-text="isDefined({value: record.address}) ? record.address : 'N/A'" class="text-start"></td>
                             <!-- <td v-text="record.warehouses.map(e => e.name).join('<br/>')"></td> -->
                             <!-- <td class="text-start">
                                 <div v-for="serie in record?.series" :key="serie.id" class="my-2">
@@ -127,6 +129,15 @@
                             isRequired
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.name"
+                            xl="12"
+                            lg="12"/>
+                        <InputText
+                            v-model="forms.entity.createUpdate.data.address"
+                            hasDiv
+                            title="Dirección"
+                            isRequired
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.address"
                             xl="12"
                             lg="12"/>
                         <InputSlot
@@ -220,6 +231,7 @@ export default {
                         data: {
                             id: null,
                             name: "",
+                            address: "",
                             status: null
                         },
                         errors: {}
@@ -288,9 +300,10 @@ export default {
 
                 let status = this.statuses.filter(e => e.code === record?.status)[0];
 
-                this.forms.entity.createUpdate.data.id     = record?.id;
-                this.forms.entity.createUpdate.data.name   = record?.name;
-                this.forms.entity.createUpdate.data.status = status;
+                this.forms.entity.createUpdate.data.id      = record?.id;
+                this.forms.entity.createUpdate.data.name    = record?.name;
+                this.forms.entity.createUpdate.data.address = record?.address;
+                this.forms.entity.createUpdate.data.status  = status;
 
             }else {
 
@@ -352,9 +365,10 @@ export default {
             switch(functionName) {
                 case "modalCreateUpdateEntity":
                 case "createUpdateEntity":
-                    this.forms.entity.createUpdate.data.id     = null;
-                    this.forms.entity.createUpdate.data.name   = "";
-                    this.forms.entity.createUpdate.data.status = null;
+                    this.forms.entity.createUpdate.data.id      = null;
+                    this.forms.entity.createUpdate.data.name    = "";
+                    this.forms.entity.createUpdate.data.address = "";
+                    this.forms.entity.createUpdate.data.status  = null;
                     break;
             }
 
@@ -376,8 +390,9 @@ export default {
 
             if(["createUpdateEntity"].includes(functionName)) {
 
-                result.name   = [];
-                result.status = [];
+                result.name    = [];
+                result.address = [];
+                result.status  = [];
 
                 if(!this.isDefined({value: form?.name})) {
 
@@ -415,7 +430,8 @@ export default {
 
             return [
                 // {code: "all", label: "Todos"},
-                {code: "name", label: "Nombre"}
+                {code: "name", label: "Nombre"},
+                {code: "address", label: "Dirección"}
             ];
 
         },

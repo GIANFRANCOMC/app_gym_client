@@ -96,6 +96,7 @@ class BranchController extends Controller {
             $branch = new Branch();
             $branch->company_id = $userAuth->company_id;
             $branch->name       = $request->name;
+            $branch->address    = $request->address;
             $branch->status     = $request->status;
             $branch->created_at = now();
             $branch->created_by = $userAuth->id ?? null;
@@ -164,6 +165,7 @@ class BranchController extends Controller {
             DB::transaction(function() use($request, $userAuth, &$branch) {
 
                 $branch->name       = $request->name;
+                $branch->address    = $request->address;
                 $branch->status     = $request->status;
                 $branch->updated_at = now();
                 $branch->updated_by = $userAuth->id ?? null;

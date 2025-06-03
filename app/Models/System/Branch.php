@@ -21,6 +21,7 @@ class Branch extends Model {
     protected $fillable = [
         "company_id",
         "name",
+        "address",
         "status",
         "created_at",
         "created_by",

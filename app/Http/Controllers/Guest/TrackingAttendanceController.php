@@ -101,12 +101,7 @@ class TrackingAttendanceController extends Controller {
         $company = $request->get("company");
 
         $startDate = now();
-
-        if(!$attendanceService->validateStartDate($startDate)) {
-
-            return response()->json(["bool" => false, "msg" => "No se ha podido crear la asistencia, debe de diligenciar el ingreso."], 200);
-
-        }
+        $endDate   = now();
 
         $attendances = collect();
 
@@ -117,9 +112,11 @@ class TrackingAttendanceController extends Controller {
                 "branch_id"   => $request->branch_id,
                 "customer_id" => $customerRequest["customer_id"],
                 "start_date"  => $startDate,
-                "observation" => $request->observation ?? "",
+                "end_date"    => $endDate,
+                "observation" => null,
                 "user_id"     => null,
-                "type"        => "qr_automatic"
+                "type"        => "qr_automatic",
+                "action"      => "automatic"
             ]);
 
             $attendances->push($result);

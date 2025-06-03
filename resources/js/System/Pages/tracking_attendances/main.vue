@@ -158,6 +158,10 @@
             </template>
         </InputSlot>
     </div>
+    <div class="d-flex justify-content-end" v-if="lists.entity.records.total > 0">
+        <span class="colon-at-end">Sucursal</span>
+        <span v-text="lists.entity.records.data[0]?.branch?.name" class="ms-1 fw-bold"></span>
+    </div>
     <div class="table-responsive">
         <table class="table table-hover">
             <thead>
@@ -508,9 +512,10 @@
                             <table class="table table-hover">
                                 <thead>
                                     <tr class="text-center align-middle">
-                                        <th class="bg-secondary text-white fw-semibold" style="width: 15%;">#</th>
-                                        <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 30%;">SUCURSAL</th>
-                                        <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 55%;">ACCIONES</th>
+                                        <th class="bg-secondary text-white fw-semibold" style="width: 10%;">#</th>
+                                        <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 20%;">SUCURSAL</th>
+                                        <th class="bg-secondary text-white fw-semibold min-w-150pxs" style="width: 30%;">DIRECCIÓN</th>
+                                        <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 40%;">ACCIONES</th>
                                     </tr>
                                 </thead>
                                 <tbody class="table-border-bottom-0 bg-white">
@@ -520,6 +525,7 @@
                                             <td class="text-start">
                                                 <span v-text="record.label" class="fw-bold d-block"></span>
                                             </td>
+                                            <td v-text="isDefined({value: record.data?.address}) ? record.data?.address : 'N/A'" class="text-start"></td>
                                             <td>
                                                 <InputSlot
                                                     hasDiv
