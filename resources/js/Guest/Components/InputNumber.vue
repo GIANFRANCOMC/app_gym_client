@@ -222,8 +222,14 @@ export default {
             const isDefinedMinValue = isDefined({value: this.minValue});
             const isDefinedMaxValue = isDefined({value: this.maxValue});
 
-            const maxValue = isDefinedMaxValue ? this.maxValue : generalConfig.forms.inputs.maxValue;
-            const minValue = isDefinedMinValue ? this.minValue : generalConfig.forms.inputs.minValue;
+            let maxValue = isDefinedMaxValue ? this.maxValue : generalConfig.forms.inputs.maxValue;
+            let minValue = isDefinedMinValue ? this.minValue : generalConfig.forms.inputs.minValue;
+
+            if(this.hasNegative && !isDefinedMinValue) {
+
+                minValue = -maxValue;
+
+            }
 
             const defaultValue = minValue;
 

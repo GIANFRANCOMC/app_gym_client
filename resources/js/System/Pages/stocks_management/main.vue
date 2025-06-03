@@ -58,7 +58,7 @@
                         <tr v-for="(record, indexRecord) in lists.entity.records.data" :key="record.id" class="text-center">
                             <td v-text="indexRecord + 1"></td>
                             <td class="text-start">
-                                <ul class="mb-0">
+                                <ul class="mb-1">
                                     <li>
                                         <span class="fw-bold text-nowrap colon-at-end">Código interno</span>
                                         <span v-text="record.internal_code" class="ms-2"></span>
@@ -72,7 +72,7 @@
                                         <span v-text="isDefined({value: record.description}) ? record.description : 'N/A'" class="ms-2"></span>
                                     </li>
                                 </ul>
-                                <span class="badge bg-danger" v-if="record.stock_quantity == 0">Sin existencias</span>
+                                <span class="badge bg-danger" v-if="record.stock_quantity <= 0">Sin existencias</span>
                                 <span class="badge bg-warning" v-else-if="record.stock_quantity < 5">Hay pocas existencias</span>
                                 <span class="badge bg-success" v-else-if="record.stock_quantity >= 5">Con existencias disponibles</span>
                             </td>

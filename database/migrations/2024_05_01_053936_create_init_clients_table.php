@@ -24,6 +24,10 @@ return new class extends Migration {
             $table->text("request")->nullable();
             $table->string("evidence")->nullable();
             $table->text("admin_response")->nullable();
+            $table->string("submitted_ip", 45)->nullable();
+            $table->text("submitted_user_agent")->nullable();
+            $table->string("submitted_platform", 100)->nullable();
+            $table->string("submitted_browser", 100)->nullable();
             $table->enum("status", ["pending", "in_progress", "resolved"])->default("pending");
 
             $table->timestamp("created_at")->useCurrent()->nullable();

@@ -998,6 +998,8 @@ export default {
 
             let form = this.forms.entity.createUpdate.extras.modals.subscriptions;
 
+            this.refreshSubscriptions();
+
             Alerts.modals({type: "show", id: form.id});
 
         },

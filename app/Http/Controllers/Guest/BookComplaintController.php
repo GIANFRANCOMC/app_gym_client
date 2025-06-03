@@ -10,6 +10,7 @@ use stdClass;
 
 use App\Http\Requests\System\Assets\{StoreAssetRequest, UpdateAssetRequest};
 use App\Models\Guest\{BookComplaint, IdentityDocumentType};
+use Jenssegers\Agent\Agent;
 
 class BookComplaintController extends Controller {
 
@@ -66,7 +67,21 @@ class BookComplaintController extends Controller {
 
         $company = $request->get("company");
 
-        DB::transaction(function() use($request, $company, &$bookComplaint) {
+        $agent = new Agent();
+
+        $ip = $request->ip();
+
+        $bookComplaintCount = BookComplaint::where("company_id", $company->id)
+                                            ->where("submitted_ip", $ip)
+                                            ->count();
+
+        if($bookComplaintCount >= 3) {
+
+            return response()->json(["bool" => false, "msg" => "Ya has enviado varios mensajes desde este dispositivo. Si necesitas asistencia adicional, por favor comunícate con nuestro equipo."], 200);
+
+        }
+
+        DB::transaction(function() use($request, $company, &$bookComplaint, $agent) {
 
             $bookComplaint = new BookComplaint();
             $bookComplaint->company_id                = $company->id;
@@ -80,6 +95,10 @@ class BookComplaintController extends Controller {
             $bookComplaint->request                   = $request->input("request", "");
             $bookComplaint->evidence                  = $request->input("evidence", "");
             $bookComplaint->admin_response            = "";
+            $bookComplaint->submitted_ip              = $request->ip();
+            $bookComplaint->submitted_user_agent      = $request->userAgent();
+            $bookComplaint->submitted_platform        = $agent->platform();
+            $bookComplaint->submitted_browser         = $agent->browser();
             $bookComplaint->status                    = "pending";
             $bookComplaint->created_at                = now();
             $bookComplaint->created_by                = null;
