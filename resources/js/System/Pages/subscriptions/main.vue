@@ -53,8 +53,9 @@
                     <th class="bg-secondary text-white fw-semibold" style="width: 20%;">NOMBRE</th>
                     <th class="bg-secondary text-white fw-semibold" style="width: 15%;">DURACIÓN</th>
                     <th class="bg-secondary text-white fw-semibold" style="width: 15%;">PRECIO DE VENTA</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 5%;"></th>
                     <th class="bg-secondary text-white fw-semibold" style="width: 10%;">ESTADO</th>
-                    <th class="bg-secondary text-white fw-semibold" style="width: 20%;">ACCIONES</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 15%;">ACCIONES</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0 bg-white">
@@ -76,6 +77,9 @@
                             <td>
                                 <span v-text="record.currency?.sign"></span>
                                 <span v-text="separatorNumber(record.price)" class="ms-2"></span>
+                            </td>
+                            <td>
+                                <i :class="['fa fa-globe', record.see_my_web ? 'text-success' : 'text-light']" data-bs-toggle="tooltip" data-bs-placement="top" :title="[record.see_my_web ? 'Visible en mi página' : 'No visible en mi página']"></i>
                             </td>
                             <td>
                                 <span :class="['badge', 'fw-semibold', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
@@ -193,8 +197,8 @@
                             isRequired
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.price"
-                            xl="6"
-                            lg="6"/>
+                            xl="4"
+                            lg="4"/>
                         <InputNumber
                             v-model="forms.entity.createUpdate.data.min_price"
                             hasDiv
@@ -246,6 +250,19 @@
                                     :options="statuses"
                                     :clearable="false"
                                     :searchable="false"/>
+                            </template>
+                        </InputSlot>
+                        <InputSlot
+                            hasDiv
+                            :isInputGroup="false"
+                            :divInputClass="['d-flex flex-wrap justify-content-end align-items-end h-100']"
+                            xl="6"
+                            lg="6">
+                            <template v-slot:input>
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" v-model="forms.entity.createUpdate.data.see_my_web"/>
+                                    <span class="ms-2">Visualizar en mi página</span>
+                                </label>
                             </template>
                         </InputSlot>
                     </div>
@@ -331,6 +348,7 @@ export default {
                             min_price: "",
                             max_price: "",
                             currency: null,
+                            see_my_web: false,
                             status: null
                         },
                         errors: {}
@@ -437,6 +455,7 @@ export default {
                 this.forms.entity.createUpdate.data.min_price      = record?.min_price ?? "";
                 this.forms.entity.createUpdate.data.max_price      = record?.max_price ?? "";
                 this.forms.entity.createUpdate.data.currency       = currency;
+                this.forms.entity.createUpdate.data.see_my_web     = Boolean(record?.see_my_web ?? false);
                 this.forms.entity.createUpdate.data.status         = status;
 
             }else {
@@ -515,6 +534,7 @@ export default {
                     this.forms.entity.createUpdate.data.min_price      = "";
                     this.forms.entity.createUpdate.data.max_price      = "";
                     this.forms.entity.createUpdate.data.currency       = null;
+                    this.forms.entity.createUpdate.data.see_my_web     = false;
                     this.forms.entity.createUpdate.data.status         = null;
                     break;
             }

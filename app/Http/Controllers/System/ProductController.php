@@ -118,6 +118,7 @@ class ProductController extends Controller {
             $item->max_price     = floatval($request->max_price) <= 0 ? null : $request->max_price;
             $item->currency_id   = $request->currency_id;
             $item->type          = "product";
+            $item->see_my_web    = $request->see_my_web ?? false;
             $item->status        = $request->status;
             $item->created_at    = now();
             $item->created_by    = $userAuth->id ?? null;
@@ -195,6 +196,7 @@ class ProductController extends Controller {
                 $item->min_price     = floatval($request->min_price) <= 0 ? null : $request->min_price;
                 $item->max_price     = floatval($request->max_price) <= 0 ? null : $request->max_price;
                 $item->currency_id   = $request->currency_id;
+                $item->see_my_web    = $request->see_my_web ?? false;
                 $item->status        = $request->status;
                 $item->updated_at    = now();
                 $item->updated_by    = $userAuth->id ?? null;

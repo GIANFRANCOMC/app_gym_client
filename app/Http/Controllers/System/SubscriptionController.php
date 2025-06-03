@@ -121,6 +121,7 @@ class SubscriptionController extends Controller {
             $item->type           = "subscription";
             $item->duration_type  = $request->duration_type;
             $item->duration_value = $request->duration_value;
+            $item->see_my_web     = $request->see_my_web ?? false;
             $item->status         = $request->status;
             $item->created_at     = now();
             $item->created_by     = $userAuth->id ?? null;
@@ -180,6 +181,7 @@ class SubscriptionController extends Controller {
                 $item->currency_id    = $request->currency_id;
                 $item->duration_type  = $request->duration_type;
                 $item->duration_value = $request->duration_value;
+                $item->see_my_web     = $request->see_my_web ?? false;
                 $item->status         = $request->status;
                 $item->updated_at     = now();
                 $item->updated_by     = $userAuth->id ?? null;

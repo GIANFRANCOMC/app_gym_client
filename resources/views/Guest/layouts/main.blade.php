@@ -16,7 +16,7 @@
         </script>
     </head>
     <body style="background-color: #f8f7fa;">
-        @if($withMenu)
+        @if($withMenu ?? true)
             <nav class="layout-navbar shadow-none py-0">
                 <div class="container">
                     <div class="navbar navbar-expand-lg landing-navbar px-3 px-md-4 bg-white mt-3 shadow-sm">
