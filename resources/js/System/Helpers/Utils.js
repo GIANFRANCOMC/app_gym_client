@@ -4,6 +4,16 @@ import { toastrs } from "./Alerts.js";
 
 import axios from "axios";
 
+export function getEssential() {
+
+    return {
+        sections: window?.sections ?? [],
+        ownerApp: window?.ownerApp ?? null,
+        company: window?.company ?? null
+    };
+
+}
+
 export function navbarItem(id, {type = "active", addClass = null}) {
 
     try {

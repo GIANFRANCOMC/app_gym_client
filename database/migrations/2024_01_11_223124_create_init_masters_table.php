@@ -190,15 +190,16 @@ return new class extends Migration {
 
         DB::table("sections")->insert([
             ["id" => 1, "slug" => "sc_home", "name" => "home", "order" => 1, "dom_id" => "menu-item-home", "dom_label" => "Inicio", "dom_icon" => "fa fa-home", "has_sub_menu" => false],
-            ["id" => 2, "slug" => "sc_sales", "name" => "sales", "order" => 2, "dom_id" => "menu-item-sales", "dom_label" => "Ventas", "dom_icon" => "fa-solid fa-cash-register", "has_sub_menu" => true],
-            ["id" => 3, "slug" => "sc_trackings", "name" => "trackings", "order" => 4, "dom_id" => "menu-item-trackings", "dom_label" => "Seguimiento", "dom_icon" => "fa-solid fa-binoculars", "has_sub_menu" => true],
-            ["id" => 4, "slug" => "sc_items", "name" => "items", "order" => 5, "dom_id" => "menu-item-catalogs", "dom_label" => "Catálogo comercial", "dom_icon" => "fa fa-book", "has_sub_menu" => true],
-            ["id" => 5, "slug" => "sc_inventories", "name" => "inventories", "order" => 6, "dom_id" => "menu-item-inventories", "dom_label" => "Inventario", "dom_icon" => "fa-solid fa-arrow-right-arrow-left", "has_sub_menu" => true],
-            ["id" => 6, "slug" => "sc_infrastructure", "name" => "infrastructure", "order" => 7, "dom_id" => "menu-item-infrastructure", "dom_label" => "Infraestructura", "dom_icon" => "fa-solid fa-industry", "has_sub_menu" => true],
-            ["id" => 7, "slug" => "sc_customers", "name" => "customers", "order" => 3, "dom_id" => "menu-item-customers", "dom_label" => "Clientes", "dom_icon" => "fa fa-user", "has_sub_menu" => false],
-            ["id" => 8, "slug" => "sc_configuration", "name" => "configuration", "order" => 9, "dom_id" => "menu-item-configuration", "dom_label" => "Configuración", "dom_icon" => "fa fa-gear", "has_sub_menu" => true],
-            ["id" => 9, "slug" => "sc_reports", "name" => "reports", "order" => 10, "dom_id" => "menu-item-reports", "dom_label" => "Reportes", "dom_icon" => "fa fa-print", "has_sub_menu" => false],
-            ["id" => 10, "slug" => "sc_customer_care", "name" => "customer_care", "order" => 8, "dom_id" => "menu-item-customer_care", "dom_label" => "Atención al cliente", "dom_icon" => "fa fa-headset", "has_sub_menu" => true]
+            ["id" => 2, "slug" => "sc_sales", "name" => "sales", "order" => 3, "dom_id" => "menu-item-sales", "dom_label" => "Ventas", "dom_icon" => "fa-solid fa-cash-register", "has_sub_menu" => true],
+            ["id" => 3, "slug" => "sc_trackings", "name" => "trackings", "order" => 5, "dom_id" => "menu-item-trackings", "dom_label" => "Seguimiento", "dom_icon" => "fa-solid fa-binoculars", "has_sub_menu" => true],
+            ["id" => 4, "slug" => "sc_items", "name" => "items", "order" => 6, "dom_id" => "menu-item-catalogs", "dom_label" => "Catálogo comercial", "dom_icon" => "fa fa-book", "has_sub_menu" => true],
+            ["id" => 5, "slug" => "sc_inventories", "name" => "inventories", "order" => 7, "dom_id" => "menu-item-inventories", "dom_label" => "Inventario", "dom_icon" => "fa-solid fa-arrow-right-arrow-left", "has_sub_menu" => true],
+            ["id" => 6, "slug" => "sc_infrastructure", "name" => "infrastructure", "order" => 8, "dom_id" => "menu-item-infrastructure", "dom_label" => "Infraestructura", "dom_icon" => "fa-solid fa-industry", "has_sub_menu" => true],
+            ["id" => 7, "slug" => "sc_customers", "name" => "customers", "order" => 4, "dom_id" => "menu-item-customers", "dom_label" => "Clientes", "dom_icon" => "fa fa-user", "has_sub_menu" => false],
+            ["id" => 8, "slug" => "sc_configuration", "name" => "configuration", "order" => 10, "dom_id" => "menu-item-configuration", "dom_label" => "Configuración", "dom_icon" => "fa fa-gear", "has_sub_menu" => true],
+            ["id" => 9, "slug" => "sc_reports", "name" => "reports", "order" => 11, "dom_id" => "menu-item-reports", "dom_label" => "Reportes", "dom_icon" => "fa fa-print", "has_sub_menu" => false],
+            ["id" => 10, "slug" => "sc_customer_care", "name" => "customer_care", "order" => 9, "dom_id" => "menu-item-customer_care", "dom_label" => "Atención al cliente", "dom_icon" => "fa fa-headset", "has_sub_menu" => true],
+            ["id" => 11, "slug" => "sc_dashboard", "name" => "dashboard", "order" => 2, "dom_id" => "menu-item-dashboard", "dom_label" => "Dashboard", "dom_icon" => "fa-solid fa-gauge", "has_sub_menu" => false],
         ]);
 
         DB::table("sub_sections")->insert([
@@ -219,7 +220,8 @@ return new class extends Migration {
             ["id" => 15, "section_id" => 9, "slug" => "sbc_reports-main", "name" => "reports-main", "dom_id" => "menu-item-reports", "dom_label" => "Reportes", "dom_route" => "reports.index"],
             ["id" => 16, "section_id" => 3, "slug" => "sbc_trackings-attendances", "name" => "trackings-attendances", "dom_id" => "menu-item-trackings-attendances", "dom_label" => "Asistencias", "dom_route" => "tracking_attendances.index"],
             ["id" => 17, "section_id" => 3, "slug" => "sbc_trackings-notifications", "name" => "trackings-notifications", "dom_id" => "menu-item-trackings-notifications", "dom_label" => "Notificaciones", "dom_route" => "tracking_notifications.index"],
-            ["id" => 18, "section_id" => 10, "slug" => "sbc_customer_care-book_complaints", "name" => "customer_care-book_complaints", "dom_id" => "menu-item-customer_care-book_complaints", "dom_label" => "Libro de reclamaciones y sugerencias", "dom_route" => "book_complaints.index"]
+            ["id" => 18, "section_id" => 10, "slug" => "sbc_customer_care-book_complaints", "name" => "customer_care-book_complaints", "dom_id" => "menu-item-customer_care-book_complaints", "dom_label" => "Libro de reclamaciones y sugerencias", "dom_route" => "book_complaints.index"],
+            ["id" => 19, "section_id" => 11, "slug" => "sbc_dashboard-main", "name" => "dashboard-main", "dom_id" => "menu-item-dashboard", "dom_label" => "Dashboard", "dom_route" => "dashboard.index"],
         ]);
 
         DB::table("companies_sub_sections")->insert([
@@ -240,7 +242,8 @@ return new class extends Migration {
             ["company_id" => 1, "sub_section_id" => 15],
             ["company_id" => 1, "sub_section_id" => 16],
             ["company_id" => 1, "sub_section_id" => 17],
-            ["company_id" => 1, "sub_section_id" => 18]
+            ["company_id" => 1, "sub_section_id" => 18],
+            ["company_id" => 1, "sub_section_id" => 19],
         ]);
 
         DB::table("roles")->insert([

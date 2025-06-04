@@ -22,8 +22,9 @@
     <head>
         @include("System.layouts.partials.up")
         <script>
-            window.ownerApp = @json($ownerApp);
-            window.company = @json($company);
+            window.sections = @json($sections ?? []);
+            window.ownerApp = @json($ownerApp ?? null);
+            window.company = @json($company ?? null);
         </script>
     </head>
     <body>

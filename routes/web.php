@@ -55,6 +55,7 @@ Route::middleware(["web"])
             Route::prefix('/stocks_management')->group($systemRoute.'/StockManagement.php');
             Route::prefix('/assets')->group($systemRoute.'/Asset.php');
             Route::prefix('/assets_management')->group($systemRoute.'/AssetManagement.php');
+            Route::prefix('/dashboard')->group($systemRoute.'/Dashboard.php');
             Route::prefix('/helpers')->group($systemRoute.'/Helper.php');
             Route::prefix('/home')->group($systemRoute.'/Home.php');
             Route::prefix('/branches')->group($systemRoute.'/Branch.php');
