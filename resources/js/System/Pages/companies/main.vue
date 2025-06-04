@@ -5,15 +5,6 @@
     <div class="nav-align-top">
         <ul class="nav nav-tabs nav-fill" role="tablist">
             <li class="nav-item" role="presentation">
-                <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-share" aria-controls="navs-pills-share" aria-selected="false" tabindex="-1">
-                    <span class="d-none d-sm-inline-flex align-items-center fw-bold">
-                        <i class="fa-solid fa-share-nodes me-1_5"></i>
-                        <span class="ms-2">Compartir</span>
-                    </span>
-                    <i class="fa-solid fa-share-nodes d-sm-none"></i>
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
                 <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-general" aria-controls="navs-pills-general" aria-selected="false" tabindex="-1">
                     <span class="d-none d-sm-inline-flex align-items-center fw-bold">
                         <i class="fa-solid fa-building me-1_5"></i>
@@ -40,7 +31,7 @@
                     <i class="fa-solid fa-mobile-screen-button d-sm-none"></i>
                 </button>
             </li>
-            <li class="nav-item" role="presentation">
+            <li class="nav-item" role="presentation" v-show="false">
                 <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-configuration" aria-controls="navs-pills-configuration" aria-selected="false" tabindex="-1">
                     <span class="d-none d-sm-inline-flex align-items-center fw-bold">
                         <i class="fa-solid fa-gear me-1_5"></i>
@@ -49,32 +40,17 @@
                     <i class="fa-solid fa-gear d-sm-none"></i>
                 </button>
             </li>
+            <li class="nav-item" role="presentation">
+                <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-share" aria-controls="navs-pills-share" aria-selected="false" tabindex="-1">
+                    <span class="d-none d-sm-inline-flex align-items-center fw-bold">
+                        <i class="fa-solid fa-share-nodes me-1_5"></i>
+                        <span class="ms-2">Compartir</span>
+                    </span>
+                    <i class="fa-solid fa-share-nodes d-sm-none"></i>
+                </button>
+            </li>
         </ul>
         <div class="tab-content">
-            <div class="tab-pane fade" id="navs-pills-share" role="tabpanel">
-                <div class="row g-3">
-                    <InputSlot
-                        hasDiv
-                        :isInputGroup="false"
-                        :divInputClass="['d-flex justify-content-center']"
-                        xl="6"
-                        lg="6">
-                        <template v-slot:input>
-                            <MyDashboardCompany/>
-                        </template>
-                    </InputSlot>
-                    <InputSlot
-                        hasDiv
-                        :isInputGroup="false"
-                        :divInputClass="['d-flex justify-content-center']"
-                        xl="6"
-                        lg="6">
-                        <template v-slot:input>
-                            <MyWebCompany/>
-                        </template>
-                    </InputSlot>
-                </div>
-            </div>
             <div class="tab-pane fade" id="navs-pills-general" role="tabpanel">
                 <div class="row g-3">
                     <InputSlot
@@ -290,7 +266,7 @@
                     </InputSlot>
                 </div>
             </div>
-            <div class="tab-pane fade" id="navs-pills-configuration" role="tabpanel">
+            <div class="tab-pane fade" id="navs-pills-configuration" role="tabpanel" v-show="false">
                 <div class="row g-3">
                     <InputText
                         v-model="forms.entity.createUpdate.data.slug"
@@ -316,6 +292,30 @@
                         :textBottomInfo="forms.entity.createUpdate.errors?.token_api_misc"
                         xl="6"
                         lg="6"/>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="navs-pills-share" role="tabpanel">
+                <div class="row g-3">
+                    <InputSlot
+                        hasDiv
+                        :isInputGroup="false"
+                        :divInputClass="['d-flex justify-content-center']"
+                        xl="6"
+                        lg="6">
+                        <template v-slot:input>
+                            <MyDashboardCompany/>
+                        </template>
+                    </InputSlot>
+                    <InputSlot
+                        hasDiv
+                        :isInputGroup="false"
+                        :divInputClass="['d-flex justify-content-center']"
+                        xl="6"
+                        lg="6">
+                        <template v-slot:input>
+                            <MyWebCompany/>
+                        </template>
+                    </InputSlot>
                 </div>
             </div>
             <div class="mt-4" v-if="isDefined({value: forms.entity.createUpdate.data.id})">
@@ -472,7 +472,7 @@ export default {
 
             let form = Utils.cloneJson(this.forms.entity.createUpdate.data);
 
-            const validateForm = this.validateForm({functionName, form});
+            const validateForm = this.validateForm({functionName, form, extras: {type: "descriptive"}});
 
             if(validateForm?.bool) {
 
@@ -525,9 +525,10 @@ export default {
 
             }else {
 
-                this.formErrors({functionName, type: "set", errors: validateForm});
-                Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
-                Alerts.swals({show: false});
+                // this.formErrors({functioname, type: "set", errors: validateForm});
+                // Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
+                //Alerts.swals({show: false});
+                Alerts.generateAlert({messages: Utils.getErrors({errors: validateForm}), keys: [{"column": "section", "label" : "Sección"}, {"column": "msg", "label" : "Mensaje"}], msgContent: `<div class="fw-semibold mb-2">${this.config.messages.errorValidate}</div>`, width: 800});
 
             }
 
@@ -571,72 +572,60 @@ export default {
                 result.token_api_misc         = [];
                 result.status                 = [];
 
+                const isDescriptive = ["descriptive"].includes(extras?.type);
+
                 if(!this.isDefined({value: form?.slug})) {
 
-                    result.slug.push(this.config.forms.errors.labels.required);
+                    result.slug.push({section: "Mi empresa" , msg: `${isDescriptive ? "Slug:" : ""} ${this.config.forms.errors.labels.required}`});
                     result.bool = false;
 
                 }
 
                 if(!this.isDefined({value: form?.identity_document_type})) {
 
-                    result.identity_document_type.push(this.config.forms.errors.labels.required);
+                    result.identity_document_type.push({section: "Mi empresa", msg: `${isDescriptive ? "Tipo de documento:" : ""} ${this.config.forms.errors.labels.required}`});
                     result.bool = false;
 
                 }
 
                 if(!this.isDefined({value: form?.document_number})) {
 
-                    result.document_number.push(this.config.forms.errors.labels.required);
+                    result.document_number.push({section: "Mi empresa", msg: `${isDescriptive ? "Número de documento:" : ""} ${this.config.forms.errors.labels.required}`});
                     result.bool = false;
 
                 }
 
                 if(!this.isDefined({value: form?.legal_name})) {
 
-                    result.legal_name.push(this.config.forms.errors.labels.required);
+                    result.legal_name.push({section: "Mi empresa", msg: `${isDescriptive ? "Nombre legal:" : ""} ${this.config.forms.errors.labels.required}`});
                     result.bool = false;
 
                 }
 
                 if(!this.isDefined({value: form?.commercial_name})) {
 
-                    result.commercial_name.push(this.config.forms.errors.labels.required);
+                    result.commercial_name.push({section: "Mi empresa", msg: `${isDescriptive ? "Nombre comercial:" : ""} ${this.config.forms.errors.labels.required}`});
                     result.bool = false;
 
                 }
 
                 if(!this.isDefined({value: form?.address})) {
 
-                    result.address.push(this.config.forms.errors.labels.required);
+                    result.address.push({section: "Contacto", msg: `${isDescriptive ? "Dirección:" : ""} ${this.config.forms.errors.labels.required}`});
                     result.bool = false;
 
                 }
 
                 if(!this.isDefined({value: form?.telephone})) {
 
-                    result.telephone.push(this.config.forms.errors.labels.required);
+                    result.telephone.push({section: "Contacto", msg: `${isDescriptive ? "Teléfono:" : ""} ${this.config.forms.errors.labels.required}`});
                     result.bool = false;
 
                 }
 
-                /* if(!this.isDefined({value: form?.email})) {
-
-                    result.email.push(this.config.forms.errors.labels.required);
-                    result.bool = false;
-
-                } */
-
-                /* if(!this.isDefined({value: form?.token_api_misc})) {
-
-                    result.token_api_misc.push(this.config.forms.errors.labels.required);
-                    result.bool = false;
-
-                } */
-
                 if(!this.isDefined({value: form?.status})) {
 
-                    result.status.push(this.config.forms.errors.labels.required);
+                    result.status.push({section: "Otro", msg: `${isDescriptive ? "Estado:" : ""} ${this.config.forms.errors.labels.required}`});
                     result.bool = false;
 
                 }

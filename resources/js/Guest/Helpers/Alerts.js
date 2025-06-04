@@ -117,15 +117,16 @@ export function modals({type = "show", id = null, timeout = 0}) {
 
 }
 
-export function generateAlert({messages = [], type = "warning", headerTitle = null, msgContent = null}) {
+export function generateAlert({messages = [], type = "warning", headerTitle = null, msgContent = null, keys = [], width = 550}) {
 
-	let tableAlertHtml = messages.length > 0 ? generateTableAlert({messages, type}) : "";
+    let tableAlertHtml = messages.length > 0 ? generateTableAlert({messages, type, keys}) : "";
 
-	Swal.fire({title             : headerTitle,
+    Swal.fire({title             : headerTitle,
                icon              : type,
-		       allowOutsideClick : false,
-		       allowEscapeKey    : false,
-		       html              : `${msgContent ?? ""} <div>${tableAlertHtml}</div>`,
+               allowOutsideClick : false,
+               allowEscapeKey    : false,
+               html              : `${msgContent ?? ""} <div>${tableAlertHtml}</div>`,
+               width             : width,
                confirmButtonText: "Entendido",
                customClass: {
                    confirmButton: "btn btn-primary waves-effect"
@@ -133,27 +134,56 @@ export function generateAlert({messages = [], type = "warning", headerTitle = nu
 
 }
 
-export function generateTableAlert({messages}) {
+export function generateTableAlert({messages, keys = []}) {
 
-	let result = messages.length === 0 ? "" : `
-	<table class="table table table-hover table-bordered">
-		<thead class="table-light">
-			<tr class="text-center align-middle">
-				<th class="text-center">N°</th>
-				<th class="text-center">Mensaje</th>
-			</tr>
-		</thead>
-		<tbody class="table-border-bottom-0 bg-white">
-			${messages.reduce((carry, singleMessage, index)=>carry+/*html*/`
-			<tr>
-				<td class="text-center">${index + 1}</td>
-				<td class="text-start">${singleMessage}</td>
-			</tr>
-			`, "")}
-		</tbody>
-	</table>
-	`;
+    let header = "",
+        content = "";
 
-	return result;
+    if(keys.length === 0) {
+
+        header = `<tr class="text-center align-middle">
+                        <td class="text-center">N°</td>
+                        <td class="text-center">Mensaje</td>
+                  </tr>`;
+
+        content = `${messages.reduce((carry, singleMessage, index)=>carry+/*html*/`
+                    <tr>
+                        <td class="text-center">${index + 1}</td>
+                        <td class="text-start">${singleMessage}</td>
+                    </tr>
+                  `, "")}`;
+
+    }else {
+
+        header = `<tr class="text-center align-middle">
+                        <td class="text-center">N°</td>
+                        ${keys.reduce((carryKey, singleMessageKey, indexKey)=>carryKey+/*html*/`
+                            <td class="text-center">${singleMessageKey?.label ?? ""}</td>
+                        `, "")}
+                  </tr>`;
+
+        content = `${messages.reduce((carry, singleMessage, index)=>carry+/*html*/`
+                    <tr>
+                        <td class="text-center">${index + 1}</td>
+                        ${keys.reduce((carryKey, singleMessageKey, indexKey)=>carryKey+/*html*/`
+                            <td class="text-start">${singleMessage.length > 0 ? (singleMessage[0][singleMessageKey?.column] ?? "") : ""}</td>
+                        `, "")}
+                    </tr>
+                   `, "")}`;
+
+    }
+
+    let result = messages.length === 0 ? "" : `
+    <table class="table table table-hover table-bordered">
+        <thead class="table-light">
+            ${header}
+        </thead>
+        <tbody class="table-border-bottom-0 bg-white">
+            ${content}
+        </tbody>
+    </table>
+    `;
+
+    return result;
 
 }
