@@ -24,7 +24,7 @@
         <script>
             window.sections = @json($sections ?? []);
             window.ownerApp = @json($ownerApp ?? null);
-            window.company = @json($company ?? null);
+            window.company  = @json($company ?? null);
         </script>
     </head>
     <body>
@@ -50,21 +50,21 @@
                                 </div>
                             </span>
                         </li>
-                        @foreach($sections as $sec)
+                        @foreach($sections as $section)
                             @php
-                                $section = $sec["section"];
-                                $subSec  = $sec["subSections"]->first();
+                                $subSections = $section->subSections;
+                                $reference   = count($subSections) > 0 ? $subSections->first() : null;
                             @endphp
                             <li class="menu-item" id="{{ $section->dom_id }}">
-                                <a href="{{ $section->has_sub_menu ? 'javascript:void(0);' : route($subSec->dom_route) }}" class="{{ $section->has_sub_menu ? 'menu-link menu-toggle' : 'menu-link' }}">
+                                <a href="{{ $section->has_sub_menu ? 'javascript:void(0);' : $reference->dom_route_url }}" class="{{ $section->has_sub_menu ? 'menu-link menu-toggle' : 'menu-link' }}">
                                     <i class="{{ $section->dom_icon }} me-3"></i>
                                     <div>{{ $section->dom_label }}</div>
                                 </a>
                                 @if($section->has_sub_menu)
                                     <ul class="menu-sub">
-                                        @foreach($sec["subSections"] as $subSection)
+                                        @foreach($subSections as $subSection)
                                             <li class="menu-item" id="{{ $subSection->dom_id }}">
-                                                <a href="{{ route($subSection->dom_route) }}" class="menu-link">
+                                                <a href="{{ $subSection->dom_route_url }}" class="menu-link">
                                                     <div>{{ $subSection->dom_label }}</div>
                                                 </a>
                                             </li>
@@ -73,13 +73,13 @@
                                 @endif
                             </li>
                         @endforeach
-                        <li class="menu-item d-none">
+                        <li class="menu-item">
                             <a href="javascript:void(0)" class="menu-link">
                                 <i class="fa fa-check me-3"></i>
                                 <div class="text-white">{{ $hasActiveSections }}</div>
                             </a>
                         </li>
-                        <li class="menu-item d-none">
+                        <li class="menu-item">
                             <a href="javascript:void(0)" class="menu-link">
                                 <i class="fa fa-eye me-3"></i>
                                 <div class="text-white">{{ $lastActiveSections }}</div>

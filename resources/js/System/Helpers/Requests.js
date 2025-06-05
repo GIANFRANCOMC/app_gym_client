@@ -203,7 +203,7 @@ export function generateRoutes({entity, requestRoute}) {
         initParams: `${requestRoute}/${entity}/initParams`,
     };
 
-    if(["home"].includes(entity)) {
+    if(["dashboard"].includes(entity)) {
 
         routes.initData = `${requestRoute}/${entity}/initData`;
 

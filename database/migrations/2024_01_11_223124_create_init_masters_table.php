@@ -116,6 +116,7 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger("company_id");
             $table->unsignedBigInteger("sub_section_id");
+            $table->boolean("is_favorite")->default(false);
             $table->enum("status", ["active", "inactive"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();

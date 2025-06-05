@@ -4,12 +4,12 @@ namespace App\Http\Controllers\System;
 
 use App\Helpers\System\Utilities;
 use App\Http\Controllers\Controller;
-use App\Models\System\Branch;
-use App\Models\System\SaleHeader;
-use App\Models\System\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
+
+use App\Models\System\{CompanySubSection};
+use App\Services\CompanySectionService;
 
 class HomeController extends Controller {
 
@@ -40,56 +40,34 @@ class HomeController extends Controller {
 
     }
 
-    public function initData(Request $request) {
+    public function update(Request $request, $id) {
 
         $userAuth = Auth::user();
 
-        $date = Utilities::isDefined($request->date) && Utilities::isValidDateFormat($request->date) ? $request->date : date("Y-m-d");
+        $companiesSubSections = CompanySubSection::where("sub_section_id", $id)
+                                                 ->where("company_id", $userAuth->company_id)
+                                                 ->where("status", "active")
+                                                 ->with("subSection")
+                                                 ->get();
 
-        $branches = Branch::where("company_id", $userAuth->company_id)
-                          ->with(["series"])
-                          ->get();
+        $isFavorite = $request["is_favorite"] ?? false;
 
-        $serieIds = $branches->pluck("series.*.id")->flatten();
+        $sectionName = "";
 
-        $sales = SaleHeader::whereDate("created_at", $date)
-                           ->whereIn("serie_id", $serieIds)
-                           ->orderBy("created_at", "DESC")
-                           ->with(["serie.documentType", "holder", "currency"])
-                           ->get();
+        foreach($companiesSubSections as $companySubSection) {
 
-        $canceledSales = $sales->whereIn("status", ["canceled"])
-                               ->values();
+            $sectionName = $companySubSection->subSection->dom_label;
 
-        // $users = User::where("company_id", $userAuth->company_id)
-                      // ->whereIn("status", ["active"])
-                      // ->get();
+            $companySubSection->is_favorite = !($isFavorite == 1);
+            $companySubSection->updated_at  = now();
+            $companySubSection->updated_by  = $userAuth->id;
+            $companySubSection->save();
 
-        $data = [
-            "sales" => [
-                "all" => [
-                    "total"   => $sales->sum("total"),
-                    "count"   => $sales->count(),
-                    "records" => $sales
-                ],
-                "canceled" => [
-                    "total" => $canceledSales->sum("total"),
-                    "count" => $canceledSales->count()
-                ]
-            ],
-            "branches" => [
-                "valid" => [
-                    "count" => $branches->whereIn("status", ["active"])->count()
-                ]
-            ],
-            "users" => [
-                "valid" => [
-                    "count" => 0 // $users->count()
-                ]
-            ]
-        ];
+        }
 
-        return response()->json(["bool" => true, "msg" => "Data obtenida", "data" => $data], 200);
+        $sections = CompanySectionService::getSections($userAuth->company_id, true);
+
+        return response()->json(["bool" => true, "msg" => "$sectionName: Cambio realizado.", "sections" => $sections], 200);
 
     }
 

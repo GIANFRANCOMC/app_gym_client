@@ -15,7 +15,7 @@ class StoreSectionsInCache {
         if(Utilities::isDefined($user)) {
 
             // Call the function to automatically cache sections
-            CompanySectionService::getActiveSections($user->company_id);
+            CompanySectionService::getSections($user->company_id);
 
         }
 

@@ -12,7 +12,7 @@
                                 <i class="fa-solid fa-cash-register"></i>
                             </span>
                         </div>
-                        <h5 class="mb-0" v-text="'S/ '+separatorNumber(fixedNumber(forms.entity.home.data.sales?.all?.total ?? 0))"></h5>
+                        <h5 class="mb-0" v-text="'S/ '+separatorNumber(fixedNumber(forms.entity.dashboard.data.sales?.all?.total ?? 0))"></h5>
                     </div>
                     <span class="fw-semibold">VENTAS EN TOTAL</span>
                 </div>
@@ -27,7 +27,7 @@
                                 <i class="fa-solid fa-rectangle-xmark"></i>
                             </span>
                         </div>
-                        <h5 class="mb-0" v-text="'S/ '+separatorNumber(fixedNumber(forms.entity.home.data.sales?.canceled?.total ?? 0))"></h5>
+                        <h5 class="mb-0" v-text="'S/ '+separatorNumber(fixedNumber(forms.entity.dashboard.data.sales?.canceled?.total ?? 0))"></h5>
                     </div>
                     <span class="fw-semibold">VENTAS ANULADAS</span>
                 </div>
@@ -42,7 +42,7 @@
                                 <i class="ti ti-git-fork ti-md"></i>
                             </span>
                         </div>
-                        <h5 class="mb-0" v-text="separatorNumber(forms.entity.home.data.branches?.valid?.count ?? 0)"></h5>
+                        <h5 class="mb-0" v-text="separatorNumber(forms.entity.dashboard.data.branches?.valid?.count ?? 0)"></h5>
                     </div>
                     <span class="fw-semibold">SUCURSALES</span>
                 </div>
@@ -52,7 +52,7 @@
             <div class="card card-border-shadow-secondary h-100">
                 <div class="card-body">
                     <InputDate
-                        v-model="forms.entity.home.data.date"
+                        v-model="forms.entity.dashboard.data.date"
                         @change="initData({loading: true})"
                         hasDiv
                         title="Fecha a consultar"
@@ -70,7 +70,7 @@
                                 <i class="fa-solid fa-users"></i>
                             </span>
                         </div>
-                        <h5 class="mb-0" v-text="separatorNumber(forms.entity.home.data.users?.valid?.count ?? 0)"></h5>
+                        <h5 class="mb-0" v-text="separatorNumber(forms.entity.dashboard.data.users?.valid?.count ?? 0)"></h5>
                     </div>
                     <span class="fw-semibold">COLABORADORES</span>
                 </div>
@@ -84,7 +84,7 @@
                     <div class="card-title mb-0">
                         <h5 class="m-0 fw-semibold">
                             Ventas creadas
-                            <small class="text-muted" v-text="'| Fecha: '+legibleFormatDate({dateString: forms.entity.home.data.date, type: 'date'})"></small>
+                            <small class="text-muted" v-text="'| Fecha: '+legibleFormatDate({dateString: forms.entity.dashboard.data.date, type: 'date'})"></small>
                         </h5>
                     </div>
                     <div v-show="false">
@@ -105,7 +105,7 @@
             <div class="card-title mb-0">
                 <h5 class="m-0 fw-semibold">
                     Últimas ventas
-                    <small class="text-muted" v-text="'| Fecha: '+legibleFormatDate({dateString: forms.entity.home.data.date, type: 'date'})"></small>
+                    <small class="text-muted" v-text="'| Fecha: '+legibleFormatDate({dateString: forms.entity.dashboard.data.date, type: 'date'})"></small>
                 </h5>
             </div>
             <div v-show="false">
@@ -179,15 +179,15 @@
         </div>
     </div>
 
-    <PrintSale :modalId="forms.entity.home.extras.modals.actions.id" :data="forms.entity.home.extras.modals.actions.data">
+    <PrintSale :modalId="forms.entity.dashboard.extras.modals.actions.id" :data="forms.entity.dashboard.extras.modals.actions.data">
         <template v-slot:extraGroupAppend>
             <div class="row g-2 mt-4">
                 <InputText
                     hasDiv
                     title="Número de celular (Whatsapp)"
-                    v-model="forms.entity.home.extras.modals.actions.data.whatsapp">
+                    v-model="forms.entity.dashboard.extras.modals.actions.data.whatsapp">
                     <template v-slot:inputGroupAppend>
-                        <button class="btn btn-success waves-effect" type="button" @click="sendWhatsapp({data: forms.entity.home.extras.modals.actions.data})" :disabled="!isDefined({value: forms.entity.home.extras.modals.actions.data.whatsapp})">
+                        <button class="btn btn-success waves-effect" type="button" @click="sendWhatsapp({data: forms.entity.dashboard.extras.modals.actions.data})" :disabled="!isDefined({value: forms.entity.dashboard.extras.modals.actions.data.whatsapp})">
                             <i class="fa-brands fa-whatsapp"></i>
                             <span class="ms-2">Enviar</span>
                         </button>
@@ -197,9 +197,9 @@
                     v-if="false"
                     hasDiv
                     title="Correo electrónico"
-                    v-model="forms.entity.home.extras.modals.actions.data.email">
+                    v-model="forms.entity.dashboard.extras.modals.actions.data.email">
                     <template v-slot:inputGroupAppend>
-                        <button class="btn btn-info-1 waves-effect" type="button" @click="sendEmail({data: forms.entity.home.extras.modals.actions.data})" :disabled="!isDefined({value: forms.entity.home.extras.modals.actions.data.email})">
+                        <button class="btn btn-info-1 waves-effect" type="button" @click="sendEmail({data: forms.entity.dashboard.extras.modals.actions.data})" :disabled="!isDefined({value: forms.entity.dashboard.extras.modals.actions.data.email})">
                             <i class="fa fa-envelope"></i>
                             <span class="ms-2">Enviar</span>
                         </button>
@@ -242,7 +242,7 @@ export default {
         return {
             forms: {
                 entity: {
-                    home: {
+                    dashboard: {
                         extras: {
                             modals: {
                                 actions: {
@@ -270,7 +270,7 @@ export default {
             config: {
                 ...Constants.generalConfig,
                 entity: {
-                    ...Requests.config({entity: "home"}),
+                    ...Requests.config({entity: "dashboard"}),
                     page: {
                         title: "Dashboard",
                         active: true,
@@ -295,7 +295,7 @@ export default {
 
             return new Promise(resolve => {
 
-                this.forms.entity.home.data.date = Utils.getCurrentDate();
+                this.forms.entity.dashboard.data.date = Utils.getCurrentDate();
 
                 resolve(true);
 
@@ -310,17 +310,17 @@ export default {
 
             }
 
-            if(!this.isDefined({value: this.forms.entity.home.data.date})) {
+            if(!this.isDefined({value: this.forms.entity.dashboard.data.date})) {
 
-                this.forms.entity.home.data.date = Utils.getCurrentDate();
+                this.forms.entity.dashboard.data.date = Utils.getCurrentDate();
 
             }
 
-            let initData = await Requests.get({route: this.config.entity.routes.initData, data: {page: "main", date: this.forms.entity.home.data.date}, showAlert: true});
+            let initData = await Requests.get({route: this.config.entity.routes.initData, data: {page: "main", date: this.forms.entity.dashboard.data.date}, showAlert: true});
 
-            this.forms.entity.home.data.sales    = initData.data?.data?.sales;
-            this.forms.entity.home.data.branches = initData.data?.data?.branches;
-            this.forms.entity.home.data.users    = initData.data?.data?.users;
+            this.forms.entity.dashboard.data.sales    = initData.data?.data?.sales;
+            this.forms.entity.dashboard.data.branches = initData.data?.data?.branches;
+            this.forms.entity.dashboard.data.users    = initData.data?.data?.users;
 
             this.initChart();
 
@@ -367,7 +367,7 @@ export default {
             const totalsByInterval = intervals.map(interval => ({ label: interval.label, total: 0 }));
 
             // Process data
-            const sales = this.forms.entity.home.data.sales.all.records;
+            const sales = this.forms.entity.dashboard.data.sales.all.records;
 
             sales.forEach(sale => {
 
@@ -470,9 +470,9 @@ export default {
             const whatsapp = record?.holder?.phone_number ?? "";
             const email    = record?.holder?.email ?? "";
 
-            this.forms.entity.home.extras.modals.actions.data = {...record, extras: {}, whatsapp, email};
+            this.forms.entity.dashboard.extras.modals.actions.data = {...record, extras: {}, whatsapp, email};
 
-            Alerts.modals({type: "show", id: this.forms.entity.home.extras.modals.actions.id});
+            Alerts.modals({type: "show", id: this.forms.entity.dashboard.extras.modals.actions.id});
 
         },
         goSalesList() {
@@ -505,7 +505,7 @@ export default {
         },
         sendWhatsapp({data = null, action = "reportSale"}) {
 
-            const phoneNumber = this.forms.entity.home.extras.modals.actions.data.whatsapp;
+            const phoneNumber = this.forms.entity.dashboard.extras.modals.actions.data.whatsapp;
             const message     = Utils.getMessageWhatsapp({data, action});
 
             Utils.sendWhatsapp({phoneNumber, message});
@@ -544,7 +544,7 @@ export default {
         },
         lastSales: function() {
 
-            return (this.forms.entity.home.data.sales?.all?.records ?? []).slice(0, 10);
+            return (this.forms.entity.dashboard.data.sales?.all?.records ?? []).slice(0, 10);
 
         }
     }

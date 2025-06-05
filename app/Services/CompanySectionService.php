@@ -7,20 +7,27 @@ use Illuminate\Support\Facades\Cache;
 
 class CompanySectionService {
 
-    public static function getActiveSections($company_id) {
+    public static function getSections($company_id, $forceRefresh = false) {
 
         $time = 30;
 
         $cacheKey = "active_sections_{$company_id}";
 
-        Cache::has($cacheKey) ? Cache::put("has_active_sections_{$company_id}", now(), now()->addMinutes($time)) :
-                                Cache::put("last_active_sections_{$company_id}", now(), now()->addMinutes($time));
+        if($forceRefresh || !Cache::has($cacheKey)) {
 
-        return Cache::remember($cacheKey, now()->addMinutes($time), function() use($company_id) {
+            Cache::put("last_$cacheKey", now(), now()->addMinutes($time));
 
-            return Company::getActiveSections($company_id);
+            $sections = Company::getActiveSections($company_id);
 
-        });
+            Cache::put($cacheKey, $sections, now()->addMinutes($time));
+
+        }else{
+
+            Cache::put("has_$cacheKey", now(), now()->addMinutes($time));
+
+        }
+
+        return Cache::get($cacheKey);
 
     }
 

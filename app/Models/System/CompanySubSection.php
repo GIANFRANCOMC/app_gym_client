@@ -20,6 +20,7 @@ class CompanySubSection extends Model {
     protected $fillable = [
         "company_id",
         "sub_section_id",
+        "is_favorite",
         "status",
         "created_at",
         "created_by",

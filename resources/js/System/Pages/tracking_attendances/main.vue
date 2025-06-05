@@ -252,7 +252,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div v-if="['store'].includes(forms.entity.createUpdate.extras.modals.default.type)" class="d-flex flex-wrap justify-content-between align-items-center mb-3 shadow-sm px-4 py-2 border border-1 border-ligth rounded">
+                    <div v-if="['store'].includes(forms.entity.createUpdate.extras.modals.default.type)" class="d-flex flex-wrap justify-content-between align-items-center mb-3 shadow-sm px-4 py-2 border border-1 border-light rounded">
                         <label class="fw-semibold text-dark">Selecciona el modo de asistencia</label>
                         <div class="d-flex gap-2">
                             <template v-for="record in formModes" :key="record.code">
@@ -356,7 +356,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div v-if="['store'].includes(forms.entity.qrcode.extras.modals.default.type)" class="d-flex flex-wrap justify-content-between align-items-center mb-3 shadow-sm px-4 py-2 border border-1 border-ligth rounded">
+                    <div v-if="['store'].includes(forms.entity.qrcode.extras.modals.default.type)" class="d-flex flex-wrap justify-content-between align-items-center mb-3 shadow-sm px-4 py-2 border border-1 border-light rounded">
                         <label class="fw-semibold text-dark">Selecciona el modo de asistencia</label>
                         <div class="d-flex gap-2">
                             <template v-for="record in formModes" :key="record.code">

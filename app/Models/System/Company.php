@@ -70,19 +70,43 @@ class Company extends Model {
 
         try {
 
-            $companySubSections = CompanySubSection::where("company_id", $company_id)
-                                                   ->whereHas("subSection.section", function($query) { $query->where("status", "active"); })
-                                                   ->with("subSection.section")
-                                                   ->get();
+            $sections = Section::with(["subSections" => function ($query)use($company_id) {
 
-            $sections = $companySubSections->pluck("subSection")
-                                           ->filter(fn($subSection) => $subSection->status === "active")
-                                           ->groupBy(fn($subSection) => $subSection->section->id)
-                                           ->map(fn($subSections, $sectionId) => [
-                                               "section" => $subSections->first()->section,
-                                               "subSections" => $subSections,
-                                           ])
-                                           ->sortBy(fn($section) => $section["section"]->order);
+                                    $query->whereHas("companiesSubSections", function($q) use($company_id) {
+
+                                                $q->where("company_id", $company_id);
+
+                                          })
+                                          ->with(["companiesSubSections" => function ($q) use ($company_id) {
+
+                                                $q->where("company_id", $company_id);
+
+                                          }]);
+
+                               }])
+                               ->whereHas("subSections.companiesSubSections", function($q) use($company_id) {
+
+                                    $q->where("company_id", $company_id);
+
+                               })
+                               ->orderBy("order", "ASC")
+                               ->get()
+                               ->map(function($section) {
+
+                                    $section->subSections->map(function($subSection) {
+
+                                        $companySubSection = optional($subSection->companiesSubSections->first());
+
+                                        $subSection->dom_route_url = route($subSection->dom_route);
+                                        $subSection->is_favorite   = $companySubSection->is_favorite;
+
+                                        return $subSection;
+
+                                    });
+
+                                    return $section;
+
+                               });
 
         }catch(Exception $e) {
 

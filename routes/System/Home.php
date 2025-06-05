@@ -7,4 +7,4 @@ $entity = "home";
 
 Route::get('',            [HomeController::class, 'index'])->name("$entity.index");
 Route::get('/initParams', [HomeController::class, 'initParams'])->name("$entity.initParams");
-Route::get('/initData',   [HomeController::class, 'initData'])->name("$entity.initData");
+Route::patch('/{id}',     [HomeController::class, 'update'])->name("$entity.update");
