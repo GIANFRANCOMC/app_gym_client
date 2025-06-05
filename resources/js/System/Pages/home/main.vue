@@ -12,38 +12,36 @@
             </div>
         </div>
     </div>
-    <div class="row g-3">
+    <div class="row g-3 g-md-4">
         <div class="col-xl-4 col-md-6 col-sm-12" v-for="(section, indexSection) in sections" :key="indexSection">
-            <div class="card border border-light shadow-sm h-100">
-                <div class="card-body">
+            <div class="card border border-gray shadow-sm h-100">
+                <div class="card-body py-3">
                     <template v-if="(section?.sub_sections ?? []).length === 1">
                         <button type="button"
                                 :class="['position-absolute top-0 start-100 translate-middle badge badge-center rounded-pill border-light', (section.sub_sections[0]?.hovered ? !section.sub_sections[0]?.is_favorite : section.sub_sections[0]?.is_favorite) ? 'bg-warning' : 'bg-secondary']"
-                                data-bs-toggle="tooltip" data-bs-placement="top" :data-bs-original-title="(section.sub_sections[0]?.hovered ? !section.sub_sections[0]?.is_favorite : section.sub_sections[0]?.is_favorite) ? 'Quitar de favoritos' : 'Marcar como favorito'"
                                 @click="changeFavorite(section.sub_sections[0])"
                                 @mouseenter="section.sub_sections[0].hovered = true"
                                 @mouseleave="section.sub_sections[0].hovered = false">
                             <i :class="['fa-xs', (section.sub_sections[0]?.hovered ? !section.sub_sections[0]?.is_favorite : section.sub_sections[0]?.is_favorite) ? 'fa fa-star' : 'fa-regular fa-star fa-beat-fade']" style="--fa-beat-fade-opacity: 0.67; --fa-beat-fade-scale: 1.075;"></i>
                         </button>
                         <div class="d-flex align-items-center justify-content-start h-100">
-                            <i :class="[section?.dom_icon, 'fa-xl']"></i>
-                            <a class="mb-0 ms-3 fw-bold text-dark h5" v-text="section.sub_sections[0]?.dom_label" :href="section.sub_sections[0]?.dom_route_url"></a>
+                            <!-- <i :class="[section?.dom_icon, 'fa-xl']"></i> -->
+                            <a class="mb-0 ms-3 fw-bold text-dark h4" v-text="section?.order+'. '+section.sub_sections[0]?.dom_label" :href="section.sub_sections[0]?.dom_route_url"></a>
                             <a class="ms-auto fs-2" :href="section.sub_sections[0]?.dom_route_url">
                                 <i class="fa-solid fa-circle-arrow-right text-info-1"></i>
                             </a>
                         </div>
                     </template>
                     <template v-else>
-                        <div class="d-flex align-items-center justify-content-start mb-3">
-                            <i :class="[section?.dom_icon, 'fa-xl']"></i>
-                            <span class="mb-0 ms-3 fw-bold text-dark h5" v-text="section?.dom_label"></span>
+                        <div class="d-flex align-items-center justify-content-start mb-2">
+                            <!-- <i :class="[section?.dom_icon, 'fa-xl']"></i> -->
+                            <span class="mb-0 ms-3 fw-bold text-dark h4" v-text="section?.order+'. '+section?.dom_label"></span>
                         </div>
                         <div>
                             <template v-for="(subSection, indexSubSection) in section?.sub_sections" :key="indexSubSection">
                                 <div class="d-flex align-items-center justify-content-start ps-2 py-1">
                                     <button type="button"
                                             :class="['badge badge-center rounded-pill border-light', (subSection.hovered ? !subSection.is_favorite : subSection.is_favorite) ? 'bg-warning' : 'bg-secondary']"
-                                            data-bs-toggle="tooltip" data-bs-placement="top" :data-bs-original-title="(subSection?.hovered ? !subSection?.is_favorite : subSection?.is_favorite) ? 'Quitar de favoritos' : 'Marcar como favorito'"
                                             @click="changeFavorite(subSection)"
                                             @mouseenter="subSection.hovered = true"
                                             @mouseleave="subSection.hovered = false">
@@ -154,13 +152,13 @@ export default {
 
                 if(Requests.valid({result: store})) {
 
-                    Alerts.toastrs({type: "success", subtitle: store?.data?.msg});
+                    // Alerts.toastrs({type: "success", subtitle: store?.data?.msg});
 
                     this.config.essential.sections = window.sections = store?.data?.sections || [];
 
                 }else {
 
-                    Alerts.toastrs({type: "error", subtitle: store?.data?.msg});
+                    // Alerts.toastrs({type: "error", subtitle: store?.data?.msg});
 
                 }
 
@@ -184,7 +182,7 @@ export default {
         },
         sections: function() {
 
-            let filtered = this.config?.essential?.sections.filter(e => !["sc_home"].includes(e?.slug));
+            let filtered = this.config?.essential?.sections; // .filter(e => !["sc_home"].includes(e?.slug));
 
             if(this.forms.entity.createUpdate.config.showOnlyFavorites) {
 
