@@ -95,10 +95,7 @@ class Company extends Model {
 
                                     $section->subSections->map(function($subSection) {
 
-                                        $companySubSection = optional($subSection->companiesSubSections->first());
-
                                         $subSection->dom_route_url = route($subSection->dom_route);
-                                        $subSection->is_favorite   = $companySubSection->is_favorite;
 
                                         return $subSection;
 

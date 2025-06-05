@@ -116,7 +116,6 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger("company_id");
             $table->unsignedBigInteger("sub_section_id");
-            $table->boolean("is_favorite")->default(false);
             $table->enum("status", ["active", "inactive"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();
@@ -165,6 +164,21 @@ return new class extends Migration {
             $table->foreign("role_id")->references("id")->on("roles")->onDelete("cascade");
             $table->foreign("identity_document_type_id")->references("id")->on("identity_document_types")->onDelete("cascade");
             $table->unique(["email", "company_id"]);
+        });
+
+        Schema::create("user_preferences", function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger("user_id");
+            $table->string("slug");
+            $table->text("value")->nullable();
+            $table->enum("status", ["active", "inactive"])->default("active");
+
+            $table->timestamp("created_at")->useCurrent()->nullable();
+            $table->integer("created_by")->nullable();
+            $table->timestamp("updated_at")->nullable();
+            $table->integer("updated_by")->nullable();
+
+            $table->foreign("user_id")->references("id")->on("users")->onDelete("cascade");
         });
 
         // Inserts
@@ -264,6 +278,7 @@ return new class extends Migration {
      */
     public function down(): void {
 
+        Schema::dropIfExists("user_preferences");
         Schema::dropIfExists("users");
         Schema::dropIfExists("roles");
         Schema::dropIfExists("companies_sub_sections");

@@ -6,6 +6,7 @@
     $role     = $user->role;
     $sections = Cache::get("active_sections_{$company->id}");
     $ownerApp = config("app.owner_app");
+    $preferences = $user->formatted_preferences;
 
     // Cache data
     $hasActiveSections  = Cache::get("has_active_sections_{$company->id}");
@@ -22,9 +23,11 @@
     <head>
         @include("System.layouts.partials.up")
         <script>
-            window.sections = @json($sections ?? []);
-            window.ownerApp = @json($ownerApp ?? null);
+            window.user     = @json($user ?? null);
             window.company  = @json($company ?? null);
+            window.ownerApp = @json($ownerApp ?? null);
+            window.sections = @json($sections ?? []);
+            window.preferences = @json($preferences ?? []);
         </script>
     </head>
     <body>

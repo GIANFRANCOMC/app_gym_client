@@ -20,7 +20,8 @@ class User extends Authenticatable {
     public static $snakeAttributes = true;
 
     protected $appends = [
-        "formatted_status"
+        "formatted_status",
+        "formatted_preferences"
     ];
 
     /**
@@ -70,6 +71,17 @@ class User extends Authenticatable {
 
     }
 
+    public function getFormattedPreferencesAttribute() {
+
+        return $this->preferences
+                    ->mapWithKeys(function ($e) {
+
+                        return [$e->slug => json_decode($e->value)];
+
+                    });
+
+    }
+
     // Functions
     public static function getStatuses($type = "all", $code = "") {
 
@@ -98,6 +110,13 @@ class User extends Authenticatable {
     public function identityDocumentType() {
 
         return $this->belongsTo(IdentityDocumentType::class, "identity_document_type_id", "id");
+
+    }
+
+    public function preferences() {
+
+        return $this->hasMany(UserPreference::class, "user_id", "id")
+                    ->whereIn("status", ["active"]);
 
     }
 

@@ -8,8 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
-use App\Models\System\{CompanySubSection};
-use App\Services\CompanySectionService;
+use App\Models\System\{UserPreference};
 
 class HomeController extends Controller {
 
@@ -44,30 +43,18 @@ class HomeController extends Controller {
 
         $userAuth = Auth::user();
 
-        $companiesSubSections = CompanySubSection::where("sub_section_id", $id)
-                                                 ->where("company_id", $userAuth->company_id)
-                                                 ->where("status", "active")
-                                                 ->with("subSection")
-                                                 ->get();
+        $data = [
+            "records" => [
+                [
+                    "sub_section_id" => $id,
+                    "is_favorite" => $request["is_favorite"]
+                ]
+            ]
+        ];
 
-        $isFavorite = $request["is_favorite"] ?? false;
+        $updateItems = UserPreference::updateItems($userAuth->id, "config_companies_sub_sections", $data);
 
-        $sectionName = "";
-
-        foreach($companiesSubSections as $companySubSection) {
-
-            $sectionName = $companySubSection->subSection->dom_label;
-
-            $companySubSection->is_favorite = !($isFavorite == 1);
-            $companySubSection->updated_at  = now();
-            $companySubSection->updated_by  = $userAuth->id;
-            $companySubSection->save();
-
-        }
-
-        $sections = CompanySectionService::getSections($userAuth->company_id, true);
-
-        return response()->json(["bool" => true, "msg" => "$sectionName: Cambio realizado.", "sections" => $sections], 200);
+        return response()->json(["bool" => $updateItems["bool"], "msg" => "Cambio realizado.", "preferences" => $userAuth->formatted_preferences], 200);
 
     }
 

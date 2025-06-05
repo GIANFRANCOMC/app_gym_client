@@ -18,11 +18,11 @@
                 <div class="card-body py-3">
                     <template v-if="(section?.sub_sections ?? []).length === 1">
                         <button type="button"
-                                :class="['position-absolute top-0 start-100 translate-middle badge badge-center rounded-pill border-light', (section.sub_sections[0]?.hovered ? !section.sub_sections[0]?.is_favorite : section.sub_sections[0]?.is_favorite) ? 'bg-warning' : 'bg-secondary']"
+                                :class="['position-absolute top-0 start-100 translate-middle badge badge-center rounded-pill border-light', (section.sub_sections[0]?.hovered ? !configCompaniesSubSection.includes(section.sub_sections[0]?.id) : configCompaniesSubSection.includes(section.sub_sections[0]?.id)) ? 'bg-warning' : 'bg-secondary']"
                                 @click="changeFavorite(section.sub_sections[0])"
                                 @mouseenter="section.sub_sections[0].hovered = true"
                                 @mouseleave="section.sub_sections[0].hovered = false">
-                            <i :class="['fa-xs', (section.sub_sections[0]?.hovered ? !section.sub_sections[0]?.is_favorite : section.sub_sections[0]?.is_favorite) ? 'fa fa-star' : 'fa-regular fa-star fa-beat-fade']" style="--fa-beat-fade-opacity: 0.67; --fa-beat-fade-scale: 1.075;"></i>
+                            <i :class="['fa-xs', (section.sub_sections[0]?.hovered ? !configCompaniesSubSection.includes(section.sub_sections[0]?.id) : configCompaniesSubSection.includes(section.sub_sections[0]?.id)) ? 'fa fa-star' : 'fa-regular fa-star fa-beat-fade']" style="--fa-beat-fade-opacity: 0.67; --fa-beat-fade-scale: 1.075;"></i>
                         </button>
                         <div class="d-flex align-items-center justify-content-start h-100">
                             <!-- <i :class="[section?.dom_icon, 'fa-xl']"></i> -->
@@ -41,11 +41,11 @@
                             <template v-for="(subSection, indexSubSection) in section?.sub_sections" :key="indexSubSection">
                                 <div class="d-flex align-items-center justify-content-start ps-2 py-1">
                                     <button type="button"
-                                            :class="['badge badge-center rounded-pill border-light', (subSection.hovered ? !subSection.is_favorite : subSection.is_favorite) ? 'bg-warning' : 'bg-secondary']"
+                                            :class="['badge badge-center rounded-pill border-light', (subSection.hovered ? !configCompaniesSubSection.includes(subSection?.id) : configCompaniesSubSection.includes(subSection?.id)) ? 'bg-warning' : 'bg-secondary']"
                                             @click="changeFavorite(subSection)"
                                             @mouseenter="subSection.hovered = true"
                                             @mouseleave="subSection.hovered = false">
-                                        <i :class="['fa-xs', (subSection.hovered ? !subSection.is_favorite : subSection.is_favorite) ? 'fa fa-star' : 'fa-regular fa-star fa-beat-fade']" style="--fa-beat-fade-opacity: 0.67; --fa-beat-fade-scale: 1.075;"></i>
+                                        <i :class="['fa-xs', (subSection.hovered ? !configCompaniesSubSection.includes(subSection?.id) : configCompaniesSubSection.includes(subSection?.id)) ? 'fa fa-star' : 'fa-regular fa-star fa-beat-fade']" style="--fa-beat-fade-opacity: 0.67; --fa-beat-fade-scale: 1.075;"></i>
                                     </button>
                                     <a class="text-info-1 fw-semibold px-2" v-text="subSection?.dom_label" :href="subSection?.dom_route_url"></a>
                                 </div>
@@ -154,7 +154,7 @@ export default {
 
                     // Alerts.toastrs({type: "success", subtitle: store?.data?.msg});
 
-                    this.config.essential.sections = window.sections = store?.data?.sections || [];
+                    this.config.essential.preferences = window.preferences = store?.data?.preferences || [];
 
                 }else {
 
@@ -180,13 +180,18 @@ export default {
             return [this.config.entity.page];
 
         },
+        configCompaniesSubSection: function() {
+
+            return (this.config?.essential?.preferences?.config_companies_sub_sections?.sub_sections ?? []).filter(e => e?.is_favorite).map(e => Number(e?.sub_section_id)).filter(Number.isInteger);
+
+        },
         sections: function() {
 
             let filtered = this.config?.essential?.sections; // .filter(e => !["sc_home"].includes(e?.slug));
 
             if(this.forms.entity.createUpdate.config.showOnlyFavorites) {
 
-                filtered = filtered.filter(e => e.sub_sections?.some(ss => ss.is_favorite == 1));
+                filtered = filtered.filter(e => e.sub_sections?.some(ss => this.configCompaniesSubSection.includes(ss.id)));
 
             }
 

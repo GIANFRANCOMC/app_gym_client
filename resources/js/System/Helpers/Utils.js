@@ -7,9 +7,11 @@ import axios from "axios";
 export function getEssential() {
 
     return {
-        sections: window?.sections ?? [],
+        user: window?.user ?? null,
+        company: window?.company ?? null,
         ownerApp: window?.ownerApp ?? null,
-        company: window?.company ?? null
+        sections: window?.sections ?? [],
+        preferences: window?.preferences ?? [],
     };
 
 }
