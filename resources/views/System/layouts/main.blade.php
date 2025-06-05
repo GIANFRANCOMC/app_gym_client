@@ -73,13 +73,13 @@
                                 @endif
                             </li>
                         @endforeach
-                        <li class="menu-item">
+                        <li class="menu-item d-none">
                             <a href="javascript:void(0)" class="menu-link">
                                 <i class="fa fa-check me-3"></i>
                                 <div class="text-white">{{ $hasActiveSections }}</div>
                             </a>
                         </li>
-                        <li class="menu-item">
+                        <li class="menu-item d-none">
                             <a href="javascript:void(0)" class="menu-link">
                                 <i class="fa fa-eye me-3"></i>
                                 <div class="text-white">{{ $lastActiveSections }}</div>
