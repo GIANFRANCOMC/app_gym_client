@@ -105,6 +105,15 @@ class Company extends Model {
 
                                });
 
+            $counter = 1;
+
+            foreach($sections as $value) {
+
+                $value->order_company = $counter;
+                $counter++;
+
+            }
+
         }catch(Exception $e) {
 
             //

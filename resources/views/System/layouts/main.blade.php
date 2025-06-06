@@ -53,10 +53,24 @@
                                 </div>
                             </span>
                         </li>
+                        @php
+                            $subSectionIds    = $sections->pluck("subSections")->flatten()->pluck("id")->toArray();
+                            $valuePreferences = $preferences["config_companies_sub_sections"]->sub_sections ?? [];
+                        @endphp
                         @foreach($sections as $section)
                             @php
-                                $subSections = $section->subSections;
-                                $reference   = count($subSections) > 0 ? $subSections->first() : null;
+                                $visiblePreferences = collect($valuePreferences)->filter(fn($e) => $e->visible_in_menu)->pluck("sub_section_id")->toArray();
+                                $allPreferences     = collect($valuePreferences)->pluck("sub_section_id")->toArray();
+                                $allFiltered        = collect($subSectionIds)->filter(fn($e) => !in_array($e, $allPreferences))->toArray();
+
+                                $sectionFiltered     = count($valuePreferences) > 0 ? array_merge($allFiltered, $visiblePreferences) : $subSectionIds;
+                                $subSectionsFiltered = $section->subSections->whereIn("id", $sectionFiltered);
+
+                                $reference = $subSectionsFiltered->first();
+
+                                if(!$reference) {
+                                    continue;
+                                }
                             @endphp
                             <li class="menu-item" id="{{ $section->dom_id }}">
                                 <a href="{{ $section->has_sub_menu ? 'javascript:void(0);' : $reference->dom_route_url }}" class="{{ $section->has_sub_menu ? 'menu-link menu-toggle' : 'menu-link' }}">
@@ -65,7 +79,7 @@
                                 </a>
                                 @if($section->has_sub_menu)
                                     <ul class="menu-sub">
-                                        @foreach($subSections as $subSection)
+                                        @foreach($subSectionsFiltered as $subSection)
                                             <li class="menu-item" id="{{ $subSection->dom_id }}">
                                                 <a href="{{ $subSection->dom_route_url }}" class="menu-link">
                                                     <div>{{ $subSection->dom_label }}</div>
@@ -136,7 +150,7 @@
                 </div>
             </div>
             <div class="layout-overlay layout-menu-toggle"></div>
-            <div class="drag-target"></div>
+            {{-- <div class="drag-target"></div> --}}
         </div>
 
         @include("System.layouts.partials.down")

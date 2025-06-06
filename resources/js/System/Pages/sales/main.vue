@@ -788,7 +788,7 @@ export default {
                         title: "Nuevo",
                         active: true,
                         menu: {
-                            id: "menu-item-create-sales"
+                            id: "menu-item-sales-create"
                         }
                     }
                 }

@@ -219,8 +219,8 @@ return new class extends Migration {
 
         DB::table("sub_sections")->insert([
             ["id" => 1, "section_id" => 1, "slug" => "sbc_home-main", "name" => "home-main", "dom_id" => "menu-item-home", "dom_label" => "Inicio", "dom_route" => "home.index"],
-            ["id" => 2, "section_id" => 2, "slug" => "sbc_sales-list", "name" => "sales-list", "dom_id" => "menu-item-list-sales", "dom_label" => "Listado", "dom_route" => "sales.index"],
-            ["id" => 3, "section_id" => 2, "slug" => "sbc_sales-main", "name" => "sales-main", "dom_id" => "menu-item-create-sales", "dom_label" => "Nuevo", "dom_route" => "sales.create"],
+            ["id" => 2, "section_id" => 2, "slug" => "sbc_sales-list", "name" => "sales-list", "dom_id" => "menu-item-sales-list", "dom_label" => "Listado", "dom_route" => "sales.index"],
+            ["id" => 3, "section_id" => 2, "slug" => "sbc_sales-main", "name" => "sales-main", "dom_id" => "menu-item-sales-create", "dom_label" => "Nuevo", "dom_route" => "sales.create"],
             ["id" => 4, "section_id" => 3, "slug" => "sbc_trackings-subscriptions", "name" => "trackings-subscriptions", "dom_id" => "menu-item-trackings-subscriptions", "dom_label" => "Membresías", "dom_route" => "tracking_subscriptions.index"],
             ["id" => 5, "section_id" => 4, "slug" => "sbc_items-products", "name" => "items-products", "dom_id" => "menu-item-catalogs-products", "dom_label" => "Productos", "dom_route" => "products.index"],
             ["id" => 6, "section_id" => 4, "slug" => "sbc_items-services", "name" => "items-services", "dom_id" => "menu-item-catalogs-services", "dom_label" => "Servicios", "dom_route" => "services.index"],

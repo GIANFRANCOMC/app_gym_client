@@ -286,7 +286,7 @@ export default {
                         title: "Listado",
                         active: true,
                         menu: {
-                            id: "menu-item-list-sales"
+                            id: "menu-item-sales-list"
                         }
                     }
                 }
