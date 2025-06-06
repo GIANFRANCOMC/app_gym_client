@@ -74,26 +74,41 @@ class UserPreference extends Model {
 
             foreach($data["records"] as $record) {
 
-                $actionType = $extras["type"] ?? "store_update";
+                if(intval($record["sub_section_id"]) > 0) {
 
-                if(in_array($actionType, ["store_update"])) {
+                    $actionType = $extras["type"] ?? "store_update";
 
-                    $index = $subSectionsValue->search(function($item) use($record) {
+                    if(in_array($actionType, ["store_update"])) {
 
-                        return $item->sub_section_id == $record["sub_section_id"];
+                        $index = $subSectionsValue->search(function($item) use($record) {
 
-                    });
+                            return $item->sub_section_id == $record["sub_section_id"];
 
-                    if($index !== false && intval($index) >= 0) {
+                        });
 
-                        $subSectionsValue[$index]->is_favorite = !$subSectionsValue[$index]->is_favorite;
+                        if($index !== false && intval($index) >= 0) {
 
-                    }else {
+                            $fieldsToChange = ["visible_in_menu", "is_favorite"];
 
-                        $subSectionsValue->push((object) [
-                            "sub_section_id" => $record["sub_section_id"],
-                            "is_favorite" => $record["is_favorite"] ?? true
-                        ]);
+                            foreach($fieldsToChange as $fieldToChange) {
+
+                                if(is_bool($record[$fieldToChange])) {
+
+                                    $subSectionsValue[$index]->{$fieldToChange} = $record[$fieldToChange];
+
+                                }
+
+                            }
+
+                        }else {
+
+                            $subSectionsValue->push((object) [
+                                "sub_section_id" => $record["sub_section_id"],
+                                "visible_in_menu" => $record["visible_in_menu"] ?? true,
+                                "is_favorite" => $record["is_favorite"] ?? false
+                            ]);
+
+                        }
 
                     }
 
@@ -101,7 +116,10 @@ class UserPreference extends Model {
 
             }
 
-            $userPreference->value = json_encode(["sub_sections" => $subSectionsValue]);
+            $userPreference->value = json_encode([
+                "show_only_favorites" => $data["show_only_favorites"] ?? false,
+                "sub_sections" => $subSectionsValue
+            ]);
 
         }
 
