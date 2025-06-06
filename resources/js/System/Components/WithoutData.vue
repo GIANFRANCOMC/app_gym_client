@@ -21,14 +21,14 @@ export default {
             type: String,
             required: false,
             default: "image"
+        },
+        text: {
+            type: String,
+            required: false,
+            default: Constants.generalConfig.messages.withoutResults
         }
     },
     computed: {
-        text() {
-
-            return Constants.generalConfig.messages.withoutResults;
-
-        },
         image() {
 
             return `${Constants.requestRoute}/System/assets/img/utils/without_data/2.png`;

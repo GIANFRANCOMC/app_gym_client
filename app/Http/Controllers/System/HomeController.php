@@ -44,9 +44,11 @@ class HomeController extends Controller {
         $userAuth = Auth::user();
 
         $data = [
+            "show_only_favorites" => $request["show_only_favorites"],
             "records" => [
                 [
                     "sub_section_id" => $id,
+                    "visible_in_menu" => $request["visible_in_menu"],
                     "is_favorite" => $request["is_favorite"]
                 ]
             ]
