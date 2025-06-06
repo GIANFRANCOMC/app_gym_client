@@ -56,12 +56,65 @@
                         @php
                             $subSectionIds    = $sections->pluck("subSections")->flatten()->pluck("id")->toArray();
                             $valuePreferences = $preferences["config_companies_sub_sections"]->sub_sections ?? [];
+
+                            $favoritePreferences = collect($valuePreferences)->filter(fn($e) => $e->is_favorite)->pluck("sub_section_id")->toArray();
+                            $visiblePreferences  = collect($valuePreferences)->filter(fn($e) => $e->visible_in_menu)->pluck("sub_section_id")->toArray();
+
+                            $favoriteCounter = 0;
                         @endphp
+                        <li class="menu-header">
+                            <span class="menu-header-text">Favoritos</span>
+                        </li>
                         @foreach($sections as $section)
                             @php
-                                $visiblePreferences = collect($valuePreferences)->filter(fn($e) => $e->visible_in_menu)->pluck("sub_section_id")->toArray();
-                                $allPreferences     = collect($valuePreferences)->pluck("sub_section_id")->toArray();
-                                $allFiltered        = collect($subSectionIds)->filter(fn($e) => !in_array($e, $allPreferences))->toArray();
+                                $subSectionsFiltered = $section->subSections->whereIn("id", $favoritePreferences);
+
+                                $reference = $subSectionsFiltered->first();
+
+                                if(!$reference) {
+                                    continue;
+                                }
+
+                                $favoriteCounter++;
+                            @endphp
+                            <li class="{{ $section->has_sub_menu ? 'menu-header pe-none' : ('menu-item '.$section->dom_id) }} pt-0 pb-1">
+                                <a href="{{ $section->has_sub_menu ? 'javascript:void(0);' : $reference->dom_route_url }}" class="{{ $section->has_sub_menu ? 'fw-regular' : 'fw-bold' }} menu-link">
+                                    <i class="{{ $section->dom_icon }} text-warning me-3"></i>
+                                    <div>{{ $section->dom_label }}</div>
+                                </a>
+                            </li>
+                            @if($section->has_sub_menu)
+                                <li class="menu-item open">
+                                    <ul class="menu-sub">
+                                        @foreach($subSectionsFiltered as $subSection)
+                                            <li class="menu-item {{ $subSection->dom_id }}" id="{{ $subSection->dom_id }}">
+                                                <a href="{{ $subSection->dom_route_url }}" class="fw-bold menu-link py-1">
+                                                    <div>{{ $subSection->dom_label }}</div>
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </li>
+                            @endif
+                        @endforeach
+                        @if($favoriteCounter === 0)
+                            <li class="menu-header pt-1 pb-0 text-center">
+                                <span class="menu-header-text text-uppercase text-white">Sin favoritos</span>
+                            </li>
+                        @endif
+                        <li class="menu-header text-center pt-2 pb-0">
+                            <a href="{{ route('home.index') }}" class="text-success">
+                                <i class="fa fa-plus-circle"></i>
+                                <span>Agregar</span>
+                            </a>
+                        </li>
+                        <li class="menu-header">
+                            <span class="menu-header-text">Menú</span>
+                        </li>
+                        @foreach($sections as $section)
+                            @php
+                                $allPreferences = collect($valuePreferences)->pluck("sub_section_id")->toArray();
+                                $allFiltered    = collect($subSectionIds)->filter(fn($e) => !in_array($e, $allPreferences))->toArray();
 
                                 $sectionFiltered     = count($valuePreferences) > 0 ? array_merge($allFiltered, $visiblePreferences) : $subSectionIds;
                                 $subSectionsFiltered = $section->subSections->whereIn("id", $sectionFiltered);
@@ -72,7 +125,7 @@
                                     continue;
                                 }
                             @endphp
-                            <li class="menu-item" id="{{ $section->dom_id }}">
+                            <li class="menu-item {{ $section->dom_id }}" id="{{ $section->dom_id }}">
                                 <a href="{{ $section->has_sub_menu ? 'javascript:void(0);' : $reference->dom_route_url }}" class="{{ $section->has_sub_menu ? 'menu-link menu-toggle' : 'menu-link' }}">
                                     <i class="{{ $section->dom_icon }} me-3"></i>
                                     <div>{{ $section->dom_label }}</div>
@@ -80,7 +133,7 @@
                                 @if($section->has_sub_menu)
                                     <ul class="menu-sub">
                                         @foreach($subSectionsFiltered as $subSection)
-                                            <li class="menu-item" id="{{ $subSection->dom_id }}">
+                                            <li class="menu-item {{ $subSection->dom_id }}" id="{{ $subSection->dom_id }}">
                                                 <a href="{{ $subSection->dom_route_url }}" class="menu-link">
                                                     <div>{{ $subSection->dom_label }}</div>
                                                 </a>

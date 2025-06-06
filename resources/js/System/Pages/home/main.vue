@@ -232,7 +232,7 @@ export default {
 
                 let hasSubMenu = section?.has_sub_menu;
 
-                const recordName = `${section?.dom_label}`+`${hasSubMenu ? " - "+subSection?.dom_label : ""}`;
+                const recordName = `${section?.dom_label}`+`${hasSubMenu ? " | "+subSection?.dom_label : ""}`;
 
                 if(["menu"].includes(types[0])) {
 
@@ -349,12 +349,12 @@ export default {
 
             let subSectionIds = this.sections.flatMap(e => Array.isArray(e.sub_sections) ? e.sub_sections.map(sub => Number(sub?.id)) : []);
 
-            const valuePreferences   = this.preferenceCompaniesSubSection?.sub_sections ?? [];
-            const visiblePreferences = valuePreferences.filter(e => e?.is_favorite).map(e => Number(e?.sub_section_id));
-            const allPreferences     = valuePreferences.map(e => Number(e?.sub_section_id));
+            const valuePreferences    = this.preferenceCompaniesSubSection?.sub_sections ?? [];
+            const favoritePreferences = valuePreferences.filter(e => e?.is_favorite).map(e => Number(e?.sub_section_id));
+            const allPreferences      = valuePreferences.map(e => Number(e?.sub_section_id));
 
             return this.isDefined({value: this.preferenceCompaniesSubSection?.sub_sections}) ?
-                        subSectionIds.filter(e => visiblePreferences.includes(e)) :
+                        subSectionIds.filter(e => favoritePreferences.includes(e)) :
                         [];
 
         },

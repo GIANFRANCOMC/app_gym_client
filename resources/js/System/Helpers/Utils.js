@@ -20,6 +20,8 @@ export function navbarItem(id, {type = "active", addClass = null}) {
 
     try {
 
+        $(`.${id}`).addClass(type); // Favorites
+
         document.getElementById(id).classList.add(type);
 
         if(isDefined({value: addClass})) {
