@@ -4,7 +4,11 @@
     <!-- Content -->
     <div class="row g-3 mb-3">
         <div class="col-12">
-            <div class="d-flex flex-wrap justify-content-end align-items-end">
+            <div class="d-flex flex-wrap justify-content-end align-items-end gap-2 gap-md-4">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" v-model="forms.entity.createUpdate.config.show_actions" id="toggleActions" @click="forms.entity.createUpdate.config.show_actions = !forms.entity.createUpdate.config.show_actions">
+                    <label for="toggleActions">Mostrar acciones</label>
+                </div>
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" v-model="forms.entity.createUpdate.config.show_only_favorites" id="toggleFavs" @change="changeFavorite(null)">
                     <label for="toggleFavs">Mostrar solo favoritos</label>
@@ -24,6 +28,7 @@
                     <div class="card-body py-3">
                         <template v-if="(section?.sub_sections ?? []).length === 1">
                             <button type="button"
+                                    v-show="forms.entity.createUpdate.config.show_actions"
                                     :class="['position-absolute top-0 start-0 translate-middle badge badge-center rounded-pill border-light mx-3', getStatusEntity(section.sub_sections[0], 'menu') ? 'bg-success' : 'bg-secondary']"
                                     @click="changeFavorite(section.sub_sections[0], ['menu'])"
                                     @mouseenter="setHoveredeEntity(section.sub_sections[0], 'menu', true)"
@@ -31,6 +36,7 @@
                                 <i :class="['fa-xs', getStatusEntity(section.sub_sections[0], 'menu') ? 'fa fa-list' : 'fa fa-list fa-beat-fade']" style="--fa-beat-fade-opacity: 0.67; --fa-beat-fade-scale: 1.075;"></i>
                             </button>
                             <button type="button"
+                                    v-show="forms.entity.createUpdate.config.show_actions"
                                     :class="['position-absolute top-0 start-10 translate-middle badge badge-center rounded-pill border-light mx-4', getStatusEntity(section.sub_sections[0], 'favorite') ? 'bg-warning' : 'bg-secondary']"
                                     @click="changeFavorite(section.sub_sections[0], ['favorite'])"
                                     @mouseenter="setHoveredeEntity(section.sub_sections[0], 'favorite', true)"
@@ -54,6 +60,7 @@
                                 <template v-for="(subSection, indexSubSection) in section?.sub_sections" :key="indexSubSection">
                                     <div class="d-flex align-items-center justify-content-start ps-2 py-1 gap-2">
                                         <button type="button"
+                                                v-show="forms.entity.createUpdate.config.show_actions"
                                                 :class="['badge badge-center rounded-pill border-light', getStatusEntity(subSection, 'menu') ? 'bg-success' : 'bg-secondary']"
                                                 @click="changeFavorite(subSection, ['menu'])"
                                                 @mouseenter="setHoveredeEntity(subSection, 'menu', true)"
@@ -61,6 +68,7 @@
                                             <i :class="['fa-xs', getStatusEntity(subSection, 'menu') ? 'fa fa-list' : 'fa fa-list fa-beat-fade']" style="--fa-beat-fade-opacity: 0.67; --fa-beat-fade-scale: 1.075;"></i>
                                         </button>
                                         <button type="button"
+                                                v-show="forms.entity.createUpdate.config.show_actions"
                                                 :class="['badge badge-center rounded-pill border-light', getStatusEntity(subSection, 'favorite') ? 'bg-warning' : 'bg-secondary']"
                                                 @click="changeFavorite(subSection, ['favorite'])"
                                                 @mouseenter="setHoveredeEntity(subSection, 'favorite', true)"
@@ -122,6 +130,7 @@ export default {
                         },
                         data: {},
                         config: {
+                            show_actions: false,
                             show_only_favorites: false
                         },
                         errors: {}
