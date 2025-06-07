@@ -211,8 +211,7 @@ export function generateRoutes({entity, requestRoute}) {
     if(["tracking_attendances"].includes(entity)) {
 
         routes.cancel = `${requestRoute}/${entity}/cancel`;
-        routes.qrcodeStore  = `${requestRoute}/${entity}/qrcodeStore`;
-        // routes.qrcodeUpdate = `${requestRoute}/${entity}/qrcodeUpdate`;
+        routes.qrCamera  = `${requestRoute}/${entity}/qrCamera`;
 
     }
 

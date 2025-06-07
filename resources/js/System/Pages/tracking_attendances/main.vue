@@ -1325,8 +1325,7 @@ export default {
 
                 });
 
-                const qrcode = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.qrcodeUpdate, data: form, id: form.id}) :
-                                                                         Requests.post({route: this.config.entity.routes.qrcodeStore, data: form}));
+                const qrcode = await Requests.post({route: this.config.entity.routes.qrCamera, data: form});
 
                 const isValid = Requests.valid({result: qrcode});
 

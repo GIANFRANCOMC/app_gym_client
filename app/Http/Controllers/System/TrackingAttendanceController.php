@@ -201,7 +201,7 @@ class TrackingAttendanceController extends Controller {
 
     }
 
-    public function qrcodeStore(Request $request, AttendanceService $attendanceService) { // StoreTrackingAttendanceRequest
+    public function qrCamera(Request $request, AttendanceService $attendanceService) { // StoreTrackingAttendanceRequest
 
         $userAuth = Auth::user();
 

@@ -189,7 +189,7 @@ export default {
 
                         delete form.branch;
 
-                        const qrcode = await Requests.post({route: this.config.entity.routes.qrcodeStore, data: form});
+                        const qrcode = await Requests.post({route: this.config.entity.routes.qrCamera, data: form});
 
                         const isValid = Requests.valid({result: qrcode});
 

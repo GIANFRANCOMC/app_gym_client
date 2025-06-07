@@ -96,7 +96,7 @@ class TrackingAttendanceController extends Controller {
 
     }
 
-    public function qrcodeStore(Request $request, AttendanceService $attendanceService) { // StoreTrackingAttendanceRequest
+    public function qrCamera(Request $request, AttendanceService $attendanceService) { // StoreTrackingAttendanceRequest
 
         $company = $request->get("company");
 

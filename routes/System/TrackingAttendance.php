@@ -16,5 +16,4 @@ Route::patch('/{id}',        [TrackingAttendanceController::class, 'update'])->n
 Route::patch('/cancel/{id}', [TrackingAttendanceController::class, 'cancel'])->name("$entity.cancel");
 
 
-Route::post('qrcodeStore',              [TrackingAttendanceController::class, 'qrcodeStore'])->name("$entity.qrcodeStore");
-// Route::patch('/{id}',        [TrackingAttendanceController::class, 'qrcodeUpdate'])->name("$entity.qrcodeUpdate");
+Route::post('qrCamera',              [TrackingAttendanceController::class, 'qrCamera'])->name("$entity.qrCamera");
