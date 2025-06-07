@@ -148,8 +148,8 @@
                     <span class="ms-2">Registrar asistencia</span>
                 </button>
                 <button type="button" class="btn btn-success waves-effect" @click="modalAutomaticEntity({type: 'generate'})" :disabled="lists.entity.extras.loading">
-                    <i class="fa fa-user"></i>
-                    <span class="ms-2">Modo automático</span>
+                    <i class="fa fa-globe"></i>
+                    <span class="ms-2">Modo público</span>
                 </button>
                 <a href="javascript:void(0)" class="fw-bold ms-2" @click="forms.entity.createUpdate.config.viewFilters = !forms.entity.createUpdate.config.viewFilters;">
                     <i :class="['fa', forms.entity.createUpdate.config.viewFilters ? 'fa-eye-slash' : 'fa-eye']"></i>
@@ -252,7 +252,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div v-if="['store'].includes(forms.entity.createUpdate.extras.modals.default.type)" class="d-flex flex-wrap justify-content-between align-items-center mb-3 shadow-sm px-4 py-2 border border-1 border-light rounded">
+                    <div v-if="['store'].includes(forms.entity.createUpdate.extras.modals.default.type)" class="d-flex flex-wrap justify-content-center align-items-center mb-3 shadow-sm px-4 py-2 border border-1 border-light rounded">
                         <label class="fw-semibold text-dark">Selecciona el modo de asistencia</label>
                         <div class="d-flex gap-2">
                             <template v-for="record in formModes" :key="record.code">
@@ -356,7 +356,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div v-if="['store'].includes(forms.entity.qrcode.extras.modals.default.type)" class="d-flex flex-wrap justify-content-between align-items-center mb-3 shadow-sm px-4 py-2 border border-1 border-light rounded">
+                    <div v-if="['store'].includes(forms.entity.qrcode.extras.modals.default.type)" class="d-flex flex-wrap justify-content-center align-items-center mb-3 shadow-sm px-4 py-2 border border-1 border-light rounded">
                         <label class="fw-semibold text-dark">Selecciona el modo de asistencia</label>
                         <div class="d-flex gap-2">
                             <template v-for="record in formModes" :key="record.code">
@@ -535,8 +535,8 @@
                                                     lg="12">
                                                     <template v-slot:input>
                                                         <button type="button" class="btn btn-sm btn-success waves-effect" @click="openAutomaticEntity({record})">
-                                                            <i class="fa fa-qrcode"></i>
-                                                            <span class="ms-2 text-nowrap">Abrir modo Automático (QR)</span>
+                                                            <i class="fa fa-camera"></i>
+                                                            <span class="ms-2 text-nowrap">Iniciar escaneo</span>
                                                         </button>
                                                     </template>
                                             </InputSlot>
@@ -1740,7 +1740,11 @@ export default {
         },
         formModes: function() {
 
-            return [{code: "manual", label: "Manual", icon: "fa-hand"}, {code: "qrcode", label: "QR", icon: "fa-qrcode"}];
+            return [
+                {code: "manual", label: "Manual", icon: "fa-hand"},
+                {code: "qrcode", label: "Cámara interna", icon: "fa-camera"},
+                {code: "qrEscanner", label: "Escáner externo", icon: "fa-qrcode"}
+            ];
 
         }
     },
