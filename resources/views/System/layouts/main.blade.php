@@ -35,7 +35,7 @@
             <div class="layout-container">
                 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
                     <ul class="menu-inner my-3">
-                        <li class="menu-header mb-3">
+                        <li class="menu-header mb-1">
                             <span class="menu-header-text" data-i18n="Profile">
                                 <div class="row">
                                     <div class="col col-auto">
@@ -62,8 +62,14 @@
 
                             $favoriteCounter = 0;
                         @endphp
+                        <li class="menu-header text-center pt-2 pb-0">
+                            <a href="{{ route('home.index') }}" class="text-success">
+                                <i class="fa-solid fa-screwdriver-wrench"></i>
+                                <span class="ms-1">Administrar accesos</span>
+                            </a>
+                        </li>
                         <li class="menu-header">
-                            <span class="menu-header-text">Favoritos</span>
+                            <span class="menu-header-text text-uppercase">Favoritos</span>
                         </li>
                         @foreach($sections as $section)
                             @php
@@ -77,7 +83,7 @@
 
                                 $favoriteCounter++;
                             @endphp
-                            <li class="{{ $section->has_sub_menu ? 'menu-header pe-none' : ('menu-item '.$section->dom_id) }} pt-0 pb-1">
+                            <li class="{{ $section->has_sub_menu ? 'menu-header pe-none pt-1' : ('menu-item '.$section->dom_id) }}">
                                 <a href="{{ $section->has_sub_menu ? 'javascript:void(0);' : $reference->dom_route_url }}" class="{{ $section->has_sub_menu ? 'fw-regular' : 'fw-bold' }} menu-link">
                                     <i class="{{ $section->dom_icon }} text-warning me-3"></i>
                                     <div>{{ $section->dom_label }}</div>
@@ -85,7 +91,7 @@
                             </li>
                             @if($section->has_sub_menu)
                                 <li class="menu-item open">
-                                    <ul class="menu-sub">
+                                    <ul class="menu-sub py-0">
                                         @foreach($subSectionsFiltered as $subSection)
                                             <li class="menu-item {{ $subSection->dom_id }}" id="{{ $subSection->dom_id }}">
                                                 <a href="{{ $subSection->dom_route_url }}" class="fw-bold menu-link py-1">
@@ -102,14 +108,8 @@
                                 <span class="menu-header-text text-uppercase text-white">Sin favoritos</span>
                             </li>
                         @endif
-                        <li class="menu-header text-center pt-2 pb-0">
-                            <a href="{{ route('home.index') }}" class="text-success">
-                                <i class="fa fa-plus-circle"></i>
-                                <span>Agregar</span>
-                            </a>
-                        </li>
-                        <li class="menu-header">
-                            <span class="menu-header-text">Menú</span>
+                        <li class="menu-header pt-3">
+                            <span class="menu-header-text text-uppercase">Menú</span>
                         </li>
                         @foreach($sections as $section)
                             @php
@@ -134,7 +134,7 @@
                                     <ul class="menu-sub">
                                         @foreach($subSectionsFiltered as $subSection)
                                             <li class="menu-item {{ $subSection->dom_id }}" id="{{ $subSection->dom_id }}">
-                                                <a href="{{ $subSection->dom_route_url }}" class="menu-link">
+                                                <a href="{{ $subSection->dom_route_url }}" class="menu-link py-1">
                                                     <div>{{ $subSection->dom_label }}</div>
                                                 </a>
                                             </li>
@@ -163,6 +163,9 @@
                             <form method="POST" action="{{ route('logout') }}" id="logout">
                                 @csrf
                             </form>
+                        </li>
+                        <li class="menu-header invisible">
+                            <small class="menu-header-text text-uppercase"></small>
                         </li>
                     </ul>
                 </aside>

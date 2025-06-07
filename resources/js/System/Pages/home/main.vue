@@ -46,6 +46,7 @@
                             <div class="d-flex align-items-center justify-content-start h-100">
                                 <!-- <i :class="[section?.dom_icon, 'fa-xl']"></i> -->
                                 <a class="mb-0 ms-3 fw-bold text-dark h4" v-text="section?.order_company+'. '+section?.dom_label" :href="section.sub_sections[0]?.dom_route_url"></a>
+                                <i class="fa fa-star text-warning ms-2" v-if="!forms.entity.createUpdate.config.show_actions && getValueEntity(section.sub_sections[0])?.preferenceValue?.is_favorite"></i>
                                 <a class="ms-auto fs-2" :href="section.sub_sections[0]?.dom_route_url">
                                     <i class="fa-solid fa-circle-arrow-right text-info-1"></i>
                                 </a>
@@ -77,7 +78,8 @@
                                         </button>
                                         <ul :class="['my-0', forms.entity.createUpdate.config.show_actions ? 'list-unstyled' : '']">
                                             <li>
-                                                <a class="text-info-1 fw-semibold px-2" v-text="subSection?.dom_label" :href="subSection?.dom_route_url"></a>
+                                                <a class="text-info-1 fw-semibold ms-2" v-text="subSection?.dom_label" :href="subSection?.dom_route_url"></a>
+                                                <i class="fa fa-star text-warning ms-2" v-if="!forms.entity.createUpdate.config.show_actions && getValueEntity(subSection)?.preferenceValue?.is_favorite"></i>
                                             </li>
                                         </ul>
                                     </div>
@@ -193,6 +195,16 @@ export default {
             record.hovered[type] = value;
 
         },
+        getValueEntity(record = null) {
+
+            let filtered = (this.preferenceCompaniesSubSection?.sub_sections ?? []).filter(e => Number(e?.sub_section_id) == record?.id);
+
+            const isNew = filtered.length === 0;
+            const preferenceValue = isNew ? null : filtered[0];
+
+            return {isNew, preferenceValue};
+
+        },
         getStatusEntity(record = null, type = "") {
 
             if(!this.isDefined({value: record})) return false;
@@ -225,10 +237,7 @@ export default {
 
             if(types.length > 0) {
 
-                let filtered = (this.preferenceCompaniesSubSection?.sub_sections ?? []).filter(e => Number(e?.sub_section_id) == data.id);
-
-                const isNew = filtered.length === 0;
-                const valueFiltered = isNew ? null : filtered[0];
+                const {isNew, preferenceValue} = this.getValueEntity(data);
 
                 let hasSubMenu = section?.has_sub_menu;
 
@@ -236,7 +245,7 @@ export default {
 
                 if(["menu"].includes(types[0])) {
 
-                    data.visible_in_menu = isNew ? false : !valueFiltered?.visible_in_menu;
+                    data.visible_in_menu = isNew ? false : !preferenceValue?.visible_in_menu;
 
                     msgAlert = data.visible_in_menu ? `¿Deseas mostrar <b>${recordName}</b> este módulo en el menú lateral?` : `¿Deseas ocultar <b>${recordName}</b> este módulo del menú lateral?`;
                     confirmAlert = data.visible_in_menu ? `mostrar` : `ocultar`;
@@ -245,7 +254,7 @@ export default {
 
                 if(["favorite"].includes(types[0])) {
 
-                    data.is_favorite = isNew ? true : !valueFiltered?.is_favorite;
+                    data.is_favorite = isNew ? true : !preferenceValue?.is_favorite;
 
                     msgAlert = data.is_favorite ? `¿Deseas agregar <b>${recordName}</b> este acceso a tus favoritos?` : `¿Deseas quitar <b>${recordName}</b> este acceso de tus favoritos?`;
                     confirmAlert = data.is_favorite ? `agregar` : `quitar`;
