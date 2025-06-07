@@ -88,7 +88,7 @@ class AttendanceService {
         $endDate     = $data["end_date"] ?? null;   // Carbon
         $observation = $data["observation"] ?? "";
         $userId      = $data["user_id"] ?? null;
-        $type        = $data["type"] ?? "form_manual";
+        $type        = $data["type"] ?? "manual_form";
         $action      = $data["action"] ?? "automatic";
 
         $customer = $this->getValidCustomer($customerId, $companyId);

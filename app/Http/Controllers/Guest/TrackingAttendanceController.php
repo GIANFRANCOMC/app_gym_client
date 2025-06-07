@@ -115,7 +115,7 @@ class TrackingAttendanceController extends Controller {
                 "end_date"    => $endDate,
                 "observation" => null,
                 "user_id"     => null,
-                "type"        => "qr_automatic",
+                "type"        => "qr_public",
                 "action"      => "automatic"
             ]);
 

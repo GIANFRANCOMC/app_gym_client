@@ -113,7 +113,7 @@ class TrackingAttendanceController extends Controller {
             "end_date"    => $endDate,
             "observation" => $request->observation,
             "user_id"     => $userAuth->id,
-            "type"        => "form_manual",
+            "type"        => "manual_form",
             "action"      => "automatic"
         ]);
 
@@ -220,7 +220,7 @@ class TrackingAttendanceController extends Controller {
                 "end_date"    => $endDate,
                 "observation" => $request->observation,
                 "user_id"     => $userAuth->id,
-                "type"        => "qr_manual",
+                "type"        => "qr_camera",
                 "action"      => "automatic"
             ]);
 

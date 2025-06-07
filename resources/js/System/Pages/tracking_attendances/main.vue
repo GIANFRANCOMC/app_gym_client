@@ -1390,8 +1390,6 @@ export default {
 
             const validateForm = this.validateForm({functionName, form});
 
-            console.log(form);
-
             if(validateForm?.bool) {
 
                 let el = this;

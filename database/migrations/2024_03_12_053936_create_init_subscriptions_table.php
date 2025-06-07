@@ -53,7 +53,7 @@ return new class extends Migration {
             $table->dateTime("end_date")->nullable();
             $table->text("observation")->nullable();
             $table->text("motive")->nullable();
-            $table->enum("type", ["form_manual", "qr_manual", "qr_automatic"])->default("form_manual");
+            $table->enum("type", ["manual_form", "qr_camera", "qr_scanner", "qr_public"])->default("manual_form");
             $table->enum("status", ["active", "canceled", "inactive", "finalized"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();
