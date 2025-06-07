@@ -348,15 +348,15 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" :id="forms.entity.qrcode.extras.modals.default.id" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" :id="forms.entity.qrCamera.extras.modals.default.id" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.qrcode.extras.modals.default.titles[forms.entity.qrcode.extras.modals.default.type]"></h5>
+                    <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.qrCamera.extras.modals.default.titles[forms.entity.qrCamera.extras.modals.default.type]"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div v-if="['store'].includes(forms.entity.qrcode.extras.modals.default.type)" class="d-flex flex-wrap justify-content-center align-items-center mb-3 shadow-sm px-4 py-2 border border-1 border-light rounded">
+                    <div v-if="['store'].includes(forms.entity.qrCamera.extras.modals.default.type)" class="d-flex flex-wrap justify-content-center align-items-center mb-3 shadow-sm px-4 py-2 border border-1 border-light rounded">
                         <label class="fw-semibold text-dark">Selecciona el modo de asistencia</label>
                         <div class="d-flex gap-2">
                             <template v-for="record in formModes" :key="record.code">
@@ -366,7 +366,7 @@
                                 </button>
                             </template>
                         </div>
-                        <!-- <a class="text-muted" @click="rememberModeEntity('qrcode')" href="javascript:void(0)">
+                        <!-- <a class="text-muted" @click="rememberModeEntity('qrCamera')" href="javascript:void(0)">
                             <span>¿Recordar modalidad?</span>
                             <span :class="[forms.entity.createUpdate.config.rememberMode ? 'text-success' : 'text-primary', 'fw-bold ms-1']" v-text="forms.entity.createUpdate.config.rememberMode ? 'Sí' : 'No'"></span>
                         </a> -->
@@ -379,10 +379,10 @@
                             xl="12"
                             lg="12">
                             <template v-slot:input>
-                                <span v-if="isDefined({value: forms.entity.qrcode.data?.id})" v-text="forms.entity.qrcode.data?.branch?.data?.name" class="fw-semibold"></span>
+                                <span v-if="isDefined({value: forms.entity.qrCamera.data?.id})" v-text="forms.entity.qrCamera.data?.branch?.data?.name" class="fw-semibold"></span>
                                 <v-select
                                     v-else
-                                    v-model="forms.entity.qrcode.data.branch"
+                                    v-model="forms.entity.qrCamera.data.branch"
                                     :options="branches"
                                     :class="config.forms.classes.select2"
                                     :clearable="false"
@@ -403,13 +403,13 @@
                                         :qrbox="290"
                                         :fps="23"
                                         :limitScan="-1"
-                                        :canProcess="!forms.entity.qrcode.config.isProcessing"
+                                        :canProcess="!forms.entity.qrCamera.config.isProcessing"
                                         @result="onScanCustomer"/>
                                 </div>
                             </template>
                         </InputSlot>
                         <InputSlot
-                            v-if="(forms.entity.qrcode.data.customers).length > 1"
+                            v-if="(forms.entity.qrCamera.data.customers).length > 1"
                             hasDiv
                             title="Clientes"
                             isRequired
@@ -426,13 +426,13 @@
                                             </tr>
                                         </thead>
                                         <tbody class="table-border-bottom-0 bg-white">
-                                            <template v-if="(forms.entity.qrcode.data.customers).length > 0">
-                                                <template v-for="(record, keyRecord) in forms.entity.qrcode.data.customers" :key="record.id">
+                                            <template v-if="(forms.entity.qrCamera.data.customers).length > 0">
+                                                <template v-for="(record, keyRecord) in forms.entity.qrCamera.data.customers" :key="record.id">
                                                     <tr class="text-nowrap text-center">
                                                         <td v-text="keyRecord + 1"></td>
                                                         <td v-text="record.label"></td>
                                                         <td>
-                                                            <button class="btn btn-danger btn-xs waves-effect" type="button" @click="deleteQrcodeEntity({record, keyRecord})">
+                                                            <button class="btn btn-danger btn-xs waves-effect" type="button" @click="deleteQrCameraEntity({record, keyRecord})">
                                                                 <i class="fa fa-times"></i>
                                                                 <span class="ms-1">Eliminar</span>
                                                             </button>
@@ -453,47 +453,47 @@
                             </template>
                         </InputSlot>
                         <InputSlot
-                            v-if="['store', 'finalized', 'canceled'].includes(forms.entity.qrcode.extras.modals.default.type)"
+                            v-if="['store', 'finalized', 'canceled'].includes(forms.entity.qrCamera.extras.modals.default.type)"
                             hasDiv
-                            :title="['store'].includes(forms.entity.qrcode.extras.modals.default.type) ? 'Ingreso / salida' : 'Ingreso'"
+                            :title="['store'].includes(forms.entity.qrCamera.extras.modals.default.type) ? 'Ingreso / salida' : 'Ingreso'"
                             isRequired
                             xl="6"
                             lg="6">
                             <template v-slot:defaultAppend>
-                                <small v-if="['store'].includes(forms.entity.qrcode.extras.modals.default.type)" class="mt-1 text-muted fw-semibold ms-2">Es referencial</small>
+                                <small v-if="['store'].includes(forms.entity.qrCamera.extras.modals.default.type)" class="mt-1 text-muted fw-semibold ms-2">Es referencial</small>
                             </template>
                             <template v-slot:input>
                                 <AnalogClock
-                                    :time="forms.entity.qrcode.data.start_date"
-                                    :isDynamic="['store'].includes(forms.entity.qrcode.extras.modals.default.type)"/>
+                                    :time="forms.entity.qrCamera.data.start_date"
+                                    :isDynamic="['store'].includes(forms.entity.qrCamera.extras.modals.default.type)"/>
                             </template>
                         </InputSlot>
                         <InputSlot
-                            v-if="['finalized', 'canceled'].includes(forms.entity.qrcode.extras.modals.default.type)"
+                            v-if="['finalized', 'canceled'].includes(forms.entity.qrCamera.extras.modals.default.type)"
                             hasDiv
-                            :title="['finalized'].includes(forms.entity.qrcode.extras.modals.default.type) ? 'Salida' : 'Salida'"
+                            :title="['finalized'].includes(forms.entity.qrCamera.extras.modals.default.type) ? 'Salida' : 'Salida'"
                             isRequired
                             xl="6"
                             lg="6">
                             <template v-slot:defaultAppend>
-                                <small v-if="['finalized'].includes(forms.entity.qrcode.extras.modals.default.type)" class="mt-1 text-muted fw-semibold ms-2">Es referencial</small>
+                                <small v-if="['finalized'].includes(forms.entity.qrCamera.extras.modals.default.type)" class="mt-1 text-muted fw-semibold ms-2">Es referencial</small>
                             </template>
                             <template v-slot:input>
                                 <AnalogClock
-                                    :time="forms.entity.qrcode.data.end_date"
-                                    :isDynamic="['finalized'].includes(forms.entity.qrcode.extras.modals.default.type)"/>
+                                    :time="forms.entity.qrCamera.data.end_date"
+                                    :isDynamic="['finalized'].includes(forms.entity.qrCamera.extras.modals.default.type)"/>
                             </template>
                         </InputSlot>
                     </div>
-                    <!-- <div v-if="['store'].includes(forms.entity.qrcode.extras.modals.default.type)" class="alert alert-secondary small mt-3 mb-0" role="alert">
+                    <!-- <div v-if="['store'].includes(forms.entity.qrCamera.extras.modals.default.type)" class="alert alert-secondary small mt-3 mb-0" role="alert">
                         El sistema detectará automáticamente si estás registrando un ingreso o una salida.
                     </div> -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" :class="['btn waves-effect', forms.entity.qrcode.extras.modals.default.config.buttons[forms.entity.qrcode.extras.modals.default.type]]" @click="['canceled'].includes(forms.entity.qrcode.extras.modals.default.type) ? cancelEntity({}) : qrcodeEntity()">
-                        <i :class="forms.entity.qrcode.extras.modals.default.config.icons[forms.entity.qrcode.extras.modals.default.type]"></i>
-                        <span class="ms-2" v-text="forms.entity.qrcode.extras.modals.default.config.labels[forms.entity.qrcode.extras.modals.default.type]"></span>
+                    <button type="button" :class="['btn waves-effect', forms.entity.qrCamera.extras.modals.default.config.buttons[forms.entity.qrCamera.extras.modals.default.type]]" @click="['canceled'].includes(forms.entity.qrCamera.extras.modals.default.type) ? cancelEntity({}) : qrCameraEntity()">
+                        <i :class="forms.entity.qrCamera.extras.modals.default.config.icons[forms.entity.qrCamera.extras.modals.default.type]"></i>
+                        <span class="ms-2" v-text="forms.entity.qrCamera.extras.modals.default.config.labels[forms.entity.qrCamera.extras.modals.default.type]"></span>
                     </button>
                 </div>
             </div>
@@ -592,7 +592,7 @@ export default {
             Alerts.swals({show: false});
             // this.listEntity({});
 
-            $(`#${this.forms.entity.qrcode.extras.modals.default.id}`)
+            $(`#${this.forms.entity.qrCamera.extras.modals.default.id}`)
             .on("shown.bs.modal", () => {
 
                 //
@@ -600,7 +600,7 @@ export default {
             })
             .on("hidden.bs.modal", () => {
 
-                el.forms.entity.qrcode.config.isProcessing = true;
+                el.forms.entity.qrCamera.config.isProcessing = true;
 
             });
 
@@ -679,7 +679,7 @@ export default {
                         },
                         errors: {}
                     },
-                    qrcode: {
+                    qrCamera: {
                         extras: {
                             modals: {
                                 default: {
@@ -1070,19 +1070,19 @@ export default {
 
             }
 
-            this.forms.entity.qrcode.config.isProcessing = true;
+            this.forms.entity.qrCamera.config.isProcessing = true;
 
             if(configMode == "manual") {
 
-                Alerts.modals({type: "hide", id: this.forms.entity.qrcode.extras.modals.default.id});
+                Alerts.modals({type: "hide", id: this.forms.entity.qrCamera.extras.modals.default.id});
 
                 el.modalCreateUpdateEntity({type: "store"});
 
-            }else if(configMode == "qrcode") {
+            }else if(configMode == "qrCamera") {
 
                 Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
 
-                el.modalQrcodeEntity({type: "store"});
+                el.modalQrCameraEntity({type: "store"});
 
             }
 
@@ -1189,13 +1189,13 @@ export default {
             }
 
         },
-        // Qrcode
-        modalQrcodeEntity({record = null, type = "store"}) {
+        // QrCamera
+        modalQrCameraEntity({record = null, type = "store"}) {
 
-            const functionName = "modalQrcodeEntity";
+            const functionName = "modalQrCameraEntity";
 
-            this.forms.entity.qrcode.extras.modals.default.type = type;
-            this.forms.entity.qrcode.config.isProcessing = false;
+            this.forms.entity.qrCamera.extras.modals.default.type = type;
+            this.forms.entity.qrCamera.config.isProcessing = false;
 
             // Alerts.swals({});
             this.clearForm({functionName});
@@ -1206,26 +1206,26 @@ export default {
                 /* const branch   = this.branches.filter(e => e.code === record?.branch?.id)[0],
                       customer = this.customers.filter(e => e.code === record?.customer?.id)[0];
 
-                this.forms.entity.qrcode.data.id         = record?.id;
-                this.forms.entity.qrcode.data.branch     = branch;
-                this.forms.entity.qrcode.data.customer   = customer;
-                this.forms.entity.qrcode.data.start_date = record.start_date;
-                this.forms.entity.qrcode.data.end_date   = this.isDefined({value: record.end_date}) ? record.end_date : Utils.getCurrentDate("datetime"); */
+                this.forms.entity.qrCamera.data.id         = record?.id;
+                this.forms.entity.qrCamera.data.branch     = branch;
+                this.forms.entity.qrCamera.data.customer   = customer;
+                this.forms.entity.qrCamera.data.start_date = record.start_date;
+                this.forms.entity.qrCamera.data.end_date   = this.isDefined({value: record.end_date}) ? record.end_date : Utils.getCurrentDate("datetime"); */
 
             }else {
 
-                this.forms.entity.qrcode.data.branch     = this.lists.entity.filters.branch;
-                this.forms.entity.qrcode.data.start_date = Utils.getCurrentDate("datetime");
+                this.forms.entity.qrCamera.data.branch     = this.lists.entity.filters.branch;
+                this.forms.entity.qrCamera.data.start_date = Utils.getCurrentDate("datetime");
 
             }
 
             // Alerts.swals({show: false});
-            Alerts.modals({type: "show", id: this.forms.entity.qrcode.extras.modals.default.id});
+            Alerts.modals({type: "show", id: this.forms.entity.qrCamera.extras.modals.default.id});
 
         },
         onScanCustomer(decodedText, decodedResult) {
 
-            if(this.forms.entity.qrcode.config.isProcessing) return;
+            if(this.forms.entity.qrCamera.config.isProcessing) return;
 
             try {
 
@@ -1248,9 +1248,9 @@ export default {
 
                     if(id > 0) {
 
-                        this.forms.entity.qrcode.config.isProcessing = true;
+                        this.forms.entity.qrCamera.config.isProcessing = true;
 
-                        if(this.forms.entity.qrcode.data.customers.some(e => e.code == id)) {
+                        if(this.forms.entity.qrCamera.data.customers.some(e => e.code == id)) {
 
                             this.$refs.scannerQr.decrementScanCounter();
                             Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block">Cliente escaneado: ${dataScan.name}.</span><span class="d-block fw-semibold mt-1">Ya se encuentra en los clientes escaneados.</span>`});
@@ -1261,9 +1261,9 @@ export default {
 
                             if(customersFiltered.length == 1) {
 
-                                this.forms.entity.qrcode.data.customers.push(customersFiltered[0]);
+                                this.forms.entity.qrCamera.data.customers.push(customersFiltered[0]);
                                 // Alerts.generateAlert({type: "success", msgContent: `<span class="d-block">Cliente escaneado: ${dataScan.name}.</span><span class="d-block fw-semibold mt-1">Se ha agregado a los clientes escaneados.</span>`});
-                                this.qrcodeEntity();
+                                this.qrCameraEntity();
 
                             }else {
 
@@ -1276,7 +1276,7 @@ export default {
 
                         setTimeout(() => {
 
-                            el.forms.entity.qrcode.config.isProcessing = false;
+                            el.forms.entity.qrCamera.config.isProcessing = false;
 
                         }, 5000);
 
@@ -1298,16 +1298,16 @@ export default {
             }
 
         },
-        async qrcodeEntity() {
+        async qrCameraEntity() {
 
-            const functionName = "qrcodeEntity";
+            const functionName = "qrCameraEntity";
 
             Alerts.swals({});
             this.formErrors({functionName, type: "clear"});
 
-            let form = Utils.cloneJson(this.forms.entity.qrcode.data);
+            let form = Utils.cloneJson(this.forms.entity.qrCamera.data);
 
-            const validateForm = this.validateForm({functionName, form, extras: {type: "descriptive", modal: this.forms.entity.qrcode.extras.modals.default}});
+            const validateForm = this.validateForm({functionName, form, extras: {type: "descriptive", modal: this.forms.entity.qrCamera.extras.modals.default}});
 
             if(validateForm?.bool) {
 
@@ -1325,30 +1325,30 @@ export default {
 
                 });
 
-                const qrcode = await Requests.post({route: this.config.entity.routes.qrCamera, data: form});
+                const qrCamera = await Requests.post({route: this.config.entity.routes.qrCamera, data: form});
 
-                const isValid = Requests.valid({result: qrcode});
+                const isValid = Requests.valid({result: qrCamera});
 
                 if(isValid) {
 
-                    if(["finalized"].includes(this.forms.entity.qrcode.extras.modals.default.type)) {
+                    if(["finalized"].includes(this.forms.entity.qrCamera.extras.modals.default.type)) {
 
-                        Alerts.modals({type: "hide", id: this.forms.entity.qrcode.extras.modals.default.id});
+                        Alerts.modals({type: "hide", id: this.forms.entity.qrCamera.extras.modals.default.id});
 
                     }
 
-                    // Alerts.toastrs({type: "success", subtitle: qrcode?.data?.msg});
+                    // Alerts.toastrs({type: "success", subtitle: qrCamera?.data?.msg});
                     // Alerts.swals({show: false});
 
                     // this.clearForm({functionName});
-                    this.forms.entity.qrcode.data.customers = [];
+                    this.forms.entity.qrCamera.data.customers = [];
 
                     this.listEntity({url: `${this.lists.entity.extras.route}?page=${this.lists.entity.records?.current_page ?? 1}`});
 
                 }else {
 
-                    this.formErrors({functionName, type: "set", errors: qrcode?.errors ?? []});
-                    // Alerts.toastrs({type: "error", subtitle: qrcode?.data?.msg});
+                    this.formErrors({functionName, type: "set", errors: qrCamera?.errors ?? []});
+                    // Alerts.toastrs({type: "error", subtitle: qrCamera?.data?.msg});
                     // Alerts.swals({show: false});
 
                 }
@@ -1356,17 +1356,17 @@ export default {
                 this.clearForm({functionName});
 
                 // Show response
-                if((qrcode?.data?.attendances ?? []).length === 0) {
+                if((qrCamera?.data?.attendances ?? []).length === 0) {
 
-                    Alerts.generateAlert({type: isValid ? "success" : "error", msgContent: qrcode?.data?.msg});
+                    Alerts.generateAlert({type: isValid ? "success" : "error", msgContent: qrCamera?.data?.msg});
 
-                }else if((qrcode?.data?.attendances ?? []).length === 1) {
+                }else if((qrCamera?.data?.attendances ?? []).length === 1) {
 
-                    Alerts.generateAlert({type: qrcode?.data?.attendances[0]?.bool ? "success" : "error", msgContent: qrcode?.data?.attendances[0]?.msg});
+                    Alerts.generateAlert({type: qrCamera?.data?.attendances[0]?.bool ? "success" : "error", msgContent: qrCamera?.data?.attendances[0]?.msg});
 
                 }else {
 
-                    Alerts.generateAlert({type: isValid ? "success" : "error", messages: qrcode?.data?.attendances.map(e => `${e.bool ? "<i class='fa fa-check-circle text-success'></i>" : "<i class='fa fa-times-circle text-danger'></i>"} <span class='ms-1'>${e.msg}</span>`), msgContent: `<div class="fw-semibold mb-2">${qrcode?.data?.msg}</div>`});
+                    Alerts.generateAlert({type: isValid ? "success" : "error", messages: qrCamera?.data?.attendances.map(e => `${e.bool ? "<i class='fa fa-check-circle text-success'></i>" : "<i class='fa fa-times-circle text-danger'></i>"} <span class='ms-1'>${e.msg}</span>`), msgContent: `<div class="fw-semibold mb-2">${qrCamera?.data?.msg}</div>`});
 
                 }
 
@@ -1379,9 +1379,9 @@ export default {
             }
 
         },
-        deleteQrcodeEntity({record, keyRecord}) {
+        deleteQrCameraEntity({record, keyRecord}) {
 
-            const functionName = "deleteQrcodeEntity";
+            const functionName = "deleteQrCameraEntity";
 
             this.formErrors({functionName, type: "clear"});
 
@@ -1409,7 +1409,7 @@ export default {
 
                     if(result.isConfirmed) {
 
-                        (el.forms.entity.qrcode.data.customers).splice(keyRecord, 1);
+                        (el.forms.entity.qrCamera.data.customers).splice(keyRecord, 1);
 
                         Alerts.toastrs({type: "success", subtitle: `<b>${form?.label}</b> ha sido eliminado de los clientes escaneados.`});
 
@@ -1545,19 +1545,19 @@ export default {
                     }
                     break;
 
-                case "modalQrcodeEntity":
+                case "modalQrCameraEntity":
                     break;
 
-                case "qrcodeEntity":
-                    // this.forms.entity.qrcode.data.id        = null;
-                    this.forms.entity.qrcode.data.customers = [];
-                    // this.forms.entity.qrcode.data.end_date  = "";
-                    // this.forms.entity.qrcode.data.status    = null;
+                case "qrCameraEntity":
+                    // this.forms.entity.qrCamera.data.id        = null;
+                    this.forms.entity.qrCamera.data.customers = [];
+                    // this.forms.entity.qrCamera.data.end_date  = "";
+                    // this.forms.entity.qrCamera.data.status    = null;
 
-                    // if(["finalized"].includes(this.forms.entity.qrcode.extras.modals.default.type)) {
+                    // if(["finalized"].includes(this.forms.entity.qrCamera.extras.modals.default.type)) {
 
-                        // this.forms.entity.qrcode.data.branch     = null;
-                        // this.forms.entity.qrcode.data.start_date = "";
+                        // this.forms.entity.qrCamera.data.branch     = null;
+                        // this.forms.entity.qrCamera.data.start_date = "";
 
                     // }
                     break;
@@ -1570,9 +1570,9 @@ export default {
 
                 this.forms.entity.createUpdate.errors = ["set"].includes(type) ? errors : [];
 
-            }else if(["modalQrcodeEntity", "qrcodeEntity"].includes(functionName)) {
+            }else if(["modalQrCameraEntity", "qrCameraEntity"].includes(functionName)) {
 
-                this.forms.entity.qrcode.errors = ["set"].includes(type) ? errors : [];
+                this.forms.entity.qrCamera.errors = ["set"].includes(type) ? errors : [];
 
             }
 
@@ -1638,7 +1638,7 @@ export default {
 
                 }
 
-            }else if(["qrcodeEntity"].includes(functionName)) {
+            }else if(["qrCameraEntity"].includes(functionName)) {
 
                 result.id         = [];
                 result.branch     = [];
@@ -1741,8 +1741,8 @@ export default {
 
             return [
                 {code: "manual", label: "Manual", icon: "fa-hand"},
-                {code: "qrcode", label: "Cámara interna", icon: "fa-camera"},
-                {code: "qrEscanner", label: "Escáner externo", icon: "fa-qrcode"}
+                {code: "qrCamera", label: "Cámara interna", icon: "fa-camera"},
+                {code: "qrScanner", label: "Escáner externo", icon: "fa-qrcode"}
             ];
 
         }

@@ -31,7 +31,7 @@
                                         :qrbox="290"
                                         :fps="23"
                                         :limitScan="-1"
-                                        :canProcess="!forms.entity.qrcode.config.isProcessing"
+                                        :canProcess="!forms.entity.qrCamera.config.isProcessing"
                                         @result="onScanCustomer"/>
                                 </div>
                             </template>
@@ -92,7 +92,7 @@ export default {
             },
             forms: {
                 entity: {
-                    qrcode: {
+                    qrCamera: {
                         data: {
                             branch: null,
                             customers: []
@@ -126,8 +126,8 @@ export default {
 
             return new Promise(resolve => {
 
-                this.lists.entity.filters.branch     = {code: this.config.essential?.branch?.id, label: this.config.essential?.branch?.name};
-                this.forms.entity.qrcode.data.branch = this.config.essential?.branch;
+                this.lists.entity.filters.branch = {code: this.config.essential?.branch?.id, label: this.config.essential?.branch?.name};
+                this.forms.entity.qrCamera.data.branch = this.config.essential?.branch;
 
                 resolve(true);
 
@@ -145,12 +145,12 @@ export default {
             this.lists.entity.extras.loading = false;
 
         },
-        // Qrcode
+        // QrCamera
         async onScanCustomer(decodedText, decodedResult) {
 
             const functionName = "onScanCustomer";
 
-            if(this.forms.entity.qrcode.config.isProcessing) return;
+            if(this.forms.entity.qrCamera.config.isProcessing) return;
 
             try {
 
@@ -178,55 +178,55 @@ export default {
                         Alerts.swals({});
 
                         // Set data
-                        this.forms.entity.qrcode.config.isProcessing = true;
+                        this.forms.entity.qrCamera.config.isProcessing = true;
 
-                        this.forms.entity.qrcode.data.customers = [{customer_id: id}];
+                        this.forms.entity.qrCamera.data.customers = [{customer_id: id}];
 
                         // Validate form
-                        let form = Utils.cloneJson(this.forms.entity.qrcode.data);
+                        let form = Utils.cloneJson(this.forms.entity.qrCamera.data);
 
                         form.branch_id = form?.branch?.id;
 
                         delete form.branch;
 
-                        const qrcode = await Requests.post({route: this.config.entity.routes.qrCamera, data: form});
+                        const qrCamera = await Requests.post({route: this.config.entity.routes.qrCamera, data: form});
 
-                        const isValid = Requests.valid({result: qrcode});
+                        const isValid = Requests.valid({result: qrCamera});
 
                         if(isValid) {
 
-                            // Alerts.toastrs({type: "success", subtitle: qrcode?.data?.msg});
+                            // Alerts.toastrs({type: "success", subtitle: qrCamera?.data?.msg});
                             // Alerts.swals({show: false});
 
                             this.clearForm({functionName});
 
                         }else {
 
-                            // this.formErrors({functionName, type: "set", errors: qrcode?.errors ?? []});
-                            // Alerts.toastrs({type: "error", subtitle: qrcode?.data?.msg});
+                            // this.formErrors({functionName, type: "set", errors: qrCamera?.errors ?? []});
+                            // Alerts.toastrs({type: "error", subtitle: qrCamera?.data?.msg});
                             // Alerts.swals({show: false});
 
                         }
 
                         // Show response
-                        if((qrcode?.data?.attendances ?? []).length === 0) {
+                        if((qrCamera?.data?.attendances ?? []).length === 0) {
 
-                            Alerts.generateAlert({type: isValid ? "success" : "error", msgContent: qrcode?.data?.msg});
+                            Alerts.generateAlert({type: isValid ? "success" : "error", msgContent: qrCamera?.data?.msg});
 
-                        }else if((qrcode?.data?.attendances ?? []).length === 1) {
+                        }else if((qrCamera?.data?.attendances ?? []).length === 1) {
 
-                            Alerts.generateAlert({type: qrcode?.data?.attendances[0]?.bool ? "success" : "error", msgContent: qrcode?.data?.attendances[0]?.msg});
+                            Alerts.generateAlert({type: qrCamera?.data?.attendances[0]?.bool ? "success" : "error", msgContent: qrCamera?.data?.attendances[0]?.msg});
 
                         }else {
 
-                            Alerts.generateAlert({type: isValid ? "success" : "error", messages: qrcode?.data?.attendances.map(e => `${e.bool ? "<i class='fa fa-check-circle text-success'></i>" : "<i class='fa fa-times-circle text-danger'></i>"} <span class='ms-1'>${e.msg}</span>`), msgContent: `<div class="fw-semibold mb-2">${qrcode?.data?.msg}</div>`});
+                            Alerts.generateAlert({type: isValid ? "success" : "error", messages: qrCamera?.data?.attendances.map(e => `${e.bool ? "<i class='fa fa-check-circle text-success'></i>" : "<i class='fa fa-times-circle text-danger'></i>"} <span class='ms-1'>${e.msg}</span>`), msgContent: `<div class="fw-semibold mb-2">${qrCamera?.data?.msg}</div>`});
 
                         }
 
                         setTimeout(() => {
 
                             Alerts.swals({show: false});
-                            el.forms.entity.qrcode.config.isProcessing = false;
+                            el.forms.entity.qrCamera.config.isProcessing = false;
 
                         }, 5000);
 
@@ -253,7 +253,7 @@ export default {
 
             switch(functionName) {
                 case "onScanCustomer":
-                    this.forms.entity.qrcode.data.customers = [];
+                    this.forms.entity.qrCamera.data.customers = [];
                     break;
             }
 
@@ -262,7 +262,7 @@ export default {
 
             if(["onScanCustomer"].includes(functionName)) {
 
-                this.forms.entity.qrcode.errors = ["set"].includes(type) ? errors : [];
+                this.forms.entity.qrCamera.errors = ["set"].includes(type) ? errors : [];
 
             }
 
