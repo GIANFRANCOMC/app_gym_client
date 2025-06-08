@@ -1413,9 +1413,13 @@ export default {
         },
         onResultQrCamera(decodedText, decodedResult) {
 
+            const functionName = "onResultQrCamera";
+
             if(this.forms.entity.qrCamera.config.isProcessing) return;
 
             try {
+
+                this.clearForm({functionName});
 
                 console.log(decodedText, decodedResult);
                 let dataScan = JSON.parse(decodedResult?.result?.text);
@@ -1648,11 +1652,15 @@ export default {
         },
         onResultQrScanner() {
 
+            const functionName = "onResultQrScanner";
+
             if(this.forms.entity.qrScanner.config.isProcessing) return;
 
             try {
 
                 const decodedResult = this.forms.entity.qrScanner.data.code.trim();
+
+                this.clearForm({functionName});
 
                 console.log(decodedResult);
                 let dataScan = JSON.parse(decodedResult);
