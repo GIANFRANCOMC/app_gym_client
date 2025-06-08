@@ -1551,6 +1551,8 @@ export default {
 
             }
 
+            this.toogleProcessingEntity({type: "qrCamera", isProcessing: false, time: 4000});
+
         },
         deleteQrCameraEntity({record, keyRecord}) {
 
