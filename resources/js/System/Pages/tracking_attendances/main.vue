@@ -1772,6 +1772,8 @@ export default {
 
             }
 
+            this.toogleProcessingEntity({type: "qrScanner", isProcessing: false, time: 4000});
+
         },
         cancelEntity({}) {
 
