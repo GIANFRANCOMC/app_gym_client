@@ -1383,7 +1383,7 @@ export default {
             const functionName = "modalQrCameraEntity";
 
             this.forms.entity.qrCamera.extras.modals.default.type = type;
-            this.forms.entity.qrCamera.config.isProcessing = false;
+            this.toogleProcessingEntity({type: "qrCamera", isProcessing: false});
 
             // Alerts.swals({});
             this.clearForm({functionName});
@@ -1618,7 +1618,7 @@ export default {
             const functionName = "modalQrScannerEntity";
 
             this.forms.entity.qrScanner.extras.modals.default.type = type;
-            this.forms.entity.qrScanner.config.isProcessing = false;
+            this.toogleProcessingEntity({type: "qrScanner", isProcessing: false});
 
             // Alerts.swals({});
             this.clearForm({functionName});
