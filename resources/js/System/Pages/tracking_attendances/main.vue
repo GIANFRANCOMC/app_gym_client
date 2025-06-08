@@ -399,7 +399,7 @@
                                 <template v-if="forms.entity.qrCamera.config.isProcessing">
                                     <div class="d-flex align-items-center justify-content-center p-2 bg-light border rounded">
                                         <div class="spinner-border text-dark me-2"></div>
-                                        <span class="fw-semibold">Procesando escaneo</span>
+                                        <span class="fw-semibold">Finalizando escaneo ...</span>
                                     </div>
                                 </template>
                                 <div class="w-100" v-show="!forms.entity.qrCamera.config.isProcessing">
@@ -556,7 +556,7 @@
                                 <template v-if="forms.entity.qrScanner.config.isProcessing">
                                     <div class="d-flex align-items-center justify-content-center p-2 bg-light border rounded">
                                         <div class="spinner-border text-dark me-2"></div>
-                                        <span class="fw-semibold">Procesando escaneo</span>
+                                        <span class="fw-semibold">Finalizando escaneo ...</span>
                                     </div>
                                 </template>
                                 <input
@@ -843,6 +843,7 @@ export default {
                             status: null
                         },
                         config: {
+                            firstInit: false,
                             isProcessing: true
                         },
                         errors: {}
@@ -1247,15 +1248,23 @@ export default {
 
             if(configMode == "manual") {
 
-                el.modalCreateUpdateEntity({type: "store"});
+                this.modalCreateUpdateEntity({type: "store"});
 
             }else if(configMode == "qrCamera") {
 
-                el.modalQrCameraEntity({type: "store"});
+                if(!this.forms.entity.qrCamera.config.firstInit) {
+
+                    this.$refs.scannerQr.startScanner();
+
+                    this.forms.entity.qrCamera.config.firstInit = true;
+
+                }
+
+                this.modalQrCameraEntity({type: "store"});
 
             }else if(configMode == "qrScanner") {
 
-                el.modalQrScannerEntity({type: "store"});
+                this.modalQrScannerEntity({type: "store"});
 
             }
 

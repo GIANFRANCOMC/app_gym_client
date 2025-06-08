@@ -87,7 +87,7 @@
 
                 }
 
-                const cameras = await window.Html5Qrcode.getCameras();
+                const cameras = this.cameras;
 
                 if(cameras.length > 0) {
 
