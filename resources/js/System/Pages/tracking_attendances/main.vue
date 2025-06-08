@@ -499,6 +499,157 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" :id="forms.entity.qrScanner.extras.modals.default.id" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.qrScanner.extras.modals.default.titles[forms.entity.qrScanner.extras.modals.default.type]"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div v-if="['store'].includes(forms.entity.qrScanner.extras.modals.default.type)" class="d-flex flex-wrap justify-content-center align-items-center mb-3 shadow-sm px-4 py-2 border border-1 border-light rounded">
+                        <label class="fw-semibold text-dark">Selecciona el modo de asistencia</label>
+                        <div class="d-flex gap-2">
+                            <template v-for="record in formModes" :key="record.code">
+                                <button :class="['btn btn-sm', [forms.entity.createUpdate.config.currentMode].includes(record?.code) ? 'btn-success fw-bold' : 'btn-outline-success fw-semibold']" @click="selectModeEntity(record?.code, false)" :disabled="[forms.entity.createUpdate.config.currentMode].includes(record?.code)">
+                                    <i :class="['fa', record?.icon]"></i>
+                                    <span v-text="record?.label" class="ms-2"></span>
+                                </button>
+                            </template>
+                        </div>
+                        <!-- <a class="text-muted" @click="rememberModeEntity('qrScanner')" href="javascript:void(0)">
+                            <span>¿Recordar modalidad?</span>
+                            <span :class="[forms.entity.createUpdate.config.rememberMode ? 'text-success' : 'text-primary', 'fw-bold ms-1']" v-text="forms.entity.createUpdate.config.rememberMode ? 'Sí' : 'No'"></span>
+                        </a> -->
+                    </div>
+                    <div class="row g-3">
+                        <InputSlot
+                            hasDiv
+                            title="Sucursal"
+                            isRequired
+                            xl="12"
+                            lg="12">
+                            <template v-slot:input>
+                                <span v-if="isDefined({value: forms.entity.qrScanner.data?.id})" v-text="forms.entity.qrScanner.data?.branch?.data?.name" class="fw-semibold"></span>
+                                <v-select
+                                    v-else
+                                    v-model="forms.entity.qrScanner.data.branch"
+                                    :options="branches"
+                                    :class="config.forms.classes.select2"
+                                    :clearable="false"
+                                    :searchable="false"/>
+                            </template>
+                        </InputSlot>
+                        <InputSlot
+                            hasDiv
+                            title="Cámara"
+                            :isInputGroup="false"
+                            xl="12"
+                            lg="12">
+                            <template v-slot:input>
+                                <div class="w-100">
+                                    <CodeScanner
+                                        ref="scannerQr"
+                                        :showControls="true"
+                                        :qrbox="290"
+                                        :fps="23"
+                                        :limitScan="-1"
+                                        :canProcess="!forms.entity.qrScanner.config.isProcessing"
+                                        @result="onScanCustomer"/>
+                                </div>
+                            </template>
+                        </InputSlot>
+                        <InputSlot
+                            v-if="(forms.entity.qrScanner.data.customers).length > 1"
+                            hasDiv
+                            title="Clientes"
+                            isRequired
+                            xl="12"
+                            lg="12">
+                            <template v-slot:input>
+                                <div class="table-responsive w-100">
+                                    <table class="table table-sm table-hover">
+                                        <thead>
+                                            <tr class="text-center align-middle">
+                                                <th class="bg-secondary text-white fw-semibold" style="width: 10%;">#</th>
+                                                <th class="bg-secondary text-white fw-semibold" style="width: 75%;">CLIENTE</th>
+                                                <th class="bg-secondary text-white fw-semibold" style="width: 15%;"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="table-border-bottom-0 bg-white">
+                                            <template v-if="(forms.entity.qrScanner.data.customers).length > 0">
+                                                <template v-for="(record, keyRecord) in forms.entity.qrScanner.data.customers" :key="record.id">
+                                                    <tr class="text-nowrap text-center">
+                                                        <td v-text="keyRecord + 1"></td>
+                                                        <td v-text="record.label"></td>
+                                                        <td>
+                                                            <button class="btn btn-danger btn-xs waves-effect" type="button" @click="deleteQrCameraEntity({record, keyRecord})">
+                                                                <i class="fa fa-times"></i>
+                                                                <span class="ms-1">Eliminar</span>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                            </template>
+                                            <template v-else>
+                                                <tr>
+                                                    <td class="text-center" colspan="99">
+                                                        <WithoutData type="text"/>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </template>
+                        </InputSlot>
+                        <InputSlot
+                            v-if="['store', 'finalized', 'canceled'].includes(forms.entity.qrScanner.extras.modals.default.type)"
+                            hasDiv
+                            :title="['store'].includes(forms.entity.qrScanner.extras.modals.default.type) ? 'Ingreso / salida' : 'Ingreso'"
+                            isRequired
+                            xl="6"
+                            lg="6">
+                            <template v-slot:defaultAppend>
+                                <small v-if="['store'].includes(forms.entity.qrScanner.extras.modals.default.type)" class="mt-1 text-muted fw-semibold ms-2">Es referencial</small>
+                            </template>
+                            <template v-slot:input>
+                                <AnalogClock
+                                    :time="forms.entity.qrScanner.data.start_date"
+                                    :isDynamic="['store'].includes(forms.entity.qrScanner.extras.modals.default.type)"/>
+                            </template>
+                        </InputSlot>
+                        <InputSlot
+                            v-if="['finalized', 'canceled'].includes(forms.entity.qrScanner.extras.modals.default.type)"
+                            hasDiv
+                            :title="['finalized'].includes(forms.entity.qrScanner.extras.modals.default.type) ? 'Salida' : 'Salida'"
+                            isRequired
+                            xl="6"
+                            lg="6">
+                            <template v-slot:defaultAppend>
+                                <small v-if="['finalized'].includes(forms.entity.qrScanner.extras.modals.default.type)" class="mt-1 text-muted fw-semibold ms-2">Es referencial</small>
+                            </template>
+                            <template v-slot:input>
+                                <AnalogClock
+                                    :time="forms.entity.qrScanner.data.end_date"
+                                    :isDynamic="['finalized'].includes(forms.entity.qrScanner.extras.modals.default.type)"/>
+                            </template>
+                        </InputSlot>
+                    </div>
+                    <!-- <div v-if="['store'].includes(forms.entity.qrScanner.extras.modals.default.type)" class="alert alert-secondary small mt-3 mb-0" role="alert">
+                        El sistema detectará automáticamente si estás registrando un ingreso o una salida.
+                    </div> -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" :class="['btn waves-effect', forms.entity.qrScanner.extras.modals.default.config.buttons[forms.entity.qrScanner.extras.modals.default.type]]" @click="['canceled'].includes(forms.entity.qrScanner.extras.modals.default.type) ? cancelEntity({}) : qrScannerEntity()">
+                        <i :class="forms.entity.qrScanner.extras.modals.default.config.icons[forms.entity.qrScanner.extras.modals.default.type]"></i>
+                        <span class="ms-2" v-text="forms.entity.qrScanner.extras.modals.default.config.labels[forms.entity.qrScanner.extras.modals.default.type]"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" :id="forms.entity.automatic.extras.modals.default.id" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -680,6 +831,54 @@ export default {
                         errors: {}
                     },
                     qrCamera: {
+                        extras: {
+                            modals: {
+                                default: {
+                                    id: Utils.uuid(),
+                                    type: "",
+                                    titles: {
+                                        store: "Registrar",
+                                        update: "Editar",
+                                        finalized: "Concluir",
+                                        canceled: "Anular"
+                                    },
+                                    config: {
+                                        buttons: {
+                                            store: "btn-primary",
+                                            update: "btn-warning",
+                                            finalized: "btn-warning",
+                                            canceled: "btn-danger"
+                                        },
+                                        icons: {
+                                            store: "fa fa-check",
+                                            update: "fa fa-save",
+                                            finalized: "fa-solid fa-person-walking-arrow-right",
+                                            canceled: "fa fa-times"
+                                        },
+                                        labels: {
+                                            store: "Registrar asistencia",
+                                            update: "Editar asistencia",
+                                            finalized: "Concluir asistencia",
+                                            canceled: "Anular asistencia"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        data: {
+                            id: null,
+                            branch: null,
+                            customers: [],
+                            start_date: "",
+                            end_date: "",
+                            status: null
+                        },
+                        config: {
+                            isProcessing: true
+                        },
+                        errors: {}
+                    },
+                    qrScanner: {
                         extras: {
                             modals: {
                                 default: {
@@ -1072,17 +1271,21 @@ export default {
 
             this.forms.entity.qrCamera.config.isProcessing = true;
 
-            if(configMode == "manual") {
+            Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
+            Alerts.modals({type: "hide", id: this.forms.entity.qrCamera.extras.modals.default.id});
+            Alerts.modals({type: "hide", id: this.forms.entity.qrScanner.extras.modals.default.id});
 
-                Alerts.modals({type: "hide", id: this.forms.entity.qrCamera.extras.modals.default.id});
+            if(configMode == "manual") {
 
                 el.modalCreateUpdateEntity({type: "store"});
 
             }else if(configMode == "qrCamera") {
 
-                Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
-
                 el.modalQrCameraEntity({type: "store"});
+
+            }else if(configMode == "qrScanner") {
+
+                el.modalQrScannerEntity({type: "store"});
 
             }
 
@@ -1424,6 +1627,40 @@ export default {
             }
 
         },
+        // QrScanner
+        modalQrScannerEntity({record = null, type = "store"}) {
+
+            const functionName = "modalQrScannerEntity";
+
+            this.forms.entity.qrScanner.extras.modals.default.type = type;
+            this.forms.entity.qrScanner.config.isProcessing = false;
+
+            // Alerts.swals({});
+            this.clearForm({functionName});
+            this.formErrors({functionName, type: "clear"});
+
+            if(this.isDefined({value: record})) {
+
+                /* const branch   = this.branches.filter(e => e.code === record?.branch?.id)[0],
+                      customer = this.customers.filter(e => e.code === record?.customer?.id)[0];
+
+                this.forms.entity.qrScanner.data.id         = record?.id;
+                this.forms.entity.qrScanner.data.branch     = branch;
+                this.forms.entity.qrScanner.data.customer   = customer;
+                this.forms.entity.qrScanner.data.start_date = record.start_date;
+                this.forms.entity.qrScanner.data.end_date   = this.isDefined({value: record.end_date}) ? record.end_date : Utils.getCurrentDate("datetime"); */
+
+            }else {
+
+                this.forms.entity.qrScanner.data.branch     = this.lists.entity.filters.branch;
+                this.forms.entity.qrScanner.data.start_date = Utils.getCurrentDate("datetime");
+
+            }
+
+            // Alerts.swals({show: false});
+            Alerts.modals({type: "show", id: this.forms.entity.qrScanner.extras.modals.default.id});
+
+        },
         cancelEntity({}) {
 
             const functionName = "cancelEntity";
@@ -1561,6 +1798,23 @@ export default {
 
                     // }
                     break;
+
+                case "modalQrScannerEntity":
+                    break;
+
+                case "qrScannerEntity":
+                    // this.forms.entity.qrScanner.data.id        = null;
+                    this.forms.entity.qrScanner.data.customers = [];
+                    // this.forms.entity.qrScanner.data.end_date  = "";
+                    // this.forms.entity.qrScanner.data.status    = null;
+
+                    // if(["finalized"].includes(this.forms.entity.qrScanner.extras.modals.default.type)) {
+
+                        // this.forms.entity.qrScanner.data.branch     = null;
+                        // this.forms.entity.qrScanner.data.start_date = "";
+
+                    // }
+                    break;
             }
 
         },
@@ -1571,6 +1825,10 @@ export default {
                 this.forms.entity.createUpdate.errors = ["set"].includes(type) ? errors : [];
 
             }else if(["modalQrCameraEntity", "qrCameraEntity"].includes(functionName)) {
+
+                this.forms.entity.qrCamera.errors = ["set"].includes(type) ? errors : [];
+
+            }else if(["modalQrScannerEntity", "qrScannerEntity"].includes(functionName)) {
 
                 this.forms.entity.qrCamera.errors = ["set"].includes(type) ? errors : [];
 
