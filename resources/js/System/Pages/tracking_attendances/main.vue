@@ -1429,53 +1429,34 @@ export default {
 
                 if(!this.isDefined({value: dataScanBp}) || !this.isDefined({value: bp})) {
 
-                    this.$refs.scannerQr.decrementScanCounter();
                     Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block fw-semibold">No pudimos validar el QR. Intenta escanearlo nuevamente o verifica que sea el correcto.</span>`});
+                    this.$refs.scannerQr.decrementScanCounter();
 
                 }else {
-
-                    let el = this;
 
                     const id = parseInt(bp?.id);
 
                     if(id > 0) {
 
-                        this.forms.entity.qrCamera.config.isProcessing = true;
+                        this.toogleProcessingEntity({type: "qrCamera", isProcessing: true});
 
                         if(this.forms.entity.qrCamera.data.customers.some(e => e.code == id)) {
 
-                            this.$refs.scannerQr.decrementScanCounter();
                             Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block">Cliente escaneado: ${dataScan.name}.</span><span class="d-block fw-semibold mt-1">Ya se encuentra en los clientes escaneados.</span>`});
+                            this.$refs.scannerQr.decrementScanCounter();
+                            this.toogleProcessingEntity({type: "qrCamera", isProcessing: false, time: 4000});
 
                         }else {
 
-                            let customersFiltered = this.customers.filter(e => e.code == id);
-
-                            if(customersFiltered.length == 1) {
-
-                                this.forms.entity.qrCamera.data.customers.push(customersFiltered[0]);
-                                // Alerts.generateAlert({type: "success", msgContent: `<span class="d-block">Cliente escaneado: ${dataScan.name}.</span><span class="d-block fw-semibold mt-1">Se ha agregado a los clientes escaneados.</span>`});
-                                this.qrCameraEntity();
-
-                            }else {
-
-                                this.$refs.scannerQr.decrementScanCounter();
-                                Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block">Cliente escaneado: ${dataScan.name}.</span><span class="d-block fw-semibold mt-1">No se encuentra disponible.</span>`});
-
-                            }
+                            this.forms.entity.qrCamera.data.customers.push({code: id, label: "", data: {id}});
+                            this.qrCameraEntity();
 
                         }
 
-                        setTimeout(() => {
-
-                            el.forms.entity.qrCamera.config.isProcessing = false;
-
-                        }, 5000);
-
                     }else {
 
-                        this.$refs.scannerQr.decrementScanCounter();
                         Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block fw-semibold">Intenta escanearlo nuevamente o verifica que sea el correcto.</span>`});
+                        this.$refs.scannerQr.decrementScanCounter();
 
                     }
 
@@ -1484,8 +1465,8 @@ export default {
             }catch(e) {
 
                 console.log(e);
-                this.$refs.scannerQr.decrementScanCounter();
                 Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block fw-semibold">No pudimos validar el QR. Intenta escanearlo nuevamente o verifica que sea el correcto.</span>`});
+                this.$refs.scannerQr.decrementScanCounter();
 
             }
 
