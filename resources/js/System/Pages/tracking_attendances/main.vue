@@ -1260,6 +1260,21 @@ export default {
             }
 
         },
+        toogleProcessingEntity({type, isProcessing, time = 0}) {
+
+            let el = this;
+
+            if(time > 0) {
+
+                setTimeout(() => el.forms.entity[type].config.isProcessing = isProcessing, time);
+
+            }else {
+
+                this.forms.entity[type].config.isProcessing = isProcessing;
+
+            };
+
+        },
         modalCreateUpdateEntity({record = null, type = "store"}) {
 
             const functionName = "modalCreateUpdateEntity";
