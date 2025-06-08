@@ -1657,41 +1657,23 @@ export default {
 
                 }else {
 
-                    let el = this;
-
                     const id = parseInt(bp?.id);
 
                     if(id > 0) {
 
-                        this.forms.entity.qrScanner.config.isProcessing = true;
+                        this.toogleProcessingEntity({type: "qrScanner", isProcessing: true});
 
                         if(this.forms.entity.qrScanner.data.customers.some(e => e.code == id)) {
 
                             Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block">Cliente escaneado: ${dataScan.name}.</span><span class="d-block fw-semibold mt-1">Ya se encuentra en los clientes escaneados.</span>`});
+                            this.toogleProcessingEntity({type: "qrScanner", isProcessing: false, time: 4000});
 
                         }else {
 
-                            let customersFiltered = this.customers.filter(e => e.code == id);
-
-                            if(customersFiltered.length == 1) {
-
-                                this.forms.entity.qrScanner.data.customers.push(customersFiltered[0]);
-                                // Alerts.generateAlert({type: "success", msgContent: `<span class="d-block">Cliente escaneado: ${dataScan.name}.</span><span class="d-block fw-semibold mt-1">Se ha agregado a los clientes escaneados.</span>`});
-                                this.qrScannerEntity();
-
-                            }else {
-
-                                Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block">Cliente escaneado: ${dataScan.name}.</span><span class="d-block fw-semibold mt-1">No se encuentra disponible.</span>`});
-
-                            }
+                            this.forms.entity.qrScanner.data.customers.push({code: id, label: "", data: {id}});
+                            this.qrScannerEntity();
 
                         }
-
-                        setTimeout(() => {
-
-                            el.forms.entity.qrScanner.config.isProcessing = false;
-
-                        }, 3000);
 
                     }else {
 
