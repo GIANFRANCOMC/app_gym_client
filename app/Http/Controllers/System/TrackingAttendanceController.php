@@ -235,4 +235,38 @@ class TrackingAttendanceController extends Controller {
 
     }
 
+    public function qrScanner(Request $request, AttendanceService $attendanceService) { // StoreTrackingAttendanceRequest
+
+        $userAuth = Auth::user();
+
+        $startDate = Utilities::isDefined($request->start_date) ? Carbon::parse(str_replace("T", " ", $request->start_date)) : now();
+        $endDate   = Utilities::isDefined($request->end_date) ? Carbon::parse(str_replace("T", " ", $request->end_date)) : now();
+
+        $attendances = collect();
+
+        foreach($request->customers as $customerRequest) {
+
+            $result = $attendanceService->validateAndCreateAttendance([
+                "company_id"  => $userAuth->company_id,
+                "branch_id"   => $request->branch_id,
+                "customer_id" => $customerRequest["customer_id"],
+                "start_date"  => $startDate,
+                "end_date"    => $endDate,
+                "observation" => $request->observation,
+                "user_id"     => $userAuth->id,
+                "type"        => "qr_scanner",
+                "action"      => "automatic"
+            ]);
+
+            $attendances->push($result);
+
+        }
+
+        $bool = count($attendances->where("bool", true)) > 0;
+        $msg  = $bool ? "Asistencias creadas correctamente." : "No se han podido crear las asistencias.";
+
+        return response()->json(["bool" => $bool, "msg" => $msg, "attendances" => $attendances], 200);
+
+    }
+
 }

@@ -404,7 +404,7 @@
                                         :fps="23"
                                         :limitScan="-1"
                                         :canProcess="!forms.entity.qrCamera.config.isProcessing"
-                                        @result="onScanCustomer"/>
+                                        @result="onResultQrCamera"/>
                                 </div>
                             </template>
                         </InputSlot>
@@ -491,10 +491,10 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" :class="['btn waves-effect', forms.entity.qrCamera.extras.modals.default.config.buttons[forms.entity.qrCamera.extras.modals.default.type]]" @click="['canceled'].includes(forms.entity.qrCamera.extras.modals.default.type) ? cancelEntity({}) : qrCameraEntity()">
+                    <!-- <button type="button" :class="['btn waves-effect', forms.entity.qrCamera.extras.modals.default.config.buttons[forms.entity.qrCamera.extras.modals.default.type]]" @click="['canceled'].includes(forms.entity.qrCamera.extras.modals.default.type) ? cancelEntity({}) : qrCameraEntity()">
                         <i :class="forms.entity.qrCamera.extras.modals.default.config.icons[forms.entity.qrCamera.extras.modals.default.type]"></i>
                         <span class="ms-2" v-text="forms.entity.qrCamera.extras.modals.default.config.labels[forms.entity.qrCamera.extras.modals.default.type]"></span>
-                    </button>
+                    </button> -->
                 </div>
             </div>
         </div>
@@ -542,65 +542,12 @@
                         </InputSlot>
                         <InputSlot
                             hasDiv
-                            title="Cámara"
+                            title="Escáner externo"
                             :isInputGroup="false"
                             xl="12"
                             lg="12">
                             <template v-slot:input>
-                                <div class="w-100">
-                                    <CodeScanner
-                                        ref="scannerQr"
-                                        :showControls="true"
-                                        :qrbox="290"
-                                        :fps="23"
-                                        :limitScan="-1"
-                                        :canProcess="!forms.entity.qrScanner.config.isProcessing"
-                                        @result="onScanCustomer"/>
-                                </div>
-                            </template>
-                        </InputSlot>
-                        <InputSlot
-                            v-if="(forms.entity.qrScanner.data.customers).length > 1"
-                            hasDiv
-                            title="Clientes"
-                            isRequired
-                            xl="12"
-                            lg="12">
-                            <template v-slot:input>
-                                <div class="table-responsive w-100">
-                                    <table class="table table-sm table-hover">
-                                        <thead>
-                                            <tr class="text-center align-middle">
-                                                <th class="bg-secondary text-white fw-semibold" style="width: 10%;">#</th>
-                                                <th class="bg-secondary text-white fw-semibold" style="width: 75%;">CLIENTE</th>
-                                                <th class="bg-secondary text-white fw-semibold" style="width: 15%;"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="table-border-bottom-0 bg-white">
-                                            <template v-if="(forms.entity.qrScanner.data.customers).length > 0">
-                                                <template v-for="(record, keyRecord) in forms.entity.qrScanner.data.customers" :key="record.id">
-                                                    <tr class="text-nowrap text-center">
-                                                        <td v-text="keyRecord + 1"></td>
-                                                        <td v-text="record.label"></td>
-                                                        <td>
-                                                            <button class="btn btn-danger btn-xs waves-effect" type="button" @click="deleteQrCameraEntity({record, keyRecord})">
-                                                                <i class="fa fa-times"></i>
-                                                                <span class="ms-1">Eliminar</span>
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                </template>
-                                            </template>
-                                            <template v-else>
-                                                <tr>
-                                                    <td class="text-center" colspan="99">
-                                                        <WithoutData type="text"/>
-                                                    </td>
-                                                </tr>
-                                            </template>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                <input v-model="forms.entity.qrScanner.data.code" type="text" class="form-control text-center fw-bold" placeholder="Escanea el código QR aquí" @input="onResultQrScanner" @change="onResultQrScanner" @keyup.enter="onResultQrScanner" autocomplete="off"/>
                             </template>
                         </InputSlot>
                         <InputSlot
@@ -642,10 +589,10 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" :class="['btn waves-effect', forms.entity.qrScanner.extras.modals.default.config.buttons[forms.entity.qrScanner.extras.modals.default.type]]" @click="['canceled'].includes(forms.entity.qrScanner.extras.modals.default.type) ? cancelEntity({}) : qrScannerEntity()">
+                    <!-- <button type="button" :class="['btn waves-effect', forms.entity.qrScanner.extras.modals.default.config.buttons[forms.entity.qrScanner.extras.modals.default.type]]" @click="['canceled'].includes(forms.entity.qrScanner.extras.modals.default.type) ? cancelEntity({}) : qrScannerEntity()">
                         <i :class="forms.entity.qrScanner.extras.modals.default.config.icons[forms.entity.qrScanner.extras.modals.default.type]"></i>
                         <span class="ms-2" v-text="forms.entity.qrScanner.extras.modals.default.config.labels[forms.entity.qrScanner.extras.modals.default.type]"></span>
-                    </button>
+                    </button> -->
                 </div>
             </div>
         </div>
@@ -915,6 +862,7 @@ export default {
                         },
                         data: {
                             id: null,
+                            code: "",
                             branch: null,
                             customers: [],
                             start_date: "",
@@ -1426,7 +1374,7 @@ export default {
             Alerts.modals({type: "show", id: this.forms.entity.qrCamera.extras.modals.default.id});
 
         },
-        onScanCustomer(decodedText, decodedResult) {
+        onResultQrCamera(decodedText, decodedResult) {
 
             if(this.forms.entity.qrCamera.config.isProcessing) return;
 
@@ -1659,6 +1607,160 @@ export default {
 
             // Alerts.swals({show: false});
             Alerts.modals({type: "show", id: this.forms.entity.qrScanner.extras.modals.default.id});
+
+        },
+        onResultQrScanner() {
+
+            if(this.forms.entity.qrScanner.config.isProcessing) return;
+
+            try {
+
+                const decodedResult = this.forms.entity.qrScanner.data.code.trim();
+
+                console.log(decodedResult);
+                let dataScan = JSON.parse(decodedResult);
+
+                const dataScanBp = Utils.decodeBase64UTF8(dataScan?.bp);
+                const bp = JSON.parse(dataScanBp);
+
+                if(!this.isDefined({value: dataScanBp}) || !this.isDefined({value: bp})) {
+
+                    Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block fw-semibold">No pudimos validar el QR. Intenta escanearlo nuevamente o verifica que sea el correcto.</span>`});
+
+                }else {
+
+                    let el = this;
+
+                    const id = parseInt(bp?.id);
+
+                    if(id > 0) {
+
+                        this.forms.entity.qrScanner.config.isProcessing = true;
+
+                        if(this.forms.entity.qrScanner.data.customers.some(e => e.code == id)) {
+
+                            Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block">Cliente escaneado: ${dataScan.name}.</span><span class="d-block fw-semibold mt-1">Ya se encuentra en los clientes escaneados.</span>`});
+
+                        }else {
+
+                            let customersFiltered = this.customers.filter(e => e.code == id);
+
+                            if(customersFiltered.length == 1) {
+
+                                this.forms.entity.qrScanner.data.customers.push(customersFiltered[0]);
+                                // Alerts.generateAlert({type: "success", msgContent: `<span class="d-block">Cliente escaneado: ${dataScan.name}.</span><span class="d-block fw-semibold mt-1">Se ha agregado a los clientes escaneados.</span>`});
+                                this.qrScannerEntity();
+
+                            }else {
+
+                                Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block">Cliente escaneado: ${dataScan.name}.</span><span class="d-block fw-semibold mt-1">No se encuentra disponible.</span>`});
+
+                            }
+
+                        }
+
+                        setTimeout(() => {
+
+                            el.forms.entity.qrScanner.config.isProcessing = false;
+
+                        }, 3000);
+
+                    }else {
+
+                        Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block fw-semibold">Intenta escanearlo nuevamente o verifica que sea el correcto.</span>`});
+
+                    }
+
+                }
+
+            }catch(e) {
+
+                console.log(e);
+                Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block fw-semibold">No pudimos validar el QR. Intenta escanearlo nuevamente o verifica que sea el correcto.</span>`});
+
+            }
+
+        },
+        async qrScannerEntity() {
+
+            const functionName = "qrScannerEntity";
+
+            Alerts.swals({});
+            this.formErrors({functionName, type: "clear"});
+
+            let form = Utils.cloneJson(this.forms.entity.qrScanner.data);
+
+            const validateForm = this.validateForm({functionName, form, extras: {type: "descriptive", modal: this.forms.entity.qrScanner.extras.modals.default}});
+
+            if(validateForm?.bool) {
+
+                form.branch_id = form?.branch?.code;
+
+                delete form.code;
+                delete form.branch;
+
+                form.customers.forEach(customer => {
+
+                    customer.customer_id = customer.code;
+
+                    delete customer.code;
+                    delete customer.label;
+                    delete customer.data;
+
+                });
+
+                const qrScanner = await Requests.post({route: this.config.entity.routes.qrScanner, data: form});
+
+                const isValid = Requests.valid({result: qrScanner});
+
+                if(isValid) {
+
+                    if(["finalized"].includes(this.forms.entity.qrScanner.extras.modals.default.type)) {
+
+                        Alerts.modals({type: "hide", id: this.forms.entity.qrScanner.extras.modals.default.id});
+
+                    }
+
+                    // Alerts.toastrs({type: "success", subtitle: qrScanner?.data?.msg});
+                    // Alerts.swals({show: false});
+
+                    // this.clearForm({functionName});
+                    this.forms.entity.qrScanner.data.customers = [];
+
+                    this.listEntity({url: `${this.lists.entity.extras.route}?page=${this.lists.entity.records?.current_page ?? 1}`});
+
+                }else {
+
+                    this.formErrors({functionName, type: "set", errors: qrScanner?.errors ?? []});
+                    // Alerts.toastrs({type: "error", subtitle: qrScanner?.data?.msg});
+                    // Alerts.swals({show: false});
+
+                }
+
+                this.clearForm({functionName});
+
+                // Show response
+                if((qrScanner?.data?.attendances ?? []).length === 0) {
+
+                    Alerts.generateAlert({type: isValid ? "success" : "error", msgContent: qrScanner?.data?.msg});
+
+                }else if((qrScanner?.data?.attendances ?? []).length === 1) {
+
+                    Alerts.generateAlert({type: qrScanner?.data?.attendances[0]?.bool ? "success" : "error", msgContent: qrScanner?.data?.attendances[0]?.msg});
+
+                }else {
+
+                    Alerts.generateAlert({type: isValid ? "success" : "error", messages: qrScanner?.data?.attendances.map(e => `${e.bool ? "<i class='fa fa-check-circle text-success'></i>" : "<i class='fa fa-times-circle text-danger'></i>"} <span class='ms-1'>${e.msg}</span>`), msgContent: `<div class="fw-semibold mb-2">${qrScanner?.data?.msg}</div>`});
+
+                }
+
+            }else {
+
+                // this.formErrors({functionName, type: "set", errors: validateForm});
+                // Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
+                Alerts.generateAlert({messages: Utils.getErrors({errors: validateForm}), msgContent: `<div class="fw-semibold mb-2">${this.config.messages.errorValidate}</div>`});
+
+            }
 
         },
         cancelEntity({}) {

@@ -219,6 +219,7 @@ export function generateRoutes({entity, requestRoute}) {
 
         routes.cancel = `${requestRoute}/${entity}/cancel`;
         routes.qrCamera  = `${requestRoute}/${entity}/qrCamera`;
+        routes.qrScanner = `${requestRoute}/${entity}/qrScanner`;
 
     }else if(["customers"].includes(entity)) {
 
