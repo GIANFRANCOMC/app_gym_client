@@ -1899,6 +1899,10 @@ export default {
                 case "modalQrCameraEntity":
                     break;
 
+                case "onResultQrCamera":
+                    this.forms.entity.qrCamera.data.customers = [];
+                    break;
+
                 case "qrCameraEntity":
                     // this.forms.entity.qrCamera.data.id        = null;
                     this.forms.entity.qrCamera.data.customers = [];
@@ -1914,6 +1918,11 @@ export default {
                     break;
 
                 case "modalQrScannerEntity":
+                    break;
+
+                case "onResultQrScanner":
+                    this.forms.entity.qrScanner.data.code = "";
+                    this.forms.entity.qrScanner.data.customers = [];
                     break;
 
                 case "qrScannerEntity":
