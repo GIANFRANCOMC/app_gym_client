@@ -396,7 +396,13 @@
                             xl="12"
                             lg="12">
                             <template v-slot:input>
-                                <div class="w-100">
+                                <template v-if="forms.entity.qrCamera.config.isProcessing">
+                                    <div class="d-flex align-items-center justify-content-center p-2 bg-light border rounded">
+                                        <div class="spinner-border text-dark me-2"></div>
+                                        <span class="fw-semibold">Procesando escaneo</span>
+                                    </div>
+                                </template>
+                                <div class="w-100" v-show="!forms.entity.qrCamera.config.isProcessing">
                                     <CodeScanner
                                         ref="scannerQr"
                                         :showControls="true"
@@ -547,7 +553,23 @@
                             xl="12"
                             lg="12">
                             <template v-slot:input>
-                                <input v-model="forms.entity.qrScanner.data.code" type="text" class="form-control text-center fw-bold" placeholder="Escanea el código QR aquí" @input="onResultQrScanner" @change="onResultQrScanner" @keyup.enter="onResultQrScanner" autocomplete="off"/>
+                                <template v-if="forms.entity.qrScanner.config.isProcessing">
+                                    <div class="d-flex align-items-center justify-content-center p-2 bg-light border rounded">
+                                        <div class="spinner-border text-dark me-2"></div>
+                                        <span class="fw-semibold">Procesando escaneo</span>
+                                    </div>
+                                </template>
+                                <input
+                                    v-else
+                                    v-model="forms.entity.qrScanner.data.code"
+                                    type="text"
+                                    class="form-control text-center fw-bold"
+                                    placeholder="Escanea el código QR aquí"
+                                    @input="onResultQrScanner"
+                                    @change="onResultQrScanner"
+                                    @keyup.enter="onResultQrScanner"
+                                    autocomplete="off"
+                                    :disabled="forms.entity.qrScanner.config.isProcessing"/>
                             </template>
                         </InputSlot>
                         <InputSlot
