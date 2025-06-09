@@ -256,7 +256,7 @@
                         <label class="fw-semibold text-dark d-block mb-2 mb-md-1 text-center">Selecciona el modo de asistencia</label>
                         <div class="d-flex flex-wrap justify-content-center gap-2">
                             <template v-for="record in formModes" :key="record.code">
-                                <button :class="['btn btn-sm rounded-pill', [forms.entity.createUpdate.config.currentMode].includes(record?.code) ? 'btn-success fw-bold' : 'btn-outline-success fw-semibold']" @click="[forms.entity.createUpdate.config.currentMode].includes(record?.code) ? '' : selectModeEntity(record?.code, false)">
+                                <button :class="['btn btn-sm rounded-pill', [forms.entity.createUpdate.config.currentMode].includes(record?.code) ? 'btn-success fw-bold pe-none' : 'btn-outline-success fw-semibold']" @click="[forms.entity.createUpdate.config.currentMode].includes(record?.code) ? '' : selectModeEntity(record?.code, false)">
                                     <i :class="['fa', record?.icon]"></i>
                                     <span class="ms-1 ms-md-2 d-none d-sm-inline" v-text="record?.label"></span>
                                     <span class="ms-1 ms-md-2 d-inline d-sm-none" v-text="record?.label_sm"></span>
@@ -361,7 +361,7 @@
                         <label class="fw-semibold text-dark d-block mb-2 mb-md-1 text-center">Selecciona el modo de asistencia</label>
                         <div class="d-flex flex-wrap justify-content-center gap-2">
                             <template v-for="record in formModes" :key="record.code">
-                                <button :class="['btn btn-sm rounded-pill', [forms.entity.createUpdate.config.currentMode].includes(record?.code) ? 'btn-success fw-bold' : 'btn-outline-success fw-semibold']" @click="[forms.entity.createUpdate.config.currentMode].includes(record?.code) ? '' : selectModeEntity(record?.code, false)">
+                                <button :class="['btn btn-sm rounded-pill', [forms.entity.createUpdate.config.currentMode].includes(record?.code) ? 'btn-success fw-bold pe-none' : 'btn-outline-success fw-semibold']" @click="[forms.entity.createUpdate.config.currentMode].includes(record?.code) ? '' : selectModeEntity(record?.code, false)">
                                     <i :class="['fa', record?.icon]"></i>
                                     <span class="ms-1 ms-md-2 d-none d-sm-inline" v-text="record?.label"></span>
                                     <span class="ms-1 ms-md-2 d-inline d-sm-none" v-text="record?.label_sm"></span>
@@ -519,7 +519,7 @@
                         <label class="fw-semibold text-dark d-block mb-2 mb-md-1 text-center">Selecciona el modo de asistencia</label>
                         <div class="d-flex flex-wrap justify-content-center gap-2">
                             <template v-for="record in formModes" :key="record.code">
-                                <button :class="['btn btn-sm rounded-pill', [forms.entity.createUpdate.config.currentMode].includes(record?.code) ? 'btn-success fw-bold' : 'btn-outline-success fw-semibold']" @click="[forms.entity.createUpdate.config.currentMode].includes(record?.code) ? '' : selectModeEntity(record?.code, false)">
+                                <button :class="['btn btn-sm rounded-pill', [forms.entity.createUpdate.config.currentMode].includes(record?.code) ? 'btn-success fw-bold pe-none' : 'btn-outline-success fw-semibold']" @click="[forms.entity.createUpdate.config.currentMode].includes(record?.code) ? '' : selectModeEntity(record?.code, false)">
                                     <i :class="['fa', record?.icon]"></i>
                                     <span class="ms-1 ms-md-2 d-none d-sm-inline" v-text="record?.label"></span>
                                     <span class="ms-1 ms-md-2 d-inline d-sm-none" v-text="record?.label_sm"></span>
@@ -551,7 +551,24 @@
                         </InputSlot>
                         <InputSlot
                             hasDiv
-                            title="Escáner externo"
+                            title="Selecciona el tipo de documento"
+                            :isInputGroup="false"
+                            :divInputClass="['d-flex flex-wrap justify-content-center align-items-center gap-2 gap-md-3']"
+                            xl="12"
+                            lg="12">
+                            <template v-slot:input>
+                                <div class="text-center position-relative cursor-pointer mt-1" v-for="record in qrCameraModes" :key="record.code">
+                                    <div :class="['card border shadow-sm', 'border-light', [forms.entity.qrScanner.config.currentMode].includes(record?.code) ? 'bg-'+record?.color : '']" @click="setModeQrScanner(record.code)" data-bs-toggle="tooltip" data-bs-placement="top" :title="record?.tooltip">
+                                        <div class="card-body p-3">
+                                            <i :class="[record?.icon, 'fa-xl', [forms.entity.qrScanner.config.currentMode].includes(record?.code) ? 'text-white' : 'text-'+record?.color]"></i>
+                                        </div>
+                                    </div>
+                                    <small :class="['d-block mt-1 fw-semibold', 'text-'+record?.color]" v-text="record?.label"></small>
+                                </div>
+                            </template>
+                        </InputSlot>
+                        <InputSlot
+                            hasDiv
                             :isInputGroup="false"
                             xl="12"
                             lg="12">
@@ -897,6 +914,7 @@ export default {
                             status: null
                         },
                         config: {
+                            currentMode: "carnet",
                             isProcessing: true
                         },
                         errors: {}
@@ -1647,6 +1665,15 @@ export default {
             Alerts.modals({type: "show", id: this.forms.entity.qrScanner.extras.modals.default.id});
 
         },
+        setModeQrScanner(mode) {
+
+            if(this.isDefined({value: mode})) {
+
+                this.forms.entity.qrScanner.config.currentMode = mode;
+
+            }
+
+        },
         onResultQrScanner() {
 
             const functionName = "onResultQrScanner";
@@ -2138,6 +2165,15 @@ export default {
                 {code: "manual", label: "Manual", label_sm: "Manual", icon: "fa-hand"},
                 {code: "qrCamera", label: "Cámara interna", label_sm: "Cámara", icon: "fa-camera"},
                 {code: "qrScanner", label: "Escáner externo", label_sm: "Escáner", icon: "fa-qrcode"}
+            ];
+
+        },
+        qrCameraModes: function() {
+
+            return [
+                {code: "carnet", label: "Carnet", tooltip: "Carnet generado por el sistema con código QR.", icon: "fa fa-id-badge", color: "primary"},
+                {code: "dni", label: "DNI", tooltip: "Escanea el código de barras posterior del DNI físico.", icon: "fa fa-id-card", color: "info"},
+                {code: "dnie", label: "DNIe", tooltip: "DNI electrónico: escanea el código de barras (no el chip).", icon: "fa fa-barcode", color: "dark"}
             ];
 
         }
