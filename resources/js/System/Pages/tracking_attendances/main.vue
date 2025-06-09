@@ -1243,7 +1243,7 @@ export default {
 
             }
 
-            this.forms.entity.qrCamera.config.isProcessing = true;
+            this.toogleProcessingEntity({type: "qrCamera", isProcessing: true});
 
             Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
             Alerts.modals({type: "hide", id: this.forms.entity.qrCamera.extras.modals.default.id});
@@ -1257,7 +1257,7 @@ export default {
 
                 if(!this.forms.entity.qrCamera.config.firstInit) {
 
-                    this.$refs.scannerQr.startScanner();
+                    // this.$refs.scannerQr.startScanner();
 
                     this.forms.entity.qrCamera.config.firstInit = true;
 
@@ -2134,8 +2134,8 @@ export default {
 
             return [
                 {code: "manual", label: "Manual", label_sm: "Manual", icon: "fa-hand"},
-                {code: "qrCamera", label: "Cámara interna", label_sm: "Cámara int.", icon: "fa-camera"},
-                {code: "qrScanner", label: "Escáner externo", label_sm: "Escáner ext.", icon: "fa-qrcode"}
+                {code: "qrCamera", label: "Cámara interna", label_sm: "Cámara", icon: "fa-camera"},
+                {code: "qrScanner", label: "Escáner externo", label_sm: "Escáner", icon: "fa-qrcode"}
             ];
 
         }
