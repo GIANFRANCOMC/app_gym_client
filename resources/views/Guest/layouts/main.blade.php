@@ -68,12 +68,12 @@
                                 </li>
                             </ul>
                             <ul class="navbar-nav flex-row align-items-center ms-auto">
-                                <li>
+                                {{-- <li>
                                     <a href="https://{{ request()->getHost() }}?company={{ base64_encode($company->id) }}" class="btn btn-info-1 btn-sm rounded-pill shadow-sm waves-effect waves-light">
                                         <i class="fa fa-globe"></i>
                                         <span class="ms-2">Ingresar a mi plataforma</span>
                                     </a>
-                                </li>
+                                </li> --}}
                             </ul>
                         </div>
                         <div class="landing-menu-overlay d-lg-none"></div>
