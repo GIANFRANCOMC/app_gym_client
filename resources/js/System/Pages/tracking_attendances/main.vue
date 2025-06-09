@@ -9,7 +9,7 @@
         </a>
     </div>
     <div class="row align-items-start g-2 g-md-4 mb-4 mb-md-4">
-        <div class="col-xl-9 col-12">
+        <div class="col-xl-9 col-lg-9 col-md-6 col-sm-12">
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between pt-3 pb-1">
                     <div class="card-title mb-0">
@@ -26,7 +26,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-12">
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between pt-3 pb-1">
                     <div class="card-title mb-0">
@@ -553,23 +553,6 @@
                             hasDiv
                             title="Selecciona el tipo de documento"
                             :isInputGroup="false"
-                            :divInputClass="['d-flex flex-wrap justify-content-center align-items-center gap-2 gap-md-3']"
-                            xl="12"
-                            lg="12">
-                            <template v-slot:input>
-                                <div class="text-center position-relative cursor-pointer mt-1" v-for="record in qrCameraModes" :key="record.code">
-                                    <div :class="['card border shadow-sm', 'border-light', [forms.entity.qrScanner.config.currentMode].includes(record?.code) ? 'bg-'+record?.color : '']" @click="setModeQrScanner(record.code)" data-bs-toggle="tooltip" data-bs-placement="top" :title="record?.tooltip">
-                                        <div class="card-body p-3">
-                                            <i :class="[record?.icon, 'fa-xl', [forms.entity.qrScanner.config.currentMode].includes(record?.code) ? 'text-white' : 'text-'+record?.color]"></i>
-                                        </div>
-                                    </div>
-                                    <small :class="['d-block mt-1 fw-semibold', 'text-'+record?.color]" v-text="record?.label"></small>
-                                </div>
-                            </template>
-                        </InputSlot>
-                        <InputSlot
-                            hasDiv
-                            :isInputGroup="false"
                             xl="12"
                             lg="12">
                             <template v-slot:input>
@@ -579,8 +562,26 @@
                                         <span class="fw-semibold">Finalizando escaneo ...</span>
                                     </div>
                                 </template>
+                                <div v-else class="d-flex flex-wrap justify-content-center align-items-center gap-2 gap-md-3">
+                                    <div class="text-center position-relative cursor-pointer mt-1" v-for="record in qrCameraModes" :key="record.code">
+                                        <div :class="['card border shadow-sm', 'border-light', [forms.entity.qrScanner.config.currentMode].includes(record?.code) ? 'bg-'+record?.color : '']" @click="setModeQrScanner(record.code)" data-bs-toggle="tooltip" data-bs-placement="top" :title="record?.tooltip">
+                                            <div class="card-body p-3">
+                                                <i :class="[record?.icon, 'fa-xl', [forms.entity.qrScanner.config.currentMode].includes(record?.code) ? 'text-white' : 'text-'+record?.color]"></i>
+                                            </div>
+                                        </div>
+                                        <small :class="['d-block mt-1 fw-bold', 'text-'+record?.color]" v-text="record?.label"></small>
+                                    </div>
+                                </div>
+                            </template>
+                        </InputSlot>
+                        <InputSlot
+                            v-if="!forms.entity.qrScanner.config.isProcessing"
+                            hasDiv
+                            :isInputGroup="false"
+                            xl="12"
+                            lg="12">
+                            <template v-slot:input>
                                 <input
-                                    v-else
                                     ref="qrInput"
                                     v-model="forms.entity.qrScanner.data.code"
                                     type="text"
@@ -1700,42 +1701,89 @@ export default {
             try {
 
                 const decodedResult = this.forms.entity.qrScanner.data.code.trim();
+                const currentMode = this.forms.entity.qrScanner.config.currentMode;
+
+                if(!this.isDefined({value: decodedResult})) return;
 
                 this.clearForm({functionName});
 
-                console.log(decodedResult);
-                let dataScan = JSON.parse(decodedResult);
+                console.log(currentMode, decodedResult);
 
-                const dataScanBp = Utils.decodeBase64UTF8(dataScan?.bp);
-                const bp = JSON.parse(dataScanBp);
+                if(["carnet"].includes(currentMode)) {
 
-                if(!this.isDefined({value: dataScanBp}) || !this.isDefined({value: bp})) {
+                    let dataScan = JSON.parse(decodedResult);
 
-                    Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block fw-semibold">No pudimos validar el QR. Intenta escanearlo nuevamente o verifica que sea el correcto.</span>`});
+                    const dataScanBp = Utils.decodeBase64UTF8(dataScan?.bp);
+                    const bp = JSON.parse(dataScanBp);
 
-                }else {
+                    if(!this.isDefined({value: dataScanBp}) || !this.isDefined({value: bp})) {
 
-                    const id = parseInt(bp?.id);
-
-                    if(id > 0) {
-
-                        this.toogleProcessingEntity({type: "qrScanner", isProcessing: true});
-
-                        if(this.forms.entity.qrScanner.data.customers.some(e => e.code == id)) {
-
-                            Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block">Cliente escaneado: ${dataScan.name}.</span><span class="d-block fw-semibold mt-1">Ya se encuentra en los clientes escaneados.</span>`});
-                            this.toogleProcessingEntity({type: "qrScanner", isProcessing: false, time: 4000});
-
-                        }else {
-
-                            this.forms.entity.qrScanner.data.customers.push({code: id, label: "", data: {id}});
-                            this.qrScannerEntity();
-
-                        }
+                        Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block fw-semibold">No pudimos validar el QR. Intenta escanearlo nuevamente o verifica que sea el correcto.</span>`});
 
                     }else {
 
-                        Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block fw-semibold">Intenta escanearlo nuevamente o verifica que sea el correcto.</span>`});
+                        const id = parseInt(bp?.id);
+
+                        if(id > 0) {
+
+                            this.toogleProcessingEntity({type: "qrScanner", isProcessing: true});
+
+                            if(this.forms.entity.qrScanner.data.customers.some(e => e.code == id)) {
+
+                                Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block">Cliente escaneado: ${dataScan.name}.</span><span class="d-block fw-semibold mt-1">Ya se encuentra en los clientes escaneados.</span>`});
+                                this.toogleProcessingEntity({type: "qrScanner", isProcessing: false, time: 4000});
+
+                            }else {
+
+                                this.forms.entity.qrScanner.data.customers.push({code: id, label: "", customer_attendance_type: currentMode, data: {id}});
+                                this.qrScannerEntity();
+
+                            }
+
+                        }else {
+
+                            Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block fw-semibold">Intenta escanearlo nuevamente o verifica que sea el correcto.</span>`});
+
+                        }
+
+                    }
+
+                }else if(["dni", "dnie"].includes(currentMode)) {
+
+                    let dataScan = decodedResult;
+
+                    const dataScanBp = dataScan;
+                    const code = dataScanBp;
+
+                    if(!this.isDefined({value: code})) {
+
+                        Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block fw-semibold">No pudimos validar el DNI. Intenta escanearlo nuevamente o verifica que sea el correcto.</span>`});
+
+                    }else {
+
+                        const id = parseInt(code);
+
+                        if(id > 0) {
+
+                            this.toogleProcessingEntity({type: "qrScanner", isProcessing: true});
+
+                            if(this.forms.entity.qrScanner.data.customers.some(e => e.code == id)) {
+
+                                Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block">Cliente escaneado: ${dataScan.name}.</span><span class="d-block fw-semibold mt-1">Ya se encuentra en los clientes escaneados.</span>`});
+                                this.toogleProcessingEntity({type: "qrScanner", isProcessing: false, time: 4000});
+
+                            }else {
+
+                                this.forms.entity.qrScanner.data.customers.push({code: id, label: "", customer_attendance_type: currentMode, data: {id}});
+                                this.qrScannerEntity();
+
+                            }
+
+                        }else {
+
+                            Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block fw-semibold">Intenta escanearlo nuevamente o verifica que sea el correcto.</span>`});
+
+                        }
 
                     }
 
@@ -1744,7 +1792,7 @@ export default {
             }catch(e) {
 
                 console.log(e);
-                Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block fw-semibold">No pudimos validar el QR. Intenta escanearlo nuevamente o verifica que sea el correcto.</span>`});
+                Alerts.generateAlert({type: "warning", msgContent: `<span class="d-block fw-semibold">No pudimos validar lo escaneado. Intenta escanearlo nuevamente o verifica que sea el correcto.</span>`});
 
             }
 
@@ -1769,7 +1817,15 @@ export default {
 
                 form.customers.forEach(customer => {
 
-                    customer.customer_id = customer.code;
+                    if(["carnet"].includes(customer?.customer_attendance_type)) {
+
+                        customer.customer_id = customer.code;
+
+                    }else if(["dni", "dnie"].includes(customer?.customer_attendance_type)) {
+
+                        customer.customer_document_number = customer.code;
+
+                    }
 
                     delete customer.code;
                     delete customer.label;
