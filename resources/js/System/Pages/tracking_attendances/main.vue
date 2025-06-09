@@ -253,12 +253,13 @@
                 </div>
                 <div class="modal-body">
                     <div v-if="['store'].includes(forms.entity.createUpdate.extras.modals.default.type)" class="d-flex flex-wrap justify-content-center align-items-center mb-3 shadow-sm px-4 py-2 border border-1 border-light rounded">
-                        <label class="fw-semibold text-dark">Selecciona el modo de asistencia</label>
-                        <div class="d-flex gap-2">
+                        <label class="fw-semibold text-dark d-block mb-2 mb-md-1 text-center">Selecciona el modo de asistencia</label>
+                        <div class="d-flex flex-wrap justify-content-center gap-2">
                             <template v-for="record in formModes" :key="record.code">
-                                <button :class="['btn btn-sm', [forms.entity.createUpdate.config.currentMode].includes(record?.code) ? 'btn-success fw-bold' : 'btn-outline-success fw-semibold']" @click="selectModeEntity(record?.code, false)" :disabled="[forms.entity.createUpdate.config.currentMode].includes(record?.code)">
+                                <button :class="['btn btn-sm rounded-pill', [forms.entity.createUpdate.config.currentMode].includes(record?.code) ? 'btn-success fw-bold' : 'btn-outline-success fw-semibold']" @click="[forms.entity.createUpdate.config.currentMode].includes(record?.code) ? '' : selectModeEntity(record?.code, false)">
                                     <i :class="['fa', record?.icon]"></i>
-                                    <span v-text="record?.label" class="ms-2"></span>
+                                    <span class="ms-1 ms-md-2 d-none d-sm-inline" v-text="record?.label"></span>
+                                    <span class="ms-1 ms-md-2 d-inline d-sm-none" v-text="record?.label_sm"></span>
                                 </button>
                             </template>
                         </div>
@@ -357,12 +358,13 @@
                 </div>
                 <div class="modal-body">
                     <div v-if="['store'].includes(forms.entity.qrCamera.extras.modals.default.type)" class="d-flex flex-wrap justify-content-center align-items-center mb-3 shadow-sm px-4 py-2 border border-1 border-light rounded">
-                        <label class="fw-semibold text-dark">Selecciona el modo de asistencia</label>
-                        <div class="d-flex gap-2">
+                        <label class="fw-semibold text-dark d-block mb-2 mb-md-1 text-center">Selecciona el modo de asistencia</label>
+                        <div class="d-flex flex-wrap justify-content-center gap-2">
                             <template v-for="record in formModes" :key="record.code">
-                                <button :class="['btn btn-sm', [forms.entity.createUpdate.config.currentMode].includes(record?.code) ? 'btn-success fw-bold' : 'btn-outline-success fw-semibold']" @click="selectModeEntity(record?.code, false)" :disabled="[forms.entity.createUpdate.config.currentMode].includes(record?.code)">
+                                <button :class="['btn btn-sm rounded-pill', [forms.entity.createUpdate.config.currentMode].includes(record?.code) ? 'btn-success fw-bold' : 'btn-outline-success fw-semibold']" @click="[forms.entity.createUpdate.config.currentMode].includes(record?.code) ? '' : selectModeEntity(record?.code, false)">
                                     <i :class="['fa', record?.icon]"></i>
-                                    <span v-text="record?.label" class="ms-2"></span>
+                                    <span class="ms-1 ms-md-2 d-none d-sm-inline" v-text="record?.label"></span>
+                                    <span class="ms-1 ms-md-2 d-inline d-sm-none" v-text="record?.label_sm"></span>
                                 </button>
                             </template>
                         </div>
@@ -391,7 +393,7 @@
                         </InputSlot>
                         <InputSlot
                             hasDiv
-                            title="Cámara"
+                            title="Cámara interna"
                             :isInputGroup="false"
                             xl="12"
                             lg="12">
@@ -514,12 +516,13 @@
                 </div>
                 <div class="modal-body">
                     <div v-if="['store'].includes(forms.entity.qrScanner.extras.modals.default.type)" class="d-flex flex-wrap justify-content-center align-items-center mb-3 shadow-sm px-4 py-2 border border-1 border-light rounded">
-                        <label class="fw-semibold text-dark">Selecciona el modo de asistencia</label>
-                        <div class="d-flex gap-2">
+                        <label class="fw-semibold text-dark d-block mb-2 mb-md-1 text-center">Selecciona el modo de asistencia</label>
+                        <div class="d-flex flex-wrap justify-content-center gap-2">
                             <template v-for="record in formModes" :key="record.code">
-                                <button :class="['btn btn-sm', [forms.entity.createUpdate.config.currentMode].includes(record?.code) ? 'btn-success fw-bold' : 'btn-outline-success fw-semibold']" @click="selectModeEntity(record?.code, false)" :disabled="[forms.entity.createUpdate.config.currentMode].includes(record?.code)">
+                                <button :class="['btn btn-sm rounded-pill', [forms.entity.createUpdate.config.currentMode].includes(record?.code) ? 'btn-success fw-bold' : 'btn-outline-success fw-semibold']" @click="[forms.entity.createUpdate.config.currentMode].includes(record?.code) ? '' : selectModeEntity(record?.code, false)">
                                     <i :class="['fa', record?.icon]"></i>
-                                    <span v-text="record?.label" class="ms-2"></span>
+                                    <span class="ms-1 ms-md-2 d-none d-sm-inline" v-text="record?.label"></span>
+                                    <span class="ms-1 ms-md-2 d-inline d-sm-none" v-text="record?.label_sm"></span>
                                 </button>
                             </template>
                         </div>
@@ -2130,9 +2133,9 @@ export default {
         formModes: function() {
 
             return [
-                {code: "manual", label: "Manual", icon: "fa-hand"},
-                {code: "qrCamera", label: "Cámara interna", icon: "fa-camera"},
-                {code: "qrScanner", label: "Escáner externo", icon: "fa-qrcode"}
+                {code: "manual", label: "Manual", label_sm: "Manual", icon: "fa-hand"},
+                {code: "qrCamera", label: "Cámara interna", label_sm: "Cámara int.", icon: "fa-camera"},
+                {code: "qrScanner", label: "Escáner externo", label_sm: "Escáner ext.", icon: "fa-qrcode"}
             ];
 
         }
