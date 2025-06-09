@@ -411,7 +411,7 @@
                                         :qrbox="290"
                                         :fps="23"
                                         :limitScan="-1"
-                                        :canProcess="!forms.entity.qrCamera.config.isProcessing"
+                                        :canProcess="forms.entity.qrCamera.config.isCurrentActive && !forms.entity.qrCamera.config.isProcessing"
                                         @result="onResultQrCamera"/>
                                 </div>
                             </template>
@@ -718,12 +718,12 @@ export default {
             $(`#${this.forms.entity.qrCamera.extras.modals.default.id}`)
             .on("shown.bs.modal", () => {
 
-                //
+                el.forms.entity.qrCamera.config.isCurrentActive = true;
 
             })
             .on("hidden.bs.modal", () => {
 
-                el.forms.entity.qrCamera.config.isProcessing = true;
+                el.forms.entity.qrCamera.config.isCurrentActive = false;
 
             });
 
@@ -847,6 +847,7 @@ export default {
                         },
                         config: {
                             firstInit: false,
+                            isCurrentActive: false,
                             isProcessing: true
                         },
                         errors: {}
@@ -1257,7 +1258,7 @@ export default {
 
                 if(!this.forms.entity.qrCamera.config.firstInit) {
 
-                    // this.$refs.scannerQr.startScanner();
+                    this.$refs.scannerQr.startScanner();
 
                     this.forms.entity.qrCamera.config.firstInit = true;
 
@@ -1427,6 +1428,7 @@ export default {
 
             const functionName = "onResultQrCamera";
 
+            if(!this.forms.entity.qrCamera.config.isCurrentActive) return;
             if(this.forms.entity.qrCamera.config.isProcessing) return;
 
             try {
