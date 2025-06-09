@@ -581,6 +581,7 @@
                                 </template>
                                 <input
                                     v-else
+                                    ref="qrInput"
                                     v-model="forms.entity.qrScanner.data.code"
                                     type="text"
                                     class="form-control text-center fw-bold"
@@ -914,7 +915,7 @@ export default {
                             status: null
                         },
                         config: {
-                            currentMode: "carnet",
+                            currentMode: "",
                             isProcessing: true
                         },
                         errors: {}
@@ -1286,6 +1287,12 @@ export default {
 
             }else if(configMode == "qrScanner") {
 
+                if(!this.isDefined({value: this.forms.entity.qrScanner.config.currentMode})) {
+
+                    this.setModeQrScanner(this.qrCameraModes[0]?.code);
+
+                }
+
                 this.modalQrScannerEntity({type: "store"});
 
             }
@@ -1632,6 +1639,17 @@ export default {
 
         },
         // QrScanner
+        setModeQrScanner(mode) {
+
+            if(this.isDefined({value: mode})) {
+
+                this.forms.entity.qrScanner.config.currentMode = mode;
+
+                this.$refs.qrInput?.focus();
+
+            }
+
+        },
         modalQrScannerEntity({record = null, type = "store"}) {
 
             const functionName = "modalQrScannerEntity";
@@ -1664,12 +1682,11 @@ export default {
             // Alerts.swals({show: false});
             Alerts.modals({type: "show", id: this.forms.entity.qrScanner.extras.modals.default.id});
 
-        },
-        setModeQrScanner(mode) {
+            let el = this;
 
-            if(this.isDefined({value: mode})) {
+            if(this.isDefined({value: this.forms.entity.qrScanner.config.currentMode})) {
 
-                this.forms.entity.qrScanner.config.currentMode = mode;
+                setTimeout(() => el.$refs.qrInput?.focus(), 600);
 
             }
 
