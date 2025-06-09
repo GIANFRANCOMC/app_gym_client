@@ -3,15 +3,23 @@
 
     <!-- Content -->
     <div class="row g-3 mb-3">
-        <div class="col-12">
-            <div class="d-flex flex-wrap justify-content-end align-items-end gap-2 gap-md-4">
+        <div class="col-xl-12 col-md-12 col-sm-12">
+            <div class="d-flex flex-wrap justify-content-end align-items-center gap-1 h-100">
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" v-model="forms.entity.createUpdate.config.show_actions" id="toggleActions" @change="changeFavorite(null, null)">
                     <label for="toggleActions" class="cursor-pointer">Mostrar acciones</label>
                 </div>
-                <div class="form-check form-switch">
+                <div class="form-check form-switch ms-3">
                     <input class="form-check-input" type="checkbox" v-model="forms.entity.createUpdate.config.show_only_favorites" id="toggleFavs" @change="changeFavorite(null, null)">
                     <label for="toggleFavs" class="cursor-pointer">Mostrar solo favoritos</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-12 col-md-12 col-sm-12" v-if="forms.entity.createUpdate.config.show_actions">
+            <div class="d-flex flex-wrap justify-content-end align-items-center gap-1 h-100">
+                <div class="alert alert-info mb-0 mb-md-1 fw-semibold">
+                    <i class="fa-solid fa-circle-info me-2"></i>
+                    <span>Los cambios se aplicarán cuando actualices la página.</span>
                 </div>
             </div>
         </div>
