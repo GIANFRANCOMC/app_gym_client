@@ -249,7 +249,9 @@ class TrackingAttendanceController extends Controller {
             $result = $attendanceService->validateAndCreateAttendance([
                 "company_id"  => $userAuth->company_id,
                 "branch_id"   => $request->branch_id,
-                "customer_id" => $customerRequest["customer_id"],
+                "customer_id" => $customerRequest["customer_id"] ?? "",
+                "customer_document_number" => $customerRequest["customer_document_number"] ?? "",
+                "customer_attendance_type" => $customerRequest["customer_attendance_type"] ?? "",
                 "start_date"  => $startDate,
                 "end_date"    => $endDate,
                 "observation" => $request->observation,

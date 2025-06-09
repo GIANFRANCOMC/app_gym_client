@@ -9,6 +9,8 @@ use Carbon\Carbon;
 
 class AttendanceService {
 
+    // Types: carnet, dni, dnie
+
     public function validateStartDate(?Carbon $startDate): bool {
 
         return Utilities::isDefined($startDate) &&
@@ -16,11 +18,21 @@ class AttendanceService {
 
     }
 
-    public function getValidCustomer($customerId, $companyId): ?Customer {
+    public function getValidCustomer($code, $companyId, $type = ""): ?Customer {
 
-        return Customer::where("id", $customerId)
-                       ->where("company_id", $companyId)
-                       ->first();
+        if(in_array($type, ["dni", "dnie"])) {
+
+            return Customer::where("document_number", $code)
+                           ->where("company_id", $companyId)
+                           ->first();
+
+        }else {
+
+            return Customer::where("id", $code)
+                           ->where("company_id", $companyId)
+                           ->first();
+
+        }
 
     }
 
@@ -83,7 +95,9 @@ class AttendanceService {
 
         $companyId   = $data["company_id"];
         $branchId    = $data["branch_id"];
-        $customerId  = $data["customer_id"];
+        $customerId  = $data["customer_id"] ?? "";
+        $customerDocumentNumber = $data["customer_document_number"] ?? "";
+        $customerAttendanceType = $data["customer_attendance_type"] ?? "";
         $startDate   = $data["start_date"] ?? null; // Carbon
         $endDate     = $data["end_date"] ?? null;   // Carbon
         $observation = $data["observation"] ?? "";
@@ -91,7 +105,15 @@ class AttendanceService {
         $type        = $data["type"] ?? "manual_form";
         $action      = $data["action"] ?? "automatic";
 
-        $customer = $this->getValidCustomer($customerId, $companyId);
+        if(in_array($customerAttendanceType, ["dni", "dnie"])) {
+
+            $customer = $this->getValidCustomer($customerDocumentNumber, $companyId, $customerAttendanceType);
+
+        }else {
+
+            $customer = $this->getValidCustomer($customerId, $companyId, $customerAttendanceType);
+
+        }
 
         if(!Utilities::isDefined($customer)) {
 
@@ -105,7 +127,7 @@ class AttendanceService {
 
         $activeAttendance = Attendance::where("company_id", $companyId)
                                       ->where("branch_id", $branchId)
-                                      ->where("customer_id", $customerId)
+                                      ->where("customer_id", $customer->id)
                                       ->where("status", "active")
                                       ->latest("start_date")
                                       ->first();
