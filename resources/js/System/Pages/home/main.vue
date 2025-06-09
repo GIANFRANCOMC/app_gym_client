@@ -17,7 +17,7 @@
         </div>
         <div class="col-xl-12 col-md-12 col-sm-12" v-if="forms.entity.createUpdate.config.show_actions">
             <div class="d-flex flex-wrap justify-content-end align-items-center gap-1 h-100">
-                <div class="alert alert-info mb-0 mb-md-1 fw-semibold">
+                <div class="alert alert-info mb-2 mb-md-1 fw-semibold">
                     <i class="fa-solid fa-circle-info me-2"></i>
                     <span>Los cambios se aplicarán cuando actualices la página.</span>
                 </div>
