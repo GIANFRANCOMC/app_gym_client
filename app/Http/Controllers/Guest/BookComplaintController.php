@@ -10,6 +10,7 @@ use stdClass;
 
 use App\Http\Requests\System\Assets\{StoreAssetRequest, UpdateAssetRequest};
 use App\Models\Guest\{BookComplaint, IdentityDocumentType};
+use Carbon\Carbon;
 use Jenssegers\Agent\Agent;
 
 class BookComplaintController extends Controller {
@@ -72,8 +73,9 @@ class BookComplaintController extends Controller {
         $ip = $request->ip();
 
         $bookComplaintCount = BookComplaint::where("company_id", $company->id)
-                                            ->where("submitted_ip", $ip)
-                                            ->count();
+                                           ->where("submitted_ip", $ip)
+                                           ->whereDate("created_at", Carbon::today()->toDateString())
+                                           ->count();
 
         if($bookComplaintCount >= 3) {
 
