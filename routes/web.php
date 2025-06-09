@@ -47,6 +47,7 @@ Route::middleware(["web"])
             Route::prefix('/companies')->group($systemRoute.'/Company.php');
             Route::prefix('/products')->group($systemRoute.'/Product.php');
             Route::prefix('/services')->group($systemRoute.'/Service.php');
+            Route::prefix('/tracking_customers')->group($systemRoute.'/TrackingCustomer.php');
             Route::prefix('/tracking_subscriptions')->group($systemRoute.'/TrackingSubscription.php');
             Route::prefix('/tracking_attendances')->group($systemRoute.'/TrackingAttendance.php');
             Route::prefix('/tracking_notifications')->group($systemRoute.'/TrackingNotification.php');
