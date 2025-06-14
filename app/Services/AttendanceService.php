@@ -97,7 +97,7 @@ class AttendanceService {
         $branchId    = $data["branch_id"];
         $customerId  = $data["customer_id"] ?? "";
         $customerDocumentNumber = $data["customer_document_number"] ?? "";
-        $customerAttendanceType = Utilities::isDefined($data["customer_attendance_type"]) ? $data["customer_attendance_type"] : "carnet";
+        $customerAttendanceType = Utilities::isDefined($data["customer_attendance_type"] ?? "") ? $data["customer_attendance_type"] : "carnet";
         $startDate   = $data["start_date"] ?? null; // Carbon
         $endDate     = $data["end_date"] ?? null;   // Carbon
         $observation = $data["observation"] ?? "";

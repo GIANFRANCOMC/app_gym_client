@@ -221,6 +221,10 @@ export function generateRoutes({entity, requestRoute}) {
         routes.qrCamera  = `${requestRoute}/${entity}/qrCamera`;
         routes.qrScanner = `${requestRoute}/${entity}/qrScanner`;
 
+    }else if(["tracking_customers"].includes(entity)) {
+
+        routes.getTracking = `${requestRoute}/${entity}/getTracking`;
+
     }else if(["customers"].includes(entity)) {
 
         routes.getSubscriptions = `${requestRoute}/${entity}/getSubscriptions`;

@@ -252,6 +252,14 @@ export function getSubscriptions({customer}) {
 
 }
 
+export function getTrackingCustomers({customer}) {
+
+    let route = Requests.config({entity: "tracking_customers", type: "getTracking"});
+
+    return Requests.get({route: `${route}/${customer?.id}`, data: {}});
+
+}
+
 export function findOverlaps(sale, subscriptions) {
 
     const parseDate = (date) => new Date(date.replace(" ", "T"));

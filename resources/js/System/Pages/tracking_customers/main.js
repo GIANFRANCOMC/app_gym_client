@@ -16,6 +16,10 @@ import Paginator    from "../../Components/Paginator.vue";
 import Loader       from "../../Components/Loader.vue";
 import WithoutData  from "../../Components/WithoutData.vue";
 
+import Attendances  from "../../Components/TrackingCustomers/Attendances.vue";
+import Sales  from "../../Components/TrackingCustomers/Sales.vue";
+import Subscriptions  from "../../Components/TrackingCustomers/Subscriptions.vue";
+
 // App creation and mounted
 createApp(App)
 .component("v-select", VueSelect)
@@ -29,4 +33,7 @@ createApp(App)
 .component("Paginator", Paginator)
 .component("Loader", Loader)
 .component("WithoutData", WithoutData)
+.component("Sales", Sales)
+.component("Attendances", Attendances)
+.component("Subscriptions", Subscriptions)
 .mount("#app");

@@ -10,6 +10,7 @@ use stdClass;
 
 use App\Http\Requests\System\TrackingAttendances\{CancelTrackingAttendanceRequest};
 use App\Models\System\{Attendance, Branch, Customer, Subscription};
+use App\Services\TrackingCustomerService;
 use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -25,7 +26,8 @@ class TrackingCustomerController extends Controller {
 
         if(in_array($page, ["main"])) {
 
-            //
+            $config->customers = new stdClass();
+            $config->customers->records = Customer::getAll();
 
         }
 
@@ -85,6 +87,14 @@ class TrackingCustomerController extends Controller {
     public function destroy(Attendance $attendance) {
 
         //
+
+    }
+
+    public function getTracking(Request $request, $id, TrackingCustomerService $trackingCustomer) {
+
+        $userAuth = Auth::user();
+
+        return $trackingCustomer->get(["company_id" => $userAuth->company_id, "customer_id" => $id]);
 
     }
 

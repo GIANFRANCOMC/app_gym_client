@@ -237,7 +237,7 @@ return new class extends Migration {
             ["id" => 17, "section_id" => 3, "slug" => "sbc_trackings-notifications", "name" => "trackings-notifications", "dom_id" => "menu-item-trackings-notifications", "dom_label" => "Notificaciones", "dom_route" => "tracking_notifications.index"],
             ["id" => 18, "section_id" => 10, "slug" => "sbc_customer_care-book_complaints", "name" => "customer_care-book_complaints", "dom_id" => "menu-item-customer_care-book_complaints", "dom_label" => "Libro de reclamaciones y sugerencias", "dom_route" => "book_complaints.index"],
             ["id" => 19, "section_id" => 11, "slug" => "sbc_dashboard-main", "name" => "dashboard-main", "dom_id" => "menu-item-dashboard", "dom_label" => "Dashboard", "dom_route" => "dashboard.index"],
-            ["id" => 20, "section_id" => 3, "slug" => "sbc_trackings-customers", "name" => "trackings-customers", "dom_id" => "menu-item-trackings-customers", "dom_label" => "Ficha técnica", "dom_route" => "tracking_customers.index"],
+            ["id" => 20, "section_id" => 3, "slug" => "sbc_trackings-customers", "name" => "trackings-customers", "dom_id" => "menu-item-trackings-customers", "dom_label" => "Expediente", "dom_route" => "tracking_customers.index"],
         ]);
 
         DB::table("companies_sub_sections")->insert([
