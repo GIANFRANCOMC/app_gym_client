@@ -81,7 +81,8 @@ class Company extends Model {
 
                                                 $q->where("company_id", $company_id);
 
-                                          }]);
+                                          }])
+                                          ->orderBy("order", "ASC"); ;
 
                                }])
                                ->whereHas("subSections.companiesSubSections", function($q) use($company_id) {

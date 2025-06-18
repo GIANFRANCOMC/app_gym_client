@@ -63,7 +63,7 @@ class TrackingCustomerService {
         }
 
         $sales = SaleHeader::where("holder_id", $customer->id)
-                           ->with(["serie.documentType", "currency"])
+                           ->with(["serie.documentType", "serie.branch", "currency"])
                            ->get();
 
         $subscriptions = Subscription::where("customer_id", $customer->id)
@@ -81,7 +81,8 @@ class TrackingCustomerService {
             "attendances" => $attendances
         ];
 
-        $response["msg"] = "Información encontrada";
+        $response["bool"] = true;
+        $response["msg"]  = "Información encontrada";
 
         return $response;
 

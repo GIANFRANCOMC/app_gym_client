@@ -1,90 +1,53 @@
 <template>
     <Breadcrumb :list="breadcrumbTitles" />
 
-    <InputSlot
-        hasDiv
-        title="Cliente"
-        :titleClass="[config.forms.classes.title]"
-        xl="6"
-        lg="6">
-        <template v-slot:input>
-            <v-select
-                v-model="forms.entity.createUpdate.data.customer"
-                :options="customers"
-                :class="config.forms.classes.select2"
-                :clearable="true"
-                placeholder="Seleccione un cliente ..."/>
-        </template>
-    </InputSlot>
-    <template v-if="isDefined({value: forms.entity.createUpdate.data.customer?.code})">
-        <div class="row g-3 mt-2">
-            <div class="col-12">
-                <div class="card mb-6">
-                    <div class="user-profile-header-banner">
-                        <!-- <img src="../../assets/img/pages/profile-banner.png" alt="Banner image" class="rounded-top"> -->
-                    </div>
-                    <div class="user-profile-header d-flex flex-column flex-lg-row text-sm-start text-center mb-5">
-                        <div class="flex-shrink-0 mt-n2 mx-sm-0 mx-auto">
-                            <!-- <img src="../../assets/img/avatars/1.png" alt="user image" class="d-block h-auto ms-0 ms-sm-6 rounded user-profile-img"> -->
-                        </div>
-                        <div class="flex-grow-1 mt-3 mt-lg-5">
-                            <div
-                                class="d-flex align-items-md-end align-items-sm-start align-items-center justify-content-md-between justify-content-start mx-5 flex-md-row flex-column gap-4">
-                                <div class="user-profile-info">
-                                    <h4 class="mb-2 mt-lg-6" v-text="forms.entity.createUpdate.history.customers[forms.entity.createUpdate.data.customer?.code]?.customer?.name ?? ''"></h4>
-                                    <ul class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-4 my-2">
-                                        <li class="list-inline-item d-flex gap-2 align-items-center">
-                                            <i class="icon-base ti tabler-palette icon-lg"></i>
-                                            <span class="fw-medium" v-text="forms.entity.createUpdate.history.customers[forms.entity.createUpdate.data.customer?.code]?.customer?.identity_document_type?.name ?? ''"></span>
-                                            <span class="fw-medium" v-text="forms.entity.createUpdate.history.customers[forms.entity.createUpdate.data.customer?.code]?.customer?.document_number ?? ''"></span>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <a href="javascript:void(0)" class="btn btn-primary mb-1 waves-effect waves-light" v-if="false">
-                                    <i class="icon-base ti tabler-user-check icon-xs me-2"></i>Connected
-                                </a>
+    <!-- Content -->
+     <div class="row align-items-end g-3 mb-3 mb-md-4">
+        <InputSlot
+            hasDiv
+            title="Cliente"
+            :titleClass="[config.forms.classes.title]"
+            xl="6"
+            lg="6">
+            <template v-slot:input>
+                <v-select
+                    v-model="forms.entity.createUpdate.data.customer"
+                    :options="customers"
+                    :class="config.forms.classes.select2"
+                    :clearable="true"
+                    placeholder="Seleccione un cliente ..."/>
+            </template>
+        </InputSlot>
+    </div>
+    <div v-if="isDefined({value: forms.entity.createUpdate.data.customer?.code})">
+        <div class="row g-3">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <div class="d-flex align-items-center justify-content-end mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <span class="h4 d-block mb-0 text-end fw-bold" v-text="forms.entity.createUpdate.history.customers[forms.entity.createUpdate.data.customer?.code]?.customer?.name ?? ''"></span>
+                            <div class="d-flex justify-content-end gap-2">
+                                <span v-text="forms.entity.createUpdate.history.customers[forms.entity.createUpdate.data.customer?.code]?.customer?.identity_document_type?.name ?? ''"></span>
+                                <span class="fw-bold" v-text="forms.entity.createUpdate.history.customers[forms.entity.createUpdate.data.customer?.code]?.customer?.document_number ?? ''"></span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12">
-                <div class="nav-align-top">
-                    <ul class="nav nav-pills flex-column flex-sm-row mb-6 gap-2">
-                        <li class="nav-item">
-                            <a class="nav-link active waves-effect waves-light" href="javascript:void(0);">
-                                <i class="fa-solid fa-cash-register"></i>
-                                <span class="ms-2">Ventas</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active waves-effect waves-light" href="javascript:void(0);">
-                                <i class="fa-solid fa-binoculars"></i>
-                                <span class="ms-2">Membresías</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active waves-effect waves-light" href="javascript:void(0);">
-                                <i class="fa-solid fa-binoculars"></i>
-                                <span class="ms-2">Asistencias</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <Timeline :data="forms.entity.createUpdate.history?.customers[forms.entity.createUpdate.data.customer?.code] ?? {}"/>
             </div>
-        </div>
-        <div class="row g-3 mt-2">
-            <div class="col-12">
+            <div class="col-12" v-show="false">
                 <Sales :data="forms.entity.createUpdate.history?.customers[forms.entity.createUpdate.data.customer?.code]?.sales ?? []"/>
             </div>
-            <div class="col-12">
+            <div class="col-12" v-show="false">
                 <Subscriptions :data="forms.entity.createUpdate.history?.customers[forms.entity.createUpdate.data.customer?.code]?.subscriptions ?? []"/>
             </div>
-            <div class="col-12">
+            <div class="col-12" v-show="false">
                 <Attendances :data="forms.entity.createUpdate.history?.customers[forms.entity.createUpdate.data.customer?.code]?.attendances ?? []"/>
             </div>
         </div>
-    </template>
+    </div>
 </template>
 
 <script>
@@ -216,20 +179,19 @@ export default {
         },
         async getTrackingCustomers() {
 
-            // let form = this.forms.entity.createUpdate.extras.modals.subscriptions;
-
-            //form.data.loading = true;
+            Alerts.swals({});
 
             let form = this.forms.entity.createUpdate.data.customer;
 
-            const getSubscriptions = await Utils.getTrackingCustomers({customer: {id: form.code}});
+            if(this.isDefined({value: form.code})) {
 
-            this.forms.entity.createUpdate.history.customers[this.forms.entity.createUpdate.data.customer?.code] = getSubscriptions?.data?.tracking;
+                const getSubscriptions = await Utils.getTrackingCustomers({customer: {id: form.code}});
 
-            //this.options.customers.subscriptions[this.forms.entity.createUpdate.data.holder?.data?.id] = Requests.valid({result: getSubscriptions}) ? getSubscriptions?.data?.subscriptions : false;
+                this.forms.entity.createUpdate.history.customers[this.forms.entity.createUpdate.data.customer?.code] = Requests.valid({result: getSubscriptions}) ? getSubscriptions?.data?.tracking : {};
 
-            //form.data.loading = false;
+            }
 
+            Alerts.swals({show: false});
 
         },
         // Forms utils

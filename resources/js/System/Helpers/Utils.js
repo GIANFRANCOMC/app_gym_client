@@ -290,7 +290,7 @@ export function findOverlaps(sale, subscriptions) {
 
 };
 
-export function legibleFormatDate({dateString = null, type = "datetime"}) {
+export function legibleFormatDate({dateString = null, type = "datetime", separator = "/"}) {
 
     try {
 
@@ -299,7 +299,19 @@ export function legibleFormatDate({dateString = null, type = "datetime"}) {
         let date;
         let year, month, day, hours = 0, minutes = 0;
 
-        if(dateString.includes(" ")) {
+         if(dateString.includes("T")) {
+
+            date = new Date(dateString);
+
+            if(isNaN(date.getTime())) throw new Error("Invalid ISO date format.");
+
+            year    = date.getFullYear();
+            month   = date.getMonth() + 1;
+            day     = date.getDate();
+            hours   = date.getHours();
+            minutes = date.getMinutes();
+
+        }else if(dateString.includes(" ")) {
 
             // Formato con hora (YYYY-MM-DD HH:mm)
             const [datePart, timePart] = dateString.split(" ");
@@ -332,11 +344,11 @@ export function legibleFormatDate({dateString = null, type = "datetime"}) {
 
         if(type === "date") {
 
-            return `${formattedDay}-${formattedMonth}-${year}`;
+            return `${formattedDay}${separator}${formattedMonth}${separator}${year}`;
 
         }else if (type === "datetime") {
 
-            return `${formattedDay}-${formattedMonth}-${year} ${formattedHours}:${formattedMinutes} ${ampm}`;
+            return `${formattedDay}${separator}${formattedMonth}${separator}${year} ${formattedHours}:${formattedMinutes} ${ampm}`;
 
         }else if (type === "time") {
 
@@ -344,7 +356,7 @@ export function legibleFormatDate({dateString = null, type = "datetime"}) {
 
         }
 
-        return `${formattedDay}-${formattedMonth}-${year} ${formattedHours}:${formattedMinutes} ${ampm}`;
+        return `${formattedDay}${separator}${formattedMonth}${separator}${year} ${formattedHours}:${formattedMinutes} ${ampm}`;
 
     }catch (e) {
 
