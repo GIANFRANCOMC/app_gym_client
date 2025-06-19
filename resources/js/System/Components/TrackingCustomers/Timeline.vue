@@ -8,8 +8,7 @@
                         <div class="timeline-header d-flex justify-content-between align-items-center flex-wrap mb-2 mb-md-1">
                             <div class="d-flex justify-content-start align-items-start flex-wrap gap-3">
                                 <div>
-                                    <!-- <span v-text="item?.icon"></span> -->
-                                    <span :class="['text-uppercase', 'fw-bold', 'ms-1', 'text-'+item?.class]" v-text="item?.name"></span>
+                                    <span :class="['text-uppercase', 'fw-bold', 'text-'+item?.class]" v-text="item?.name"></span>
                                 </div>
                                 <span :class="['badge', 'fw-semibold', 'py-1', { 'bg-label-success': ['active'].includes(item?.data?.status), 'bg-label-danger': ['inactive', 'canceled'].includes(item?.data?.status) }]" v-text="item?.data?.formatted_status"></span>
                             </div>
@@ -45,8 +44,7 @@
                         <div class="timeline-header d-flex justify-content-between align-items-center flex-wrap mb-2 mb-md-1">
                             <div class="d-flex justify-content-start align-items-start flex-wrap gap-3">
                                 <div>
-                                    <!-- <span v-text="item?.icon"></span> -->
-                                    <span :class="['text-uppercase', 'fw-bold', 'ms-1', 'text-'+item?.class]" v-text="item?.name"></span>
+                                    <span :class="['text-uppercase', 'fw-bold', 'text-'+item?.class]" v-text="item?.name"></span>
                                 </div>
                                 <span :class="['badge', 'fw-semibold', 'py-1', { 'bg-label-success': ['active'].includes(item?.data?.status), 'bg-label-primary': ['inactive'].includes(item?.data?.status), 'bg-label-danger': ['canceled'].includes(item?.data?.status) }]" v-text="item?.data?.formatted_status"></span>
                             </div>
@@ -81,8 +79,7 @@
                         <div class="timeline-header d-flex justify-content-between align-items-center flex-wrap mb-2 mb-md-1">
                             <div class="d-flex justify-content-start align-items-start flex-wrap gap-3">
                                 <div>
-                                    <!-- <span v-text="item?.icon"></span> -->
-                                    <span :class="['text-uppercase', 'fw-bold', 'ms-1', 'text-'+item?.class]" v-text="item?.name"></span>
+                                    <span :class="['text-uppercase', 'fw-bold', 'text-'+item?.class]" v-text="item?.name"></span>
                                 </div>
                                 <span :class="['badge', 'fw-semibold', 'py-1', { 'bg-label-success': ['active'].includes(item?.data?.status), 'bg-label-primary': ['finalized'].includes(item?.data?.status), 'bg-label-danger': ['canceled'].includes(item?.data?.status) }]" v-text="item?.data?.formatted_status"></span>
                             </div>
