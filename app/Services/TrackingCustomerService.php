@@ -3,10 +3,8 @@
 namespace App\Services;
 
 use App\Helpers\System\Utilities;
-use App\Models\System\Attendance;
-use App\Models\System\Customer;
-use App\Models\System\SaleHeader;
-use App\Models\System\Subscription;
+use App\Models\System\{Attendance, Customer, SaleHeader, Subscription};
+use Carbon\Carbon;
 
 class TrackingCustomerService {
 
@@ -30,6 +28,38 @@ class TrackingCustomerService {
 
     }
 
+    public function getDateRangeFromCode(string $code): array {
+
+        $now = Carbon::now();
+
+        if($code === "this_year") {
+
+            return [
+                "from" => $now->copy()->startOfYear()->startOfDay(),
+                "to"   => $now->copy()->endOfDay()
+            ];
+
+        }
+
+        if(preg_match("/^last_(\d+)_([a-z]+)$/", $code, $matches)) {
+
+            $amount = (int) $matches[1];
+            $unit = $matches[2]; // "days", "months", "years"
+
+            return [
+                "from" => $now->copy()->sub($unit, $amount)->startOfDay(),
+                "to"   => $now->copy()->endOfDay()
+            ];
+
+        }
+
+        return [
+            "from" => $now->copy()->subDays(30)->startOfDay(),
+            "to"   => $now->copy()->endOfDay()
+        ];
+
+    }
+
     public function get(array $data) {
 
         $response = [
@@ -41,8 +71,7 @@ class TrackingCustomerService {
         $customerId  = $data["customer_id"] ?? "";
         $customerDocumentNumber = $data["customer_document_number"] ?? "";
         $customerAttendanceType = "";
-
-        $types = $data["types"] ?? [];
+        $periodType  = $data["period_type"] ?? "last_3_months";
 
         if(in_array($customerAttendanceType, ["document_number"])) {
 
@@ -62,15 +91,20 @@ class TrackingCustomerService {
 
         }
 
+        $range = $this->getDateRangeFromCode($periodType);
+
         $sales = SaleHeader::where("holder_id", $customer->id)
+                           ->whereBetween("created_at", [$range["from"], $range["to"]])
                            ->with(["serie.documentType", "serie.branch", "currency"])
                            ->get();
 
         $subscriptions = Subscription::where("customer_id", $customer->id)
+                                     ->whereBetween("created_at", [$range["from"], $range["to"]])
                                      ->with(["branch"])
                                      ->get();
 
         $attendances = Attendance::where("customer_id", $customer->id)
+                                 ->whereBetween("created_at", [$range["from"], $range["to"]])
                                  ->with(["branch"])
                                  ->get();
 
@@ -78,7 +112,10 @@ class TrackingCustomerService {
             "customer" => $customer,
             "sales" => $sales,
             "subscriptions" => $subscriptions,
-            "attendances" => $attendances
+            "attendances" => $attendances,
+            "extras" => [
+                "period_type" => $periodType
+            ]
         ];
 
         $response["bool"] = true;

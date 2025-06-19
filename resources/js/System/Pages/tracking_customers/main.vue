@@ -2,40 +2,38 @@
     <Breadcrumb :list="breadcrumbTitles"/>
 
     <!-- Content -->
-    <div class="row align-items-end g-3 mb-3 mb-md-4 py-2">
-        <InputSlot
-            hasDiv
-            :isInputGroup="false"
-            :divInputClass="['d-flex flex-wrap justify-content-center align-items-end gap-2 gap-md-3']"
-            xl="4"
-            lg="6">
-            <template v-slot:input>
-                <button type="button" class="btn btn-primary waves-effect" @click="modalCreateUpdateEntity({})">
-                    <i class="fa fa-arrow-pointer"></i>
-                    <span class="ms-2">Seleccionar cliente</span>
-                </button>
-            </template>
-        </InputSlot>
+    <div class="row align-items-end g-3 mb-3 mb-md-4 pb-2">
         <InputSlot
             hasDiv
             :isInputGroup="false"
             :divInputClass="['d-flex flex-wrap justify-content-start align-items-end gap-2 gap-md-3']"
-            xl="8"
-            lg="6">
+            xl="12"
+            lg="12">
             <template v-slot:input>
-                <div v-if="isDefined({value: customerCurrent?.customer})">
+                <div v-if="isDefined({value: customerCurrent?.customer})" class="w-100">
+                    <div class="text-end mb-3 mb-md-0">
+                        <button type="button" class="btn btn-info-1 btn-sm waves-effect" @click="modalCreateUpdateEntity({})">
+                            <i class="fa fa-search"></i>
+                            <span class="ms-2">Realizar otra busqueda</span>
+                        </button>
+                    </div>
                     <div>
                         <i class="fa fa-user"></i>
                         <span class="h4 fw-bold ms-2" v-text="customerCurrent?.customer?.name ?? ''"></span>
                     </div>
                     <div>
-                        <span v-text="customerCurrent?.customer?.identity_document_type?.name ?? ''"></span>
-                        <span class="fw-bold ms-2" v-text="customerCurrent?.customer?.document_number ?? ''"></span>
+                        <span v-text="customerCurrent?.customer?.identity_document_type?.name ?? ''" class="fw-bold colon-at-end"></span>
+                        <span class="fw-bold ms-1" v-text="customerCurrent?.customer?.document_number ?? ''"></span>
+                    </div>
+                    <div class="mt-1">
+                        <span v-text="'Periodo: '+periodTypeCurrent" class="badge bg-label-primary fw-semibold"></span>
                     </div>
                 </div>
-                <div v-else class="alert alert-warning mb-0 w-100 text-center">
-                    <i class="fa fa-warning"></i>
-                    <span class="ms-2">Seleccione un cliente</span>
+                <div v-else class="w-100 text-end">
+                    <button type="button" class="btn btn-primary btn-sm waves-effect" @click="modalCreateUpdateEntity({})">
+                        <i class="fa fa-hand-pointer"></i>
+                        <span class="ms-2">Seleccione un cliente</span>
+                    </button>
                 </div>
             </template>
         </InputSlot>
@@ -74,6 +72,22 @@
                                     :class="config.forms.classes.select2"
                                     :clearable="false"
                                     placeholder="Seleccione un cliente ..."/>
+                            </template>
+                        </InputSlot>
+                        <InputSlot
+                            hasDiv
+                            title="Filtrar por periodo"
+                            isRequired
+                            xl="12"
+                            lg="12">
+                            <template v-slot:input>
+                                <v-select
+                                    v-model="forms.entity.createUpdate.data.periodType"
+                                    :options="periodTypes"
+                                    :class="config.forms.classes.select2"
+                                    :clearable="false"
+                                    :searchable="false"
+                                    placeholder="Seleccione un periodo ..."/>
                             </template>
                         </InputSlot>
                     </div>
@@ -129,7 +143,8 @@ export default {
                             }
                         },
                         data: {
-                            customer: null
+                            customer: null,
+                            periodType: null
                         },
                         history: {
                             customerCurrent: null,
@@ -170,6 +185,8 @@ export default {
 
             return new Promise(resolve => {
 
+                this.forms.entity.createUpdate.data.periodType = this.periodTypes.length > 0 ? this.periodTypes[0] : null;
+
                 this.modalCreateUpdateEntity({});
 
                 resolve(true);
@@ -202,14 +219,14 @@ export default {
         },
         async getTrackingCustomers() {
 
-            let form = this.forms.entity.createUpdate.data.customer;
+            let form = this.forms.entity.createUpdate.data;
 
-            if(this.isDefined({value: form?.code})) {
+            if(this.isDefined({value: form?.customer?.code})) {
 
                 Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
                 Alerts.swals({});
 
-                const getSubscriptions = await Utils.getTrackingCustomers({customer: {id: form.code}});
+                const getSubscriptions = await Utils.getTrackingCustomers({customer: {id: form.customer.code}, period_type: form.periodType.code});
 
                 if(Requests.valid({result: getSubscriptions})) {
 
@@ -285,9 +302,32 @@ export default {
             return this.options?.customers?.records.map(e => ({code: e.id, label: `${e.document_number} - ${e.name}`, data: e}));
 
         },
+        periodTypes: function() {
+
+            return [
+                {code: "last_1_days", label: "Último día"},
+                {code: "last_7_days", label: "Últimos 7 días"},
+                {code: "last_14_days", label: "Últimos 14 días"},
+                {code: "last_21_days", label: "Últimos 21 días"},
+                {code: "last_3_months", label: "Últimos 3 meses"},
+                {code: "last_6_months", label: "Últimos 6 meses"},
+                {code: "last_9_months", label: "Últimos 9 meses"},
+                {code: "this_year", label: "Este año"},
+                // {code: "custom", label: "Seleccionar mes y año"}
+            ];
+
+        },
         customerCurrent: function() {
 
             return this.forms.entity.createUpdate.history?.customers[this.forms.entity.createUpdate.history.customerCurrent?.code];
+
+        },
+        periodTypeCurrent: function() {
+
+            const code = this.customerCurrent?.extras?.period_type ?? "";
+            const found = this.periodTypes.find(p => p.code === code);
+
+            return found?.label ?? "No identificado";
 
         }
     },
