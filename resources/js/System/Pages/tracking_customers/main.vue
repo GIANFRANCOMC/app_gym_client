@@ -185,7 +185,7 @@ export default {
 
             return new Promise(resolve => {
 
-                this.forms.entity.createUpdate.data.periodType = this.periodTypes.length > 0 ? this.periodTypes[0] : null;
+                this.forms.entity.createUpdate.data.periodType = this.periodTypes.length > 4 ? this.periodTypes[4] : null;
 
                 this.modalCreateUpdateEntity({});
 
@@ -309,6 +309,7 @@ export default {
                 {code: "last_7_days", label: "Últimos 7 días"},
                 {code: "last_14_days", label: "Últimos 14 días"},
                 {code: "last_21_days", label: "Últimos 21 días"},
+                {code: "last_1_months", label: "Último mes"},
                 {code: "last_3_months", label: "Últimos 3 meses"},
                 {code: "last_6_months", label: "Últimos 6 meses"},
                 {code: "last_9_months", label: "Últimos 9 meses"},
