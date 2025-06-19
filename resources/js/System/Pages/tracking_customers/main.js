@@ -15,11 +15,7 @@ import InputText    from "../../Components/InputText.vue";
 import Paginator    from "../../Components/Paginator.vue";
 import Loader       from "../../Components/Loader.vue";
 import WithoutData  from "../../Components/WithoutData.vue";
-
 import Timeline  from "../../Components/TrackingCustomers/Timeline.vue";
-import Attendances  from "../../Components/TrackingCustomers/Attendances.vue";
-import Sales  from "../../Components/TrackingCustomers/Sales.vue";
-import Subscriptions  from "../../Components/TrackingCustomers/Subscriptions.vue";
 
 // App creation and mounted
 createApp(App)
@@ -35,7 +31,4 @@ createApp(App)
 .component("Loader", Loader)
 .component("WithoutData", WithoutData)
 .component("Timeline", Timeline)
-.component("Sales", Sales)
-.component("Attendances", Attendances)
-.component("Subscriptions", Subscriptions)
 .mount("#app");

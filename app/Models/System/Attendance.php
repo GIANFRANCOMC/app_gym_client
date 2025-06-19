@@ -3,6 +3,7 @@
 namespace App\Models\System;
 
 use App\Helpers\System\Utilities;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Attendance extends Model {
@@ -14,6 +15,7 @@ class Attendance extends Model {
     public static $snakeAttributes = true;
 
     protected $appends = [
+        "worked_hours",
         "formatted_type",
         "formatted_status"
     ];
@@ -36,6 +38,15 @@ class Attendance extends Model {
     ];
 
     // Appends
+    public function getWorkedHoursAttribute() {
+
+        $start = Carbon::parse($this->attributes["start_date"]);
+        $end = Carbon::parse($this->attributes["end_date"]);
+
+        return Utilities::isDefined($this->attributes["start_date"]) && Utilities::isDefined($this->attributes["end_date"]) ? $start->floatDiffInHours($end) : 0;
+
+    }
+
     public function getFormattedTypeAttribute() {
 
         return self::getTypes("first", $this->attributes["type"])["label"] ?? "";

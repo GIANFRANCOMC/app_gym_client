@@ -1,50 +1,86 @@
 <template>
-    <Breadcrumb :list="breadcrumbTitles" />
+    <Breadcrumb :list="breadcrumbTitles"/>
 
     <!-- Content -->
-     <div class="row align-items-end g-3 mb-3 mb-md-4">
+    <div class="row align-items-end g-3 mb-3 mb-md-4 py-2">
         <InputSlot
             hasDiv
-            title="Cliente"
-            :titleClass="[config.forms.classes.title]"
-            xl="6"
+            :isInputGroup="false"
+            :divInputClass="['d-flex flex-wrap justify-content-center align-items-end gap-2 gap-md-3']"
+            xl="4"
             lg="6">
             <template v-slot:input>
-                <v-select
-                    v-model="forms.entity.createUpdate.data.customer"
-                    :options="customers"
-                    :class="config.forms.classes.select2"
-                    :clearable="true"
-                    placeholder="Seleccione un cliente ..."/>
+                <button type="button" class="btn btn-primary waves-effect" @click="modalCreateUpdateEntity({})">
+                    <i class="fa fa-arrow-pointer"></i>
+                    <span class="ms-2">Seleccionar cliente</span>
+                </button>
+            </template>
+        </InputSlot>
+        <InputSlot
+            hasDiv
+            :isInputGroup="false"
+            :divInputClass="['d-flex flex-wrap justify-content-start align-items-end gap-2 gap-md-3']"
+            xl="8"
+            lg="6">
+            <template v-slot:input>
+                <div v-if="isDefined({value: customerCurrent?.customer})">
+                    <div>
+                        <i class="fa fa-user"></i>
+                        <span class="h4 fw-bold ms-2" v-text="customerCurrent?.customer?.name ?? ''"></span>
+                    </div>
+                    <div>
+                        <span v-text="customerCurrent?.customer?.identity_document_type?.name ?? ''"></span>
+                        <span class="fw-bold ms-2" v-text="customerCurrent?.customer?.document_number ?? ''"></span>
+                    </div>
+                </div>
+                <div v-else class="alert alert-warning mb-0 w-100 text-center">
+                    <i class="fa fa-warning"></i>
+                    <span class="ms-2">Seleccione un cliente</span>
+                </div>
             </template>
         </InputSlot>
     </div>
-    <div v-if="isDefined({value: forms.entity.createUpdate.data.customer?.code})">
-        <div class="row g-3">
-            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                <div class="d-flex align-items-center justify-content-end mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <span class="h4 d-block mb-0 text-end fw-bold" v-text="forms.entity.createUpdate.history.customers[forms.entity.createUpdate.data.customer?.code]?.customer?.name ?? ''"></span>
-                            <div class="d-flex justify-content-end gap-2">
-                                <span v-text="forms.entity.createUpdate.history.customers[forms.entity.createUpdate.data.customer?.code]?.customer?.identity_document_type?.name ?? ''"></span>
-                                <span class="fw-bold" v-text="forms.entity.createUpdate.history.customers[forms.entity.createUpdate.data.customer?.code]?.customer?.document_number ?? ''"></span>
-                            </div>
-                        </div>
+    <div class="row g-3 py-4 border-top">
+        <template v-if="isDefined({value: customerCurrent?.customer})">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 ps-1 px-md-5">
+                <Timeline :data="customerCurrent ?? {}"/>
+            </div>
+        </template>
+        <div v-else class="text-center">
+            <WithoutData type="image"/>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal fade" :id="forms.entity.createUpdate.extras.modals.default.id" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.createUpdate.extras.modals.default.titles.default"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <InputSlot
+                            hasDiv
+                            title="Cliente"
+                            isRequired
+                            xl="12"
+                            lg="12">
+                            <template v-slot:input>
+                                <v-select
+                                    v-model="forms.entity.createUpdate.data.customer"
+                                    :options="customers"
+                                    :class="config.forms.classes.select2"
+                                    :clearable="false"
+                                    placeholder="Seleccione un cliente ..."/>
+                            </template>
+                        </InputSlot>
                     </div>
                 </div>
-            </div>
-            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                <Timeline :data="forms.entity.createUpdate.history?.customers[forms.entity.createUpdate.data.customer?.code] ?? {}"/>
-            </div>
-            <div class="col-12" v-show="false">
-                <Sales :data="forms.entity.createUpdate.history?.customers[forms.entity.createUpdate.data.customer?.code]?.sales ?? []"/>
-            </div>
-            <div class="col-12" v-show="false">
-                <Subscriptions :data="forms.entity.createUpdate.history?.customers[forms.entity.createUpdate.data.customer?.code]?.subscriptions ?? []"/>
-            </div>
-            <div class="col-12" v-show="false">
-                <Attendances :data="forms.entity.createUpdate.history?.customers[forms.entity.createUpdate.data.customer?.code]?.attendances ?? []"/>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
+                </div>
             </div>
         </div>
     </div>
@@ -79,43 +115,24 @@ export default {
     },
     data() {
         return {
-            lists: {
-                entity: {
-                    extras: {
-                        loading: false,
-                        route: Requests.config({entity: "tracking_customers", type: "list"})
-                    },
-                    filters: {
-                        branch: null,
-                        customer: null,
-                        start_date: "",
-                        end_date: "",
-                        status: ""
-                    },
-                    records: {
-                        total: 0
-                    }
-                }
-            },
             forms: {
                 entity: {
                     createUpdate: {
                         extras: {
                             modals: {
-                                actions: {
+                                default: {
                                     id: Utils.uuid(),
-                                    data: {
-                                        id: null
+                                    titles: {
+                                        default: "Seleccionar"
                                     }
                                 }
                             }
                         },
                         data: {
-                            id: null,
-                            customer: null,
-                            status: null
+                            customer: null
                         },
                         history: {
+                            customerCurrent: null,
                             customers: {}
                         },
                         errors: {}
@@ -153,45 +170,61 @@ export default {
 
             return new Promise(resolve => {
 
+                this.modalCreateUpdateEntity({});
+
                 resolve(true);
 
             });
 
         },
-        // Entity forms
-        async listEntity({url = null}) {
-
-            let filters = Utils.cloneJson(this.lists.entity.filters);
-            const filterJson = {branch_id: filters?.branch?.code, customer_id: filters?.customer?.code, start_date: filters?.start_date, end_date: filters?.end_date, status: filters?.status};
-
-            this.lists.entity.extras.loading = true;
-            this.lists.entity.records        = (await Requests.get({route: url || this.lists.entity.extras.route, data: filterJson}))?.data;
-            this.lists.entity.extras.loading = false;
-
-        },
         // Forms
-        modalActionsEntity({record = null}) {
+        modalCreateUpdateEntity({record = null}) {
 
-            this.forms.entity.createUpdate.extras.modals.actions.data = record;
+            const functionName = "modalCreateUpdateEntity";
 
-            Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.actions.id});
+            // Alerts.swals({});
+            this.clearForm({functionName});
+            this.formErrors({functionName, type: "clear"});
+
+            if(this.isDefined({value: record})) {
+
+                //
+
+            }else {
+
+                //
+
+            }
+
+            // Alerts.swals({show: false});
+            Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.default.id});
 
         },
         async getTrackingCustomers() {
 
-            Alerts.swals({});
-
             let form = this.forms.entity.createUpdate.data.customer;
 
-            if(this.isDefined({value: form.code})) {
+            if(this.isDefined({value: form?.code})) {
+
+                Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
+                Alerts.swals({});
 
                 const getSubscriptions = await Utils.getTrackingCustomers({customer: {id: form.code}});
 
-                this.forms.entity.createUpdate.history.customers[this.forms.entity.createUpdate.data.customer?.code] = Requests.valid({result: getSubscriptions}) ? getSubscriptions?.data?.tracking : {};
+                if(Requests.valid({result: getSubscriptions})) {
+
+                    this.forms.entity.createUpdate.history.customers[this.forms.entity.createUpdate.data.customer?.code] = getSubscriptions?.data?.tracking;
+                    this.forms.entity.createUpdate.history.customerCurrent = this.forms.entity.createUpdate.data.customer;
+
+                }else {
+
+                    this.forms.entity.createUpdate.history.customers[this.forms.entity.createUpdate.data.customer?.code] = {};
+
+                }
+
+                Alerts.swals({show: false});
 
             }
-
-            Alerts.swals({show: false});
 
         },
         // Forms utils
@@ -200,7 +233,7 @@ export default {
             switch(functionName) {
                 case "modalCreateUpdateEntity":
                 case "createUpdateEntity":
-                    //
+                    this.forms.entity.createUpdate.data.customer = null;
                     break;
             }
 
@@ -250,6 +283,11 @@ export default {
         customers: function() {
 
             return this.options?.customers?.records.map(e => ({code: e.id, label: `${e.document_number} - ${e.name}`, data: e}));
+
+        },
+        customerCurrent: function() {
+
+            return this.forms.entity.createUpdate.history?.customers[this.forms.entity.createUpdate.history.customerCurrent?.code];
 
         }
     },
