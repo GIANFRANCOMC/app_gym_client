@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex justify-content-start align-items-center flex-wrap gap-2">
-        <div class="row g-3 g-md-3">
+        <div class="row g-3 g-md-3 w-100">
             <slot name="statisticsPrepend"></slot>
             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                 <div class="card d-flex justify-content-start align-items-center shadow h-100">
