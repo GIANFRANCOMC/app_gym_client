@@ -266,7 +266,7 @@ export default {
             let statistics = [
                 {label: "Cantidad de asistencias", value: count, type: "number"},
                 {label: "Horas trabajadas", value: total, units, type: "units"},
-                {label: "Media de horas trabajadas por asistencia", value: count == 0 ? 0 : (total / count), units, type: "units"}
+                {label: "Media de horas trabajadas por asistencia", value: count == 0 ? 0 : (total / count).toFixed(3), units, type: "units"}
             ];
 
             for(let sta of statistics) {
