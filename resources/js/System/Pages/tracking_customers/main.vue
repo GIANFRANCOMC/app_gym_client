@@ -2,48 +2,50 @@
     <Breadcrumb :list="breadcrumbTitles"/>
 
     <!-- Content -->
-    <div class="row align-items-end g-3 mb-3 mb-md-4 pb-2">
+    <div class="row align-items-end g-3 mb-3 mb-md-0">
         <InputSlot
             hasDiv
             :isInputGroup="false"
-            :divInputClass="['d-flex flex-wrap justify-content-start align-items-end gap-2 gap-md-3']"
+            :divInputClass="['d-flex flex-wrap justify-content-center align-items-end gap-2 gap-md-3']"
             xl="12"
             lg="12">
             <template v-slot:input>
-                <div v-if="isDefined({value: customerCurrent?.customer})" class="w-100">
-                    <div class="text-end mb-3 mb-md-0">
-                        <button type="button" class="btn btn-info-1 btn-sm waves-effect" @click="modalCreateUpdateEntity({})">
-                            <i class="fa fa-search"></i>
-                            <span class="ms-2">Realizar otra busqueda</span>
-                        </button>
-                    </div>
-                    <div>
-                        <i class="fa fa-user"></i>
-                        <span class="h4 fw-bold ms-2" v-text="customerCurrent?.customer?.name ?? ''"></span>
-                    </div>
-                    <div>
-                        <span v-text="customerCurrent?.customer?.identity_document_type?.name ?? ''" class="fw-bold colon-at-end"></span>
-                        <span class="fw-bold ms-1" v-text="customerCurrent?.customer?.document_number ?? ''"></span>
-                    </div>
-                    <div class="mt-1">
-                        <span v-text="'Periodo: '+periodTypeCurrent" class="badge bg-label-primary fw-semibold"></span>
-                    </div>
-                </div>
-                <div v-else class="w-100 text-end">
+                <template v-if="isDefined({value: customerCurrent?.customer})">
+                    <button type="button" class="btn btn-info-1 btn-sm waves-effect" @click="modalCreateUpdateEntity({})">
+                        <i class="fa fa-search"></i>
+                        <span class="ms-2">Realizar otra busqueda</span>
+                    </button>
+                </template>
+                <template v-else>
                     <button type="button" class="btn btn-primary btn-sm waves-effect" @click="modalCreateUpdateEntity({})">
                         <i class="fa fa-hand-pointer"></i>
                         <span class="ms-2">Seleccione un cliente</span>
                     </button>
-                </div>
+                </template>
             </template>
         </InputSlot>
     </div>
-    <div class="row g-3 py-4 border-top">
-        <template v-if="isDefined({value: customerCurrent?.customer})">
-            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 ps-1 px-md-5">
-                <Timeline :data="customerCurrent ?? {}"/>
-            </div>
-        </template>
+    <div class="row g-3">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 ps-1 pe-0" v-if="isDefined({value: customerCurrent?.customer})">
+            <Timeline :data="customerCurrent ?? {}">
+                <template v-slot:statisticsPrepend>
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                        <div class="d-flex justify-content-start align-items-center h-100 text-end">
+                            <div class="w-100">
+                                <div>
+                                    <span class="h4 fw-bold" v-text="customerCurrent?.customer?.name ?? ''"></span>
+                                </div>
+                                <div>
+                                    <span v-text="customerCurrent?.customer?.identity_document_type?.name ?? ''" class="fw-bold colon-at-end"></span>
+                                    <span class="fw-bold ms-1" v-text="customerCurrent?.customer?.document_number ?? ''"></span>
+                                </div>
+                                <span v-text="'Periodo: '+periodTypeCurrent" class="text-primary fw-semibold"></span>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </Timeline>
+        </div>
         <div v-else class="text-center">
             <WithoutData type="image"/>
         </div>
@@ -185,7 +187,7 @@ export default {
 
             return new Promise(resolve => {
 
-                this.forms.entity.createUpdate.data.periodType = this.periodTypes.length > 4 ? this.periodTypes[4] : null;
+                this.forms.entity.createUpdate.data.periodType = this.periodTypes.length > 3 ? this.periodTypes[2] : null;
 
                 this.modalCreateUpdateEntity({});
 
