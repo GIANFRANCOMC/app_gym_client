@@ -43,7 +43,7 @@ class Attendance extends Model {
         $start = Carbon::parse($this->attributes["start_date"]);
         $end = Carbon::parse($this->attributes["end_date"]);
 
-        return Utilities::isDefined($this->attributes["start_date"]) && Utilities::isDefined($this->attributes["end_date"]) ? $start->floatDiffInHours($end) : 0;
+        return Utilities::isDefined($this->attributes["start_date"]) && Utilities::isDefined($this->attributes["end_date"]) ? round($start->floatDiffInHours($end), 3) : 0;
 
     }
 
