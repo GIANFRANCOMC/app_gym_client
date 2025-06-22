@@ -2,7 +2,7 @@
     <Breadcrumb :list="breadcrumbTitles"/>
 
     <!-- Content -->
-    <div class="row align-items-end g-3 mb-3 mb-md-0">
+    <div class="row align-items-end g-3 mb-3 mb-md-2">
         <InputSlot
             hasDiv
             :isInputGroup="false"
@@ -11,9 +11,13 @@
             lg="12">
             <template v-slot:input>
                 <template v-if="isDefined({value: customerCurrent?.customer})">
-                    <button type="button" class="btn btn-info-1 btn-sm waves-effect" @click="modalCreateUpdateEntity({})">
+                    <button type="button" class="btn btn-primary btn-sm waves-effect" @click="modalCreateUpdateEntity({})">
                         <i class="fa fa-search"></i>
-                        <span class="ms-2">Realizar otra busqueda</span>
+                        <span class="ms-2">Realizar otra búsqueda</span>
+                    </button>
+                    <button type="button" class="btn btn-info-1 btn-sm waves-effect" @click="getTrackingCustomers({refresh: true})">
+                        <i class="fa fa-sync"></i>
+                        <span class="ms-2">Refrescar expediente</span>
                     </button>
                 </template>
                 <template v-else>
@@ -26,15 +30,13 @@
         </InputSlot>
     </div>
     <div class="row g-3">
-        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 ps-1 pe-0" v-if="isDefined({value: customerCurrent?.customer})">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 ps-1 ps-md-3 pe-0 pe-md-3" v-if="isDefined({value: customerCurrent?.customer})">
             <Timeline :data="customerCurrent ?? {}">
                 <template v-slot:statisticsPrepend>
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                         <div class="d-flex justify-content-start align-items-center h-100 text-end">
                             <div class="w-100">
-                                <div>
-                                    <span class="h4 fw-bold" v-text="customerCurrent?.customer?.name ?? ''"></span>
-                                </div>
+                                <span class="fs-4 fw-bold d-block" v-text="customerCurrent?.customer?.name ?? ''"></span>
                                 <div>
                                     <span v-text="customerCurrent?.customer?.identity_document_type?.name ?? ''" class="fw-bold colon-at-end"></span>
                                     <span class="fw-bold ms-1" v-text="customerCurrent?.customer?.document_number ?? ''"></span>
@@ -92,10 +94,43 @@
                                     placeholder="Seleccione un periodo ..."/>
                             </template>
                         </InputSlot>
+                        <InputSlot
+                            hasDiv
+                            title="¿Qué deseas visualizar?"
+                            isRequired
+                            :isInputGroup="false"
+                            :divInputClass="['d-flex flex-wrap justify-content-center align-items-end gap-2 gap-md-3 pt-2 pt-md-2']"
+                            xl="12"
+                            lg="12">
+                            <template v-slot:input>
+                                <div class="form-check ms-2">
+                                    <label class="cursor-pointer">
+                                        <input class="form-check-input" type="checkbox" value="sales" v-model="forms.entity.createUpdate.data.options.information"/>
+                                        <span class="fw-bold text-secondary">Ventas</span>
+                                    </label>
+                                </div>
+                                <div class="form-check ms-2">
+                                    <label class="cursor-pointer">
+                                        <input class="form-check-input" type="checkbox" value="subscriptions" v-model="forms.entity.createUpdate.data.options.information"/>
+                                        <span class="fw-bold text-secondary">Membresías</span>
+                                    </label>
+                                </div>
+                                <div class="form-check ms-2">
+                                    <label class="cursor-pointer">
+                                        <input class="form-check-input" type="checkbox" value="attendances" v-model="forms.entity.createUpdate.data.options.information"/>
+                                        <span class="fw-bold text-secondary">Asistencias</span>
+                                    </label>
+                                </div>
+                            </template>
+                        </InputSlot>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn waves-effect btn-primary" @click="getTrackingCustomers({refresh: false})">
+                        <i class="fa fa-search"></i>
+                        <span class="ms-2">Buscar</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -139,18 +174,23 @@ export default {
                                 default: {
                                     id: Utils.uuid(),
                                     titles: {
-                                        default: "Seleccionar"
+                                        default: "Búsqueda"
                                     }
                                 }
                             }
                         },
                         data: {
                             customer: null,
-                            periodType: null
+                            periodType: null,
+                            options: {
+                                information: []
+                            }
                         },
                         history: {
+                            customers: {},
                             customerCurrent: null,
-                            customers: {}
+                            periodTypeCurrent: null,
+                            optionsCurrent: null
                         },
                         errors: {}
                     }
@@ -188,6 +228,7 @@ export default {
             return new Promise(resolve => {
 
                 this.forms.entity.createUpdate.data.periodType = this.periodTypes.length > 3 ? this.periodTypes[2] : null;
+                this.forms.entity.createUpdate.data.options.information = ["sales", "subscriptions"];
 
                 this.modalCreateUpdateEntity({});
 
@@ -219,29 +260,58 @@ export default {
             Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.default.id});
 
         },
-        async getTrackingCustomers() {
+        async getTrackingCustomers({refresh = false}) {
 
-            let form = this.forms.entity.createUpdate.data;
+            const functionName = "getTrackingCustomers";
 
-            if(this.isDefined({value: form?.customer?.code})) {
+            if(refresh) {
 
-                Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
+                let form = this.forms.entity.createUpdate.history;
+
                 Alerts.swals({});
 
-                const getSubscriptions = await Utils.getTrackingCustomers({customer: {id: form.customer.code}, period_type: form.periodType.code});
+                const getSubscriptions = await Utils.getTrackingCustomers({customer: {id: form.customerCurrent.code}, period_type: form.periodTypeCurrent.code, options: form.optionsCurrent});
 
-                if(Requests.valid({result: getSubscriptions})) {
+                this.forms.entity.createUpdate.history.customers[form.customerCurrent.code] = Requests.valid({result: getSubscriptions}) ? getSubscriptions?.data?.tracking : {};
 
-                    this.forms.entity.createUpdate.history.customers[this.forms.entity.createUpdate.data.customer?.code] = getSubscriptions?.data?.tracking;
-                    this.forms.entity.createUpdate.history.customerCurrent = this.forms.entity.createUpdate.data.customer;
+                Alerts.swals({show: false});
+
+
+            }else {
+
+                let form = this.forms.entity.createUpdate.data;
+
+                const validateForm = this.validateForm({functionName, form});
+
+                if(validateForm?.bool) {
+
+                    Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
+                    Alerts.swals({});
+
+                    const getSubscriptions = await Utils.getTrackingCustomers({customer: {id: form.customer.code}, period_type: form.periodType.code, options: form.options});
+
+                    if(Requests.valid({result: getSubscriptions})) {
+
+                        this.forms.entity.createUpdate.history.customers[form.customer.code] = getSubscriptions?.data?.tracking;
+
+                        // Options history
+                        this.forms.entity.createUpdate.history.customerCurrent   = this.forms.entity.createUpdate.data.customer;
+                        this.forms.entity.createUpdate.history.periodTypeCurrent = this.forms.entity.createUpdate.data.periodType;
+                        this.forms.entity.createUpdate.history.optionsCurrent    = this.forms.entity.createUpdate.data.options;
+
+                    }else {
+
+                        this.forms.entity.createUpdate.history.customers[form.customer.code] = {};
+
+                    }
+
+                    Alerts.swals({show: false});
 
                 }else {
 
-                    this.forms.entity.createUpdate.history.customers[this.forms.entity.createUpdate.data.customer?.code] = {};
+                    Alerts.generateAlert({messages: Utils.getErrors({errors: validateForm}), msgContent: `<div class="fw-semibold mb-2">${this.config.messages.errorSearchValidate}</div>`});
 
                 }
-
-                Alerts.swals({show: false});
 
             }
 
@@ -252,7 +322,7 @@ export default {
             switch(functionName) {
                 case "modalCreateUpdateEntity":
                 case "createUpdateEntity":
-                    this.forms.entity.createUpdate.data.customer = null;
+                    // this.forms.entity.createUpdate.data.customer = null;
                     break;
             }
 
@@ -275,6 +345,33 @@ export default {
             if(["createUpdateEntity"].includes(functionName)) {
 
                 //
+
+            }else if(["getTrackingCustomers"].includes(functionName)) {
+
+                result.customer    = [];
+                result.period_type = [];
+                result.options_information = [];
+
+                if(!this.isDefined({value: form?.customer?.code})) {
+
+                    result.customer.push(`Debe seleccionar un cliente.`);
+                    result.bool = false;
+
+                }
+
+                if(!this.isDefined({value: form?.periodType?.code})) {
+
+                    result.period_type.push(`Debe seleccionar un periodo.`);
+                    result.bool = false;
+
+                }
+
+                if((form?.options?.information ?? []).length === 0) {
+
+                    result.options_information.push(`Debe seleccionar al menos un tipo de información.`);
+                    result.bool = false;
+
+                }
 
             }
 
@@ -322,7 +419,7 @@ export default {
         },
         customerCurrent: function() {
 
-            return this.forms.entity.createUpdate.history?.customers[this.forms.entity.createUpdate.history.customerCurrent?.code];
+            return this.forms.entity.createUpdate.history?.customers[this.forms.entity.createUpdate.history.customerCurrent?.code] ?? {};
 
         },
         periodTypeCurrent: function() {
@@ -337,7 +434,7 @@ export default {
     watch: {
         "forms.entity.createUpdate.data.customer": function(newValue, oldValue) {
 
-            this.getTrackingCustomers();
+            //
 
         }
     }

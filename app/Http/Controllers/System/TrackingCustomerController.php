@@ -94,7 +94,7 @@ class TrackingCustomerController extends Controller {
 
         $userAuth = Auth::user();
 
-        return $trackingCustomer->get(["company_id" => $userAuth->company_id, "customer_id" => $id, "period_type" => $request->period_type]);
+        return $trackingCustomer->get(["company_id" => $userAuth->company_id, "customer_id" => $id, "period_type" => $request->period_type, "options" => $request->options]);
 
     }
 

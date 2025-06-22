@@ -60,6 +60,37 @@ class TrackingCustomerService {
 
     }
 
+    public function getInformation($customer, $range, $type) {
+
+        $records = [];
+
+        if(in_array($type, ["sales"])) {
+
+            $records = SaleHeader::where("holder_id", $customer->id)
+                                 ->whereBetween("created_at", [$range["from"], $range["to"]])
+                                 ->with(["serie.documentType", "serie.branch", "currency"])
+                                 ->get();
+
+        }else if(in_array($type, ["subscriptions"])) {
+
+            $records = Subscription::where("customer_id", $customer->id)
+                                   ->whereBetween("created_at", [$range["from"], $range["to"]])
+                                   ->with(["branch"])
+                                   ->get();
+
+        }else if(in_array($type, ["attendances"])) {
+
+            $records = Attendance::where("customer_id", $customer->id)
+                                 ->whereBetween("created_at", [$range["from"], $range["to"]])
+                                 ->with(["branch"])
+                                 ->get();
+
+        }
+
+        return $records;
+
+    }
+
     public function get(array $data) {
 
         $response = [
@@ -72,6 +103,7 @@ class TrackingCustomerService {
         $customerDocumentNumber = $data["customer_document_number"] ?? "";
         $customerAttendanceType = "";
         $periodType  = $data["period_type"] ?? "last_3_months";
+        $options = $data["options"] ?? [];
 
         if(in_array($customerAttendanceType, ["document_number"])) {
 
@@ -93,30 +125,21 @@ class TrackingCustomerService {
 
         $range = $this->getDateRangeFromCode($periodType);
 
-        $sales = SaleHeader::where("holder_id", $customer->id)
-                           ->whereBetween("created_at", [$range["from"], $range["to"]])
-                           ->with(["serie.documentType", "serie.branch", "currency"])
-                           ->get();
-
-        $subscriptions = Subscription::where("customer_id", $customer->id)
-                                     ->whereBetween("created_at", [$range["from"], $range["to"]])
-                                     ->with(["branch"])
-                                     ->get();
-
-        $attendances = Attendance::where("customer_id", $customer->id)
-                                 ->whereBetween("created_at", [$range["from"], $range["to"]])
-                                 ->with(["branch"])
-                                 ->get();
-
         $response["tracking"] = [
             "customer" => $customer,
-            "sales" => $sales,
-            "subscriptions" => $subscriptions,
-            "attendances" => $attendances,
             "extras" => [
-                "period_type" => $periodType
+                "period_type" => $periodType,
+                "options" => $options
             ]
         ];
+
+        $information = $options["information"] ?? [];
+
+        foreach($information as $opt) {
+
+            $response["tracking"][$opt] = $this->getInformation($customer, $range, $opt);
+
+        }
 
         $response["bool"] = true;
         $response["msg"]  = "Información encontrada";

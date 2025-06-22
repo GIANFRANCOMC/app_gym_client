@@ -183,7 +183,7 @@
                 <template v-else>
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
-                            <td :class="[{ 'bg-label-success': ['active'].includes(record.status), 'bg-label-primary': ['finalized'].includes(record.status), 'bg-label-danger': ['canceled'].includes(record.status) }]">
+                            <td :class="[{ 'bg-label-success': ['active'].includes(record.status), 'bg-label-primary': ['finalized'].includes(record.status), 'bg-label-danger': ['canceled'].includes(record.status), 'bg-label-warning': ['inactive'].includes(record.status) }]">
                                 <span class="d-block fw-bold small" v-text="record.formatted_status"></span>
                                 <InputSlot
                                     v-if="['active', 'finalized'].includes(record?.status)"

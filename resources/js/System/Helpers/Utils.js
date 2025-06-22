@@ -252,11 +252,11 @@ export function getSubscriptions({customer}) {
 
 }
 
-export function getTrackingCustomers({customer, period_type = null}) {
+export function getTrackingCustomers({customer, period_type = null, options = {}}) {
 
     let route = Requests.config({entity: "tracking_customers", type: "getTracking"});
 
-    return Requests.get({route: `${route}/${customer?.id}`, data: {period_type}});
+    return Requests.get({route: `${route}/${customer?.id}`, data: {period_type, options}});
 
 }
 

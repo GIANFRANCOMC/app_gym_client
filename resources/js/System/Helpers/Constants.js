@@ -9,7 +9,8 @@ export const generalConfig = {
     essential: Utils.getEssential(),
     messages: {
         withoutResults: "Sin registros",
-        errorValidate: "Error al validar, revisar el formulario."
+        errorValidate: "Error al validar, revisar el formulario.",
+        errorSearchValidate: "Para realizar la búsqueda, complete los siguientes campos:"
     },
     forms: {
         classes: {
