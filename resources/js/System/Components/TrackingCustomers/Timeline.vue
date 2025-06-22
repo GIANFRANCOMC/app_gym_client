@@ -231,7 +231,7 @@ export default {
             let statistics = [
                 {label: "Cantidad", value: count, type: "number"},
                 {label: "Total", value: total, currency, type: "currency"},
-                {label: "Sede más frecuente", value: this.getMostFrequentSerie(data)?.branch?.name, type: "value"}
+                {label: "Sede más frecuente", value: this.getMostFrequentSerie(data)?.branch?.name ?? "-", type: "value"}
             ];
 
             for(let sta of statistics) {
