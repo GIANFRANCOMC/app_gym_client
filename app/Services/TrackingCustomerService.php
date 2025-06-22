@@ -127,6 +127,7 @@ class TrackingCustomerService {
 
         $response["tracking"] = [
             "customer" => $customer,
+            "functions" => [],
             "extras" => [
                 "period_type" => $periodType,
                 "options" => $options
@@ -138,6 +139,12 @@ class TrackingCustomerService {
         foreach($information as $opt) {
 
             $response["tracking"][$opt] = $this->getInformation($customer, $range, $opt);
+
+            if(in_array($opt, ["sales", "subscriptions", "attendances"])) {
+
+                $response["tracking"]["functions"]["subscription_end_dates"] = $customer->subscriptionEndDates();
+
+            }
 
         }
 

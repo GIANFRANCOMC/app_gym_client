@@ -6,7 +6,7 @@
         <InputSlot
             hasDiv
             :isInputGroup="false"
-            :divInputClass="['d-flex flex-wrap justify-content-center align-items-end gap-2 gap-md-3']"
+            :divInputClass="['d-flex flex-wrap justify-content-center align-items-end gap-2 gap-md-3 mb-2']"
             xl="12"
             lg="12">
             <template v-slot:input>
@@ -33,15 +33,38 @@
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 ps-1 ps-md-3 pe-0 pe-md-3" v-if="isDefined({value: customerCurrent?.customer})">
             <Timeline :data="customerCurrent ?? {}">
                 <template v-slot:statisticsPrepend>
-                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                        <div class="d-flex justify-content-start align-items-center h-100 text-end">
+                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                        <div class="d-flex justify-content-start align-items-center h-100 text-start">
                             <div class="w-100">
-                                <span class="fs-4 fw-bold d-block" v-text="customerCurrent?.customer?.name ?? ''"></span>
+                                <div>
+                                    👤 <span class="fs-4 fw-bold" v-text="customerCurrent?.customer?.name ?? ''"></span>
+                                </div>
                                 <div>
                                     <span v-text="customerCurrent?.customer?.identity_document_type?.name ?? ''" class="fw-bold colon-at-end"></span>
                                     <span class="fw-bold ms-1" v-text="customerCurrent?.customer?.document_number ?? ''"></span>
                                 </div>
                                 <span v-text="'Periodo: '+periodTypeCurrent" class="text-primary fw-semibold"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                        <div class="d-flex justify-content-start align-items-center h-100 text-start">
+                            <div class="w-100" v-if="(customerCurrent?.extras?.options?.information ?? []).some(e => ['sales', 'subscriptions', 'attendances'].includes(e))">
+                                <span class="fw-bold colon-at-end">📅 Membresía vigente hasta</span>
+                                <template v-if="(customerCurrent?.functions?.subscription_end_dates ?? []).length > 0">
+                                    <ul>
+                                        <li v-for="(record, indexRecord) in (customerCurrent?.functions?.subscription_end_dates ?? [])" :key="indexRecord">
+                                            <span v-text="record?.branch?.name" class="colon-at-end fw-bold"></span>
+                                            <span v-text="legibleFormatDate({dateString: record?.max_end_date})" class="ms-2"></span>
+                                        </li>
+                                    </ul>
+                                </template>
+                                <template v-else>
+                                    <div class="alert alert-warning py-0 text-center">
+                                        <i class="fa fa-warning"></i>
+                                        <span class="ms-2">Sin membresías.</span>
+                                    </div>
+                                </template>
                             </div>
                         </div>
                     </div>

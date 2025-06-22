@@ -3,8 +3,10 @@
 namespace App\Models\System;
 
 use App\Helpers\System\Utilities;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class Customer extends Model {
 
@@ -48,6 +50,45 @@ class Customer extends Model {
         ];
 
         return Utilities::getValues($statuses, $type, $code);
+
+    }
+
+    public function subscriptionEndDates(): array {
+
+        $today = Carbon::now();
+
+        // Currently active subscription per branch (today within range)
+        $currentSubscriptions = Subscription::where("customer_id", $this->id)
+                                            ->where("status", "active")
+                                            ->where("start_date", "<=", $today)
+                                            ->where("end_date", ">=", $today)
+                                            ->select("branch_id", DB::raw("MAX(end_date) as max_end_date"))
+                                            ->groupBy("branch_id")
+                                            ->pluck("max_end_date", "branch_id");
+
+        $branchesCurrent = [];
+
+        foreach($currentSubscriptions as $branchId => $maxEndDate) {
+
+            $branch = Branch::where("id", $branchId)
+                            ->first();
+
+            if(Utilities::isDefined($branch)) {
+
+                $branchesCurrent[] = [
+                    "branch" => [
+                        "id" => $branch->id,
+                        "name" => $branch->name,
+                        "address" => $branch->address
+                    ],
+                    "max_end_date" => $maxEndDate
+                ];
+
+            }
+
+        }
+
+        return $branchesCurrent;
 
     }
 
