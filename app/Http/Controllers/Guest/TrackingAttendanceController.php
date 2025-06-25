@@ -84,12 +84,6 @@ class TrackingAttendanceController extends Controller {
 
     }
 
-    public function cancel(CancelTrackingAttendanceRequest $request, $id) {
-
-        //
-
-    }
-
     public function destroy(Attendance $attendance) {
 
         //

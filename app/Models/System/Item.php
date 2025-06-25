@@ -146,7 +146,7 @@ class Item extends Model {
 
     }
 
-    public function categories() {
+    public function categoryItems() {
 
         return $this->hasMany(CategoryItem::class, "item_id", "id")
                     ->whereIn("status", ["active"]);

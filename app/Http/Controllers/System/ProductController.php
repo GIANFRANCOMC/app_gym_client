@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\Products\{StoreProductRequest, UpdateProductRequest};
-use App\Models\System\{Branch, Currency, Item, WarehouseItem};
+use App\Models\System\{Branch, Category, CategoryItem, Currency, Item, WarehouseItem};
 
 class ProductController extends Controller {
 
@@ -25,6 +25,9 @@ class ProductController extends Controller {
 
             $config->products = new stdClass();
             $config->products->statuses = Item::getStatuses();
+
+            $config->categories = new stdClass();
+            $config->categories->records = Category::getAll("product");
 
             $config->currencies = new stdClass();
             $config->currencies->records = Currency::get();
@@ -71,7 +74,7 @@ class ProductController extends Controller {
                     ->where("company_id", $userAuth->company_id)
                     ->whereIn("type", ["product"])
                     ->orderBy("name", "ASC")
-                    ->with(["currency"])
+                    ->with(["currency", "categoryItems"])
                     ->paginate($request->per_page ?? Utilities::$per_page_default);
 
         return $list;
@@ -201,6 +204,30 @@ class ProductController extends Controller {
                 $item->updated_at    = now();
                 $item->updated_by    = $userAuth->id ?? null;
                 $item->save();
+
+                CategoryItem::where("item_id", $item->id)
+                            ->where("status", "active")
+                            ->update([
+                                "status"     => "inactive",
+                                "updated_at" => now(),
+                                "updated_by" => $userAuth->id ?? null
+                            ]);
+
+                foreach($request->categories as $category) {
+
+                    CategoryItem::updateOrInsert(
+                        [
+                            "category_id" => $category["category_id"],
+                            "item_id"     => $item->id
+                        ],
+                        [
+                            "status"      => "active",
+                            "updated_at"  => now(),
+                            "updated_by"  => $userAuth->id ?? null
+                        ]
+                    );
+
+                }
 
             });
 
