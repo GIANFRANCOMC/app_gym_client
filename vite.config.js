@@ -35,6 +35,7 @@ export default defineConfig({
                 'resources/js/System/Pages/tracking_attendances/main.js',
                 'resources/js/System/Pages/tracking_notifications/main.js',
                 'resources/js/System/Pages/users/main.js',
+                'resources/js/System/Pages/categories/main.js',
 
 
                 'resources/js/System/Helpers/Alerts.js',

@@ -146,6 +146,13 @@ class Item extends Model {
 
     }
 
+    public function categories() {
+
+        return $this->hasMany(CategoryItem::class, "item_id", "id")
+                    ->whereIn("status", ["active"]);
+
+    }
+
     public function salesBody() {
 
         return $this->hasMany(SaleBody::class, "item_id", "id")

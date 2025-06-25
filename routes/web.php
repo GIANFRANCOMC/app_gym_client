@@ -62,6 +62,7 @@ Route::middleware(["web"])
             Route::prefix('/branches')->group($systemRoute.'/Branch.php');
             Route::prefix('/sales')->group($systemRoute.'/Sale.php');
             Route::prefix('/users')->group($systemRoute.'/User.php');
+            Route::prefix('/categories')->group($systemRoute.'/Category.php');
 
             Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
                  ->name('logout');

@@ -222,9 +222,9 @@ return new class extends Migration {
             ["id" => 2, "section_id" => 2, "slug" => "sbc_sales-list", "name" => "sales-list", "order" => 1, "dom_id" => "menu-item-sales-list", "dom_label" => "Listado", "dom_route" => "sales.index"],
             ["id" => 3, "section_id" => 2, "slug" => "sbc_sales-main", "name" => "sales-main", "order" => 2, "dom_id" => "menu-item-sales-create", "dom_label" => "Nuevo", "dom_route" => "sales.create"],
             ["id" => 4, "section_id" => 3, "slug" => "sbc_trackings-subscriptions", "name" => "trackings-subscriptions", "order" => 2, "dom_id" => "menu-item-trackings-subscriptions", "dom_label" => "Membresías", "dom_route" => "tracking_subscriptions.index"],
-            ["id" => 5, "section_id" => 4, "slug" => "sbc_items-products", "name" => "items-products", "order" => 1, "dom_id" => "menu-item-catalogs-products", "dom_label" => "Productos", "dom_route" => "products.index"],
-            ["id" => 6, "section_id" => 4, "slug" => "sbc_items-services", "name" => "items-services", "order" => 2, "dom_id" => "menu-item-catalogs-services", "dom_label" => "Servicios", "dom_route" => "services.index"],
-            ["id" => 7, "section_id" => 4, "slug" => "sbc_items-subscriptions", "name" => "items-subscriptions", "order" => 3, "dom_id" => "menu-item-catalogs-subscriptions", "dom_label" => "Membresías", "dom_route" => "subscriptions.index"],
+            ["id" => 5, "section_id" => 4, "slug" => "sbc_items-products", "name" => "items-products", "order" => 2, "dom_id" => "menu-item-catalogs-products", "dom_label" => "Productos", "dom_route" => "products.index"],
+            ["id" => 6, "section_id" => 4, "slug" => "sbc_items-services", "name" => "items-services", "order" => 3, "dom_id" => "menu-item-catalogs-services", "dom_label" => "Servicios", "dom_route" => "services.index"],
+            ["id" => 7, "section_id" => 4, "slug" => "sbc_items-subscriptions", "name" => "items-subscriptions", "order" => 4, "dom_id" => "menu-item-catalogs-subscriptions", "dom_label" => "Membresías", "dom_route" => "subscriptions.index"],
             ["id" => 8, "section_id" => 5, "slug" => "sbc_inventories-stocks_management", "name" => "inventories-stocks_management", "order" => 1, "dom_id" => "menu-item-inventories-stocks_management", "dom_label" => "Gestión de stock", "dom_route" => "stocks_management.index"],
             ["id" => 9, "section_id" => 6, "slug" => "sbc_infrastructure-assets", "name" => "infrastructure-assets", "order" => 1, "dom_id" => "menu-item-infrastructure-assets", "dom_label" => "Activos", "dom_route" => "assets.index"],
             ["id" => 10, "section_id" => 6, "slug" => "sbc_infrastructure-assets_management", "name" => "infrastructure-assets_management", "order" => 2, "dom_id" => "menu-item-infrastructure-assets_management", "dom_label" => "Gestión de activos", "dom_route" => "assets_management.index"],
@@ -238,6 +238,7 @@ return new class extends Migration {
             ["id" => 18, "section_id" => 10, "slug" => "sbc_customer_care-book_complaints", "name" => "customer_care-book_complaints", "order" => 1, "dom_id" => "menu-item-customer_care-book_complaints", "dom_label" => "Libro de reclamaciones y sugerencias", "dom_route" => "book_complaints.index"],
             ["id" => 19, "section_id" => 11, "slug" => "sbc_dashboard-main", "name" => "dashboard-main", "order" => 1, "dom_id" => "menu-item-dashboard", "dom_label" => "Dashboard", "dom_route" => "dashboard.index"],
             ["id" => 20, "section_id" => 3, "slug" => "sbc_trackings-customers", "name" => "trackings-customers", "order" => 1, "dom_id" => "menu-item-trackings-customers", "dom_label" => "Expediente", "dom_route" => "tracking_customers.index"],
+            ["id" => 21, "section_id" => 4, "slug" => "sbc_items-categories", "name" => "items-categories", "order" => 1, "dom_id" => "menu-item-catalogs-categories", "dom_label" => "Categorías", "dom_route" => "categories.index"],
         ]);
 
         DB::table("companies_sub_sections")->insert([
@@ -261,6 +262,7 @@ return new class extends Migration {
             ["company_id" => 1, "sub_section_id" => 18],
             ["company_id" => 1, "sub_section_id" => 19],
             ["company_id" => 1, "sub_section_id" => 20],
+            ["company_id" => 1, "sub_section_id" => 21],
         ]);
 
         DB::table("roles")->insert([
