@@ -75,7 +75,10 @@
                                 <span v-text="separatorNumber(record.price)" class="ms-2"></span>
                             </td>
                             <td>
-                                <i :class="['fa fa-globe', record.see_my_web ? 'text-success' : 'text-light']" data-bs-toggle="tooltip" data-bs-placement="top" :title="[record.see_my_web ? 'Visible en mi página' : 'No visible en mi página']"></i>
+                                <div class="d-flex justify-content-center align-items-center gap-3 border border-light rounded px-2 py-1">
+                                    <i :class="['fa fa-globe cursor-pointer', record.see_my_web ? 'text-success' : 'text-light']" data-bs-toggle="tooltip" data-bs-placement="top" :title="[record.see_my_web ? 'Visible en mi página' : 'No visible en mi página']"></i>
+                                    <i v-if="record.see_my_web && record.see_my_web_price" :class="['fa-solid fa-dollar-sign cursor-pointer', record.see_my_web_price ? 'text-success' : 'text-light']" data-bs-toggle="tooltip" data-bs-placement="top" :title="[record.see_my_web_price ? 'Precio visible' : 'Precio no visible']"></i>
+                                </div>
                             </td>
                             <td>
                                 <span :class="['badge', 'fw-semibold', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
@@ -243,6 +246,10 @@
                                     <input class="form-check-input" type="checkbox" v-model="forms.entity.createUpdate.data.see_my_web"/>
                                     <span class="ms-2">Visualizar en mi página</span>
                                 </label>
+                                <label class="form-check-label" v-if="forms.entity.createUpdate.data.see_my_web">
+                                    <input class="form-check-input" type="checkbox" v-model="forms.entity.createUpdate.data.see_my_web_price"/>
+                                    <span class="ms-2">Visualizar precio</span>
+                                </label>
                             </template>
                         </InputSlot>
                     </div>
@@ -328,6 +335,7 @@ export default {
                             currency: null,
                             categories: [],
                             see_my_web: false,
+                            see_my_web_price: false,
                             status: null
                         },
                         errors: {}
@@ -424,6 +432,7 @@ export default {
                 this.forms.entity.createUpdate.data.currency      = currency;
                 this.forms.entity.createUpdate.data.categories    = categories;
                 this.forms.entity.createUpdate.data.see_my_web    = Boolean(record?.see_my_web ?? false);
+                this.forms.entity.createUpdate.data.see_my_web_price = Boolean(record?.see_my_web_price ?? false);
                 this.forms.entity.createUpdate.data.status        = status;
 
             }else {
@@ -510,6 +519,7 @@ export default {
                     this.forms.entity.createUpdate.data.currency      = null;
                     this.forms.entity.createUpdate.data.categories    = [];
                     this.forms.entity.createUpdate.data.see_my_web    = false;
+                    this.forms.entity.createUpdate.data.see_my_web_price = false;
                     this.forms.entity.createUpdate.data.status        = null;
                     break;
             }
