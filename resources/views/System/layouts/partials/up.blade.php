@@ -6,7 +6,7 @@
     $ownerApp = config("app.owner_app");
 @endphp
 
-<title>{{ config('app.name') }} by {{ $ownerApp->commercial_name }}</title>
+<title>{{ $ownerApp->commercial_name }}</title>
 
 <!-- Favicon -->
 <link rel="icon" type="image/x-icon" href="{{ asset($ownerApp->assets->img->logomark) }}"/>

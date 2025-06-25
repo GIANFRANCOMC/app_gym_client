@@ -9,20 +9,21 @@
     data-template="vertical-menu-template-starter">
     <head>
         @include("System.layouts.partials.up")
-
-        <!-- Page -->
-        <link rel="stylesheet" href="{{ asset('System/assets/vendor/css/pages/page-auth.css') }}" />
     </head>
+    <style>
+        body {
+            background-color: #f8f6fb;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23e0dce4' fill-opacity='0.18' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+    </style>
     <body>
-        <div class="authentication-wrapper authentication-cover">
-            <div class="authentication-inner row m-0">
-                <div class="d-none d-lg-flex col-lg-8 p-0">
-                    <div class="auth-cover-bg auth-cover-bg-color d-flex justify-content-center align-items-center">
-                        <img src="{{ asset('System/assets/img/utils/login/2.png') }}" alt="Background" class="img-fluid" width="70%">
-                    </div>
+        <div class="container-fluid vh-100 d-flex align-items-center justify-content-center">
+            <div class="row w-100 shadow-lg rounded overflow-hidden" style="max-width: 960px;">
+                <div class="col-lg-6 d-none d-lg-flex bg-light align-items-center justify-content-center">
+                    <img src="{{ asset('System/assets/img/utils/login/2.png') }}" alt="Fondo" class="img-fluid" style="max-height: 400px;">
                 </div>
-                <div class="d-flex col-12 col-lg-4 align-items-center authentication-bg p-sm-12 p-6 bg-white">
-                    <div class="w-px-400 mx-auto mt-12 pt-5 mb-3">
+                <div class="col-12 col-lg-6 bg-white px-3 px-md-5 py-4 py-md-5">
+                    <div class="border-0">
                         {{ $slot }}
                     </div>
                 </div>

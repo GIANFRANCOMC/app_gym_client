@@ -43,16 +43,6 @@
         .text-white-custom {
             color: #f4f4f4 !important;
         }
-
-        @keyframes keyframes-pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.03); }
-            100% { transform: scale(1); }
-        }
-
-        .animation-pulse {
-            animation: keyframes-pulse 2s ease-in-out infinite;
-        }
     </style>
     <body class="bg-down-color-secondary">
         @if($withMenu ?? true)
