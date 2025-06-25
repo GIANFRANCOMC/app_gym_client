@@ -130,6 +130,22 @@ class SubscriptionController extends Controller {
             $item->created_by     = $userAuth->id ?? null;
             $item->save();
 
+            foreach($request->categories as $category) {
+
+                CategoryItem::updateOrInsert(
+                    [
+                        "category_id" => $category["category_id"],
+                        "item_id"     => $item->id
+                    ],
+                    [
+                        "status"      => "active",
+                        "updated_at"  => now(),
+                        "updated_by"  => $userAuth->id ?? null
+                    ]
+                );
+
+            }
+
         });
 
         $bool = Utilities::isDefined($item);
