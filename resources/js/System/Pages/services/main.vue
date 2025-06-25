@@ -202,6 +202,22 @@
                         </InputSlot>
                         <InputSlot
                             hasDiv
+                            title="Categorías"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.categories"
+                            xl="12"
+                            lg="12">
+                            <template v-slot:input>
+                                <v-select
+                                    v-model="forms.entity.createUpdate.data.categories"
+                                    :options="categories"
+                                    :clearable="true"
+                                    :searchable="true"
+                                    :multiple="true"/>
+                            </template>
+                        </InputSlot>
+                        <InputSlot
+                            hasDiv
                             title="Estado"
                             isRequired
                             hasTextBottom
@@ -310,6 +326,7 @@ export default {
                             min_price: "",
                             max_price: "",
                             currency: null,
+                            categories: [],
                             see_my_web: false,
                             status: null
                         },
@@ -339,6 +356,7 @@ export default {
 
             let initParams = await Requests.get({route: this.config.entity.routes.initParams, data: {page: "main"}, showAlert: true});
 
+            this.options.categories = initParams.data?.config?.categories;
             this.options.currencies = initParams.data?.config?.currencies;
             this.options.services   = initParams.data?.config?.services;
 
@@ -390,8 +408,11 @@ export default {
 
             if(this.isDefined({value: record})) {
 
-                let currency = this.currencies.filter(e => e.code === record?.currency_id)[0],
-                    status   = this.statuses.filter(e => e.code === record?.status)[0];
+                const categoryItems = (record?.category_items ?? []).map(e => e?.category_id);
+
+                let categories = this.categories.filter(e => categoryItems.includes(e.code)),
+                    currency   = this.currencies.filter(e => e.code === record?.currency_id)[0],
+                    status     = this.statuses.filter(e => e.code === record?.status)[0];
 
                 this.forms.entity.createUpdate.data.id            = record?.id;
                 this.forms.entity.createUpdate.data.internal_code = record?.internal_code;
@@ -401,6 +422,7 @@ export default {
                 this.forms.entity.createUpdate.data.min_price     = record?.min_price ?? "";
                 this.forms.entity.createUpdate.data.max_price     = record?.max_price ?? "";
                 this.forms.entity.createUpdate.data.currency      = currency;
+                this.forms.entity.createUpdate.data.categories    = categories;
                 this.forms.entity.createUpdate.data.see_my_web    = Boolean(record?.see_my_web ?? false);
                 this.forms.entity.createUpdate.data.status        = status;
 
@@ -433,6 +455,15 @@ export default {
                 form.status = form?.status?.code;
 
                 delete form.currency;
+
+                form.categories.forEach(category => {
+
+                    category.category_id = category.code;
+
+                    delete category.code;
+                    delete category.label;
+
+                });
 
                 let createUpdate = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: form.id}) :
                                                                              Requests.post({route: this.config.entity.routes.store, data: form}));
@@ -477,6 +508,7 @@ export default {
                     this.forms.entity.createUpdate.data.min_price     = "";
                     this.forms.entity.createUpdate.data.max_price     = "";
                     this.forms.entity.createUpdate.data.currency      = null;
+                    this.forms.entity.createUpdate.data.categories    = [];
                     this.forms.entity.createUpdate.data.see_my_web    = false;
                     this.forms.entity.createUpdate.data.status        = null;
                     break;
@@ -507,6 +539,7 @@ export default {
                 result.min_price     = [];
                 result.max_price     = [];
                 result.currency      = [];
+                result.categories    = [];
                 result.status        = [];
 
                 if(!this.isDefined({value: form?.internal_code})) {
@@ -618,6 +651,11 @@ export default {
                 {code: "description", label: "Descripción"},
                 {code: "price", label: "Precio de venta"}
             ];
+
+        },
+        categories: function() {
+
+            return this.options?.categories?.records.map(e => ({code: e.id, label: e.name}));
 
         },
         currencies: function() {
