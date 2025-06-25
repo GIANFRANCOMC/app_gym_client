@@ -54,7 +54,7 @@ class Category extends Model {
         $userAuth = Auth::user();
 
         return Category::where("company_id", $userAuth->company_id)
-                       ->when(in_array($type, ["product", "service"]), function($query) {
+                       ->when(in_array($type, ["product", "service", "subscription"]), function($query) {
 
                             $query->whereIn("status", ["active"])
                                   ->orderBy("name", "ASC");

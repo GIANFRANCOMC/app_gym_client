@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\Subscriptions\{StoreSubscriptionRequest, UpdateSubscriptionRequest};
-use App\Models\System\{Currency, Item};
+use App\Models\System\{Category, CategoryItem, Currency, Item};
 
 class SubscriptionController extends Controller {
 
@@ -26,6 +26,9 @@ class SubscriptionController extends Controller {
             $config->subscriptions = new stdClass();
             $config->subscriptions->durationTypes = Item::getDurationTypes();
             $config->subscriptions->statuses      = Item::getStatuses();
+
+            $config->categories = new stdClass();
+            $config->categories->records = Category::getAll("subscription");
 
             $config->currencies = new stdClass();
             $config->currencies->records = Currency::get();
@@ -72,7 +75,7 @@ class SubscriptionController extends Controller {
                     ->where("company_id", $userAuth->company_id)
                     ->whereIn("type", ["subscription"])
                     ->orderBy("name", "ASC")
-                    ->with(["currency"])
+                    ->with(["currency", "categoryItems"])
                     ->paginate($request->per_page ?? Utilities::$per_page_default);
 
         return $list;
@@ -186,6 +189,30 @@ class SubscriptionController extends Controller {
                 $item->updated_at     = now();
                 $item->updated_by     = $userAuth->id ?? null;
                 $item->save();
+
+                CategoryItem::where("item_id", $item->id)
+                            ->where("status", "active")
+                            ->update([
+                                "status"     => "inactive",
+                                "updated_at" => now(),
+                                "updated_by" => $userAuth->id ?? null
+                            ]);
+
+                foreach($request->categories as $category) {
+
+                    CategoryItem::updateOrInsert(
+                        [
+                            "category_id" => $category["category_id"],
+                            "item_id"     => $item->id
+                        ],
+                        [
+                            "status"      => "active",
+                            "updated_at"  => now(),
+                            "updated_by"  => $userAuth->id ?? null
+                        ]
+                    );
+
+                }
 
             });
 
