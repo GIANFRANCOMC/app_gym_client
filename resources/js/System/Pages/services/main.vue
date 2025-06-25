@@ -246,11 +246,11 @@
                                     <input class="form-check-input" type="checkbox" v-model="forms.entity.createUpdate.data.see_my_web"/>
                                     <span class="ms-2">Visualizar en mi página</span>
                                 </label>
+                                <label class="form-check-label" v-if="forms.entity.createUpdate.data.see_my_web">
+                                    <input class="form-check-input" type="checkbox" v-model="forms.entity.createUpdate.data.see_my_web_price"/>
+                                    <span class="ms-2">Visualizar precio</span>
+                                </label>
                             </template>
-                            <label class="form-check-label" v-if="forms.entity.createUpdate.data.see_my_web">
-                                <input class="form-check-input" type="checkbox" v-model="forms.entity.createUpdate.data.see_my_web_price"/>
-                                <span class="ms-2">Visualizar precio</span>
-                            </label>
                         </InputSlot>
                     </div>
                 </div>
