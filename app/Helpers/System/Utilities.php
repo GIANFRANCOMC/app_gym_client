@@ -34,6 +34,10 @@ class Utilities {
                 "secondary" => "#1A1A35",
                 "text_by_primary" => "#FFFFFF"
             ],
+            "support" => [
+                "email" => "gianfranco_29_01@hotmail.com",
+                "phone" => "+51 987 057 624"
+            ],
             "assets" => [
                 "img" => [
                     "combination_mark" => "System/assets/img/utils/owner_app/combination_mark.png",
