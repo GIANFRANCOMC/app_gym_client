@@ -125,7 +125,7 @@ class SubscriptionController extends Controller {
             $item->duration_type  = $request->duration_type;
             $item->duration_value = $request->duration_value;
             $item->see_my_web     = $request->see_my_web ?? false;
-            $item->see_my_web_price = $request->see_my_web_price ?? false;
+            $item->see_my_web_price = $item->see_my_web ? ($request->see_my_web_price ?? false) : false;
             $item->status         = $request->status;
             $item->created_at     = now();
             $item->created_by     = $userAuth->id ?? null;
@@ -202,7 +202,7 @@ class SubscriptionController extends Controller {
                 $item->duration_type  = $request->duration_type;
                 $item->duration_value = $request->duration_value;
                 $item->see_my_web     = $request->see_my_web ?? false;
-                $item->see_my_web_price = $request->see_my_web_price ?? false;
+                $item->see_my_web_price = $item->see_my_web ? ($request->see_my_web_price ?? false) : false;
                 $item->status         = $request->status;
                 $item->updated_at     = now();
                 $item->updated_by     = $userAuth->id ?? null;
