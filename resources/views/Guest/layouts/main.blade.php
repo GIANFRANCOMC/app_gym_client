@@ -15,68 +15,80 @@
             window.withMenu = {{ json_encode($withMenu ?? true) }};
         </script>
     </head>
-    <body style="background-color: #f8f7fa;">
+    <style>
+        .bg-down-color-primary {
+            background-color: #212121 !important;
+        }
+
+        .bg-down-color-secondary {
+            background-color: #2c2c2c !important;
+        }
+
+        .bg-primary-custom {
+            background-color: #ba60d7 !important;
+        }
+
+        .text-primary-custom {
+            color: #ba60d7 !important;
+        }
+
+        .a-primary-custom {
+            transition: color 0.3s ease-in-out;;
+        }
+
+        .a-primary-custom:hover {
+            color: #ba60d7 !important;
+        }
+
+        .text-white-custom {
+            color: #f4f4f4 !important;
+        }
+
+        @keyframes keyframes-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        .animation-pulse {
+            animation: keyframes-pulse 2s ease-in-out infinite;
+        }
+    </style>
+    <body class="bg-down-color-secondary">
         @if($withMenu ?? true)
             <nav class="layout-navbar shadow-none py-0">
                 <div class="container">
-                    <div class="navbar navbar-expand-lg landing-navbar px-3 px-md-4 bg-white mt-3 shadow-sm">
-                        <div class="navbar-brand app-brand demo d-flex py-0 py-lg-2 me-4">
-                            <button class="navbar-toggler border-0 px-0 me-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <div class="navbar navbar-expand-lg px-3 px-md-4 py-2 py-md-3 mt-3 shadow-sm bg-down-color-primary">
+                        <div class="navbar-brand app-brand">
+                            <button class="navbar-toggler text-white-custom me-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
                                 <i class="ti ti-menu-2 ti-sm align-middle"></i>
                             </button>
                             <a href="javascript:void(0)" class="app-brand-link">
                                 <span class="app-brand-logo demo">
                                     <img src="{{ asset('storage/'.$company->logotype) }}" class="img-fluid w-100"/>
                                 </span>
-                                <span class="app-brand-text demo menu-text ms-2 ps-1 fw-semibold text-dark">{{ $company->commercial_name }}</span>
                             </a>
                         </div>
-                        <div class="collapse navbar-collapse landing-nav-menu" id="navbarSupportedContent">
-                            <button class="navbar-toggler border-0 text-heading position-absolute end-0 top-0 scaleX-n1-rtl" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                                <i class="ti ti-x ti-sm"></i>
+                        <div class="collapse navbar-collapse landing-nav-menu" id="navbarMenu">
+                            <button class="navbar-toggler border-0 position-absolute end-0 top-0 text-white-custom" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                                <i class="fa fa-times fs-3"></i>
                             </button>
-                            <ul class="navbar-nav me-auto">
+                            <ul class="navbar-nav me-auto d-flex gap-4 ms-3">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="home">
-                                        <i class="fa fa-home"></i>
-                                        <span class="ms-1">Inicio</span>
+                                    <a class="fw-semibold fs-5 text-white-custom a-primary-custom" href="home">
+                                        <span class="text-uppercase">Inicio</span>
                                     </a>
                                 </li>
-                                <li class="nav-item mega-dropdown ms-1">
-                                    <a href="javascript:void(0);" class="nav-link dropdown-toggle navbar-ex-14-mega-dropdown mega-dropdown" aria-expanded="false" data-bs-toggle="mega-dropdown" data-trigger="hover">
-                                        <i class="fa fa-headset"></i>
-                                        <span class="ms-1">Servicio al cliente</span>
+                                <li class="nav-item">
+                                    <a class="fw-semibold fs-5 text-white-custom a-primary-custom" href="book_complaints">
+                                        <span class="text-uppercase">Libro de reclamaciones y sugerencias</span>
                                     </a>
-                                    <div class="dropdown-menu p-4 p-xl-8">
-                                        <div class="row gy-4">
-                                            <div class="col-12 col-lg">
-                                                <ul class="nav flex-column">
-                                                    <li class="nav-item">
-                                                        <a class="nav-link mega-dropdown-link" href="book_complaints">
-                                                            <span>Libro de reclamaciones y sugerencias</span>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-lg-4 d-none d-lg-block">
-                                                <div class="bg-body nav-img-col p-2">
-                                                    <img src="{{ asset('storage/'.$company->logotype) }}" alt="Logo" class="w-100">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </li>
                             </ul>
                             <ul class="navbar-nav flex-row align-items-center ms-auto">
-                                {{-- <li>
-                                    <a href="https://{{ request()->getHost() }}?company={{ base64_encode($company->id) }}" class="btn btn-info-1 btn-sm rounded-pill shadow-sm waves-effect waves-light">
-                                        <i class="fa fa-globe"></i>
-                                        <span class="ms-2">Ingresar a mi plataforma</span>
-                                    </a>
-                                </li> --}}
+                                {{--  --}}
                             </ul>
                         </div>
-                        <div class="landing-menu-overlay d-lg-none"></div>
                     </div>
                 </div>
             </nav>

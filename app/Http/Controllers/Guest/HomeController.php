@@ -37,6 +37,19 @@ class HomeController extends Controller {
             $config->items = new stdClass();
             $config->items->records = Item::getAll("home", $company);
 
+            foreach($config->items->records as $record) {
+
+                if(!($record->see_my_web_price && $record->see_my_web_price)) {
+
+                    unset($record->price);
+                    unset($record->min_price);
+                    unset($record->max_price);
+                    unset($record->currency);
+
+                }
+
+            }
+
             $config->company = new stdClass();
             $config->company->records = [$company];
 

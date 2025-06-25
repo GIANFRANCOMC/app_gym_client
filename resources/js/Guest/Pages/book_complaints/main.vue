@@ -1,12 +1,9 @@
 <template>
     <div class="container flex-grow-1 container-p-y mt-5">
-        <div class="text-end mt-1 mt-md-2 mb-2 py-4">
-            <span class="badge bg-label-primary">Libro de reclamaciones y sugerencias</span>
-        </div>
-        <h4 class="text-center mb-1">
+        <h4 class="text-center text-primary-custom mb-1 mt-5">
             <span class="position-relative fw-extrabold z-1">Registra tu queja, reclamo o sugerencia</span>
         </h4>
-        <div class="text-center text-muted pb-2 mb-3">
+        <div class="text-center text-white-custom pb-2 mb-3">
             <span class="d-block fw-regular">Cuéntanos lo ocurrido o propon ideas para mejorar nuestro servicio.</span>
             <div class="d-block fw-regular">Todos los campos con <span class="text-danger">*</span> son obligatorios. </div>
         </div>
