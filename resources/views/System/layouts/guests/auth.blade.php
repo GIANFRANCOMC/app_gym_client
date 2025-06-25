@@ -25,7 +25,7 @@
         <div class="container-fluid min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
             <div class="row w-100 shadow-lg rounded overflow-hidden" style="max-width: 960px;">
                 <div class="col-lg-6 d-none d-lg-flex bg-light align-items-center justify-content-center p-3">
-                    <img src="{{ asset('System/assets/img/utils/login/2.png') }}" alt="Fondo" class="img-fluid" style="max-height: 400px;">
+                    <img src="{{ asset($ownerApp->assets->img->login_image) }}" class="img-fluid" style="max-height: 400px;">
                 </div>
                 <div class="col-12 col-lg-6 bg-white px-3 px-md-5 py-4 py-md-5">
                     <div class="border-0">

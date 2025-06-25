@@ -40,10 +40,10 @@ class Utilities {
             ],
             "assets" => [
                 "img" => [
-                    "combination_mark" => "System/assets/img/utils/owner_app/combination_mark.png",
                     "logotype" => "System/assets/img/utils/owner_app/logotype.png",
+                    "combinationmark" => "System/assets/img/utils/owner_app/combinationmark.png",
                     "logomark" => "System/assets/img/utils/owner_app/logomark.png",
-                    "contact_us" => "System/assets/img/utils/owner_app/contact_us/default.png"
+                    "login_image" => "System/assets/img/utils/owner_app/login_image.png"
                 ]
             ]
         ];

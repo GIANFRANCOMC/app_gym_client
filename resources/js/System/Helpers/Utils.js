@@ -423,3 +423,20 @@ export function decodeBase64UTF8(base64) {
     return text;
 
 }
+
+
+export function isValidUrl({url}) {
+
+    try {
+
+        new URL(url);
+
+        return true;
+
+    }catch (e) {
+
+        return false;
+
+    }
+
+}

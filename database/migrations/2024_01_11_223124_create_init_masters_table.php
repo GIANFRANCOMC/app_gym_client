@@ -15,6 +15,7 @@ return new class extends Migration {
         // Masters
         Schema::create("identity_document_types", function(Blueprint $table) {
             $table->id();
+            $table->string("code");
             $table->string("name");
             $table->enum("status", ["active", "inactive"])->default("active");
 
@@ -183,11 +184,11 @@ return new class extends Migration {
 
         // Inserts
         DB::table("identity_document_types")->insert([
-            ["id" => 1, "name" => "Doc.trib.no.dom.sin.ruc"],
-            ["id" => 2, "name" => "DNI"],
-            ["id" => 3, "name" => "CE"],
-            ["id" => 4, "name" => "RUC"],
-            ["id" => 5, "name" => "Pasaporte"]
+            ["id" => 1, "code" => "doc.trib.no.dom.sin.ruc", "name" => "Doc.trib.no.dom.sin.ruc"],
+            ["id" => 2, "code" => "dni", "name" => "DNI"],
+            ["id" => 3, "code" => "ce", "name" => "CE"],
+            ["id" => 4, "code" => "ruc", "name" => "RUC"],
+            ["id" => 5, "code" => "pasaporte", "name" => "Pasaporte"]
         ]);
 
         DB::table("document_types")->insert([

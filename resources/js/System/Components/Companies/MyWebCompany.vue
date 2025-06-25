@@ -5,7 +5,7 @@
                 <div class="card-header bg-success border-light py-2 d-flex justify-content-center align-items-center">
                     <span class="text-white my-0 fw-bold" v-text="header"></span>
                 </div>
-                <div class="card-body py-3 pattern">
+                <div class="card-body py-3 pattern" v-if="isDefined({value: company?.logotype})">
                     <div class="d-flex align-items-center justify-content-center">
                         <div class="p-1 bg-white border border-secondary rounded">
                             <img :src="qrImage" alt="QR" class="img-fluid" style="width: 150px; height: 150px;"/>
@@ -15,9 +15,16 @@
                         <span class="d-block fw-bold" v-text="footer"></span>
                     </div>
                 </div>
+                <div v-else class="card-body py-3">
+                    <div class="alert alert-warning mb-1">
+                        <i class="fa fa-warning"></i>
+                        <span class="ms-2">Sin vista previa.</span>
+                    </div>
+                    <span class="small">Revise el logotipo.</span>
+                </div>
             </div>
         </div>
-        <div class="d-flex flex-wrap justify-content-center gap-1 gap-md-2 mt-3">
+        <div class="d-flex flex-wrap justify-content-center gap-1 gap-md-2 mt-3" v-if="isDefined({value: company?.logotype})">
             <button @click="shareResource" class="btn btn-primary btn-sm waves-effect">
                 <i class="fa-solid fa-share-nodes"></i>
                 <span class="ms-2">Compartir</span>
@@ -34,6 +41,8 @@
 import QRCodeStyling from "qr-code-styling";
 import html2canvas from "html2canvas";
 
+import { isDefined } from "../../Helpers/Utils.js";
+
 export default {
     name: "MyWebCompany",
     props: {},
@@ -48,9 +57,19 @@ export default {
             return "Ingresa a mi página";
 
         },
+        company() {
+
+            return window.company;
+
+        },
+        ownerApp() {
+
+            return window.ownerApp;
+
+        },
         footer() {
 
-            return window?.company?.commercial_name ?? "";
+            return this.company?.commercial_name ?? "";
 
         }
     },
@@ -60,13 +79,18 @@ export default {
 
     },
     methods: {
+        isDefined({value}) {
+
+            return isDefined({value});
+
+        },
         generateQR() {
 
             const qr = new QRCodeStyling({
                 width: 300,
                 height: 300,
-                data: generateMyUrl(window.company, false, "my_web"),
-                image: "/storage/"+window.company.logotype,
+                data: generateMyUrl(this.company, false, "my_web"),
+                image: "/storage/"+this.company.logotype,
                 imageOptions: {
                     crossOrigin: "anonymous",
                     hideBackgroundDots: true,

@@ -6,62 +6,56 @@
         <ul class="nav nav-tabs nav-fill" role="tablist">
             <li class="nav-item" role="presentation">
                 <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-general" aria-controls="navs-pills-general" aria-selected="false" tabindex="-1">
-                    <span class="d-none d-sm-inline-flex align-items-center fw-bold">
-                        <i class="fa-solid fa-building me-1_5"></i>
-                        <span class="ms-2">Mi empresa</span>
+                    <span class="d-flfex align-items-center fw-bold">
+                        <span>🏢</span>
+                        <span class="ms-2">Información general</span>
                     </span>
-                    <i class="fa-solid fa-building d-sm-none"></i>
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-contacts" aria-controls="navs-pills-contacts" aria-selected="false" tabindex="-1">
-                    <span class="d-none d-sm-inline-flex align-items-center fw-bold">
-                        <i class="fa fa-address-book me-1_5"></i>
-                        <span class="ms-2">Contacto</span>
+                    <span class="d-flex align-items-center fw-bold">
+                        <span>☎️</span>
+                        <span class="ms-2">Información de contacto</span>
                     </span>
-                    <i class="fa fa-address-book d-sm-none"></i>
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-socials-media" aria-controls="navs-pills-socials-media" aria-selected="false" tabindex="-1">
-                    <span class="d-none d-sm-inline-flex align-items-center fw-bold">
-                        <i class="fa-solid fa-mobile-screen-button me-1_5"></i>
-                        <span class="ms-2">Redes sociales</span>
+                    <span class="d-flex align-items-center fw-bold">
+                        <span>📱</span>
+                        <span class="ms-2">Cuentas sociales</span>
                     </span>
-                    <i class="fa-solid fa-mobile-screen-button d-sm-none"></i>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-branding" aria-controls="navs-pills-branding" aria-selected="false" tabindex="-1">
+                    <span class="d-flfex align-items-center fw-bold">
+                        <span>🎨</span>
+                        <span class="ms-2">Identidad visual</span>
+                    </span>
                 </button>
             </li>
             <li class="nav-item" role="presentation" v-show="false">
                 <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-configuration" aria-controls="navs-pills-configuration" aria-selected="false" tabindex="-1">
-                    <span class="d-none d-sm-inline-flex align-items-center fw-bold">
-                        <i class="fa-solid fa-gear me-1_5"></i>
-                        <span class="ms-2">Configuración</span>
+                    <span class="d-flex align-items-center fw-bold">
+                        <span>⚙️</span>
+                        <span class="ms-2">Parámetros</span>
                     </span>
-                    <i class="fa-solid fa-gear d-sm-none"></i>
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-share" aria-controls="navs-pills-share" aria-selected="false" tabindex="-1">
-                    <span class="d-none d-sm-inline-flex align-items-center fw-bold">
-                        <i class="fa-solid fa-share-nodes me-1_5"></i>
-                        <span class="ms-2">Compartir</span>
+                    <span class="d-flex align-items-center fw-bold">
+                        <span>🔗</span>
+                        <span class="ms-2">Accesos compartidos</span>
                     </span>
-                    <i class="fa-solid fa-share-nodes d-sm-none"></i>
                 </button>
             </li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane fade" id="navs-pills-general" role="tabpanel">
                 <div class="row g-3">
-                    <InputSlot
-                        :hasDiv="false"
-                        :divInputClass="['d-flex justify-content-center']"
-                        xl="12"
-                        lg="12">
-                        <template v-slot:input>
-                            <img v-if="isDefined({value: forms.entity.createUpdate.data.logotype})" :src="getAsset(forms.entity.createUpdate.data.logotype)" alt="Logo" width="200px" height="200px" class="img-fluid border"/>
-                        </template>
-                    </InputSlot>
                     <InputSlot
                         hasDiv
                         title="Tipo de documento"
@@ -86,13 +80,7 @@
                         hasTextBottom
                         :textBottomInfo="forms.entity.createUpdate.errors?.document_number"
                         xl="6"
-                        lg="6">
-                        <template v-slot:inputGroupPrepend>
-                            <a href="javascript:void(0)" class="btn btn-icon btn-label-dark waves-effect">
-                                <i class="fa fa-hashtag fs-5"></i>
-                            </a>
-                        </template>
-                    </InputText>
+                        lg="6"/>
                     <InputText
                         v-model="forms.entity.createUpdate.data.legal_name"
                         hasDiv
@@ -111,22 +99,6 @@
                         :textBottomInfo="forms.entity.createUpdate.errors?.commercial_name"
                         xl="6"
                         lg="6"/>
-                    <InputText
-                        v-model="forms.entity.createUpdate.data.tagline"
-                        hasDiv
-                        title="Slogan"
-                        hasTextBottom
-                        :textBottomInfo="forms.entity.createUpdate.errors?.tagline"
-                        xl="6"
-                        lg="6"/>
-                    <InputText
-                        v-model="forms.entity.createUpdate.data.description"
-                        hasDiv
-                        title="Descripción general"
-                        hasTextBottom
-                        :textBottomInfo="forms.entity.createUpdate.errors?.description"
-                        xl="6"
-                        lg="6"/>
                     <InputSlot
                         v-if="false"
                         hasDiv
@@ -144,15 +116,6 @@
                                 :disabled="true"/>
                         </template>
                     </InputSlot>
-                    <InputSlot
-                        hasDiv
-                        title="Cambiar logotipo"
-                        xl="6"
-                        lg="6">
-                        <template v-slot:input>
-                            <input type="file" class="form-control" id="logotypeFileId" accept="image/png, image/jpg, image/jpeg"/>
-                        </template>
-                    </InputSlot>
                 </div>
             </div>
             <div class="tab-pane fade" id="navs-pills-contacts" role="tabpanel">
@@ -161,32 +124,18 @@
                         v-model="forms.entity.createUpdate.data.address"
                         hasDiv
                         title="Dirección"
-                        isRequired
                         hasTextBottom
                         :textBottomInfo="forms.entity.createUpdate.errors?.address"
                         xl="6"
-                        lg="6">
-                        <template v-slot:inputGroupPrepend>
-                            <a href="javascript:void(0)" class="btn btn-icon btn-label-dark waves-effect">
-                                <i class="fa fa-location-dot fs-5"></i>
-                            </a>
-                        </template>
-                    </InputText>
+                        lg="6"/>
                     <InputText
                         v-model="forms.entity.createUpdate.data.telephone"
                         hasDiv
                         title="Teléfono"
-                        isRequired
                         hasTextBottom
                         :textBottomInfo="forms.entity.createUpdate.errors?.telephone"
                         xl="6"
-                        lg="6">
-                        <template v-slot:inputGroupPrepend>
-                            <a href="javascript:void(0)" class="btn btn-icon btn-label-dark waves-effect">
-                                <i class="fa fa-phone fs-5"></i>
-                            </a>
-                        </template>
-                    </InputText>
+                        lg="6"/>
                     <InputText
                         v-model="forms.entity.createUpdate.data.email"
                         hasDiv
@@ -194,13 +143,7 @@
                         hasTextBottom
                         :textBottomInfo="forms.entity.createUpdate.errors?.email"
                         xl="6"
-                        lg="6">
-                        <template v-slot:inputGroupPrepend>
-                            <a href="javascript:void(0)" class="btn btn-icon btn-label-dark waves-effect">
-                                <i class="fa fa-envelope fs-5"></i>
-                            </a>
-                        </template>
-                    </InputText>
+                        lg="6"/>
                 </div>
             </div>
             <div class="tab-pane fade" id="navs-pills-socials-media" role="tabpanel">
@@ -213,9 +156,9 @@
                         :textBottomInfo="forms.entity.createUpdate.errors?.facebook"
                         xl="6"
                         lg="6">
-                        <template v-slot:inputGroupPrepend>
-                            <a href="javascript:void(0)" class="btn btn-icon btn-label-info waves-effect">
-                                <i class="tf-icons fa-brands fa-facebook-f fs-5"></i>
+                        <template v-slot:inputGroupAppend>
+                            <a :href="forms.entity.createUpdate.data.facebook" target="_blank" class="btn btn-label-info waves-effect" v-if="isDefined({value: forms.entity.createUpdate.data.facebook}) && isValidUrl({url: forms.entity.createUpdate.data.facebook})">
+                                <span>Visitar</span>
                             </a>
                         </template>
                     </InputText>
@@ -227,9 +170,9 @@
                         :textBottomInfo="forms.entity.createUpdate.errors?.instagram"
                         xl="6"
                         lg="6">
-                        <template v-slot:inputGroupPrepend>
-                            <a href="javascript:void(0)" class="btn btn-icon btn-label-danger waves-effect">
-                                <i class="tf-icons fa-brands fa-instagram fs-5"></i>
+                        <template v-slot:inputGroupAppend>
+                            <a :href="forms.entity.createUpdate.data.instagram" target="_blank" class="btn btn-label-danger waves-effect" v-if="isDefined({value: forms.entity.createUpdate.data.instagram}) && isValidUrl({url: forms.entity.createUpdate.data.instagram})">
+                                <span>Visitar</span>
                             </a>
                         </template>
                     </InputText>
@@ -241,29 +184,132 @@
                         :textBottomInfo="forms.entity.createUpdate.errors?.whatsapp"
                         xl="6"
                         lg="6">
-                        <template v-slot:inputGroupPrepend>
-                            <a href="javascript:void(0)" class="btn btn-icon btn-label-success waves-effect">
-                                <i class="tf-icons fa-brands fa-whatsapp fs-5"></i>
+                        <template v-slot:inputGroupAppend>
+                            <a :href="forms.entity.createUpdate.data.whatsapp" target="_blank" class="btn btn-label-success waves-effect" v-if="isDefined({value: forms.entity.createUpdate.data.whatsapp}) && isValidUrl({url: forms.entity.createUpdate.data.whatsapp})">
+                                <span>Visitar</span>
                             </a>
                         </template>
                     </InputText>
-                    <InputSlot
-                        v-if="false"
+                </div>
+            </div>
+            <div class="tab-pane fade" id="navs-pills-branding" role="tabpanel">
+                <div class="row g-3">
+                    <InputText
+                        v-model="forms.entity.createUpdate.data.tagline"
                         hasDiv
-                        title="Estado"
-                        isRequired
+                        title="Slogan"
                         hasTextBottom
-                        :textBottomInfo="forms.entity.createUpdate.errors?.status"
-                        xl="6"
-                        lg="6">
-                        <template v-slot:input>
-                            <v-select
-                                v-model="forms.entity.createUpdate.data.status"
-                                :options="statuses"
-                                :clearable="false"
-                                :disabled="true"/>
-                        </template>
-                    </InputSlot>
+                        :textBottomInfo="forms.entity.createUpdate.errors?.tagline"
+                        xl="12"
+                        lg="12"/>
+                    <InputTextArea
+                        v-model="forms.entity.createUpdate.data.description"
+                        hasDiv
+                        title="Descripción general"
+                        hasTextBottom
+                        :textBottomInfo="forms.entity.createUpdate.errors?.description"
+                        xl="12"
+                        lg="12"/>
+                </div>
+                <div class="table-responsive mt-3">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr class="text-center align-middle">
+                                <th class="bg-secondary text-white fw-semibold" style="width: 60%;">NOMBRE DEL RECURSO</th>
+                                <th class="bg-secondary text-white fw-semibold" style="width: 40%;">IMAGEN</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-border-bottom-0 bg-white">
+                            <tr class="text-center">
+                                <td class="text-start">
+                                    <InputSlot
+                                        :hasDiv="false"
+                                        title="Logotipo">
+                                        <template v-slot:input>
+                                            <input type="file" class="form-control" id="logotypeFileId" accept="image/png, image/jpg, image/jpeg"/>
+                                        </template>
+                                    </InputSlot>
+                                    <div class="text-muted d-block mt-1">
+                                        <i class="fa fa-info-circle"></i>
+                                        <span class="ms-2 small">Versión textual del nombre de la marca. Debe contener solo letras, sin símbolos.</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <img v-if="isDefined({value: forms.entity.createUpdate.data.logotype})" :src="getAsset(forms.entity.createUpdate.data.logotype)" width="150px" height="150px" class="img-fluid"/>
+                                    <div v-else>
+                                        <img :src="config.essential.ownerApp.assets.img.logotype" width="150px" height="150px" class="img-fluid"/>
+                                        <div class="alert alert-warning w-100 py-1">Es referencial</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="text-center">
+                                <td class="text-start">
+                                    <InputSlot
+                                        :hasDiv="false"
+                                        title="Marca combinada">
+                                        <template v-slot:input>
+                                            <input type="file" class="form-control" id="combinationmarkFileId" accept="image/png, image/jpg, image/jpeg"/>
+                                        </template>
+                                    </InputSlot>
+                                    <div class="text-muted d-block mt-1">
+                                        <i class="fa fa-info-circle"></i>
+                                        <span class="ms-2 small">Combinación del logotipo y el isotipo en una sola unidad visual.</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <img v-if="isDefined({value: forms.entity.createUpdate.data.combinationmark})" :src="getAsset(forms.entity.createUpdate.data.combinationmark)" width="150px" height="150px" class="img-fluid"/>
+                                    <div v-else>
+                                        <img :src="config.essential.ownerApp.assets.img.combinationmark" width="150px" height="150px" class="img-fluid"/>
+                                        <div class="alert alert-warning w-100 py-1">Es referencial</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="text-center">
+                                <td class="text-start">
+                                    <InputSlot
+                                        :hasDiv="false"
+                                        title="Isotipo">
+                                        <template v-slot:input>
+                                            <input type="file" class="form-control" id="logomarkFileId" accept="image/png, image/jpg, image/jpeg"/>
+                                        </template>
+                                    </InputSlot>
+                                    <div class="text-muted d-block mt-1">
+                                        <i class="fa fa-info-circle"></i>
+                                        <span class="ms-2 small">Ícono o símbolo gráfico que representa la marca sin texto.</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <img v-if="isDefined({value: forms.entity.createUpdate.data.logomark})" :src="getAsset(forms.entity.createUpdate.data.logomark)" width="150px" height="150px" class="img-fluid"/>
+                                    <div v-else>
+                                        <img :src="config.essential.ownerApp.assets.img.logomark" width="150px" height="150px" class="img-fluid"/>
+                                        <div class="alert alert-warning w-100 py-1">Es referencial</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="text-center">
+                                <td class="text-start">
+                                    <InputSlot
+                                        :hasDiv="false"
+                                        title="Imagen de login">
+                                        <template v-slot:input>
+                                            <input type="file" class="form-control" id="loginImageFileId" accept="image/png, image/jpg, image/jpeg"/>
+                                        </template>
+                                    </InputSlot>
+                                    <div class="text-muted d-block mt-1">
+                                        <i class="fa fa-info-circle"></i>
+                                        <span class="ms-2 small">Imagen que se muestra en la pantalla de inicio de sesión. Generalmente puede ser un logo, una ilustración institucional o una imagen decorativa que represente a la entidad.</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <img v-if="isDefined({value: forms.entity.createUpdate.data.login_image})" :src="getAsset(forms.entity.createUpdate.data.login_image)" width="150px" height="150px" class="img-fluid"/>
+                                    <div v-else>
+                                        <img :src="config.essential.ownerApp.assets.img.login_image" width="150px" height="150px" class="img-fluid"/>
+                                        <div class="alert alert-warning w-100 py-1">Es referencial</div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
             <div class="tab-pane fade" id="navs-pills-configuration" role="tabpanel" v-show="false">
@@ -277,13 +323,7 @@
                         hasTextBottom
                         :textBottomInfo="forms.entity.createUpdate.errors?.slug"
                         xl="6"
-                        lg="6">
-                        <template v-slot:inputGroupPrepend>
-                            <a href="javascript:void(0)" class="btn btn-icon btn-label-dark waves-effect">
-                                <i class="fa fa-globe fs-5"></i>
-                            </a>
-                        </template>
-                    </InputText>
+                        lg="6"/>
                     <InputText
                         v-model="forms.entity.createUpdate.data.token_api_misc"
                         hasDiv
@@ -644,6 +684,11 @@ export default {
         fixedNumber(value) {
 
             return Utils.fixedNumber(value);
+
+        },
+        isValidUrl({url}) {
+
+            return Utils.isValidUrl({url});
 
         },
         getAsset(path) {

@@ -18,6 +18,7 @@ class IdentityDocumentType extends Model {
     ];
 
     protected $fillable = [
+        "code",
         "name",
         "status",
         "created_at",

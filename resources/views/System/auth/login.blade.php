@@ -7,7 +7,7 @@
 
     <div class="text-end mb-4">
         <a href="{{ $ownerApp->web }}" target="_blank">
-            <img src="{{ asset($ownerApp->assets->img->logotype) }}" alt="Logo" class="img-fluid border rounded-pill border px-2" width="30%"/>
+            <img src="{{ asset($ownerApp->assets->img->logotype) }}" class="img-fluid border rounded-pill border px-2" width="30%"/>
         </a>
     </div>
     <div class="d-flex justify-content-center align-items-center flex-wrap">
