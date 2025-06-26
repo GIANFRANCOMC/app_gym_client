@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 
+@php
+    $ownerApp = config("app.owner_app");
+@endphp
+
 <html
     lang="en"
     class="light-style layout-navbar-fixed layout-wide"
@@ -10,9 +14,10 @@
     <head>
         @include('Guest.layouts.partials.up')
         <script>
-            window.company = @json($company);
-            window.branch = @json($branch ?? null);
             window.withMenu = {{ json_encode($withMenu ?? true) }};
+            window.ownerApp = @json($ownerApp ?? null);
+            window.company  = @json($company);
+            window.branch   = @json($branch ?? null);
         </script>
     </head>
     <style>
@@ -43,27 +48,34 @@
         .text-white-custom {
             color: #f4f4f4 !important;
         }
+
+        .navbar-logomark {
+            height: 100px;
+            width: auto;
+            position: absolute;
+            top: 5px;
+            bottom: 0;
+            left: 1px;
+        }
     </style>
     <body class="bg-down-color-secondary">
         @if($withMenu ?? true)
-            <nav class="layout-navbar shadow-none py-0">
+            <nav class="layout-navbar shadow-none">
                 <div class="container">
-                    <div class="navbar navbar-expand-lg px-3 px-md-4 py-2 py-md-3 mt-3 shadow-sm bg-down-color-primary">
+                    <div class="navbar navbar-expand-lg px-3 px-md-5 py-2 py-md-4 mt-3 shadow-sm bg-down-color-primary">
                         <div class="navbar-brand app-brand">
                             <button class="navbar-toggler text-white-custom me-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
                                 <i class="ti ti-menu-2 ti-sm align-middle"></i>
                             </button>
-                            <a href="javascript:void(0)" class="app-brand-link">
-                                <span class="app-brand-logo demo">
-                                    <img src="{{ asset('storage/'.$company->logotype) }}" class="img-fluid w-100"/>
-                                </span>
-                            </a>
+                            <div class="d-none d-lg-block">
+                                <img src="{{ asset($company->logomark ? ('storage/'.$company->logomark) : $ownerApp->assets->img->logomark) }}" class="navbar-logomark">
+                            </div>
                         </div>
                         <div class="collapse navbar-collapse landing-nav-menu" id="navbarMenu">
                             <button class="navbar-toggler border-0 position-absolute end-0 top-0 text-white-custom" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
                                 <i class="fa fa-times fs-3"></i>
                             </button>
-                            <ul class="navbar-nav me-auto d-flex gap-4 ms-3">
+                            <ul class="navbar-nav me-auto d-flex gap-4 mx-3 mx-md-5 px-0 px-md-4">
                                 <li class="nav-item">
                                     <a class="fw-semibold fs-5 text-white-custom a-primary-custom" href="home">
                                         <span class="text-uppercase">Inicio</span>

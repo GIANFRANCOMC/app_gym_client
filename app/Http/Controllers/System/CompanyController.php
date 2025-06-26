@@ -97,7 +97,11 @@ class CompanyController extends Controller {
 
         if(Utilities::isDefined($company)) {
 
+            // Assets
             $logotypeRoute = null;
+            $combinationmarkRoute = null;
+            $logomarkRoute = null;
+            $loginImageRoute = null;
 
             if($request->hasFile("logotype") && $request->file("logotype")) {
 
@@ -107,6 +111,39 @@ class CompanyController extends Controller {
                 $logotypeRoute = $logotype->storeAs($company->internal_code, $logotypeName, "public");
 
                 $company->logotype = $logotypeRoute;
+
+            }
+
+            if($request->hasFile("combinationmark") && $request->file("combinationmark")) {
+
+                $combinationmark = $request->file("combinationmark");
+
+                $combinationmarkName  = "combinationmark.".$combinationmark->getClientOriginalExtension();
+                $combinationmarkRoute = $combinationmark->storeAs($company->internal_code, $combinationmarkName, "public");
+
+                $company->combinationmark = $combinationmarkRoute;
+
+            }
+
+            if($request->hasFile("logomark") && $request->file("logomark")) {
+
+                $logomark = $request->file("logomark");
+
+                $logomarkName  = "logomark.".$logomark->getClientOriginalExtension();
+                $logomarkRoute = $logomark->storeAs($company->internal_code, $logomarkName, "public");
+
+                $company->logomark = $logomarkRoute;
+
+            }
+
+            if($request->hasFile("login_image") && $request->file("login_image")) {
+
+                $loginImage = $request->file("login_image");
+
+                $loginImageName  = "login_image.".$loginImage->getClientOriginalExtension();
+                $loginImageRoute = $loginImage->storeAs($company->internal_code, $loginImageName, "public");
+
+                $company->login_image = $loginImageRoute;
 
             }
 

@@ -32,11 +32,14 @@ class UpdateCompanyRequest extends FormRequest {
             "commercial_name"           => "required|string|max:100",
             "tagline"                   => "nullable|string|max:100",
             "description"               => "nullable|string|max:500",
-            "address"                   => "required|string|max:100",
-            "telephone"                 => "required|string|max:50",
+            "address"                   => "nullable|string|max:100",
+            "telephone"                 => "nullable|string|max:50",
             "email"                     => "nullable|email",
             "status"                    => "required|string",
-            "logo"                      => "nullable|file|image|mimes:jpeg,png,jpg|max:2048"
+            "logotype"                  => "nullable|file|image|mimes:jpeg,png,jpg|max:2048",
+            "combinationmark"           => "nullable|file|image|mimes:jpeg,png,jpg|max:2048",
+            "logomark"                  => "nullable|file|image|mimes:jpeg,png,jpg|max:2048",
+            "login_image"               => "nullable|file|image|mimes:jpeg,png,jpg|max:2048"
         ];
 
     }

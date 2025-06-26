@@ -8,6 +8,7 @@ export function getEssential() {
 
     return {
         withMenu: window?.withMenu ?? true,
+        ownerApp: window?.ownerApp ?? null,
         company: window?.company ?? null,
         branch: window?.branch ?? null
     };
@@ -411,5 +412,27 @@ export function playSound(soundRoute) {
         console.warn("Error playing audio:", err);
 
     });
+
+}
+
+export function getAsset(path, {type = "storage", back = 0}) {
+
+    if(["storage"].includes(type)) {
+
+        const baseUrl = `/${type}/`;
+
+        return `${baseUrl}${path}`;
+
+    }else if(["public"].includes(type)) {
+
+        const baseUrl = `/${type}/`;
+
+        return `${baseUrl}${path}`;
+
+    }else if(["none"].includes(type)) {
+
+        return back == 1 ? `../${path}` : `${path}`;
+
+    }
 
 }

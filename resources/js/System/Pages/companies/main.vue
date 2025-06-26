@@ -428,6 +428,9 @@ export default {
                             email: "",
                             token_api_misc: "",
                             logotype: "",
+                            combinationmark: "",
+                            logomark: "",
+                            login_image: "",
                             facebook: "",
                             instagram: "",
                             whatsapp: "",
@@ -488,6 +491,9 @@ export default {
                 this.forms.entity.createUpdate.data.email                  = company?.email;
                 this.forms.entity.createUpdate.data.token_api_misc         = company?.token_api_misc;
                 this.forms.entity.createUpdate.data.logotype               = company?.logotype;
+                this.forms.entity.createUpdate.data.combinationmark        = company?.combinationmark;
+                this.forms.entity.createUpdate.data.logomark               = company?.logomark;
+                this.forms.entity.createUpdate.data.login_image            = company?.login_image;
                 this.forms.entity.createUpdate.data.facebook               = company?.facebook;
                 this.forms.entity.createUpdate.data.instagram              = company?.instagram;
                 this.forms.entity.createUpdate.data.whatsapp               = company?.whatsapp;
@@ -533,11 +539,32 @@ export default {
 
                 }
 
-                const logotypeFile = document.getElementById("logotypeFileId");
+                const logotypeFile        = document.getElementById("logotypeFileId");
+                const combinationmarkFile = document.getElementById("combinationmarkFileId");
+                const logomarkFile        = document.getElementById("logomarkFileId");
+                const loginImageFile      = document.getElementById("loginImageFileId");
 
                 if(logotypeFile && logotypeFile.files && logotypeFile.files.length > 0) {
 
                     formData.append("logotype", logotypeFile.files[0]);
+
+                }
+
+                if(combinationmarkFile && combinationmarkFile.files && combinationmarkFile.files.length > 0) {
+
+                    formData.append("combinationmark", combinationmarkFile.files[0]);
+
+                }
+
+                if(logomarkFile && logomarkFile.files && logomarkFile.files.length > 0) {
+
+                    formData.append("logomark", logomarkFile.files[0]);
+
+                }
+
+                if(loginImageFile && loginImageFile.files && loginImageFile.files.length > 0) {
+
+                    formData.append("login_image", loginImageFile.files[0]);
 
                 }
 
@@ -546,7 +573,10 @@ export default {
 
                 if(Requests.valid({result: createUpdate})) {
 
-                    this.forms.entity.createUpdate.data.logotype = createUpdate.data.company?.logotype;
+                    this.forms.entity.createUpdate.data.logotype        = createUpdate.data.company?.logotype;
+                    this.forms.entity.createUpdate.data.combinationmark = createUpdate.data.company?.combinationmark;
+                    this.forms.entity.createUpdate.data.logomark        = createUpdate.data.company?.logomark;
+                    this.forms.entity.createUpdate.data.login_image     = createUpdate.data.company?.login_image;
 
                     // Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
                     // Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
@@ -580,6 +610,9 @@ export default {
                 case "modalCreateUpdateEntity":
                 case "createUpdateEntity":
                     document.getElementById("logotypeFileId").value = "";
+                    document.getElementById("combinationmarkFileId").value = "";
+                    document.getElementById("logomarkFileId").value = "";
+                    document.getElementById("loginImageFileId").value = "";
                     break;
             }
 
@@ -649,19 +682,19 @@ export default {
 
                 }
 
-                if(!this.isDefined({value: form?.address})) {
+                /* if(!this.isDefined({value: form?.address})) {
 
                     result.address.push({section: "Contacto", msg: `${isDescriptive ? "Dirección:" : ""} ${this.config.forms.errors.labels.required}`});
                     result.bool = false;
 
-                }
+                } */
 
-                if(!this.isDefined({value: form?.telephone})) {
+                /* if(!this.isDefined({value: form?.telephone})) {
 
                     result.telephone.push({section: "Contacto", msg: `${isDescriptive ? "Teléfono:" : ""} ${this.config.forms.errors.labels.required}`});
                     result.bool = false;
 
-                }
+                } */
 
                 if(!this.isDefined({value: form?.status})) {
 

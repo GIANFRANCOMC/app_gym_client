@@ -5,7 +5,7 @@
 <title>{{ $company->commercial_name }}</title>
 
 <!-- Favicon -->
-<link rel="icon" type="image/x-icon" href="{{ asset('storage/'.$company->logotype) }}"/>
+<link rel="icon" type="image/x-icon" href="{{ asset('storage/'.$company->logomark) }}"/>
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
