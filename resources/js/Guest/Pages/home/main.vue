@@ -19,7 +19,7 @@
                 </a>
             </div>
             <div class="col-lg-3 text-center">
-                <img :src="getAsset(forms.entity.home.data.logotype)" alt="Logo" class="img-fluid w-60">
+                <img :src="isDefined({value: forms.entity.home.data.combinationmark}) ? getAsset(forms.entity.home.data.combinationmark, {type: 'storage'}) : getAsset(config.essential.ownerApp.assets.img.combinationmark, {type: 'none', back: 1})" class="img-fluid w-60">
             </div>
         </div>
     </div>
@@ -303,11 +303,9 @@ export default {
             window.open(url, "_blank")
 
         },
-        getAsset(path) {
+        getAsset(path, {type, back}) {
 
-            const baseUrl = "/storage/";
-
-            return `${baseUrl}${path}`;
+            return Utils.getAsset(path, {type, back});
 
         }
     },
