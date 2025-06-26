@@ -533,6 +533,8 @@ export default {
 
                     if(form.hasOwnProperty(key)) {
 
+                        if(["logotype", "combinationmark", "logomark", "login_image"].includes(key) && !(form[key] instanceof File)) continue;
+
                         formData.append(key, form[key] ?? "");
 
                     }
