@@ -223,8 +223,8 @@ export default {
                 this.forms.entity.home.data.telephone       = company?.telephone;
                 this.forms.entity.home.data.email           = company?.email;
                 this.forms.entity.home.data.logotype        = company?.logotype;
-                this.forms.entity.createUpdate.data.combinationmark = company?.combinationmark;
-                this.forms.entity.createUpdate.data.logomark        = company?.logomark;
+                this.forms.entity.home.data.combinationmark = company?.combinationmark;
+                this.forms.entity.home.data.logomark        = company?.logomark;
                 this.forms.entity.home.data.facebook        = company?.facebook;
                 this.forms.entity.home.data.instagram       = company?.instagram;
                 this.forms.entity.home.data.whatsapp        = company?.whatsapp;
