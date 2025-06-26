@@ -36,10 +36,10 @@ class UpdateCompanyRequest extends FormRequest {
             "telephone"                 => "nullable|string|max:50",
             "email"                     => "nullable|email",
             "status"                    => "required|string",
-            "logotype"                  => "nullable|file|image|mimes:jpeg,png,jpg|max:2048",
-            "combinationmark"           => "nullable|file|image|mimes:jpeg,png,jpg|max:2048",
-            "logomark"                  => "nullable|file|image|mimes:jpeg,png,jpg|max:2048",
-            "login_image"               => "nullable|file|image|mimes:jpeg,png,jpg|max:2048"
+            "logotype"                  => "nullable|file|image|mimes:jpeg,png,jpg|max:10240",
+            "combinationmark"           => "nullable|file|image|mimes:jpeg,png,jpg|max:10240",
+            "logomark"                  => "nullable|file|image|mimes:jpeg,png,jpg|max:10240",
+            "login_image"               => "nullable|file|image|mimes:jpeg,png,jpg|max:10240"
         ];
 
     }
