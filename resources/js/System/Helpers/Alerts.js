@@ -48,7 +48,7 @@ export function swals({show = true, type = "default", timeout = 0}) {
                     }
                 </style>
                 <span class="h5">${message} Este proceso puede tomar algunos segundos, por favor espere.</span>
-                <img src="${window.ownerApp.assets.img.logomark}" class="img-fluid swal-logo">
+                <img src="${window.ownerApp.assets.img.logomark}" class="img-fluid swal-logo mt-1 mb-0">
             `,
             allowOutsideClick: false,
             showConfirmButton: false

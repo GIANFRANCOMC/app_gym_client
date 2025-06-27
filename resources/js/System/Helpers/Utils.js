@@ -431,11 +431,34 @@ export function isValidUrl({url}) {
 
         new URL(url);
 
-        return true;
+        return true && this.isDefined({value: url});
 
     }catch (e) {
 
         return false;
+
+    }
+
+}
+
+
+export function getAsset(path, {type = "storage", back = 0}) {
+
+    if(["storage"].includes(type)) {
+
+        const baseUrl = `/${type}/`;
+
+        return `${baseUrl}${path}`;
+
+    }else if(["public"].includes(type)) {
+
+        const baseUrl = `/${type}/`;
+
+        return `${baseUrl}${path}`;
+
+    }else if(["none"].includes(type)) {
+
+        return back == 1 ? `../${path}` : `${path}`;
 
     }
 

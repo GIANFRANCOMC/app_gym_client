@@ -204,7 +204,7 @@ return new class extends Migration {
         ]);
 
         DB::table("companies")->insert([
-            ["id" => 1, "slug" => "pagape", "internal_code" => Utilities::generateCode(7), "identity_document_type_id" => 1, "document_number" => "999999999", "legal_name" => "PAGAPE S.A.", "commercial_name" => "PAGAPE", "address" => "", "telephone" => "", "email" => ""]
+            ["id" => 1, "slug" => "pagape", "internal_code" => Utilities::generateCode(7), "identity_document_type_id" => 1, "document_number" => "999999999", "legal_name" => "TU EMPRESA S.A.", "commercial_name" => "TU EMPRESA", "address" => "", "telephone" => "", "email" => ""]
         ]);
 
         DB::table("sections")->insert([

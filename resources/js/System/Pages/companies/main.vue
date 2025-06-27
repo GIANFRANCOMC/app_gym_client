@@ -6,49 +6,41 @@
         <ul class="nav nav-tabs nav-fill" role="tablist">
             <li class="nav-item" role="presentation">
                 <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-general" aria-controls="navs-pills-general" aria-selected="false" tabindex="-1">
-                    <span class="d-flfex align-items-center fw-bold">
+                    <span class="d-flfex align-items-center fw-semibold">
                         <span>🏢</span>
-                        <span class="ms-2">Información general</span>
+                        <span class="ms-2">1. Información general</span>
                     </span>
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-contacts" aria-controls="navs-pills-contacts" aria-selected="false" tabindex="-1">
-                    <span class="d-flex align-items-center fw-bold">
+                    <span class="d-flex align-items-center fw-semibold">
                         <span>☎️</span>
-                        <span class="ms-2">Información de contacto</span>
-                    </span>
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-socials-media" aria-controls="navs-pills-socials-media" aria-selected="false" tabindex="-1">
-                    <span class="d-flex align-items-center fw-bold">
-                        <span>📱</span>
-                        <span class="ms-2">Cuentas sociales</span>
+                        <span class="ms-2">2. Información de contacto y redes</span>
                     </span>
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-branding" aria-controls="navs-pills-branding" aria-selected="false" tabindex="-1">
-                    <span class="d-flfex align-items-center fw-bold">
+                    <span class="d-flfex align-items-center fw-semibold">
                         <span>🎨</span>
-                        <span class="ms-2">Identidad visual</span>
-                    </span>
-                </button>
-            </li>
-            <li class="nav-item" role="presentation" v-show="false">
-                <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-configuration" aria-controls="navs-pills-configuration" aria-selected="false" tabindex="-1">
-                    <span class="d-flex align-items-center fw-bold">
-                        <span>⚙️</span>
-                        <span class="ms-2">Parámetros</span>
+                        <span class="ms-2">3. Identidad visual</span>
                     </span>
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-share" aria-controls="navs-pills-share" aria-selected="false" tabindex="-1">
-                    <span class="d-flex align-items-center fw-bold">
+                    <span class="d-flex align-items-center fw-semibold">
                         <span>🔗</span>
-                        <span class="ms-2">Accesos compartidos</span>
+                        <span class="ms-2">4. Accesos compartido</span>
+                    </span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation" v-if="false">
+                <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-configuration" aria-controls="navs-pills-configuration" aria-selected="false" tabindex="-1">
+                    <span class="d-flex align-items-center fw-semibold">
+                        <span>⚙️</span>
+                        <span class="ms-2">5. Parámetros</span>
                     </span>
                 </button>
             </li>
@@ -99,27 +91,6 @@
                         :textBottomInfo="forms.entity.createUpdate.errors?.commercial_name"
                         xl="6"
                         lg="6"/>
-                    <InputSlot
-                        v-if="false"
-                        hasDiv
-                        title="Estado"
-                        isRequired
-                        hasTextBottom
-                        :textBottomInfo="forms.entity.createUpdate.errors?.status"
-                        xl="6"
-                        lg="6">
-                        <template v-slot:input>
-                            <v-select
-                                v-model="forms.entity.createUpdate.data.status"
-                                :options="statuses"
-                                :clearable="false"
-                                :disabled="true"/>
-                        </template>
-                    </InputSlot>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="navs-pills-contacts" role="tabpanel">
-                <div class="row g-3">
                     <InputText
                         v-model="forms.entity.createUpdate.data.address"
                         hasDiv
@@ -128,6 +99,10 @@
                         :textBottomInfo="forms.entity.createUpdate.errors?.address"
                         xl="6"
                         lg="6"/>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="navs-pills-contacts" role="tabpanel">
+                <div class="row g-3">
                     <InputText
                         v-model="forms.entity.createUpdate.data.telephone"
                         hasDiv
@@ -144,10 +119,6 @@
                         :textBottomInfo="forms.entity.createUpdate.errors?.email"
                         xl="6"
                         lg="6"/>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="navs-pills-socials-media" role="tabpanel">
-                <div class="row g-3">
                     <InputText
                         v-model="forms.entity.createUpdate.data.facebook"
                         hasDiv
@@ -157,8 +128,9 @@
                         xl="6"
                         lg="6">
                         <template v-slot:inputGroupAppend>
-                            <a :href="forms.entity.createUpdate.data.facebook" target="_blank" class="btn btn-label-info waves-effect" v-if="isDefined({value: forms.entity.createUpdate.data.facebook}) && isValidUrl({url: forms.entity.createUpdate.data.facebook})">
-                                <span>Visitar</span>
+                            <a :href="forms.entity.createUpdate.data.facebook" target="_blank" class="btn btn-label-info waves-effect" v-if="isValidUrl({url: forms.entity.createUpdate.data.facebook})">
+                                <i class="fa fa-globe"></i>
+                                <span class="ms-2">Visitar</span>
                             </a>
                         </template>
                     </InputText>
@@ -171,8 +143,9 @@
                         xl="6"
                         lg="6">
                         <template v-slot:inputGroupAppend>
-                            <a :href="forms.entity.createUpdate.data.instagram" target="_blank" class="btn btn-label-danger waves-effect" v-if="isDefined({value: forms.entity.createUpdate.data.instagram}) && isValidUrl({url: forms.entity.createUpdate.data.instagram})">
-                                <span>Visitar</span>
+                            <a :href="forms.entity.createUpdate.data.instagram" target="_blank" class="btn btn-label-danger waves-effect" v-if="isValidUrl({url: forms.entity.createUpdate.data.instagram})">
+                                <i class="fa fa-globe"></i>
+                                <span class="ms-2">Visitar</span>
                             </a>
                         </template>
                     </InputText>
@@ -186,7 +159,8 @@
                         lg="6">
                         <template v-slot:inputGroupAppend>
                             <a :href="forms.entity.createUpdate.data.whatsapp" target="_blank" class="btn btn-label-success waves-effect" v-if="isDefined({value: forms.entity.createUpdate.data.whatsapp}) && isValidUrl({url: forms.entity.createUpdate.data.whatsapp})">
-                                <span>Visitar</span>
+                                <i class="fa fa-globe"></i>
+                                <span class="ms-2">Visitar</span>
                             </a>
                         </template>
                     </InputText>
@@ -202,7 +176,7 @@
                         :textBottomInfo="forms.entity.createUpdate.errors?.tagline"
                         xl="12"
                         lg="12"/>
-                    <InputTextArea
+                    <InputText
                         v-model="forms.entity.createUpdate.data.description"
                         hasDiv
                         title="Descripción general"
@@ -215,56 +189,19 @@
                     <table class="table table-hover">
                         <thead>
                             <tr class="text-center align-middle">
-                                <th class="bg-secondary text-white fw-semibold" style="width: 60%;">NOMBRE DEL RECURSO</th>
                                 <th class="bg-secondary text-white fw-semibold" style="width: 40%;">IMAGEN</th>
+                                <th class="bg-secondary text-white fw-semibold" style="width: 60%;">NOMBRE DEL RECURSO</th>
                             </tr>
                         </thead>
                         <tbody class="table-border-bottom-0 bg-white">
                             <tr class="text-center">
-                                <td class="text-start">
-                                    <InputSlot
-                                        :hasDiv="false"
-                                        title="Logotipo">
-                                        <template v-slot:input>
-                                            <input type="file" class="form-control" id="logotypeFileId" accept="image/png, image/jpg, image/jpeg"/>
-                                        </template>
-                                    </InputSlot>
-                                    <div class="text-muted d-block mt-1">
-                                        <i class="fa fa-info-circle"></i>
-                                        <span class="ms-2 small">Versión textual del nombre de la marca. Debe contener solo letras, sin símbolos.</span>
-                                    </div>
-                                </td>
                                 <td>
-                                    <img v-if="isDefined({value: forms.entity.createUpdate.data.logotype})" :src="getAsset(forms.entity.createUpdate.data.logotype)" width="150px" height="150px" class="img-fluid"/>
-                                    <div v-else>
-                                        <img :src="config.essential.ownerApp.assets.img.logotype" width="150px" height="150px" class="img-fluid"/>
-                                        <div class="alert alert-warning w-100 py-1">Es referencial</div>
-                                    </div>
+                                    <img v-if="isDefined({value: forms.entity.createUpdate.data.logomark})" :src="getAsset(forms.entity.createUpdate.data.logomark, {type: 'storage'})" width="150px" height="150px" class="img-fluid"/>
+                                    <template v-else>
+                                        <img :src="getAsset(config.essential.ownerApp.assets.img.logomark, {type: 'none', back: 1})" width="150px" height="150px" class="img-fluid"/>
+                                        <div class="alert alert-warning w-100 py-1 mb-0 text-nowrap">Es referencial</div>
+                                    </template>
                                 </td>
-                            </tr>
-                            <tr class="text-center">
-                                <td class="text-start">
-                                    <InputSlot
-                                        :hasDiv="false"
-                                        title="Marca combinada">
-                                        <template v-slot:input>
-                                            <input type="file" class="form-control" id="combinationmarkFileId" accept="image/png, image/jpg, image/jpeg"/>
-                                        </template>
-                                    </InputSlot>
-                                    <div class="text-muted d-block mt-1">
-                                        <i class="fa fa-info-circle"></i>
-                                        <span class="ms-2 small">Combinación del logotipo y el isotipo en una sola unidad visual.</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <img v-if="isDefined({value: forms.entity.createUpdate.data.combinationmark})" :src="getAsset(forms.entity.createUpdate.data.combinationmark)" width="150px" height="150px" class="img-fluid"/>
-                                    <div v-else>
-                                        <img :src="config.essential.ownerApp.assets.img.combinationmark" width="150px" height="150px" class="img-fluid"/>
-                                        <div class="alert alert-warning w-100 py-1">Es referencial</div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="text-center">
                                 <td class="text-start">
                                     <InputSlot
                                         :hasDiv="false"
@@ -273,20 +210,64 @@
                                             <input type="file" class="form-control" id="logomarkFileId" accept="image/png, image/jpg, image/jpeg"/>
                                         </template>
                                     </InputSlot>
-                                    <div class="text-muted d-block mt-1">
+                                    <div class="text-muted d-block mt-1 text-nowrap">
                                         <i class="fa fa-info-circle"></i>
                                         <span class="ms-2 small">Ícono o símbolo gráfico que representa la marca sin texto.</span>
                                     </div>
                                 </td>
+                            </tr>
+                            <tr class="text-center">
                                 <td>
-                                    <img v-if="isDefined({value: forms.entity.createUpdate.data.logomark})" :src="getAsset(forms.entity.createUpdate.data.logomark)" width="150px" height="150px" class="img-fluid"/>
-                                    <div v-else>
-                                        <img :src="config.essential.ownerApp.assets.img.logomark" width="150px" height="150px" class="img-fluid"/>
-                                        <div class="alert alert-warning w-100 py-1">Es referencial</div>
+                                    <img v-if="isDefined({value: forms.entity.createUpdate.data.logotype})" :src="getAsset(forms.entity.createUpdate.data.logotype, {type: 'storage'})" width="150px" height="150px" class="img-fluid"/>
+                                    <template v-else>
+                                        <img :src="getAsset(config.essential.ownerApp.assets.img.logotype, {type: 'none', back: 1})" width="150px" height="150px" class="img-fluid"/>
+                                        <div class="alert alert-warning w-100 py-1 mb-0 text-nowrap">Es referencial</div>
+                                    </template>
+                                </td>
+                                <td class="text-start">
+                                    <InputSlot
+                                        :hasDiv="false"
+                                        title="Logotipo">
+                                        <template v-slot:input>
+                                            <input type="file" class="form-control" id="logotypeFileId" accept="image/png, image/jpg, image/jpeg"/>
+                                        </template>
+                                    </InputSlot>
+                                    <div class="text-muted d-block mt-1 text-nowrap">
+                                        <i class="fa fa-info-circle"></i>
+                                        <span class="ms-2 small">Versión textual del nombre de la marca. Debe contener solo letras, sin símbolos.</span>
                                     </div>
                                 </td>
                             </tr>
                             <tr class="text-center">
+                                <td>
+                                    <img v-if="isDefined({value: forms.entity.createUpdate.data.combinationmark})" :src="getAsset(forms.entity.createUpdate.data.combinationmark, {type: 'storage'})" width="150px" height="150px" class="img-fluid"/>
+                                    <template v-else>
+                                        <img :src="getAsset(config.essential.ownerApp.assets.img.combinationmark, {type: 'none', back: 1})" width="150px" height="150px" class="img-fluid"/>
+                                        <div class="alert alert-warning w-100 py-1 mb-0 text-nowrap">Es referencial</div>
+                                    </template>
+                                </td>
+                                <td class="text-start">
+                                    <InputSlot
+                                        :hasDiv="false"
+                                        title="Marca combinada">
+                                        <template v-slot:input>
+                                            <input type="file" class="form-control" id="combinationmarkFileId" accept="image/png, image/jpg, image/jpeg"/>
+                                        </template>
+                                    </InputSlot>
+                                    <div class="text-muted d-block mt-1 text-nowrap">
+                                        <i class="fa fa-info-circle"></i>
+                                        <span class="ms-2 small">Combinación del logotipo y el isotipo en una sola unidad visual.</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="text-center">
+                                <td>
+                                    <img v-if="isDefined({value: forms.entity.createUpdate.data.login_image})" :src="getAsset(forms.entity.createUpdate.data.login_image, {type: 'storage'})" width="150px" height="150px" class="img-fluid"/>
+                                    <template v-else>
+                                        <img :src="getAsset(config.essential.ownerApp.assets.img.login_image, {type: 'none', back: 1})" width="150px" height="150px" class="img-fluid"/>
+                                        <div class="alert alert-warning w-100 py-1 mb-0 text-nowrap">Es referencial</div>
+                                    </template>
+                                </td>
                                 <td class="text-start">
                                     <InputSlot
                                         :hasDiv="false"
@@ -300,38 +281,9 @@
                                         <span class="ms-2 small">Imagen que se muestra en la pantalla de inicio de sesión. Generalmente puede ser un logo, una ilustración institucional o una imagen decorativa que represente a la entidad.</span>
                                     </div>
                                 </td>
-                                <td>
-                                    <img v-if="isDefined({value: forms.entity.createUpdate.data.login_image})" :src="getAsset(forms.entity.createUpdate.data.login_image)" width="150px" height="150px" class="img-fluid"/>
-                                    <div v-else>
-                                        <img :src="config.essential.ownerApp.assets.img.login_image" width="150px" height="150px" class="img-fluid"/>
-                                        <div class="alert alert-warning w-100 py-1">Es referencial</div>
-                                    </div>
-                                </td>
                             </tr>
                         </tbody>
                     </table>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="navs-pills-configuration" role="tabpanel" v-show="false">
-                <div class="row g-3">
-                    <InputText
-                        v-model="forms.entity.createUpdate.data.slug"
-                        hasDiv
-                        title="Acceso MI WEB"
-                        isRequired
-                        :disabled="true"
-                        hasTextBottom
-                        :textBottomInfo="forms.entity.createUpdate.errors?.slug"
-                        xl="6"
-                        lg="6"/>
-                    <InputText
-                        v-model="forms.entity.createUpdate.data.token_api_misc"
-                        hasDiv
-                        title="Token API - Misc"
-                        hasTextBottom
-                        :textBottomInfo="forms.entity.createUpdate.errors?.token_api_misc"
-                        xl="6"
-                        lg="6"/>
                 </div>
             </div>
             <div class="tab-pane fade" id="navs-pills-share" role="tabpanel">
@@ -358,15 +310,37 @@
                     </InputSlot>
                 </div>
             </div>
-            <div class="mt-4" v-if="isDefined({value: forms.entity.createUpdate.data.id})">
+            <div class="tab-pane fade" id="navs-pills-configuration" role="tabpanel" v-show="false">
                 <div class="row g-3">
-                    <div class="d-flex flex-row-reverse">
-                        <button type="button" class="btn waves-effect btn-primary" @click="createUpdateEntity()">
-                            <i class="fa fa-save"></i>
-                            <span class="ms-2">Guardar información</span>
-                        </button>
-                    </div>
+                    <InputText
+                        v-model="forms.entity.createUpdate.data.slug"
+                        hasDiv
+                        title="Acceso MI WEB"
+                        isRequired
+                        :disabled="true"
+                        hasTextBottom
+                        :textBottomInfo="forms.entity.createUpdate.errors?.slug"
+                        xl="6"
+                        lg="6"/>
+                    <InputText
+                        v-model="forms.entity.createUpdate.data.token_api_misc"
+                        hasDiv
+                        title="Token API - Misc"
+                        hasTextBottom
+                        :textBottomInfo="forms.entity.createUpdate.errors?.token_api_misc"
+                        xl="6"
+                        lg="6"/>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="mt-3" v-if="isDefined({value: forms.entity.createUpdate.data.id})">
+        <div class="row g-3">
+            <div class="d-flex flex-row-reverse">
+                <button type="button" class="btn waves-effect btn-primary" @click="createUpdateEntity()">
+                    <i class="fa fa-save"></i>
+                    <span class="ms-2">Guardar información</span>
+                </button>
             </div>
         </div>
     </div>
@@ -403,17 +377,6 @@ export default {
             forms: {
                 entity: {
                     createUpdate: {
-                        extras: {
-                            modals: {
-                                default: {
-                                    id: Utils.uuid(),
-                                    titles: {
-                                        store: "Agregar",
-                                        update: "Editar"
-                                    }
-                                }
-                            }
-                        },
                         data: {
                             id: null,
                             slug: "",
@@ -570,8 +533,7 @@ export default {
 
                 }
 
-                let createUpdate = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.update, formData: formData, id: form.id}) :
-                                                                             Requests.post({route: this.config.entity.routes.store, formData: formData}));
+                let createUpdate = await Requests.patch({route: this.config.entity.routes.update, formData: formData, id: form.id});
 
                 if(Requests.valid({result: createUpdate})) {
 
@@ -580,7 +542,6 @@ export default {
                     this.forms.entity.createUpdate.data.logomark        = createUpdate.data.company?.logomark;
                     this.forms.entity.createUpdate.data.login_image     = createUpdate.data.company?.login_image;
 
-                    // Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
                     // Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
                     // Alerts.swals({show: false});
                     Alerts.generateAlert({type: "success", msgContent: createUpdate?.data?.msg});
@@ -649,61 +610,56 @@ export default {
 
                 const isDescriptive = ["descriptive"].includes(extras?.type);
 
-                if(!this.isDefined({value: form?.slug})) {
-
-                    result.slug.push({section: "Mi empresa" , msg: `${isDescriptive ? "Slug:" : ""} ${this.config.forms.errors.labels.required}`});
-                    result.bool = false;
-
-                }
+                let sections = {
+                    general: {
+                        label: "Información general"
+                    },
+                    contacts: {
+                        label: "Información de contacto y redes"
+                    }
+                };
 
                 if(!this.isDefined({value: form?.identity_document_type})) {
 
-                    result.identity_document_type.push({section: "Mi empresa", msg: `${isDescriptive ? "Tipo de documento:" : ""} ${this.config.forms.errors.labels.required}`});
+                    result.identity_document_type.push({section: sections.general.label, msg: `${isDescriptive ? "Tipo de documento:" : ""} ${this.config.forms.errors.labels.required}`});
                     result.bool = false;
 
                 }
 
                 if(!this.isDefined({value: form?.document_number})) {
 
-                    result.document_number.push({section: "Mi empresa", msg: `${isDescriptive ? "Número de documento:" : ""} ${this.config.forms.errors.labels.required}`});
+                    result.document_number.push({section: sections.general.label, msg: `${isDescriptive ? "Número de documento:" : ""} ${this.config.forms.errors.labels.required}`});
                     result.bool = false;
 
                 }
 
                 if(!this.isDefined({value: form?.legal_name})) {
 
-                    result.legal_name.push({section: "Mi empresa", msg: `${isDescriptive ? "Nombre legal:" : ""} ${this.config.forms.errors.labels.required}`});
+                    result.legal_name.push({section: sections.general.label, msg: `${isDescriptive ? "Nombre legal:" : ""} ${this.config.forms.errors.labels.required}`});
                     result.bool = false;
 
                 }
 
                 if(!this.isDefined({value: form?.commercial_name})) {
 
-                    result.commercial_name.push({section: "Mi empresa", msg: `${isDescriptive ? "Nombre comercial:" : ""} ${this.config.forms.errors.labels.required}`});
+                    result.commercial_name.push({section: sections.general.label, msg: `${isDescriptive ? "Nombre comercial:" : ""} ${this.config.forms.errors.labels.required}`});
                     result.bool = false;
 
                 }
 
                 /* if(!this.isDefined({value: form?.address})) {
 
-                    result.address.push({section: "Contacto", msg: `${isDescriptive ? "Dirección:" : ""} ${this.config.forms.errors.labels.required}`});
+                    result.address.push({section: sections.general.label, msg: `${isDescriptive ? "Dirección:" : ""} ${this.config.forms.errors.labels.required}`});
                     result.bool = false;
 
                 } */
 
                 /* if(!this.isDefined({value: form?.telephone})) {
 
-                    result.telephone.push({section: "Contacto", msg: `${isDescriptive ? "Teléfono:" : ""} ${this.config.forms.errors.labels.required}`});
+                    result.telephone.push({section: sections.contacts.label, msg: `${isDescriptive ? "Teléfono:" : ""} ${this.config.forms.errors.labels.required}`});
                     result.bool = false;
 
                 } */
-
-                if(!this.isDefined({value: form?.status})) {
-
-                    result.status.push({section: "Otro", msg: `${isDescriptive ? "Estado:" : ""} ${this.config.forms.errors.labels.required}`});
-                    result.bool = false;
-
-                }
 
             }
 
@@ -726,11 +682,9 @@ export default {
             return Utils.isValidUrl({url});
 
         },
-        getAsset(path) {
+        getAsset(path, {type, back}) {
 
-            const baseUrl = "/storage/";
-
-            return `${baseUrl}${path}`;
+            return Utils.getAsset(path, {type, back});
 
         }
     },

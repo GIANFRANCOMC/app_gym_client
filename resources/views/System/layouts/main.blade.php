@@ -180,8 +180,8 @@
                             <div class="navbar-nav align-items-center">
                                 <div class="nav-item navbar-search-wrapper mb-0">
                                     <a class="nav-item nav-link search-toggler d-flex align-items-center px-0" href="{{ $ownerApp->web }}" target="_blank">
-                                        <img src="{{ asset($ownerApp->assets->img->logotype) }}" class="d-none d-md-block" width="130" height="38" alt="Logo" />
-                                        <img src="{{ asset($ownerApp->assets->img->logomark) }}" class="d-block d-md-none" width="55" height="45" alt="Logo" />
+                                        <img src="{{ asset($ownerApp->assets->img->logotype) }}" class="d-none d-md-block" width="130"/>
+                                        <img src="{{ asset($ownerApp->assets->img->logomark) }}" class="d-block d-md-none" width="55"/>
                                     </a>
                                 </div>
                             </div>

@@ -33,8 +33,23 @@ export function swals({show = true, type = "default", timeout = 0}) {
         }
 
         Swal.fire({
-            html: `<h5>${message} Este proceso puede tomar algunos segundos, por favor espere.</h5>
-                   <img src='${requestRoute}/System/assets/img/utils/spin.gif' width='80'>`,
+            html: `
+                <style>
+                    @keyframes fadeInOutSwal {
+                        0%, 100% { opacity: 0.2; }
+                        50% { opacity: 1; }
+                    }
+
+                    .swal-logo {
+                        width: 100px;
+                        animation: fadeInOutSwal 2s infinite;
+                        display: block;
+                        margin: 10px auto;
+                    }
+                </style>
+                <span class="h5">${message} Este proceso puede tomar algunos segundos, por favor espere.</span>
+                <img src='${requestRoute}/System/assets/img/utils/spin.gif' class="img-fluid swal-logo mt-1 mb-0">
+            `,
             allowOutsideClick: false,
             showConfirmButton: false
         });
