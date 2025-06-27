@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 
 @php
+    $ownerApp = config("app.owner_app");
     $user     = Auth::user();
     $company  = $user->company;
     $role     = $user->role;
     $sections = Cache::get("active_sections_{$company->id}");
-    $ownerApp = config("app.owner_app");
     $preferences = $user->formatted_preferences;
 
     // Cache data
@@ -23,9 +23,9 @@
     <head>
         @include("System.layouts.partials.up")
         <script>
+            window.ownerApp = @json($ownerApp ?? null);
             window.user     = @json($user ?? null);
             window.company  = @json($company ?? null);
-            window.ownerApp = @json($ownerApp ?? null);
             window.sections = @json($sections ?? []);
             window.preferences = @json($preferences ?? []);
         </script>
@@ -34,24 +34,18 @@
         <div class="layout-wrapper layout-content-navbar">
             <div class="layout-container">
                 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-                    <ul class="menu-inner my-3">
-                        <li class="menu-header mb-1">
-                            <span class="menu-header-text" data-i18n="Profile">
-                                <div class="row">
-                                    <div class="col col-auto">
-                                        <div class="avatar avatar-online mt-2">
-                                            <span class="avatar-initial rounded-circle bg-label-dark">
-                                                <img src="{{ asset($ownerApp->assets->img->logomark) }}"/>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="col col-auto">
-                                        <span class="d-block fw-bold text-break">{{ Str::limit($user->name, 16) }}</span>
-                                        <small class="d-block fw-semibold">{{ Str::limit($company->commercial_name, 16) }}</small>
-                                        <small class="d-block fw-semibold">{{ !empty($role) ? $role->name : "" }}</small>
-                                    </div>
-                                </div>
-                            </span>
+                    <ul class="menu-inner mt-2 mb-3">
+                        <li class="menu-header text-center">
+                            <div class="avatar avatar-lg bg-white rounded-circle overflow-hidden mx-auto mb-2" style="width: 60px; height: 60px;">
+                                <img
+                                    src="{{ asset($company->logomark ? 'storage/'.$company->logomark : $ownerApp->assets->img->logomark) }}"
+                                    class="w-100 h-100 object-fit-cover"
+                                    alt="Logo"
+                                />
+                            </div>
+                            <span class="fw-semibold text-white d-block">{{ Str::limit($company->commercial_name, 20) }}</span>
+                            <small class="text-white d-block">{{ Str::limit($user->name, 20) }}</small>
+                            <small class="d-block">{{ Str::limit($role->name, 20) }}</small>
                         </li>
                         @php
                             $subSectionIds    = $sections->pluck("subSections")->flatten()->pluck("id")->toArray();
@@ -62,7 +56,7 @@
 
                             $favoriteCounter = 0;
                         @endphp
-                        <li class="menu-header text-center pt-2 pb-0">
+                        <li class="menu-header text-center py-0">
                             <a href="{{ route('home.index') }}" class="text-success">
                                 <i class="fa-solid fa-screwdriver-wrench"></i>
                                 <span class="ms-1">Administrar accesos</span>

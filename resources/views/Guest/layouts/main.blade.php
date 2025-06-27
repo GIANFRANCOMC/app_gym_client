@@ -14,8 +14,8 @@
     <head>
         @include('Guest.layouts.partials.up')
         <script>
-            window.withMenu = {{ json_encode($withMenu ?? true) }};
             window.ownerApp = @json($ownerApp ?? null);
+            window.withMenu = {{ json_encode($withMenu ?? true) }};
             window.company  = @json($company);
             window.branch   = @json($branch ?? null);
         </script>
