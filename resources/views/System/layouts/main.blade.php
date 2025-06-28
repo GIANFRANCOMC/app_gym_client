@@ -37,11 +37,7 @@
                     <ul class="menu-inner mt-2 mb-3">
                         <li class="menu-header text-center">
                             <div class="avatar avatar-lg bg-white rounded-circle overflow-hidden mx-auto mb-2" style="width: 60px; height: 60px;">
-                                <img
-                                    src="{{ asset($company->logomark ? 'storage/'.$company->logomark : $ownerApp->assets->img->logomark) }}"
-                                    class="w-100 h-100 object-fit-cover"
-                                    alt="Logo"
-                                />
+                                <img src="{{ asset($company->logomark ? 'storage/'.$company->logomark : $ownerApp->assets->img->logomark) }}" class="w-100 h-100 object-fit-cover"/>
                             </div>
                             <span class="fw-semibold text-white d-block">{{ Str::limit($company->commercial_name, 20) }}</span>
                             <small class="text-white d-block">{{ Str::limit($user->name, 20) }}</small>
@@ -174,8 +170,8 @@
                             <div class="navbar-nav align-items-center">
                                 <div class="nav-item navbar-search-wrapper mb-0">
                                     <a class="nav-item nav-link search-toggler d-flex align-items-center px-0" href="{{ $ownerApp->web }}" target="_blank">
-                                        <img src="{{ asset($ownerApp->assets->img->logotype) }}" class="d-none d-md-block" width="130"/>
-                                        <img src="{{ asset($ownerApp->assets->img->logomark) }}" class="d-block d-md-none" width="55"/>
+                                        <img src="{{ asset($ownerApp->assets->img->logotype) }}" class="d-none d-md-block" width="80"/>
+                                        <img src="{{ asset($ownerApp->assets->img->logomark) }}" class="d-block d-md-none" width="50"/>
                                     </a>
                                 </div>
                             </div>
