@@ -10,8 +10,6 @@ use stdClass;
 
 use App\Http\Requests\System\Companies\{StoreCompanyRequest, UpdateCompanyRequest};
 use App\Models\System\{Company, CompanySocialMedia, IdentityDocumentType};
-use App\Services\GoogleCalendarService;
-use App\Services\GoogleDriveService;
 
 class CompanyController extends Controller {
 
@@ -93,6 +91,7 @@ class CompanyController extends Controller {
         $userAuth = Auth::user();
 
         $company = Company::where("id", $userAuth->company_id)
+                          ->whereIn("status", ["active"])
                           ->first();
 
         if(Utilities::isDefined($company)) {
@@ -158,7 +157,7 @@ class CompanyController extends Controller {
                 $company->address                   = $request->address;
                 $company->telephone                 = $request->telephone;
                 $company->email                     = $request->email;
-                $company->token_api_misc            = $request->token_api_misc;
+                // $company->token_api_misc            = $request->token_api_misc;
                 // $company->status                    = $request->status;
                 $company->updated_at                = now();
                 $company->updated_by                = $userAuth->id ?? null;
@@ -166,12 +165,12 @@ class CompanyController extends Controller {
 
                 $facebook = CompanySocialMedia::where("company_id", $company->id)
                                               ->where("type", "facebook")
-                                              ->where("status", "active")
                                               ->first();
 
                 if(Utilities::isDefined($facebook)) {
 
                     $facebook->link       = $request->facebook ?? "";
+                    $facebook->status     = "active";
                     $facebook->updated_at = now();
                     $facebook->updated_by = $userAuth->id ?? null;
                     $facebook->save();
@@ -191,12 +190,12 @@ class CompanyController extends Controller {
 
                 $instagram = CompanySocialMedia::where("company_id", $company->id)
                                                ->where("type", "instagram")
-                                               ->where("status", "active")
                                                ->first();
 
                 if(Utilities::isDefined($instagram)) {
 
                     $instagram->link       = $request->instagram ?? "";
+                    $instagram->status     = "active";
                     $instagram->updated_at = now();
                     $instagram->updated_by = $userAuth->id ?? null;
                     $instagram->save();
@@ -216,12 +215,12 @@ class CompanyController extends Controller {
 
                 $whatsapp = CompanySocialMedia::where("company_id", $company->id)
                                               ->where("type", "whatsapp")
-                                              ->where("status", "active")
                                               ->first();
 
                 if(Utilities::isDefined($whatsapp)) {
 
                     $whatsapp->link       = $request->whatsapp ?? "";
+                    $whatsapp->type       = "instagram";
                     $whatsapp->updated_at = now();
                     $whatsapp->updated_by = $userAuth->id ?? null;
                     $whatsapp->save();

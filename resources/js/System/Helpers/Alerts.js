@@ -157,11 +157,11 @@ export function generateTableAlert({messages, keys = []}) {
     if(keys.length === 0) {
 
         header = `<tr class="text-center align-middle">
-                        <td class="text-center">N°</td>
-                        <td class="text-center">Mensaje</td>
+                        <td class="text-center text-nowrap fw-semibold">N°</td>
+                        <td class="text-center text-nowrap fw-semibold">Mensaje</td>
                   </tr>`;
 
-        content = `${messages.reduce((carry, singleMessage, index)=>carry+/*html*/`
+        content = `${messages.reduce((carry, singleMessage, index) => carry+/*html*/`
                     <tr>
                         <td class="text-center">${index + 1}</td>
                         <td class="text-start">${singleMessage}</td>
@@ -171,16 +171,16 @@ export function generateTableAlert({messages, keys = []}) {
     }else {
 
         header = `<tr class="text-center align-middle">
-                        <td class="text-center">N°</td>
-                        ${keys.reduce((carryKey, singleMessageKey, indexKey)=>carryKey+/*html*/`
-                            <td class="text-center">${singleMessageKey?.label ?? ""}</td>
+                        <td class="text-center text-nowrap fw-semibold">N°</td>
+                        ${keys.reduce((carryKey, singleMessageKey, indexKey) => carryKey+/*html*/`
+                            <td class="text-center text-nowrap fw-semibold">${singleMessageKey?.label ?? ""}</td>
                         `, "")}
                   </tr>`;
 
-        content = `${messages.reduce((carry, singleMessage, index)=>carry+/*html*/`
+        content = `${messages.reduce((carry, singleMessage, index) => carry+/*html*/`
                     <tr>
                         <td class="text-center">${index + 1}</td>
-                        ${keys.reduce((carryKey, singleMessageKey, indexKey)=>carryKey+/*html*/`
+                        ${keys.reduce((carryKey, singleMessageKey, indexKey) => carryKey+/*html*/`
                             <td class="text-start">${singleMessage.length > 0 ? (singleMessage[0][singleMessageKey?.column] ?? "") : ""}</td>
                         `, "")}
                     </tr>

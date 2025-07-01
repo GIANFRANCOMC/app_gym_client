@@ -9,7 +9,7 @@ export const generalConfig = {
     essential: Utils.getEssential(),
     messages: {
         withoutResults: "Sin registros",
-        errorValidate: "Error al validar, revisar el formulario.",
+        errorValidate: "Por favor, revisar el formulario para continuar.",
         errorSearchValidate: "Para realizar la búsqueda, complete los siguientes campos:"
     },
     forms: {
@@ -22,7 +22,8 @@ export const generalConfig = {
             required: "*",
             round: 2,
             minValue: 0,
-            maxValue: 9999999
+            maxValue: 9999999,
+            maxSize: 4096
         },
         errors: {
             functions: {
@@ -34,12 +35,16 @@ export const generalConfig = {
                 },
                 max: {
                     numeric: (min = "") => `No debe ser mayor que ${min}`
+                },
+                maxSize: {
+                    numeric: (max = "") => `El archivo debe pesar menos de ${max} MB`
                 }
             },
             labels: {
                 required: "Es obligatorio",
                 min_number_0: "Debe ser mayor a 0",
-                min_equal_number_0: "Debe ser mayor o igual a 0"
+                min_equal_number_0: "Debe ser mayor o igual a 0",
+                not_valid_extension: "Extensión no válida"
             },
             styles: {
                 default: "text-danger"

@@ -25,11 +25,23 @@ class StoreCompanyRequest extends FormRequest {
      */
     public function rules(): array {
 
+        $maxSize = Utilities::$inputs["maxSize"];
+
         return [
             "identity_document_type_id" => "required|integer",
             "document_number"           => "required|string|max:20",
+            "legal_name"                => "required|string|max:200",
+            "commercial_name"           => "required|string|max:200",
+            "tagline"                   => "nullable|string|max:500",
+            "description"               => "nullable|string|max:500",
+            "address"                   => "nullable|string|max:200",
+            "telephone"                 => "nullable|string|max:50",
             "email"                     => "nullable|email",
-            "status"                    => "required|string"
+            "status"                    => "required|string",
+            "logotype"                  => "nullable|file|image|mimes:jpeg,png,jpg|max:$maxSize",
+            "combinationmark"           => "nullable|file|image|mimes:jpeg,png,jpg|max:$maxSize",
+            "logomark"                  => "nullable|file|image|mimes:jpeg,png,jpg|max:$maxSize",
+            "login_image"               => "nullable|file|image|mimes:jpeg,png,jpg|max:$maxSize"
         ];
 
     }

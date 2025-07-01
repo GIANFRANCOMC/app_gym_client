@@ -54,8 +54,8 @@
                         isRequired
                         hasTextBottom
                         :textBottomInfo="forms.entity.createUpdate.errors?.identity_document_type"
-                        xl="6"
-                        lg="6">
+                        xl="4"
+                        lg="4">
                         <template v-slot:input>
                             <v-select
                                 v-model="forms.entity.createUpdate.data.identity_document_type"
@@ -69,36 +69,40 @@
                         hasDiv
                         title="Número de documento"
                         isRequired
+                        maxlength="10"
                         hasTextBottom
                         :textBottomInfo="forms.entity.createUpdate.errors?.document_number"
-                        xl="6"
-                        lg="6"/>
+                        xl="4"
+                        lg="4"/>
                     <InputText
                         v-model="forms.entity.createUpdate.data.legal_name"
                         hasDiv
                         title="Nombre legal"
                         isRequired
+                        maxlength="100"
                         hasTextBottom
                         :textBottomInfo="forms.entity.createUpdate.errors?.legal_name"
-                        xl="6"
-                        lg="6"/>
+                        xl="4"
+                        lg="4"/>
                     <InputText
                         v-model="forms.entity.createUpdate.data.commercial_name"
                         hasDiv
                         title="Nombre comercial"
                         isRequired
+                        maxlength="100"
                         hasTextBottom
                         :textBottomInfo="forms.entity.createUpdate.errors?.commercial_name"
-                        xl="6"
-                        lg="6"/>
+                        xl="4"
+                        lg="4"/>
                     <InputText
                         v-model="forms.entity.createUpdate.data.address"
                         hasDiv
                         title="Dirección"
+                        maxlength="100"
                         hasTextBottom
                         :textBottomInfo="forms.entity.createUpdate.errors?.address"
-                        xl="6"
-                        lg="6"/>
+                        xl="8"
+                        lg="8"/>
                 </div>
             </div>
             <div class="tab-pane fade" id="navs-pills-contacts" role="tabpanel">
@@ -107,6 +111,7 @@
                         v-model="forms.entity.createUpdate.data.telephone"
                         hasDiv
                         title="Teléfono"
+                        maxlength="40"
                         hasTextBottom
                         :textBottomInfo="forms.entity.createUpdate.errors?.telephone"
                         xl="6"
@@ -158,7 +163,7 @@
                         xl="6"
                         lg="6">
                         <template v-slot:inputGroupAppend>
-                            <a :href="forms.entity.createUpdate.data.whatsapp" target="_blank" class="btn btn-label-success waves-effect" v-if="isDefined({value: forms.entity.createUpdate.data.whatsapp}) && isValidUrl({url: forms.entity.createUpdate.data.whatsapp})">
+                            <a :href="forms.entity.createUpdate.data.whatsapp" target="_blank" class="btn btn-label-success waves-effect" v-if="isValidUrl({url: forms.entity.createUpdate.data.whatsapp})">
                                 <i class="fa fa-globe"></i>
                                 <span class="ms-2">Visitar</span>
                             </a>
@@ -172,6 +177,7 @@
                         v-model="forms.entity.createUpdate.data.tagline"
                         hasDiv
                         title="Slogan"
+                        maxlength="200"
                         hasTextBottom
                         :textBottomInfo="forms.entity.createUpdate.errors?.tagline"
                         xl="12"
@@ -180,6 +186,7 @@
                         v-model="forms.entity.createUpdate.data.description"
                         hasDiv
                         title="Descripción general"
+                        maxlength="300"
                         hasTextBottom
                         :textBottomInfo="forms.entity.createUpdate.errors?.description"
                         xl="12"
@@ -210,9 +217,13 @@
                                             <input type="file" class="form-control" id="logomarkFileId" accept="image/png, image/jpg, image/jpeg"/>
                                         </template>
                                     </InputSlot>
-                                    <div class="text-muted d-block mt-1 text-nowrap">
+                                    <div class="d-block mt-1 text-nowrap">
                                         <i class="fa fa-info-circle"></i>
-                                        <span class="ms-2 small">Ícono o símbolo gráfico que representa la marca sin texto.</span>
+                                        <span class="ms-2 small">Nota: Ícono o símbolo gráfico que representa la marca sin texto.</span>
+                                    </div>
+                                    <div class="d-block mt-1 text-nowrap">
+                                        <i class="fa fa-warning text-warning"></i>
+                                        <span class="ms-2 small">Tamaño máximo: {{ config.forms.inputs.maxSize / 1024 }} MB (PNG, JPG, JPEG).</span>
                                     </div>
                                 </td>
                             </tr>
@@ -232,9 +243,13 @@
                                             <input type="file" class="form-control" id="logotypeFileId" accept="image/png, image/jpg, image/jpeg"/>
                                         </template>
                                     </InputSlot>
-                                    <div class="text-muted d-block mt-1 text-nowrap">
+                                    <div class="d-block mt-1 text-nowrap">
                                         <i class="fa fa-info-circle"></i>
-                                        <span class="ms-2 small">Versión textual del nombre de la marca. Debe contener solo letras, sin símbolos.</span>
+                                        <span class="ms-2 small">Nota: Versión textual del nombre de la marca. Debe contener solo letras, sin símbolos.</span>
+                                    </div>
+                                    <div class="d-block mt-1 text-nowrap">
+                                        <i class="fa fa-warning text-warning"></i>
+                                        <span class="ms-2 small">Tamaño máximo: {{ config.forms.inputs.maxSize / 1024 }} MB (PNG, JPG, JPEG).</span>
                                     </div>
                                 </td>
                             </tr>
@@ -254,9 +269,13 @@
                                             <input type="file" class="form-control" id="combinationmarkFileId" accept="image/png, image/jpg, image/jpeg"/>
                                         </template>
                                     </InputSlot>
-                                    <div class="text-muted d-block mt-1 text-nowrap">
+                                    <div class="d-block mt-1 text-nowrap">
                                         <i class="fa fa-info-circle"></i>
-                                        <span class="ms-2 small">Combinación del logotipo y el isotipo en una sola unidad visual.</span>
+                                        <span class="ms-2 small">Nota: Combinación del logotipo y el isotipo en una sola unidad visual.</span>
+                                    </div>
+                                    <div class="d-block mt-1 text-nowrap">
+                                        <i class="fa fa-warning text-warning"></i>
+                                        <span class="ms-2 small">Tamaño máximo: {{ config.forms.inputs.maxSize / 1024 }} MB (PNG, JPG, JPEG).</span>
                                     </div>
                                 </td>
                             </tr>
@@ -276,9 +295,13 @@
                                             <input type="file" class="form-control" id="loginImageFileId" accept="image/png, image/jpg, image/jpeg"/>
                                         </template>
                                     </InputSlot>
-                                    <div class="text-muted d-block mt-1">
+                                    <div class="d-block mt-1">
                                         <i class="fa fa-info-circle"></i>
-                                        <span class="ms-2 small">Imagen que se muestra en la pantalla de inicio de sesión. Generalmente puede ser un logo, una ilustración institucional o una imagen decorativa que represente a la entidad.</span>
+                                        <span class="ms-2 small">Nota: Imagen que se muestra en la pantalla de inicio de sesión. Generalmente puede ser un logo, una ilustración institucional o una imagen decorativa que represente a la entidad.</span>
+                                    </div>
+                                    <div class="d-block mt-1 text-nowrap">
+                                        <i class="fa fa-warning text-warning"></i>
+                                        <span class="ms-2 small">Tamaño máximo: {{ config.forms.inputs.maxSize / 1024 }} MB (PNG, JPG, JPEG).</span>
                                     </div>
                                 </td>
                             </tr>
@@ -310,7 +333,7 @@
                     </InputSlot>
                 </div>
             </div>
-            <div class="tab-pane fade" id="navs-pills-configuration" role="tabpanel" v-show="false">
+            <div class="tab-pane fade" id="navs-pills-configuration" role="tabpanel" v-if="false">
                 <div class="row g-3">
                     <InputText
                         v-model="forms.entity.createUpdate.data.slug"
@@ -390,9 +413,9 @@ export default {
                             telephone: "",
                             email: "",
                             token_api_misc: "",
+                            logomark: "",
                             logotype: "",
                             combinationmark: "",
-                            logomark: "",
                             login_image: "",
                             facebook: "",
                             instagram: "",
@@ -438,8 +461,8 @@ export default {
 
                 const company = (this.options.company?.records ?? []).length > 0 ? this.options.company?.records[0] : null;
 
-                let identityDocumentType = this.identityDocumentTypes.filter(e => e.code === company?.identity_document_type_id)[0],
-                    status               = this.statuses.filter(e => e.code === company?.status)[0];
+                let identityDocumentType = this.identityDocumentTypes.find(e => e.code === company?.identity_document_type_id),
+                    status               = this.statuses.find(e => e.code === company?.status);
 
                 this.forms.entity.createUpdate.data.id                     = company?.id;
                 this.forms.entity.createUpdate.data.slug                   = company?.slug;
@@ -453,16 +476,16 @@ export default {
                 this.forms.entity.createUpdate.data.telephone              = company?.telephone;
                 this.forms.entity.createUpdate.data.email                  = company?.email;
                 this.forms.entity.createUpdate.data.token_api_misc         = company?.token_api_misc;
+                this.forms.entity.createUpdate.data.logomark               = company?.logomark;
                 this.forms.entity.createUpdate.data.logotype               = company?.logotype;
                 this.forms.entity.createUpdate.data.combinationmark        = company?.combinationmark;
-                this.forms.entity.createUpdate.data.logomark               = company?.logomark;
                 this.forms.entity.createUpdate.data.login_image            = company?.login_image;
                 this.forms.entity.createUpdate.data.facebook               = company?.facebook;
                 this.forms.entity.createUpdate.data.instagram              = company?.instagram;
                 this.forms.entity.createUpdate.data.whatsapp               = company?.whatsapp;
                 this.forms.entity.createUpdate.data.status                 = status;
 
-                const tabTrigger = document.querySelector('[data-bs-target="#navs-pills-general"]');
+                const tabTrigger = document.querySelector(`[data-bs-target="#navs-pills-general"]`);
                 const tab = new bootstrap.Tab(tabTrigger);
                 tab.show();
 
@@ -496,7 +519,7 @@ export default {
 
                     if(form.hasOwnProperty(key)) {
 
-                        if(["logotype", "combinationmark", "logomark", "login_image"].includes(key) && !(form[key] instanceof File)) continue;
+                        if(["logomark", "logotype", "combinationmark", "login_image"].includes(key) && !(form[key] instanceof File)) continue;
 
                         formData.append(key, form[key] ?? "");
 
@@ -504,10 +527,16 @@ export default {
 
                 }
 
+                const logomarkFile        = document.getElementById("logomarkFileId");
                 const logotypeFile        = document.getElementById("logotypeFileId");
                 const combinationmarkFile = document.getElementById("combinationmarkFileId");
-                const logomarkFile        = document.getElementById("logomarkFileId");
                 const loginImageFile      = document.getElementById("loginImageFileId");
+
+                if(logomarkFile && logomarkFile.files && logomarkFile.files.length > 0) {
+
+                    formData.append("logomark", logomarkFile.files[0]);
+
+                }
 
                 if(logotypeFile && logotypeFile.files && logotypeFile.files.length > 0) {
 
@@ -521,12 +550,6 @@ export default {
 
                 }
 
-                if(logomarkFile && logomarkFile.files && logomarkFile.files.length > 0) {
-
-                    formData.append("logomark", logomarkFile.files[0]);
-
-                }
-
                 if(loginImageFile && loginImageFile.files && loginImageFile.files.length > 0) {
 
                     formData.append("login_image", loginImageFile.files[0]);
@@ -537,9 +560,9 @@ export default {
 
                 if(Requests.valid({result: createUpdate})) {
 
+                    this.forms.entity.createUpdate.data.logomark        = createUpdate.data.company?.logomark;
                     this.forms.entity.createUpdate.data.logotype        = createUpdate.data.company?.logotype;
                     this.forms.entity.createUpdate.data.combinationmark = createUpdate.data.company?.combinationmark;
-                    this.forms.entity.createUpdate.data.logomark        = createUpdate.data.company?.logomark;
                     this.forms.entity.createUpdate.data.login_image     = createUpdate.data.company?.login_image;
 
                     // Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
@@ -572,10 +595,10 @@ export default {
             switch(functionName) {
                 case "modalCreateUpdateEntity":
                 case "createUpdateEntity":
-                    document.getElementById("logotypeFileId").value = "";
+                    document.getElementById("logomarkFileId").value        = "";
+                    document.getElementById("logotypeFileId").value        = "";
                     document.getElementById("combinationmarkFileId").value = "";
-                    document.getElementById("logomarkFileId").value = "";
-                    document.getElementById("loginImageFileId").value = "";
+                    document.getElementById("loginImageFileId").value      = "";
                     break;
             }
 
@@ -597,16 +620,19 @@ export default {
 
             if(["createUpdateEntity"].includes(functionName)) {
 
-                result.slug                   = [];
                 result.identity_document_type = [];
                 result.document_number        = [];
                 result.legal_name             = [];
                 result.commercial_name        = [];
-                result.address                = [];
-                result.telephone              = [];
-                result.email                  = [];
-                result.token_api_misc         = [];
-                result.status                 = [];
+                result.logomark               = [];
+                result.logotype               = [];
+                result.combinationmark        = [];
+                result.login_image            = [];
+
+                const logomarkFile        = document.getElementById("logomarkFileId");
+                const logotypeFile        = document.getElementById("logotypeFileId");
+                const combinationmarkFile = document.getElementById("combinationmarkFileId");
+                const loginImageFile      = document.getElementById("loginImageFileId");
 
                 const isDescriptive = ["descriptive"].includes(extras?.type);
 
@@ -616,6 +642,9 @@ export default {
                     },
                     contacts: {
                         label: "Información de contacto y redes"
+                    },
+                    branding: {
+                        label: "Identidad visual"
                     }
                 };
 
@@ -647,19 +676,79 @@ export default {
 
                 }
 
-                /* if(!this.isDefined({value: form?.address})) {
+                const allowedExtensions = ["png", "jpg", "jpeg"];
 
-                    result.address.push({section: sections.general.label, msg: `${isDescriptive ? "Dirección:" : ""} ${this.config.forms.errors.labels.required}`});
-                    result.bool = false;
+                if(logomarkFile && logomarkFile.files && logomarkFile.files.length > 0) {
 
-                } */
+                    const fileExtension = logomarkFile.files[0].name.split(".").pop().toLowerCase();
 
-                /* if(!this.isDefined({value: form?.telephone})) {
+                    if(logomarkFile.files[0].size > this.config.forms.inputs.maxSize * 1024) {
 
-                    result.telephone.push({section: sections.contacts.label, msg: `${isDescriptive ? "Teléfono:" : ""} ${this.config.forms.errors.labels.required}`});
-                    result.bool = false;
+                        result.logomark.push({section: sections.branding.label, msg: `${isDescriptive ? "Isotipo:" : ""} ${this.config.forms.errors.functions.maxSize.numeric(this.config.forms.inputs.maxSize / 1024)}`});
+                        result.bool = false;
 
-                } */
+                    }else if(!allowedExtensions.includes(fileExtension)) {
+
+                        result.logomark.push({section: sections.branding.label, msg: `${isDescriptive ? "Isotipo:" : ""} ${this.config.forms.errors.labels.not_valid_extension}`});
+                        result.bool = false;
+
+                    }
+
+                }
+
+                if(logotypeFile && logotypeFile.files && logotypeFile.files.length > 0) {
+
+                    const fileExtension = logotypeFile.files[0].name.split(".").pop().toLowerCase();
+
+                    if(logotypeFile.files[0].size > this.config.forms.inputs.maxSize * 1024) {
+
+                        result.logotype.push({section: sections.branding.label, msg: `${isDescriptive ? "Logotipo:" : ""} ${this.config.forms.errors.functions.maxSize.numeric(this.config.forms.inputs.maxSize / 1024)}`});
+                        result.bool = false;
+
+                    }else if(!allowedExtensions.includes(fileExtension)) {
+
+                        result.logotype.push({section: sections.branding.label, msg: `${isDescriptive ? "Logotipo:" : ""} ${this.config.forms.errors.labels.not_valid_extension}`});
+                        result.bool = false;
+
+                    }
+
+                }
+
+                if(combinationmarkFile && combinationmarkFile.files && combinationmarkFile.files.length > 0) {
+
+                    const fileExtension = combinationmarkFile.files[0].name.split(".").pop().toLowerCase();
+
+                    if(combinationmarkFile.files[0].size > this.config.forms.inputs.maxSize * 1024) {
+
+                        result.combinationmark.push({section: sections.branding.label, msg: `${isDescriptive ? "Marca combinada:" : ""} ${this.config.forms.errors.functions.maxSize.numeric(this.config.forms.inputs.maxSize / 1024)}`});
+                        result.bool = false;
+
+                    }else if(!allowedExtensions.includes(fileExtension)) {
+
+                        result.combinationmark.push({section: sections.branding.label, msg: `${isDescriptive ? "Marca combinada:" : ""} ${this.config.forms.errors.labels.not_valid_extension}`});
+                        result.bool = false;
+
+                    }
+
+                }
+
+                if(loginImageFile && loginImageFile.files && loginImageFile.files.length > 0) {
+
+                    const fileExtension = loginImageFile.files[0].name.split(".").pop().toLowerCase();
+
+                    if(loginImageFile.files[0].size > this.config.forms.inputs.maxSize * 1024) {
+
+                        result.login_image.push({section: sections.branding.label, msg: `${isDescriptive ? "Imagen de login:" : ""} ${this.config.forms.errors.functions.maxSize.numeric(this.config.forms.inputs.maxSize / 1024)}`});
+                        result.bool = false;
+
+                    }else if(!allowedExtensions.includes(fileExtension)) {
+
+                        result.login_image.push({section: sections.branding.label, msg: `${isDescriptive ? "Imagen de login:" : ""} ${this.config.forms.errors.labels.not_valid_extension}`});
+                        result.bool = false;
+
+                    }
+
+                }
 
             }
 
@@ -670,11 +759,6 @@ export default {
         isDefined({value}) {
 
             return Utils.isDefined({value});
-
-        },
-        fixedNumber(value) {
-
-            return Utils.fixedNumber(value);
 
         },
         isValidUrl({url}) {

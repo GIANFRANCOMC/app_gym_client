@@ -21,7 +21,8 @@ class Utilities {
         "maxlength" => 999,
         "round" => 2,
         "minValue" => 0,
-        "maxValue" => 99999999
+        "maxValue" => 99999999,
+        "maxSize" => 4096
     ];
 
     public static function getOwnerApp() {
