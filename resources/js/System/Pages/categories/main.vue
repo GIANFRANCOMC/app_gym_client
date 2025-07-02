@@ -454,11 +454,6 @@ export default {
 
             return Utils.generateCode({length});
 
-        },
-        separatorNumber(value) {
-
-            return Utils.separatorNumber(value);
-
         }
     },
     computed: {

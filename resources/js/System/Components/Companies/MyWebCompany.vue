@@ -60,7 +60,7 @@ export default {
     computed: {
         backgroundImage() {
 
-            return `url('${this.config.assets.backgrounds.images.default}')`;
+            return `url('${this.config.assets.backgrounds.images.bg2}')`;
 
         }
     },

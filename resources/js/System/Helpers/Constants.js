@@ -69,7 +69,8 @@ export const generalConfig = {
     assets: {
         backgrounds: {
             images: {
-                default: "/System/assets/img/utils/customers/carnet/2.png"
+                bg1: "/System/assets/img/utils/customers/carnet/1.png",
+                bg2: "/System/assets/img/utils/customers/carnet/2.png"
             }
         }
     }

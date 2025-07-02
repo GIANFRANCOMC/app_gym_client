@@ -49,11 +49,9 @@
         <table class="table table-hover">
             <thead>
                 <tr class="text-center align-middle">
-                    <th class="bg-secondary text-white fw-semibold" style="width: 40%;">NOMBRE</th>
-                    <th class="bg-secondary text-white fw-semibold" style="width: 20%;">DIRECCIÓN</th>
-                    <!-- <th class="bg-secondary text-white fw-semibold">ALMACÉN</th> -->
-                    <!-- <th class="bg-secondary text-white fw-semibold">SERIES</th> -->
-                    <th class="bg-secondary text-white fw-semibold" style="width: 20%;">ESTADO</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 30%;">NOMBRE</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 35%;">DIRECCIÓN</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 15%;">ESTADO</th>
                     <th class="bg-secondary text-white fw-semibold" style="width: 20%;">ACCIONES</th>
                 </tr>
             </thead>
@@ -68,15 +66,15 @@
                 <template v-else>
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
-                            <td v-text="record.name"></td>
-                            <td v-text="isDefined({value: record.address}) ? record.address : 'N/A'" class="text-start"></td>
-                            <!-- <td v-text="record.warehouses.map(e => e.name).join('<br/>')"></td> -->
-                            <!-- <td class="text-start">
-                                <div v-for="serie in record?.series" :key="serie.id" class="my-2">
-                                    <span v-text="serie?.document_type?.name" class="badge bg-label-primary fw-bold"></span>
-                                    <span v-text="serie?.legible_serie" class="badge bg-label-dark fw-bold ms-2"></span>
+                            <td v-text="record.name" class="text-start fw-bold"></td>
+                            <td class="text-start">
+                                <div v-if="isDefined({value: record.address})">
+                                    <span v-text="record.address"></span>
                                 </div>
-                            </td> -->
+                                <div v-else class="badge bg-info-1">
+                                    <span>Sin dirección registrada</span>
+                                </div>
+                            </td>
                             <td>
                                 <span :class="['badge', 'fw-semibold', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
@@ -127,6 +125,7 @@
                             hasDiv
                             title="Nombre"
                             isRequired
+                            maxlength="100"
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.name"
                             xl="12"
@@ -135,7 +134,7 @@
                             v-model="forms.entity.createUpdate.data.address"
                             hasDiv
                             title="Dirección"
-                            isRequired
+                            maxlength="100"
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.address"
                             xl="12"
@@ -298,7 +297,7 @@ export default {
 
             if(this.isDefined({value: record})) {
 
-                let status = this.statuses.filter(e => e.code === record?.status)[0];
+                let status = this.statuses.find(e => e.code === record?.status);
 
                 this.forms.entity.createUpdate.data.id      = record?.id;
                 this.forms.entity.createUpdate.data.name    = record?.name;
@@ -324,7 +323,7 @@ export default {
 
             let form = Utils.cloneJson(this.forms.entity.createUpdate.data);
 
-            const validateForm = this.validateForm({functionName, form});
+            const validateForm = this.validateForm({functionName, form, extras: {type: "descriptive"}});
 
             if(validateForm?.bool) {
 
@@ -352,9 +351,10 @@ export default {
 
             }else {
 
-                this.formErrors({functionName, type: "set", errors: validateForm});
-                Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
-                Alerts.swals({show: false});
+                // this.formErrors({functionName, type: "set", errors: validateForm});
+                // Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
+                // Alerts.swals({show: false});
+                Alerts.generateAlert({messages: Utils.getErrors({errors: validateForm}), msgContent: `<div class="fw-semibold mb-2">${this.config.messages.errorValidate}</div>`});
 
             }
 
@@ -394,16 +394,18 @@ export default {
                 result.address = [];
                 result.status  = [];
 
+                const isDescriptive = ["descriptive"].includes(extras?.type);
+
                 if(!this.isDefined({value: form?.name})) {
 
-                    result.name.push(this.config.forms.errors.labels.required);
+                    result.name.push(`${isDescriptive ? "Nombre:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }
 
                 if(!this.isDefined({value: form?.status})) {
 
-                    result.status.push(this.config.forms.errors.labels.required);
+                    result.status.push(`${isDescriptive ? "Dirección:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }
@@ -429,7 +431,7 @@ export default {
         filterByOptions: function() {
 
             return [
-                // {code: "all", label: "Todos"},
+                {code: "all", label: "Todos"},
                 {code: "name", label: "Nombre"},
                 {code: "address", label: "Dirección"}
             ];

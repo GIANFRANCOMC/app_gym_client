@@ -26,8 +26,8 @@ class UpdateBranchRequest extends FormRequest {
     public function rules(): array {
 
         return [
-            "name"    => "required|string|max:100",
-            "address" => "required|string|max:100",
+            "name"    => "required|string|max:200",
+            "address" => "nullable|string|max:200",
             "status"  => "required|string"
         ];
 

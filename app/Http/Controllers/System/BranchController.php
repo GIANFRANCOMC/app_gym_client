@@ -47,11 +47,12 @@ class BranchController extends Controller {
 
                                 $query->where(function($query) use($request, $filter) {
 
-                                    $query->where("name", "like", $filter);
+                                    $query->where("name", "like", $filter)
+                                          ->orWhere("address", "like", $filter);
 
                                 });
 
-                            }else if(in_array($request->filter_by, ["name"])) {
+                            }else if(in_array($request->filter_by, ["name", "address"])) {
 
                                 $query->where(function($query) use($request, $filter) {
 
@@ -124,7 +125,7 @@ class BranchController extends Controller {
 
             $warehouse = new Warehouse();
             $warehouse->branch_id  = $branch->id;
-            $warehouse->name       = "Almacén $seq - $branch->name";
+            $warehouse->name       = "$branch->name - Almacén $seq";
             $warehouse->status     = "active";
             $warehouse->created_at = now();
             $warehouse->created_by = $userAuth->id ?? null;
@@ -175,7 +176,7 @@ class BranchController extends Controller {
 
                 foreach($branch->warehousesAll as $warehouse) {
 
-                    $warehouse->name       = "Almacén $seq - $branch->name";
+                    $warehouse->name       = "$branch->name - Almacén $seq";
                     $warehouse->updated_at = now();
                     $warehouse->updated_by = $userAuth->id ?? null;
                     $warehouse->save();
