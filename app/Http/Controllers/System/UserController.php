@@ -15,6 +15,8 @@ class UserController extends Controller {
 
     public function initParams(Request $request) {
 
+        $userAuth = Auth::user();
+
         $initParams = new stdClass();
 
         $config = new stdClass();
@@ -24,13 +26,13 @@ class UserController extends Controller {
         if(in_array($page, ["main"])) {
 
             $config->identityDocumentTypes = new stdClass();
-            $config->identityDocumentTypes->records = IdentityDocumentType::whereIn("id", [1, 2])
-                                                                          ->get();
+            $config->identityDocumentTypes->records = IdentityDocumentType::getAll("user", $userAuth->company_id);
 
             $config->roles = new stdClass();
-            $config->roles->records = Role::getAll("user");
+            $config->roles->records = Role::getAll("user", $userAuth->company_id);
 
             $config->users = new stdClass();
+            $config->users->genders  = User::getGenders();
             $config->users->statuses = User::getStatuses();
 
         }
@@ -99,13 +101,21 @@ class UserController extends Controller {
         $user = null;
 
         $userExists = User::where("company_id", $userAuth->company_id)
-                          ->where("identity_document_type_id", $request->identity_document_type_id)
                           ->where("document_number", $request->document_number)
                           ->exists();
 
         if($userExists) {
 
-            return response()->json(["bool" => false, "msg" => "El colaborador ingresado ya ha sido registrado."], 200);
+            return response()->json(["bool" => false, "msg" => "El número de documento ingresado ya ha sido registrado."], 200);
+
+        }
+
+        $emailExists = User::where("email", $request->email)
+                           ->exists();
+
+        if($emailExists) {
+
+            return response()->json(["bool" => false, "msg" => "El correo electrónico ingresado ya ha sido registrado."], 200);
 
         }
 
@@ -119,6 +129,8 @@ class UserController extends Controller {
             $user->name                      = $request->name;
             $user->email                     = $request->email;
             $user->password                  = $request->password;
+            $user->gender                    = $request->gender ?? "other";
+            $user->birthdate                 = $request->birthdate;
             $user->status                    = $request->status;
             $user->created_at                = now();
             $user->created_by                = $userAuth->id ?? null;
@@ -156,14 +168,23 @@ class UserController extends Controller {
         if(Utilities::isDefined($user)) {
 
             $userExists = User::where("company_id", $userAuth->company_id)
-                              ->where("identity_document_type_id", $request->identity_document_type_id)
                               ->where("document_number", $request->document_number)
                               ->whereNot("id", $user->id)
                               ->exists();
 
             if($userExists) {
 
-                return response()->json(["bool" => false, "msg" => "El colaborador ingresado ya ha sido registrado."], 200);
+                return response()->json(["bool" => false, "msg" => "El número de documento ingresado ya ha sido registrado."], 200);
+
+            }
+
+            $emailExists = User::where("email", $request->email)
+                               ->whereNot("id", $user->id)
+                               ->exists();
+
+            if($emailExists) {
+
+                return response()->json(["bool" => false, "msg" => "El correo electrónico ingresado ya ha sido registrado."], 200);
 
             }
 
@@ -174,6 +195,8 @@ class UserController extends Controller {
                 $user->document_number           = $request->document_number;
                 $user->name                      = $request->name;
                 $user->email                     = $request->email;
+                $user->gender                    = $request->gender ?? "other";
+                $user->birthdate                 = $request->birthdate;
                 $user->status                    = $request->status;
                 $user->updated_at                = now();
                 $user->updated_by                = $userAuth->id ?? null;

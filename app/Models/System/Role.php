@@ -48,11 +48,9 @@ class Role extends Model {
 
     }
 
-    public static function getAll($type = "default") {
+    public static function getAll($type = "default", $company_id = null) {
 
-        $userAuth = Auth::user();
-
-        return Role::where("company_id", $userAuth->company_id)
+        return Role::where("company_id", $company_id)
                    ->when(in_array($type, ["user"]), function($query) {
 
                         $query->whereIn("status", ["active"]);

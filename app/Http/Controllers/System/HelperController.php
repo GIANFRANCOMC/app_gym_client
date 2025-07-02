@@ -29,12 +29,12 @@ class HelperController extends Controller {
                 $params = [];
 
                 switch($request->type) {
-                    case 2:
+                    case "dni":
                         $type = "dni";
                         $params = json_encode(["dni" => $request->document_number]);
                         break;
 
-                    case 4:
+                    case "ruc":
                         $type = "ruc";
                         $params = json_encode(["ruc" => $request->document_number]);
                         break;
@@ -74,7 +74,7 @@ class HelperController extends Controller {
                     if($bool) {
 
                         switch($request->type) {
-                            case 2:
+                            case "dni":
                                 $data = [
                                     "document_number"   => $dataApi->data->numero,
                                     "first_name"        => $dataApi->data->nombres,
@@ -84,7 +84,7 @@ class HelperController extends Controller {
                                 ];
                                 break;
 
-                            case 4:
+                            case "ruc":
                                 $data = [
                                     "document_number" => $dataApi->data->ruc,
                                     "legal_name"      => $dataApi->data->nombre_o_razon_social

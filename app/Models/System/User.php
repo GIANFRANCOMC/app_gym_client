@@ -20,6 +20,7 @@ class User extends Authenticatable {
     public static $snakeAttributes = true;
 
     protected $appends = [
+        "formatted_gender",
         "formatted_status",
         "formatted_preferences"
     ];
@@ -37,6 +38,9 @@ class User extends Authenticatable {
         "name",
         "email",
         "password",
+        "gender",
+        "gender_description",
+        "birthdate",
         "status",
         "created_at",
         "created_by",
@@ -65,6 +69,12 @@ class User extends Authenticatable {
     ];
 
     // Appends
+    public function getFormattedGenderAttribute() {
+
+        return self::getGenders("first", $this->attributes["gender"])["label"] ?? "";
+
+    }
+
     public function getFormattedStatusAttribute() {
 
         return self::getStatuses("first", $this->attributes["status"])["label"] ?? "";
@@ -83,6 +93,18 @@ class User extends Authenticatable {
     }
 
     // Functions
+    public static function getGenders($type = "all", $code = "") {
+
+        $statuses = [
+            ["code" => "male", "label" => "Masculino"],
+            ["code" => "female", "label" => "Femenino"],
+            ["code" => "other", "label" => "Otro"]
+        ];
+
+        return Utilities::getValues($statuses, $type, $code);
+
+    }
+
     public static function getStatuses($type = "all", $code = "") {
 
         $statuses = [

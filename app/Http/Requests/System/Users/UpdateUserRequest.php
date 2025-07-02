@@ -26,12 +26,15 @@ class UpdateUserRequest extends FormRequest {
     public function rules(): array {
 
         return [
+            "role_id"                   => "required|integer",
             "identity_document_type_id" => "required|integer",
-            "document_number"           => "required|string|max:20",
-            "name"                      => "required|string|max:100",
-            "email"                     => "required|email|unique:users,email,$this->id,id",
-            "password"                  => "nullable|max:40",
-            "status"                    => "required|string"
+            "document_number"           => "required|string|max:25",
+            "name"                      => "required|string|max:200",
+            "email"                     => "required|email",
+            "gender"                    => "nullable|string",
+            "birthdate"                 => "nullable|date",
+            "status"                    => "required|string",
+            "password"                  => "nullable|string|max:200"
         ];
 
     }
