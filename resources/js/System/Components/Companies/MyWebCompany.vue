@@ -1,18 +1,20 @@
 <template>
     <div>
         <div class="overflow-auto">
-            <div id="myWebCompany" ref="myWebCompany" class="card border border-light">
-                <div class="card-header bg-success border-light py-2 d-flex justify-content-center align-items-center">
-                    <span class="text-white my-0 fw-bold">Ingresa a mi página</span>
+            <div id="myWebCompany" ref="myWebCompany" class="card carnet-card-entity mx-auto shadow-sm border border-light" style="min-width: 330px;" :style="{ backgroundImage: backgroundImage }">
+                <!-- <img :src="getAsset(config.essential.ownerApp?.assets.img.logomark, {type: 'none', back: 1})" class="carnet-watermark-entity img-fluid" width="45px" height="45px"/> -->
+                <div class="card-header d-flex align-items-center justify-content-start carnet-header-entity pb-0 pt-2">
+                    <span class="text-white fw-semibold fs-6 text-uppercase">Visita la página oficial</span>
                 </div>
-                <div class="card-body py-3 pattern" v-if="isDefined({value: config.essential.company?.logomark})">
-                    <div class="d-flex align-items-center justify-content-center">
-                        <div class="p-1 bg-white border border-secondary rounded">
-                            <img :src="qrImage" alt="QR" class="img-fluid" style="width: 150px; height: 150px;"/>
-                        </div>
+                <div class="card-body d-flex flex-column align-items-center py-3" v-if="isDefined({value: config.essential.company?.logomark})">
+                    <div class="carnet-qr-entity flex-shrink-0 p-2 bg-white rounded-4 shadow-sm">
+                        <img :src="qrImage" alt="QR" class="img-fluid" style="width: 150px; height: 150px;"/>
                     </div>
-                    <div class="d-flex align-items-center justify-content-center mt-1">
-                        <span class="d-block fw-bold" v-text="config.essential.company?.commercial_name ?? ''"></span>
+                    <div class="mt-3 text-center text-dark text-shadow-dark-1">
+                        <span class="fs-5 fw-bold">
+                            <!-- <i class="fa fa-warehouse"></i> -->
+                            <span class="ms-2" v-text="config.essential.company?.commercial_name ?? ''"></span>
+                        </span>
                     </div>
                 </div>
                 <div v-else class="card-body py-3">
@@ -24,7 +26,7 @@
                 </div>
             </div>
         </div>
-        <div class="d-flex flex-wrap justify-content-center gap-1 gap-md-2 mt-3" v-if="isDefined({value: config.essential.company?.logomark})">
+        <div class="d-flex flex-wrap justify-content-center gap-2 gap-md-3 mt-3" v-if="isDefined({value: config.essential.company?.logomark})">
             <button @click="shareResource" class="btn btn-primary btn-sm waves-effect">
                 <i class="fa-solid fa-share-nodes"></i>
                 <span class="ms-2">Compartir</span>
@@ -56,7 +58,11 @@ export default {
         };
     },
     computed: {
-        //
+        backgroundImage() {
+
+            return `url('${this.config.assets.backgrounds.images.default}')`;
+
+        }
     },
     mounted() {
 
@@ -75,24 +81,27 @@ export default {
         },
         getAsset(path, {type, back}) {
 
-            return Utils.getAsset(path, {type, back});
+            return getAsset(path, {type, back});
 
         },
         generateQR() {
 
             const qr = new QRCodeStyling({
-                width: 300,
-                height: 300,
+                width: 1000,
+                height: 1000,
                 data: generateMyUrl(this.config.essential.company, false, "my_web"),
                 image: getAsset(this.config.essential.company?.logomark, {type: "storage"}),
+                dotsOptions: {
+                    color: "#000000",
+                    type: "rounded"
+                },
+                backgroundOptions: {
+                    color: "#ffffff"
+                },
                 imageOptions: {
                     crossOrigin: "anonymous",
-                    hideBackgroundDots: true,
-                    imageSize: 0.6,
-                    margin: 0
-                },
-                dotsOptions: { color: "#000000", type: "rounded" },
-                backgroundOptions: { color: "#ffffff" }
+                    imageSize: 0.40
+                }
             });
 
             qr.getRawData("png")
@@ -134,7 +143,7 @@ export default {
 
                     try {
 
-                        await navigator.share({title: "my_web", text: this.customer?.name, files: [file]});
+                        await navigator.share({title: "my_web", text: this.config.essential.company?.commercial_name, files: [file]});
 
                     }catch(err) {
 
@@ -179,30 +188,37 @@ export default {
             link.click();
 
         }
-    },
-    watch: {
-        customer: {
-            deep: true,
-            handler() {
-
-                this.generateQR();
-
-            }
-        }
     }
 };
 </script>
 
 <style scoped>
-.pattern {
-    background-image: linear-gradient(
-        45deg,
-        rgba(13,110,253,0.05) 0px,
-        rgba(13,110,253,0.05) 5px,
-        rgba(255,255,255,1) 5px,
-        rgba(255,255,255,1) 10px
-    ) !important;
-    background-size: 10px 10px !important;
-    background-repeat: repeat !important;
+.carnet-card-entity {
+    max-width: 300px;
+    min-width: 300px;
+    background-color: #ffffff;
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.carnet-header-entity {
+    background: linear-gradient(135deg, #2899E5, #1A1A35);
+}
+
+.carnet-qr-entity {
+    border: 3px solid #a19ca9;
+    border-radius: 1rem;
+    box-shadow: inset 0 0 8px rgba(157, 140, 140, 0.05);
+    backdrop-filter: blur(2px);
+}
+
+.carnet-watermark-entity {
+    position: absolute;
+    top: 13px;
+    right: 13px;
+    z-index: 5;
+    pointer-events: none;
 }
 </style>

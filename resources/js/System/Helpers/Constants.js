@@ -65,5 +65,12 @@ export const generalConfig = {
                 dangerColor: "#EA5455"
             }
         }
+    },
+    assets: {
+        backgrounds: {
+            images: {
+                default: "/System/assets/img/utils/customers/carnet/2.png"
+            }
+        }
     }
 };
