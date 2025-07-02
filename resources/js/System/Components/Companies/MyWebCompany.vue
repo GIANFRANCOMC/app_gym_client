@@ -3,16 +3,16 @@
         <div class="overflow-auto">
             <div id="myWebCompany" ref="myWebCompany" class="card border border-light">
                 <div class="card-header bg-success border-light py-2 d-flex justify-content-center align-items-center">
-                    <span class="text-white my-0 fw-bold" v-text="header"></span>
+                    <span class="text-white my-0 fw-bold">Ingresa a mi página</span>
                 </div>
-                <div class="card-body py-3 pattern" v-if="isDefined({value: company?.logotype})">
+                <div class="card-body py-3 pattern" v-if="isDefined({value: config.essential.company?.logomark})">
                     <div class="d-flex align-items-center justify-content-center">
                         <div class="p-1 bg-white border border-secondary rounded">
                             <img :src="qrImage" alt="QR" class="img-fluid" style="width: 150px; height: 150px;"/>
                         </div>
                     </div>
                     <div class="d-flex align-items-center justify-content-center mt-1">
-                        <span class="d-block fw-bold" v-text="footer"></span>
+                        <span class="d-block fw-bold" v-text="config.essential.company?.commercial_name ?? ''"></span>
                     </div>
                 </div>
                 <div v-else class="card-body py-3">
@@ -20,11 +20,11 @@
                         <i class="fa fa-warning"></i>
                         <span class="ms-2">Sin vista previa.</span>
                     </div>
-                    <span class="small">Revise el logotipo.</span>
+                    <span class="small">Revise el isotipo.</span>
                 </div>
             </div>
         </div>
-        <div class="d-flex flex-wrap justify-content-center gap-1 gap-md-2 mt-3" v-if="isDefined({value: company?.logotype})">
+        <div class="d-flex flex-wrap justify-content-center gap-1 gap-md-2 mt-3" v-if="isDefined({value: config.essential.company?.logomark})">
             <button @click="shareResource" class="btn btn-primary btn-sm waves-effect">
                 <i class="fa-solid fa-share-nodes"></i>
                 <span class="ms-2">Compartir</span>
@@ -41,41 +41,30 @@
 import QRCodeStyling from "qr-code-styling";
 import html2canvas from "html2canvas";
 
-import { isDefined } from "../../Helpers/Utils.js";
+import { generalConfig } from "../../Helpers/Constants.js";
+import { isDefined, getAsset } from "../../Helpers/Utils.js";
 
 export default {
     name: "MyWebCompany",
     props: {},
     data() {
         return {
-            qrImage: ""
+            qrImage: "",
+            config: {
+                ...generalConfig
+            }
         };
     },
     computed: {
-        header() {
-
-            return "Ingresa a mi página";
-
-        },
-        company() {
-
-            return window.company;
-
-        },
-        ownerApp() {
-
-            return window.ownerApp;
-
-        },
-        footer() {
-
-            return this.company?.commercial_name ?? "";
-
-        }
+        //
     },
     mounted() {
 
-        this.generateQR();
+        if(this.isDefined({value: this.config.essential.company?.logomark})) {
+
+            this.generateQR();
+
+        }
 
     },
     methods: {
@@ -84,17 +73,22 @@ export default {
             return isDefined({value});
 
         },
+        getAsset(path, {type, back}) {
+
+            return Utils.getAsset(path, {type, back});
+
+        },
         generateQR() {
 
             const qr = new QRCodeStyling({
                 width: 300,
                 height: 300,
-                data: generateMyUrl(this.company, false, "my_web"),
-                image: "/storage/"+this.company.logotype,
+                data: generateMyUrl(this.config.essential.company, false, "my_web"),
+                image: getAsset(this.config.essential.company?.logomark, {type: "storage"}),
                 imageOptions: {
                     crossOrigin: "anonymous",
                     hideBackgroundDots: true,
-                    imageSize: 0.4,
+                    imageSize: 0.6,
                     margin: 0
                 },
                 dotsOptions: { color: "#000000", type: "rounded" },
@@ -117,7 +111,7 @@ export default {
             document.body.appendChild(cloned);
 
             // 2. Esperar a que todas las <img> (logo + QR) estén cargadas
-            const imgs = Array.from(cloned.querySelectorAll('img'));
+            const imgs = Array.from(cloned.querySelectorAll("img"));
             await Promise.all(imgs.map(img => img.complete ? Promise.resolve() : new Promise(res => { img.onload = img.onerror = res; })));
 
             // 3. Renderizar con html2canvas a mayor resolución
@@ -134,26 +128,26 @@ export default {
             // 5. Compartir
             canvas.toBlob(async blob => {
 
-                const file = new File([blob], 'my_web.png', { type: 'image/png' });
+                const file = new File([blob], "my_web.png", { type: "image/png" });
 
                 if(navigator.canShare && navigator.canShare({ files: [file] })) {
 
                     try {
 
-                        await navigator.share({title: 'my_web', text: this.customer?.name, files: [file]});
+                        await navigator.share({title: "my_web", text: this.customer?.name, files: [file]});
 
                     }catch(err) {
 
-                        console.error('Error al compartir:', err);
+                        console.error("Error al compartir:", err);
 
                     }
 
                 }else {
 
-                    alert('Tu navegador no soporta compartir archivos.');
+                    alert("Tu navegador no soporta compartir archivos.");
                 }
 
-            }, 'image/png');
+            }, "image/png");
 
         },
         async downloadResource() {
