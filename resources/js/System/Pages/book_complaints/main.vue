@@ -45,11 +45,10 @@
         <table class="table table-hover">
             <thead>
                 <tr class="text-center align-middle">
-                    <th class="bg-secondary text-white fw-semibold" style="width: 15%;"></th>
                     <th class="bg-secondary text-white fw-semibold" style="width: 20%;">NÚMERO DE DOCUMENTO</th>
-                    <th class="bg-secondary text-white fw-semibold" style="width: 28%;">NOMBRE</th>
-                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 27%;">CONTACTO</th>
-                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 10%;">ACCIONES</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 40%;">NOMBRE</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 20%;">ESTADO</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 20%;">ACCIONES</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0 bg-white">
@@ -63,37 +62,40 @@
                 <template v-else>
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
-                            <td>
-                                <div class="d-flex flex-nowrap align-items-center justify-content-start my-1">
-                                    <span class="fw-semibold colon-at-end">Tipo</span>
-                                    <span :class="['badge ms-2', 'bg-label-'+getType({record}).data?.color]">
-                                        <i :class="['fa', getType({record}).data?.icon]"></i>
-                                        <span v-text="getType({record})?.label" class="ms-2"></span>
-                                    </span>
-                                </div>
-                                <div class="d-flex flex-nowrap align-items-center justify-content-start my-1" v-if="false">
-                                    <span class="fw-semibold colon-at-end">Estado</span>
-                                    <span :class="['badge ms-2', 'fw-semibold', { 'bg-label-primary': ['in_progress'].includes(record.status), 'bg-label-success': ['resolved'].includes(record.status), 'bg-label-danger': ['pending'].includes(record.status) }]" v-text="record.formatted_status"></span>
-                                </div>
-                                <div class="d-flex flex-wrap align-items-center justify-content-start my-1">
-                                    <span class="fw-semibold colon-at-end">Creado</span>
-                                    <span v-text="legibleFormatDate({dateString: record.formatted_created_at, type: 'datetime'})" class="ms-2"></span>
-                                </div>
-                            </td>
-                            <td>
-                                <span v-text="record.document_number" class="d-block fw-bold"></span>
-                                <span v-text="record.identity_document_type?.name" class="badge bg-label-primary fw-bold mt-1"></span>
-                            </td>
-                            <td v-text="record.name" class="text-start"></td>
                             <td class="text-start">
-                                <div class="d-flex flex-nowrap align-items-center justify-content-start my-1">
-                                    <i class="fa fa-envelope"></i>
-                                    <span v-text="isDefined({value: record.email}) ? record.email : 'N/A'" class="ms-2"></span>
+                                <span v-text="record.document_number" class="text-dark d-block"></span>
+                                <span v-text="record.identity_document_type?.name" class="fst-italic d-block text-muted small"></span>
+                            </td>
+                            <td class="text-start">
+                                <div class="d-flex justify-content-center flex-wrap mb-1">
+                                    <div :class="['badge rounded-pill fst-italic fw-bold text-uppercase', 'bg-label-'+getType({record}).data?.color]" :title="getType({record})?.label">
+                                        <i :class="['fa', getType({record}).data?.icon]"></i>
+                                        <span v-text="getType({record})?.label" class="ms-1"></span>
+                                    </div>
                                 </div>
-                                <div class="d-flex flex-nowrap align-items-center justify-content-start my-1">
-                                    <i class="fa fa-phone"></i>
-                                    <span v-text="isDefined({value: record.phone_number}) ? record.phone_number : 'N/A'" class="ms-2"></span>
+                                <span v-text="record.name" class="fw-bold d-block"></span>
+                                <div v-if="isDefined({value: record.email})">
+                                    <a :href="'mailto:'+record.email" class="d-inline-flex align-items-center small">
+                                        <span>📧</span>
+                                        <span v-text="record.email" class="fst-italic ms-1"></span>
+                                    </a>
                                 </div>
+                                <div v-if="isDefined({value: record.phone_number})">
+                                    <a :href="'tel:'+record.phone_number" class="d-inline-flex align-items-center small">
+                                        <span>📞</span>
+                                        <span v-text="record.phone_number" class="fst-italic ms-1"></span>
+                                    </a>
+                                </div>
+                                <template v-if="!isDefined({value: record.email}) && !isDefined({value: record.phone_number})">
+                                    <span class="small text-muted fst-italic">Sin información de contacto</span>
+                                </template>
+                            </td>
+                            <td>
+                                <div class="small mb-1 d-inline-flex align-items-center" v-if="isDefined({value: record.created_at})">
+                                    <span>📅</span>
+                                    <span v-text="legibleFormatDate({dateString: record.created_at, type: 'datetime'})" class="text-dark fst-italic ms-1"></span>
+                                </div>
+                                <span :class="['badge', 'fw-semibold', { 'bg-label-primary': ['in_progress'].includes(record.status), 'bg-label-success': ['resolved'].includes(record.status), 'bg-label-danger': ['pending'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </td>
                             <td>
                                 <InputSlot
@@ -103,9 +105,9 @@
                                     xl="12"
                                     lg="12">
                                     <template v-slot:input>
-                                        <button type="button" class="btn btn-sm btn-info-1 waves-effect" @click="modalCreateUpdateEntity({record})">
-                                            <i class="fa fa-info-circle"></i>
-                                            <span class="ms-2">Detalle</span>
+                                        <button type="button" class="btn btn-sm btn-primary waves-effect" @click="modalCreateUpdateEntity({record})">
+                                            <i class="fa-solid fa-screwdriver-wrench"></i>
+                                            <span class="ms-2">Gestionar</span>
                                         </button>
                                     </template>
                                 </InputSlot>
@@ -132,7 +134,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.createUpdate.extras.modals.default.titles[isDefined({value: forms.entity.createUpdate.data?.id}) ? 'update' : 'store']"></h5>
+                    <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.createUpdate.extras.modals.default.titles[isUpdate ? 'update' : 'store']"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -173,10 +175,10 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
-                    <!-- <button type="button" :class="['btn waves-effect', isDefined({value: forms.entity.createUpdate.data?.id}) ? 'btn-warning' : 'btn-primary']" @click="createUpdateEntity()">
+                    <button type="button" :class="['btn waves-effect', isUpdate ? 'btn-warning' : 'btn-primary']" @click="createUpdateEntity()">
                         <i class="fa fa-save"></i>
                         <span class="ms-2">Guardar</span>
-                    </button> -->
+                    </button>
                 </div>
             </div>
         </div>
@@ -236,7 +238,7 @@ export default {
                                     id: Utils.uuid(),
                                     titles: {
                                         store: "Agregar",
-                                        update: "Detalle"
+                                        update: "Gestionar"
                                     }
                                 }
                             }
@@ -424,6 +426,11 @@ export default {
         statuses: function() {
 
             return this.options?.bookComplaints?.statuses.map(e => ({code: e.code, label: e.label}));
+
+        },
+        isUpdate: function() {
+
+            return this.isDefined({value: this.forms.entity.createUpdate.data?.id});
 
         }
     },

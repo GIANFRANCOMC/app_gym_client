@@ -49,9 +49,9 @@
         <table class="table table-hover">
             <thead>
                 <tr class="text-center align-middle">
-                    <th class="bg-secondary text-white fw-semibold" style="width: 25%;">NÚMERO DE DOCUMENTO</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 20%;">NÚMERO DE DOCUMENTO</th>
                     <th class="bg-secondary text-white fw-semibold" style="width: 40%;">NOMBRE</th>
-                    <th class="bg-secondary text-white fw-semibold" style="width: 15%;">ESTADO</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 20%;">ESTADO</th>
                     <th class="bg-secondary text-white fw-semibold" style="width: 20%;">ACCIONES</th>
                 </tr>
             </thead>
@@ -67,30 +67,29 @@
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td class="text-start">
-                                <div class="d-inline-flex align-items-center">
-                                    <span>📇</span>
-                                    <span v-text="record.identity_document_type?.name" class="ms-1"></span>
-                                </div>
-                                <span v-text="record.document_number" class="fw-bold d-block"></span>
+                                <span v-text="record.document_number" class="text-dark d-block"></span>
+                                <span v-text="record.identity_document_type?.name" class="fst-italic d-block text-muted small"></span>
                             </td>
                             <td class="text-start">
-                                <span v-text="record?.role?.name" class="small text-muted"></span>
+                                <div class="d-flex justify-content-center flex-wrap mb-1">
+                                    <span v-text="record?.role?.name" class="small text-muted fst-italic fw-semibold text-uppercase"></span>
+                                </div>
                                 <span v-text="record.name" class="fw-bold d-block"></span>
-                                <a :href="'mailto:'+record.email" class="text-dark d-inline-flex align-items-center" v-if="isDefined({value: record.email})">
+                                <a :href="'mailto:'+record.email" class="d-inline-flex align-items-center small" v-if="isDefined({value: record.email})">
                                     <span>📧</span>
-                                    <span v-text="record.email" class="ms-1"></span>
+                                    <span v-text="record.email" class="fst-italic ms-1"></span>
                                 </a>
                                 <div class="d-flex flex-wrap mt-1">
                                     <template v-if="isDefined({value: record.birthdate})">
                                         <div class="badge bg-light text-dark rounded-pill me-2 my-1 d-inline-flex align-items-center">
                                             <span>🎂</span>
-                                            <span v-text="legibleFormatDate({dateString: record.birthdate, type: 'date'})" class="ms-1"></span>
+                                            <span v-text="legibleFormatDate({dateString: record.birthdate, type: 'date'})" class="fst-italic ms-1"></span>
                                         </div>
                                     </template>
                                     <template v-if="isDefined({value: record.gender})">
                                         <div :class="['badge text-dark rounded-pill me-2 my-1 d-inline-flex align-items-center', {'bg-label-info': ['male'].includes(record.gender), 'bg-label-danger': ['female'].includes(record.gender), 'bg-light': ['other'].includes(record.gender)}]">
                                             <span>🚻</span>
-                                            <span v-text="record.formatted_gender" class="ms-1"></span>
+                                            <span v-text="record.formatted_gender" class="fst-italic ms-1"></span>
                                         </div>
                                     </template>
                                 </div>

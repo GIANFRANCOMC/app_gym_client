@@ -49,8 +49,8 @@
         <table class="table table-hover">
             <thead>
                 <tr class="text-center align-middle">
-                    <th class="bg-secondary text-white fw-semibold" style="width: 65%;">NOMBRE</th>
-                    <th class="bg-secondary text-white fw-semibold" style="width: 15%;">ESTADO</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 60%;">NOMBRE</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 20%;">ESTADO</th>
                     <th class="bg-secondary text-white fw-semibold" style="width: 20%;">ACCIONES</th>
                 </tr>
             </thead>
@@ -67,10 +67,13 @@
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td class="text-start">
                                 <span v-text="record.name" class="fw-bold d-block"></span>
-                                <div class="d-flex flex-wrap">
-                                    <div :class="['badge text-dark rounded-pill me-2 my-1 d-inline-flex align-items-center', isDefined({value: record.address}) ? 'bg-light' : 'bg-label-danger']">
+                                <div class="d-flex flex-wrap mt-1">
+                                    <div :class="['d-inline-flex align-items-center text-muted']" v-if="isDefined({value: record.address})">
                                         <span>📍</span>
-                                        <span v-text="isDefined({value: record.address}) ? record.address : 'Sin dirección registrada'" class="ms-1"></span>
+                                        <span v-text="record.address" class="fst-italic ms-1"></span>
+                                    </div>
+                                    <div :class="['badge rounded-pill d-inline-flex align-items-center bg-label-danger']" v-else>
+                                        <span v-text="'Sin dirección registrada'" class="ms-1"></span>
                                     </div>
                                 </div>
                             </td>
