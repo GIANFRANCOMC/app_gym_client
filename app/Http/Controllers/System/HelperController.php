@@ -87,7 +87,9 @@ class HelperController extends Controller {
                             case "ruc":
                                 $data = [
                                     "document_number" => $dataApi->data->ruc,
-                                    "legal_name"      => $dataApi->data->nombre_o_razon_social
+                                    "legal_name"      => $dataApi->data->nombre_o_razon_social,
+                                    "commercial_name" => $dataApi->data->nombre_o_razon_social,
+                                    "address"         => $dataApi->data->direccion_completa,
                                 ];
                                 break;
                         }

@@ -49,8 +49,7 @@
         <table class="table table-hover">
             <thead>
                 <tr class="text-center align-middle">
-                    <th class="bg-secondary text-white fw-semibold" style="width: 30%;">NOMBRE</th>
-                    <th class="bg-secondary text-white fw-semibold" style="width: 35%;">DIRECCIÓN</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 65%;">NOMBRE</th>
                     <th class="bg-secondary text-white fw-semibold" style="width: 15%;">ESTADO</th>
                     <th class="bg-secondary text-white fw-semibold" style="width: 20%;">ACCIONES</th>
                 </tr>
@@ -66,13 +65,13 @@
                 <template v-else>
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
-                            <td v-text="record.name" class="text-start fw-bold"></td>
                             <td class="text-start">
-                                <div v-if="isDefined({value: record.address})">
-                                    <span v-text="record.address"></span>
-                                </div>
-                                <div v-else class="badge bg-info-1">
-                                    <span>Sin dirección registrada</span>
+                                <span v-text="record.name" class="fw-bold d-block"></span>
+                                <div class="d-flex flex-wrap">
+                                    <div :class="['badge text-dark rounded-pill me-2 my-1 d-inline-flex align-items-center', isDefined({value: record.address}) ? 'bg-light' : 'bg-label-danger']">
+                                        <span>📍</span>
+                                        <span v-text="isDefined({value: record.address}) ? record.address : 'Sin dirección registrada'" class="ms-1"></span>
+                                    </div>
                                 </div>
                             </td>
                             <td>
@@ -115,7 +114,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.createUpdate.extras.modals.default.titles[isDefined({value: forms.entity.createUpdate.data?.id}) ? 'update' : 'store']"></h5>
+                    <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.createUpdate.extras.modals.default.titles[isUpdate ? 'update' : 'store']"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -159,7 +158,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" :class="['btn waves-effect', isDefined({value: forms.entity.createUpdate.data?.id}) ? 'btn-warning' : 'btn-primary']" @click="createUpdateEntity()">
+                    <button type="button" :class="['btn waves-effect', isUpdate ? 'btn-warning' : 'btn-primary']" @click="createUpdateEntity()">
                         <i class="fa fa-save"></i>
                         <span class="ms-2">Guardar</span>
                     </button>
@@ -335,8 +334,9 @@ export default {
                 if(Requests.valid({result: createUpdate})) {
 
                     Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
-                    Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
-                    Alerts.swals({show: false});
+                    // Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
+                    // Alerts.swals({show: false});
+                    Alerts.generateAlert({type: "success", msgContent: createUpdate?.data?.msg});
 
                     this.clearForm({functionName});
                     this.listEntity({url: `${this.lists.entity.extras.route}?page=${this.lists.entity.records?.current_page ?? 1}`});
@@ -440,6 +440,11 @@ export default {
         statuses: function() {
 
             return this.options?.branches?.statuses.map(e => ({code: e.code, label: e.label}));
+
+        },
+        isUpdate: function() {
+
+            return this.isDefined({value: this.forms.entity.createUpdate.data?.id});
 
         }
     },

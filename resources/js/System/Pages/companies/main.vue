@@ -60,6 +60,7 @@
                             <v-select
                                 v-model="forms.entity.createUpdate.data.identity_document_type"
                                 :options="identityDocumentTypes"
+                                @close="tooltips({show: true, time: 500})"
                                 :clearable="false"
                                 :searchable="false"/>
                         </template>
@@ -69,11 +70,19 @@
                         hasDiv
                         title="Número de documento"
                         isRequired
-                        maxlength="10"
+                        maxlength="15"
                         hasTextBottom
                         :textBottomInfo="forms.entity.createUpdate.errors?.document_number"
                         xl="4"
-                        lg="4"/>
+                        lg="4">
+                        <template v-slot:inputGroupAppend>
+                            <template v-if="['ruc'].includes(forms.entity.createUpdate.data.identity_document_type?.data.code)">
+                                <button :class="['btn waves-effect btn-primary']" type="button" @click="searchDocumentNumber({consult: forms.entity.createUpdate})" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar N° documento">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </template>
+                        </template>
+                    </InputText>
                     <InputText
                         v-model="forms.entity.createUpdate.data.legal_name"
                         hasDiv
@@ -357,7 +366,7 @@
             </div>
         </div>
     </div>
-    <div class="mt-3" v-if="isDefined({value: forms.entity.createUpdate.data.id})">
+    <div class="mt-3" v-if="isUpdate">
         <div class="row g-3">
             <div class="d-flex flex-row-reverse">
                 <button type="button" class="btn waves-effect btn-primary" @click="createUpdateEntity()">
@@ -488,6 +497,8 @@ export default {
                 const tabTrigger = document.querySelector(`[data-bs-target="#navs-pills-general"]`);
                 const tab = new bootstrap.Tab(tabTrigger);
                 tab.show();
+
+                this.tooltips({show: true, time: 500});
 
                 resolve(true);
 
@@ -755,6 +766,43 @@ export default {
             return result;
 
         },
+        async searchDocumentNumber({consult}) {
+
+            let route = Requests.config({entity: "helpers", type: "searchDocumentNumber"});
+            const formJson = {document_number: consult.data.document_number, type: consult.data.identity_document_type?.data.code};
+
+            if(!this.isDefined({value: formJson.document_number})) {
+
+                Alerts.generateAlert({msgContent: `Debe ingresar el número de documento para realizar la búsqueda.`});
+                return;
+
+            }
+
+            Alerts.swals({});
+
+            let searchDocumentNumber = await Requests.get({route: route, data: formJson});
+
+            if(Requests.valid({result: searchDocumentNumber})) {
+
+                const data = searchDocumentNumber.data.data;
+
+                this.forms.entity.createUpdate.data.legal_name      = `${data?.legal_name}`;
+                this.forms.entity.createUpdate.data.commercial_name = `${data?.commercial_name}`;
+                this.forms.entity.createUpdate.data.address         = `${data?.address}`;
+
+                Alerts.toastrs({type: "success", subtitle: searchDocumentNumber?.data?.msg});
+                Alerts.swals({show: false});
+
+            }else {
+
+                Alerts.toastrs({type: "error", subtitle: searchDocumentNumber?.data?.msg});
+                Alerts.swals({show: false});
+
+            }
+
+            Alerts.tooltips({show: false});
+
+        },
         // Others
         isDefined({value}) {
 
@@ -770,6 +818,11 @@ export default {
 
             return Utils.getAsset(path, {type, back});
 
+        },
+        tooltips({show = true, time = 10}) {
+
+            Alerts.tooltips({show, time});
+
         }
     },
     computed: {
@@ -780,12 +833,17 @@ export default {
         },
         identityDocumentTypes: function() {
 
-            return this.options?.identityDocumentTypes?.records.map(e => ({code: e.id, label: e.name}));
+            return this.options?.identityDocumentTypes?.records.map(e => ({code: e.id, label: e.name, data: e}));
 
         },
         statuses: function() {
 
             return this.options?.companies?.statuses.map(e => ({code: e.code, label: e.label}));
+
+        },
+        isUpdate: function() {
+
+            return this.isDefined({value: this.forms.entity.createUpdate.data?.id});
 
         }
     }
