@@ -41,8 +41,8 @@
                                 <span v-text="record.subject" class="fw-bold d-block"></span>
                             </td>
                             <td>
-                                <span v-text="legibleFormatDate({dateString: record.formatted_created_at, type: 'date'})" class="d-block fw-semibold"></span>
-                                <span v-text="legibleFormatDate({dateString: record.formatted_created_at, type: 'time'})" class="d-block fw-semibold"></span>
+                                <span v-text="legibleFormatDate({dateString: record.created_at, type: 'date'})" class="d-block fw-semibold"></span>
+                                <span v-text="legibleFormatDate({dateString: record.created_at, type: 'time'})" class="d-block fw-semibold"></span>
                             </td>
                             <td>
                                 <span :class="['badge', 'fw-semibold', { 'bg-label-success': ['sent'].includes(record.status), 'bg-label-warning': ['pending'].includes(record.status), 'bg-label-danger': ['failed'].includes(record.status) }]" v-text="record.formatted_status"></span>
@@ -98,7 +98,7 @@
                         </div>
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                             <span class="fw-semibold">• Fecha de creación:</span>
-                            <span class="ms-2" v-text="legibleFormatDate({dateString: forms.entity.createUpdate.extras.modals.actions.data?.formatted_created_at, type: 'datetime'})"></span>
+                            <span class="ms-2" v-text="legibleFormatDate({dateString: forms.entity.createUpdate.extras.modals.actions.data?.created_at, type: 'datetime'})"></span>
                         </div>
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                             <span class="fw-semibold">• Estado:</span>

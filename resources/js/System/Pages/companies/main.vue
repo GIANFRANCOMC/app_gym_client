@@ -227,7 +227,7 @@
                                         </template>
                                     </InputSlot>
                                     <div class="d-block mt-1 text-nowrap">
-                                        <i class="fa fa-info-circle"></i>
+                                        <i class="fa fa-info-circle text-info"></i>
                                         <span class="ms-2 small">Nota: Ícono o símbolo gráfico que representa la marca sin texto.</span>
                                     </div>
                                     <div class="d-block mt-1 text-nowrap">
@@ -253,7 +253,7 @@
                                         </template>
                                     </InputSlot>
                                     <div class="d-block mt-1 text-nowrap">
-                                        <i class="fa fa-info-circle"></i>
+                                        <i class="fa fa-info-circle text-info"></i>
                                         <span class="ms-2 small">Nota: Versión textual del nombre de la marca. Debe contener solo letras, sin símbolos.</span>
                                     </div>
                                     <div class="d-block mt-1 text-nowrap">
@@ -279,7 +279,7 @@
                                         </template>
                                     </InputSlot>
                                     <div class="d-block mt-1 text-nowrap">
-                                        <i class="fa fa-info-circle"></i>
+                                        <i class="fa fa-info-circle text-info"></i>
                                         <span class="ms-2 small">Nota: Combinación del logotipo y el isotipo en una sola unidad visual.</span>
                                     </div>
                                     <div class="d-block mt-1 text-nowrap">
@@ -305,7 +305,7 @@
                                         </template>
                                     </InputSlot>
                                     <div class="d-block mt-1">
-                                        <i class="fa fa-info-circle"></i>
+                                        <i class="fa fa-info-circle text-info"></i>
                                         <span class="ms-2 small">Nota: Imagen que se muestra en la pantalla de inicio de sesión. Generalmente puede ser un logo, una ilustración institucional o una imagen decorativa que represente a la entidad.</span>
                                     </div>
                                     <div class="d-block mt-1 text-nowrap">

@@ -29,7 +29,7 @@ class StoreCompanyRequest extends FormRequest {
 
         return [
             "identity_document_type_id" => "required|integer",
-            "document_number"           => "required|string|max:20",
+            "document_number"           => "required|string|max:25",
             "legal_name"                => "required|string|max:200",
             "commercial_name"           => "required|string|max:200",
             "tagline"                   => "nullable|string|max:500",
