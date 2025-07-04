@@ -8,12 +8,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
-use App\Http\Requests\System\Assets\{StoreAssetRequest, UpdateAssetRequest};
-use App\Models\System\{Asset, BookComplaint};
+use App\Http\Requests\System\BookComplaints\{StoreBookComplaintRequest, UpdateBookComplaintRequest};
+use App\Models\System\{Asset, BookComplaint, IdentityDocumentType};
 
 class BookComplaintController extends Controller {
 
     public function initParams(Request $request) {
+
+        $userAuth = Auth::user();
 
         $initParams = new stdClass();
 
@@ -22,6 +24,9 @@ class BookComplaintController extends Controller {
         $page = $request->page ?? "";
 
         if(in_array($page, ["main"])) {
+
+            $config->identityDocumentTypes = new stdClass();
+            $config->identityDocumentTypes->records = IdentityDocumentType::getAll("book_complaint", $userAuth->company_id);
 
             $config->bookComplaints = new stdClass();
             $config->bookComplaints->types    = BookComplaint::getTypes();
@@ -87,7 +92,7 @@ class BookComplaintController extends Controller {
 
     }
 
-    public function store(StoreAssetRequest $request) {
+    public function store(StoreBookComplaintRequest $request) {
 
         //
 
@@ -105,9 +110,32 @@ class BookComplaintController extends Controller {
 
     }
 
-    public function update(UpdateAssetRequest $request, $id) {
+    public function update(UpdateBookComplaintRequest $request, $id) {
 
-        //
+        $userAuth = Auth::user();
+
+        $bookComplaint = BookComplaint::where("id", $id)
+                                      ->where("company_id", $userAuth->company_id)
+                                      ->first();
+
+        if(Utilities::isDefined($bookComplaint)) {
+
+            DB::transaction(function() use($request, $userAuth, &$bookComplaint) {
+
+                $bookComplaint->admin_response = $request->admin_response;
+                $bookComplaint->status         = $request->status;
+                $bookComplaint->updated_at     = now();
+                $bookComplaint->updated_by     = $userAuth->id ?? null;
+                $bookComplaint->save();
+
+            });
+
+        }
+
+        $bool = Utilities::isDefined($bookComplaint);
+        $msg  = $bool ? "Respuesta registrada correctamente." : "No se ha podido registrar la respuesta.";
+
+        return response()->json(["bool" => $bool, "msg" => $msg, "bookComplaint" => $bookComplaint], 200);
 
     }
 

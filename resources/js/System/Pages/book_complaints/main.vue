@@ -68,8 +68,8 @@
                             </td>
                             <td class="text-start">
                                 <div class="d-flex justify-content-center flex-wrap mb-1">
-                                    <div :class="['badge rounded-pill fst-italic fw-bold text-uppercase', 'bg-label-'+getType({record}).data?.color]" :title="getType({record})?.label">
-                                        <i :class="['fa', getType({record}).data?.icon]"></i>
+                                    <div :class="['badge rounded-pill fst-italic fw-bold text-uppercase', 'bg-label-'+getType({record})?.data?.color]" :title="getType({record})?.label">
+                                        <i :class="['fa', getType({record})?.data?.icon]"></i>
                                         <span v-text="getType({record})?.label" class="ms-1"></span>
                                     </div>
                                 </div>
@@ -138,44 +138,120 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row justify-content-center g-1">
+                    <div class="row g-3">
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                            <span class="fw-semibold colon-at-end">• Tipo de documento</span>
-                            <span class="ms-2" v-text="forms.entity.createUpdate.data?.identity_document_type?.label"></span>
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-primary text-white py-1">
+                                    <span>👤</span>
+                                    <span class="ms-2">Datos del cliente</span>
+                                </div>
+                                <div class="card-body py-2">
+                                    <div class="text-start mb-2">
+                                        <span v-text="forms.entity.createUpdate.data.document_number" class="text-dark d-block"></span>
+                                        <span v-text="forms.entity.createUpdate.data.identity_document_type?.label" class="fst-italic d-block text-muted small"></span>
+                                    </div>
+                                    <span v-text="forms.entity.createUpdate.data.name" class="fw-bold d-block"></span>
+                                    <div v-if="isDefined({value: forms.entity.createUpdate.data.email})">
+                                        <a :href="'mailto:'+forms.entity.createUpdate.data.email" class="d-inline-flex align-items-center small">
+                                            <span>📧</span>
+                                            <span v-text="forms.entity.createUpdate.data.email" class="fst-italic ms-1"></span>
+                                        </a>
+                                    </div>
+                                    <div v-if="isDefined({value: forms.entity.createUpdate.data.phone_number})">
+                                        <a :href="'tel:'+forms.entity.createUpdate.data.phone_number" class="d-inline-flex align-items-center small">
+                                            <span>📞</span>
+                                            <span v-text="forms.entity.createUpdate.data.phone_number" class="fst-italic ms-1"></span>
+                                        </a>
+                                    </div>
+                                    <template v-if="!isDefined({value: forms.entity.createUpdate.data.email}) && !isDefined({value: forms.entity.createUpdate.data.phone_number})">
+                                        <span class="small text-muted fst-italic">Sin información de contacto</span>
+                                    </template>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                            <span class="fw-semibold colon-at-end">• Número de documento</span>
-                            <span class="ms-2" v-text="isDefined({value: forms.entity.createUpdate.data?.document_number}) ? forms.entity.createUpdate.data?.document_number : 'N/A'"></span>
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-danger text-white py-1">
+                                    <span>📝</span>
+                                    <span class="ms-2">Detalle del reclamo</span>
+                                </div>
+                                <div class="card-body py-2">
+                                    <div class="d-flex justify-content-center flex-wrap my-1">
+                                        <div :class="['badge rounded-pill fst-italic fw-bold text-uppercase', 'bg-label-'+getType({record: forms.entity.createUpdate.data})?.data?.color]" :title="getType({record: forms.entity.createUpdate.data})?.label">
+                                            <i :class="['fa', getType({record: forms.entity.createUpdate.data})?.data?.icon]"></i>
+                                            <span v-text="getType({record: forms.entity.createUpdate.data})?.label" class="ms-1"></span>
+                                        </div>
+                                    </div>
+                                    <div class="text-start mb-2">
+                                        <span class="text-dark fw-bold colon-at-end">Descripción</span>
+                                        <span v-text="forms.entity.createUpdate.data.description || 'No registrada'" class="ms-2"></span>
+                                    </div>
+                                    <div class="text-start mb-2">
+                                        <span class="text-dark fw-bold colon-at-end">Pedido del cliente</span>
+                                        <span v-text="forms.entity.createUpdate.data.request || 'No registrado'" class="ms-2"></span>
+                                    </div>
+                                    <div class="text-start">
+                                        <span class="text-dark fw-bold colon-at-end">Fecha y hora</span>
+                                        <span v-text="legibleFormatDate({dateString: forms.entity.createUpdate.data.created_at, type: 'datetime'})" class="ms-2"></span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                            <span class="fw-semibold colon-at-end">• Nombre</span>
-                            <span class="ms-2" v-text="isDefined({value: forms.entity.createUpdate.data?.name}) ? forms.entity.createUpdate.data?.name : 'N/A'"></span>
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-secondary text-white py-1">
+                                    <span>🖥️</span>
+                                    <span class="ms-2">Información técnica</span>
+                                </div>
+                                <div class="card-body py-2">
+                                    <div class="text-start mb-2">
+                                        <span class="text-dark fw-bold colon-at-end">IP enviada</span>
+                                        <span v-text="forms.entity.createUpdate.data.submitted_ip || 'N/A'" class="small text-muted fst-italic ms-2"></span>
+                                    </div>
+                                    <div class="text-start mb-2">
+                                        <span class="text-dark fw-bold colon-at-end">Plataforma</span>
+                                        <span v-text="forms.entity.createUpdate.data.submitted_platform || 'N/A'" class="small text-muted fst-italic ms-2"></span>
+                                    </div>
+                                    <div class="text-start mb-2">
+                                        <span class="text-dark fw-bold colon-at-end">Navegador</span>
+                                        <span v-text="forms.entity.createUpdate.data.submitted_browser || 'N/A'" class="small text-muted fst-italic ms-2"></span>
+                                    </div>
+                                    <div class="text-start">
+                                        <span class="text-dark fw-bold colon-at-end">User Agent</span>
+                                        <span v-text="forms.entity.createUpdate.data.submitted_user_agent || 'N/A'" class="small text-muted fst-italic ms-2"></span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                            <span class="fw-semibold colon-at-end">• Correo electrónico</span>
-                            <span class="ms-2" v-text="isDefined({value: forms.entity.createUpdate.data?.email}) ? forms.entity.createUpdate.data?.email : 'N/A'"></span>
-                        </div>
-                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                            <span class="fw-semibold colon-at-end">• Celular</span>
-                            <span class="ms-2" v-text="isDefined({value: forms.entity.createUpdate.data?.phone_number}) ? forms.entity.createUpdate.data?.phone_number : 'N/A'"></span>
-                        </div>
-                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                            <span class="fw-semibold colon-at-end">• Descripción</span>
-                            <span class="ms-2" v-text="isDefined({value: forms.entity.createUpdate.data?.description}) ? forms.entity.createUpdate.data?.description : 'N/A'"></span>
-                        </div>
-                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                            <span class="fw-semibold colon-at-end">• Pedido del cliente</span>
-                            <span class="ms-2" v-text="isDefined({value: forms.entity.createUpdate.data?.request}) ? forms.entity.createUpdate.data?.request : 'N/A'"></span>
-                        </div>
-                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                            <span class="fw-semibold colon-at-end">• Estado</span>
-                            <span class="ms-2" v-text="forms.entity.createUpdate.data?.status?.label"></span>
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-success text-white py-1">
+                                    <span>🗂️</span>
+                                    <span class="ms-2">Gestión administrativa</span>
+                                </div>
+                                <div class="card-body py-3">
+                                    <div class="d-flex justify-content-center flex-wrap mb-3">
+                                        <span :class="['badge', 'fw-semibold', 'ms-2', { 'bg-label-primary': ['in_progress'].includes(forms.entity.createUpdate.data.status?.code), 'bg-label-success': ['resolved'].includes(forms.entity.createUpdate.data.status?.code), 'bg-label-danger': ['pending'].includes(forms.entity.createUpdate.data.status?.code) }]" v-text="forms.entity.createUpdate.data.status?.label"></span>
+                                    </div>
+                                    <InputTextArea
+                                        v-model="forms.entity.createUpdate.data.admin_response"
+                                        hasDiv
+                                        title="Respuesta del administrador"
+                                        isRequired
+                                        maxlength="400"
+                                        rows="4"
+                                        hasTextBottom
+                                        :textBottomInfo="forms.entity.createUpdate.errors?.admin_response"
+                                        xl="12"
+                                        lg="12"/>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" :class="['btn waves-effect', isUpdate ? 'btn-warning' : 'btn-primary']" @click="createUpdateEntity()">
+                    <button type="button" :class="['btn waves-effect', isUpdate ? 'btn-primary' : 'btn-primary']" @click="createUpdateEntity()">
                         <i class="fa fa-save"></i>
                         <span class="ms-2">Guardar</span>
                     </button>
@@ -245,10 +321,22 @@ export default {
                         },
                         data: {
                             id: null,
-                            internal_code: "",
+                            identity_document_type: null,
+                            document_number: "",
                             name: "",
+                            email: "",
+                            phone_number: "",
+                            type: "",
                             description: "",
-                            status: null
+                            request: "",
+                            evidence: "",
+                            admin_response: "",
+                            submitted_ip: "",
+                            submitted_user_agent: "",
+                            submitted_platform: "",
+                            submitted_browser: "",
+                            status: null,
+                            created_at: ""
                         },
                         errors: {}
                     }
@@ -276,7 +364,8 @@ export default {
 
             let initParams = await Requests.get({route: this.config.entity.routes.initParams, data: {page: "main"}, showAlert: true});
 
-            this.options.bookComplaints = initParams.data?.config?.bookComplaints;
+            this.options.identityDocumentTypes = initParams.data?.config?.identityDocumentTypes;
+            this.options.bookComplaints        = initParams.data?.config?.bookComplaints;
 
             return Requests.valid({result: initParams});
 
@@ -306,9 +395,7 @@ export default {
         // Forms
         getType({record = null}) {
 
-            const types = this.types.filter(e => e.code === record?.type);
-
-            return types.length > 0 ? types[0] : null;
+            return (this.types ?? []).find(e => e.code === record?.type) ?? null;
 
         },
         modalCreateUpdateEntity({record = null}) {
@@ -321,21 +408,30 @@ export default {
 
             if(this.isDefined({value: record})) {
 
-                let status = this.statuses.filter(e => e.code === record?.status)[0];
+                let identityDocumentType = this.identityDocumentTypes.find(e => e.code === record?.identity_document_type_id),
+                    status = this.statuses.find(e => e.code === record?.status);
 
-                this.forms.entity.createUpdate.data.id              = record?.id;
-                this.forms.entity.createUpdate.data.identity_document_type = {code: record?.identity_document_type?.id, label: record?.identity_document_type?.name};
-                this.forms.entity.createUpdate.data.document_number = record?.document_number;
-                this.forms.entity.createUpdate.data.name            = record?.name;
-                this.forms.entity.createUpdate.data.email           = record?.email;
-                this.forms.entity.createUpdate.data.phone_number    = record?.phone_number;
-                this.forms.entity.createUpdate.data.description     = record?.description;
-                this.forms.entity.createUpdate.data.request         = record?.request;
-                this.forms.entity.createUpdate.data.status          = status;
+                this.forms.entity.createUpdate.data.id                     = record?.id;
+                this.forms.entity.createUpdate.data.identity_document_type = identityDocumentType;
+                this.forms.entity.createUpdate.data.document_number        = record?.document_number;
+                this.forms.entity.createUpdate.data.name                   = record?.name;
+                this.forms.entity.createUpdate.data.email                  = record?.email;
+                this.forms.entity.createUpdate.data.phone_number           = record?.phone_number;
+                this.forms.entity.createUpdate.data.type                   = record?.type;
+                this.forms.entity.createUpdate.data.description            = record?.description;
+                this.forms.entity.createUpdate.data.request                = record?.request;
+                this.forms.entity.createUpdate.data.evidence               = record?.evidence;
+                this.forms.entity.createUpdate.data.admin_response         = record?.admin_response;
+                this.forms.entity.createUpdate.data.submitted_ip           = record?.submitted_ip;
+                this.forms.entity.createUpdate.data.submitted_user_agent   = record?.submitted_user_agent;
+                this.forms.entity.createUpdate.data.submitted_platform     = record?.submitted_platform;
+                this.forms.entity.createUpdate.data.submitted_browser      = record?.submitted_browser;
+                this.forms.entity.createUpdate.data.status                 = status;
+                this.forms.entity.createUpdate.data.created_at             = record?.created_at;
 
             }else {
 
-                this.setGenerateCode({length: 7, showAlert: false});
+                this.forms.entity.createUpdate.data.identity_document_type = this.identityDocumentTypes[1];
                 this.forms.entity.createUpdate.data.status = this.statuses[0];
 
             }
@@ -346,7 +442,51 @@ export default {
         },
         async createUpdateEntity() {
 
-            //
+            const functionName = "createUpdateEntity";
+
+            Alerts.swals({});
+            this.formErrors({functionName, type: "clear"});
+
+            let form = Utils.cloneJson(this.forms.entity.createUpdate.data);
+
+            const validateForm = this.validateForm({functionName, form, extras: {type: "descriptive"}});
+
+            if(validateForm?.bool) {
+
+                form.identity_document_type_id = form?.identity_document_type?.code;
+                form.status = form?.status?.code;
+
+                delete form.identity_document_type;
+
+                let createUpdate = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: form.id}) :
+                                                                             Requests.post({route: this.config.entity.routes.store, data: form}));
+
+                if(Requests.valid({result: createUpdate})) {
+
+                    Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
+                    // Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
+                    // Alerts.swals({show: false});
+                    Alerts.generateAlert({type: "success", msgContent: createUpdate?.data?.msg});
+
+                    this.clearForm({functionName});
+                    this.listEntity({url: `${this.lists.entity.extras.route}?page=${this.lists.entity.records?.current_page ?? 1}`});
+
+                }else {
+
+                    this.formErrors({functionName, type: "set", errors: createUpdate?.errors ?? []});
+                    Alerts.toastrs({type: "error", subtitle: createUpdate?.data?.msg});
+                    Alerts.swals({show: false});
+
+                }
+
+            }else {
+
+                // this.formErrors({functionName, type: "set", errors: validateForm});
+                // Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
+                // Alerts.swals({show: false});
+                Alerts.generateAlert({messages: Utils.getErrors({errors: validateForm}), msgContent: `<div class="fw-semibold mb-2">${this.config.messages.errorValidate}</div>`});
+
+            }
 
         },
         // Forms utils
@@ -355,7 +495,23 @@ export default {
             switch(functionName) {
                 case "modalCreateUpdateEntity":
                 case "createUpdateEntity":
-                    //
+                    this.forms.entity.createUpdate.data.id                     = null;
+                    this.forms.entity.createUpdate.data.identity_document_type = null;
+                    this.forms.entity.createUpdate.data.document_number        = "";
+                    this.forms.entity.createUpdate.data.name                   = "";
+                    this.forms.entity.createUpdate.data.email                  = "";
+                    this.forms.entity.createUpdate.data.phone_number           = "";
+                    this.forms.entity.createUpdate.data.type                   = "";
+                    this.forms.entity.createUpdate.data.description            = "";
+                    this.forms.entity.createUpdate.data.request                = "";
+                    this.forms.entity.createUpdate.data.evidence               = "";
+                    this.forms.entity.createUpdate.data.admin_response         = "";
+                    this.forms.entity.createUpdate.data.submitted_ip           = "";
+                    this.forms.entity.createUpdate.data.submitted_user_agent   = "";
+                    this.forms.entity.createUpdate.data.submitted_platform     = "";
+                    this.forms.entity.createUpdate.data.submitted_browser      = "";
+                    this.forms.entity.createUpdate.data.status                 = null;
+                    this.forms.entity.createUpdate.data.created_at             = "";
                     break;
             }
 
@@ -377,7 +533,24 @@ export default {
 
             if(["createUpdateEntity"].includes(functionName)) {
 
-                //
+                result.admin_response = [];
+                result.status         = [];
+
+                const isDescriptive = ["descriptive"].includes(extras?.type);
+
+                if(!this.isDefined({value: form?.admin_response})) {
+
+                    result.admin_response.push(`${isDescriptive ? "Respuesta del administrador:" : ""} ${this.config.forms.errors.labels.required}`);
+                    result.bool = false;
+
+                }
+
+                if(!this.isDefined({value: form?.status})) {
+
+                    result.status.push(`${isDescriptive ? "Estado:" : ""} ${this.config.forms.errors.labels.required}`);
+                    result.bool = false;
+
+                }
 
             }
 
@@ -388,11 +561,6 @@ export default {
         isDefined({value}) {
 
             return Utils.isDefined({value});
-
-        },
-        tooltips({show = true, time = 10}) {
-
-            Alerts.tooltips({show, time});
 
         },
         legibleFormatDate({dateString = null, type = "datetime"}) {
@@ -416,6 +584,11 @@ export default {
                 {code: "email", label: "Correo electrónico"},
                 {code: "phone_number", label: "Celular"}
             ];
+
+        },
+        identityDocumentTypes: function() {
+
+            return this.options?.identityDocumentTypes?.records.map(e => ({code: e.id, label: e.name, data: e}));
 
         },
         types: function() {

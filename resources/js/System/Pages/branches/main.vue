@@ -66,14 +66,14 @@
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td class="text-start">
-                                <span v-text="record.name" class="fw-bold d-block"></span>
+                                <span v-text="record.name" class="fw-bold d-block text-nowrap"></span>
                                 <div class="d-flex flex-wrap mt-1">
                                     <div :class="['d-inline-flex align-items-center text-muted']" v-if="isDefined({value: record.address})">
                                         <span>📍</span>
                                         <span v-text="record.address" class="fst-italic ms-1"></span>
                                     </div>
                                     <div :class="['badge rounded-pill d-inline-flex align-items-center bg-label-danger']" v-else>
-                                        <span v-text="'Sin dirección registrada'" class="ms-1"></span>
+                                        <span v-text="'Sin dirección registrada'"></span>
                                     </div>
                                 </div>
                             </td>

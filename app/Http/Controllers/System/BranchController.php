@@ -15,6 +15,8 @@ class BranchController extends Controller {
 
     public function initParams(Request $request) {
 
+        $userAuth = Auth::user();
+
         $initParams = new stdClass();
 
         $config = new stdClass();
