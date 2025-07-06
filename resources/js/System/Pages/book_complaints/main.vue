@@ -43,12 +43,17 @@
     </div>
     <div class="table-responsive">
         <table class="table table-hover">
+            <colgroup>
+                <col style="width: 20%;">
+                <col style="width: 40%;">
+                <col style="width: 20%;">
+                <col style="width: 20%;">
+            </colgroup>
             <thead>
                 <tr class="text-center align-middle">
-                    <th class="bg-secondary text-white fw-semibold" style="width: 20%;">NÚMERO DE DOCUMENTO</th>
-                    <th class="bg-secondary text-white fw-semibold" style="width: 40%;">NOMBRE</th>
-                    <th class="bg-secondary text-white fw-semibold" style="width: 20%;">ESTADO</th>
-                    <th class="bg-secondary text-white fw-semibold" style="width: 20%;">ACCIONES</th>
+                    <th class="bg-secondary text-white fw-semibold" colspan="2">CLIENTE</th>
+                    <th class="bg-secondary text-white fw-semibold">ESTADO</th>
+                    <th class="bg-secondary text-white fw-semibold">ACCIONES</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0 bg-white">
@@ -63,16 +68,16 @@
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td class="text-start">
-                                <span v-text="record.document_number" class="text-dark d-block"></span>
-                                <span v-text="record.identity_document_type?.name" class="fst-italic d-block text-muted small"></span>
-                            </td>
-                            <td class="text-start">
-                                <div class="d-flex justify-content-center flex-wrap mb-1">
+                                <div class="d-flex justify-content-start flex-wrap mb-2">
                                     <div :class="['badge rounded-pill fst-italic fw-bold text-uppercase', 'bg-label-'+getType({record})?.data?.color]" :title="getType({record})?.label">
                                         <i :class="['fa', getType({record})?.data?.icon]"></i>
                                         <span v-text="getType({record})?.label" class="ms-1"></span>
                                     </div>
                                 </div>
+                                <span v-text="record.document_number" class="text-dark d-block"></span>
+                                <span v-text="record.identity_document_type?.name" class="fst-italic d-block text-muted small"></span>
+                            </td>
+                            <td class="text-start">
                                 <span v-text="record.name" class="fw-bold d-block"></span>
                                 <div v-if="isDefined({value: record.email})">
                                     <a :href="'mailto:'+record.email" class="d-inline-flex align-items-center small">
@@ -176,11 +181,15 @@
                                     <span class="ms-2">Detalle del reclamo</span>
                                 </div>
                                 <div class="card-body py-2">
-                                    <div class="d-flex justify-content-center flex-wrap my-1">
+                                    <div class="d-flex justify-content-center flex-wrap mt-1 mb-2">
                                         <div :class="['badge rounded-pill fst-italic fw-bold text-uppercase', 'bg-label-'+getType({record: forms.entity.createUpdate.data})?.data?.color]" :title="getType({record: forms.entity.createUpdate.data})?.label">
                                             <i :class="['fa', getType({record: forms.entity.createUpdate.data})?.data?.icon]"></i>
                                             <span v-text="getType({record: forms.entity.createUpdate.data})?.label" class="ms-1"></span>
                                         </div>
+                                    </div>
+                                    <div class="text-start mb-2">
+                                        <span class="text-dark fw-bold colon-at-end">Sucursal</span>
+                                        <span v-text="forms.entity.createUpdate.data?.branch?.name || 'No especifica'" class="ms-2"></span>
                                     </div>
                                     <div class="text-start mb-2">
                                         <span class="text-dark fw-bold colon-at-end">Descripción</span>
@@ -190,9 +199,13 @@
                                         <span class="text-dark fw-bold colon-at-end">Pedido del cliente</span>
                                         <span v-text="forms.entity.createUpdate.data.request || 'No registrado'" class="ms-2"></span>
                                     </div>
-                                    <div class="text-start">
+                                    <div class="text-start mb-2">
                                         <span class="text-dark fw-bold colon-at-end">Fecha y hora</span>
                                         <span v-text="legibleFormatDate({dateString: forms.entity.createUpdate.data.created_at, type: 'datetime'})" class="ms-2"></span>
+                                    </div>
+                                    <div class="d-flex justify-content-start align-items-center flex-wrap">
+                                        <span class="text-dark fw-bold colon-at-end">Estado actual</span>
+                                        <span :class="['badge', 'fw-semibold', 'ms-2', { 'bg-label-primary': ['in_progress'].includes(forms.entity.createUpdate.data.copy?.status?.code), 'bg-label-success': ['resolved'].includes(forms.entity.createUpdate.data.copy?.status?.code), 'bg-label-danger': ['pending'].includes(forms.entity.createUpdate.data.copy?.status?.code) }]" v-text="forms.entity.createUpdate.data.copy?.status?.label"></span>
                                     </div>
                                 </div>
                             </div>
@@ -230,20 +243,38 @@
                                     <span class="ms-2">Gestión administrativa</span>
                                 </div>
                                 <div class="card-body py-3">
-                                    <div class="d-flex justify-content-center flex-wrap mb-3">
-                                        <span :class="['badge', 'fw-semibold', 'ms-2', { 'bg-label-primary': ['in_progress'].includes(forms.entity.createUpdate.data.status?.code), 'bg-label-success': ['resolved'].includes(forms.entity.createUpdate.data.status?.code), 'bg-label-danger': ['pending'].includes(forms.entity.createUpdate.data.status?.code) }]" v-text="forms.entity.createUpdate.data.status?.label"></span>
+                                    <div class="row g-3">
+                                        <InputSlot
+                                            hasDiv
+                                            title="Estado"
+                                            isRequired
+                                            :isInputGroup="false"
+                                            :divInputClass="['d-flex flex-wrap justify-content-start align-items-end gap-2 gap-md-3']"
+                                            hasTextBottom
+                                            :textBottomInfo="forms.entity.createUpdate.errors?.status"
+                                            xl="12"
+                                            lg="12">
+                                            <template v-slot:input>
+                                                <div v-for="option in statuses" :key="option.value" class="form-check">
+                                                    <label class="cursor-pointer">
+                                                        <input class="form-check-input" type="radio" :value="option" v-model="forms.entity.createUpdate.data.status"/>
+                                                        <span class="fw-bold" v-text="option.label"></span>
+                                                    </label>
+                                                </div>
+                                            </template>
+                                        </InputSlot>
+                                        <InputTextArea
+                                            v-model="forms.entity.createUpdate.data.admin_response"
+                                            hasDiv
+                                            title="Respuesta del administrador"
+                                            isRequired
+                                            maxlength="600"
+                                            rows="5"
+                                            hasTextBottom
+                                            :textBottomInfo="forms.entity.createUpdate.errors?.admin_response"
+                                            xl="12"
+                                            lg="12"/>
                                     </div>
-                                    <InputTextArea
-                                        v-model="forms.entity.createUpdate.data.admin_response"
-                                        hasDiv
-                                        title="Respuesta del administrador"
-                                        isRequired
-                                        maxlength="400"
-                                        rows="4"
-                                        hasTextBottom
-                                        :textBottomInfo="forms.entity.createUpdate.errors?.admin_response"
-                                        xl="12"
-                                        lg="12"/>
                                 </div>
                             </div>
                         </div>
@@ -321,6 +352,7 @@ export default {
                         },
                         data: {
                             id: null,
+                            branch: null,
                             identity_document_type: null,
                             document_number: "",
                             name: "",
@@ -336,7 +368,8 @@ export default {
                             submitted_platform: "",
                             submitted_browser: "",
                             status: null,
-                            created_at: ""
+                            created_at: "",
+                            copy: null
                         },
                         errors: {}
                     }
@@ -412,6 +445,7 @@ export default {
                     status = this.statuses.find(e => e.code === record?.status);
 
                 this.forms.entity.createUpdate.data.id                     = record?.id;
+                this.forms.entity.createUpdate.data.branch                 = record?.branch;
                 this.forms.entity.createUpdate.data.identity_document_type = identityDocumentType;
                 this.forms.entity.createUpdate.data.document_number        = record?.document_number;
                 this.forms.entity.createUpdate.data.name                   = record?.name;
@@ -428,6 +462,7 @@ export default {
                 this.forms.entity.createUpdate.data.submitted_browser      = record?.submitted_browser;
                 this.forms.entity.createUpdate.data.status                 = status;
                 this.forms.entity.createUpdate.data.created_at             = record?.created_at;
+                this.forms.entity.createUpdate.data.copy                   = Utils.cloneJson(this.forms.entity.createUpdate.data);
 
             }else {
 
@@ -457,6 +492,7 @@ export default {
                 form.status = form?.status?.code;
 
                 delete form.identity_document_type;
+                delete form.copy;
 
                 let createUpdate = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.update, data: form, id: form.id}) :
                                                                              Requests.post({route: this.config.entity.routes.store, data: form}));
@@ -496,6 +532,7 @@ export default {
                 case "modalCreateUpdateEntity":
                 case "createUpdateEntity":
                     this.forms.entity.createUpdate.data.id                     = null;
+                    this.forms.entity.createUpdate.data.branch                 = null;
                     this.forms.entity.createUpdate.data.identity_document_type = null;
                     this.forms.entity.createUpdate.data.document_number        = "";
                     this.forms.entity.createUpdate.data.name                   = "";
@@ -512,6 +549,7 @@ export default {
                     this.forms.entity.createUpdate.data.submitted_browser      = "";
                     this.forms.entity.createUpdate.data.status                 = null;
                     this.forms.entity.createUpdate.data.created_at             = "";
+                    this.forms.entity.createUpdate.data.copy                   = null;
                     break;
             }
 

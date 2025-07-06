@@ -26,7 +26,7 @@ class StoreBookComplaintRequest extends FormRequest {
     public function rules(): array {
 
         return [
-            "admin_response" => "nullable|string|max:600",
+            "admin_response" => "required|string|max:900",
             "status"         => "required|string"
         ];
 

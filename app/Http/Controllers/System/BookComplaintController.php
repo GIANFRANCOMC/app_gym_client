@@ -73,7 +73,7 @@ class BookComplaintController extends Controller {
                              })
                              ->where("company_id", $userAuth->company_id)
                              ->orderBy("id", "DESC")
-                             ->with(["identityDocumentType"])
+                             ->with(["branch", "identityDocumentType"])
                              ->paginate($request->per_page ?? Utilities::$per_page_default);
 
         return $list;
