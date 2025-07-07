@@ -17,6 +17,7 @@ class Customer extends Model {
     public static $snakeAttributes = true;
 
     protected $appends = [
+        "formatted_gender",
         "formatted_status"
     ];
 
@@ -27,6 +28,9 @@ class Customer extends Model {
         "name",
         "email",
         "phone_number",
+        "gender",
+        "gender_description",
+        "birthdate",
         "status",
         "created_at",
         "created_by",
@@ -35,6 +39,12 @@ class Customer extends Model {
     ];
 
     // Appends
+    public function getFormattedGenderAttribute() {
+
+        return self::getGenders("first", $this->attributes["gender"])["label"] ?? "";
+
+    }
+
     public function getFormattedStatusAttribute() {
 
         return self::getStatuses("first", $this->attributes["status"])["label"] ?? "";
@@ -42,6 +52,18 @@ class Customer extends Model {
     }
 
     // Functions
+    public static function getGenders($type = "all", $code = "") {
+
+        $statuses = [
+            ["code" => "male", "label" => "Masculino"],
+            ["code" => "female", "label" => "Femenino"],
+            ["code" => "other", "label" => "Otro"]
+        ];
+
+        return Utilities::getValues($statuses, $type, $code);
+
+    }
+
     public static function getStatuses($type = "all", $code = "") {
 
         $statuses = [

@@ -157,6 +157,7 @@ return new class extends Migration {
             $table->timestamp("email_verified_at")->nullable();
             $table->string("password");
             $table->rememberToken();
+            $table->string("phone_number")->nullable();
             $table->enum("gender", ["male", "female", "other"])->nullable();
             $table->string("gender_description")->nullable();
             $table->date("birthdate")->nullable();
