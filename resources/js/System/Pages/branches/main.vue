@@ -49,7 +49,7 @@
         <table class="table table-hover">
             <thead>
                 <tr class="text-center align-middle">
-                    <th class="bg-secondary text-white fw-semibold" style="width: 60%;">NOMBRE</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 60%;">SUCURSAL</th>
                     <th class="bg-secondary text-white fw-semibold" style="width: 20%;">ESTADO</th>
                     <th class="bg-secondary text-white fw-semibold" style="width: 20%;">ACCIONES</th>
                 </tr>
@@ -408,7 +408,7 @@ export default {
 
                 if(!this.isDefined({value: form?.status})) {
 
-                    result.status.push(`${isDescriptive ? "Dirección:" : ""} ${this.config.forms.errors.labels.required}`);
+                    result.status.push(`${isDescriptive ? "Estado:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }

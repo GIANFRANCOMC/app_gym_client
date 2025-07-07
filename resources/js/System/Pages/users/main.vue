@@ -80,11 +80,10 @@
                             </td>
                             <td class="text-start">
                                 <span v-text="record.name" class="fw-bold d-block"></span>
-                                <a :href="'mailto:'+record.email" class="d-inline-flex align-items-center small" v-if="isDefined({value: record.email})">
+                                <a :href="'mailto:'+record.email" class="d-flex align-items-center small" v-if="isDefined({value: record.email})">
                                     <span>📧</span>
                                     <span v-text="record.email" class="fst-italic ms-1"></span>
                                 </a>
-                                <br/>
                                 <a :href="'tel:'+record.phone_number" class="d-inline-flex align-items-center small" v-if="isDefined({value: record.phone_number})">
                                     <span>📞</span>
                                     <span v-text="record.phone_number" class="fst-italic ms-1"></span>

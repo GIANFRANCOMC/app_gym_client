@@ -36,7 +36,7 @@ class UpdateCompanyRequest extends FormRequest {
             "description"               => "nullable|string|max:500",
             "address"                   => "nullable|string|max:200",
             "telephone"                 => "nullable|string|max:50",
-            "email"                     => "nullable|email",
+            "email"                     => "nullable|email|max:200",
             "status"                    => "required|string",
             "logotype"                  => "nullable|file|image|mimes:jpeg,png,jpg|max:$maxSize",
             "combinationmark"           => "nullable|file|image|mimes:jpeg,png,jpg|max:$maxSize",

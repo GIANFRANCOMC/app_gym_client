@@ -5,7 +5,7 @@
     <div class="nav-align-top">
         <ul class="nav nav-tabs nav-fill" role="tablist">
             <li class="nav-item" role="presentation">
-                <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-general" aria-controls="navs-pills-general" aria-selected="false" tabindex="-1">
+                <button type="button" class="nav-link waves-effect justify-content-start" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-general" aria-controls="navs-pills-general" aria-selected="false" tabindex="-1">
                     <span class="d-flfex align-items-center fw-semibold">
                         <span>🏢</span>
                         <span class="ms-1">1. Información general</span>
@@ -13,7 +13,7 @@
                 </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-contacts" aria-controls="navs-pills-contacts" aria-selected="false" tabindex="-1">
+                <button type="button" class="nav-link waves-effect justify-content-start" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-contacts" aria-controls="navs-pills-contacts" aria-selected="false" tabindex="-1">
                     <span class="d-flex align-items-center fw-semibold">
                         <span>☎️</span>
                         <span class="ms-1">2. Información de contacto y redes</span>
@@ -21,7 +21,7 @@
                 </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-branding" aria-controls="navs-pills-branding" aria-selected="false" tabindex="-1">
+                <button type="button" class="nav-link waves-effect justify-content-start" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-branding" aria-controls="navs-pills-branding" aria-selected="false" tabindex="-1">
                     <span class="d-flfex align-items-center fw-semibold">
                         <span>🎨</span>
                         <span class="ms-2">3. Identidad visual</span>
@@ -29,7 +29,7 @@
                 </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-share" aria-controls="navs-pills-share" aria-selected="false" tabindex="-1">
+                <button type="button" class="nav-link waves-effect justify-content-start" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-share" aria-controls="navs-pills-share" aria-selected="false" tabindex="-1">
                     <span class="d-flex align-items-center fw-semibold">
                         <span>🔗</span>
                         <span class="ms-1">4. Accesos compartido</span>
@@ -37,7 +37,7 @@
                 </button>
             </li>
             <li class="nav-item" role="presentation" v-if="false">
-                <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-configuration" aria-controls="navs-pills-configuration" aria-selected="false" tabindex="-1">
+                <button type="button" class="nav-link waves-effect justify-content-start" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-configuration" aria-controls="navs-pills-configuration" aria-selected="false" tabindex="-1">
                     <span class="d-flex align-items-center fw-semibold">
                         <span>⚙️</span>
                         <span class="ms-1">5. Parámetros</span>
@@ -129,6 +129,7 @@
                         v-model="forms.entity.createUpdate.data.email"
                         hasDiv
                         title="Correo electrónico"
+                        maxlength="100"
                         hasTextBottom
                         :textBottomInfo="forms.entity.createUpdate.errors?.email"
                         xl="6"

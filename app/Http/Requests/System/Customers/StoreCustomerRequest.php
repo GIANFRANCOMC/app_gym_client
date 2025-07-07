@@ -27,13 +27,13 @@ class StoreCustomerRequest extends FormRequest {
 
         return [
             "identity_document_type_id" => "required|integer",
-            "document_number"           => "required|string|max:20",
-            "name"                      => "required|string|max:100",
-            "email"                     => "nullable|email",
+            "document_number"           => "required|string|max:25",
+            "status"                    => "required|string",
+            "name"                      => "required|string|max:200",
+            "email"                     => "nullable|email|max:200",
             "phone_number"              => "nullable|integer",
             "gender"                    => "nullable|string",
-            "birthdate"                 => "nullable|date",
-            "status"                    => "required|string"
+            "birthdate"                 => "nullable|date"
         ];
 
     }

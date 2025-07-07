@@ -51,7 +51,7 @@
             </colgroup>
             <thead>
                 <tr class="text-center align-middle">
-                    <th class="bg-secondary text-white fw-semibold" colspan="2">CLIENTE</th>
+                    <th class="bg-secondary text-white fw-semibold" colspan="2">DETALLE</th>
                     <th class="bg-secondary text-white fw-semibold">ESTADO</th>
                     <th class="bg-secondary text-white fw-semibold">ACCIONES</th>
                 </tr>
@@ -68,7 +68,7 @@
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td class="text-start">
-                                <div class="d-flex justify-content-start flex-wrap mb-2">
+                                <div class="d-flex justify-content-start flex-wrap mb-1">
                                     <div :class="['badge rounded-pill fst-italic fw-bold text-uppercase', 'bg-label-'+getType({record})?.data?.color]" :title="getType({record})?.label">
                                         <i :class="['fa', getType({record})?.data?.icon]"></i>
                                         <span v-text="getType({record})?.label" class="ms-1"></span>
@@ -79,18 +79,14 @@
                             </td>
                             <td class="text-start">
                                 <span v-text="record.name" class="fw-bold d-block"></span>
-                                <div v-if="isDefined({value: record.email})">
-                                    <a :href="'mailto:'+record.email" class="d-inline-flex align-items-center small">
-                                        <span>📧</span>
-                                        <span v-text="record.email" class="fst-italic ms-1"></span>
-                                    </a>
-                                </div>
-                                <div v-if="isDefined({value: record.phone_number})">
-                                    <a :href="'tel:'+record.phone_number" class="d-inline-flex align-items-center small">
-                                        <span>📞</span>
-                                        <span v-text="record.phone_number" class="fst-italic ms-1"></span>
-                                    </a>
-                                </div>
+                                <a :href="'mailto:'+record.email" class="d-flex align-items-center small" v-if="isDefined({value: record.email})">
+                                    <span>📧</span>
+                                    <span v-text="record.email" class="fst-italic ms-1"></span>
+                                </a>
+                                <a :href="'tel:'+record.phone_number" class="d-inline-flex align-items-center small" v-if="isDefined({value: record.phone_number})">
+                                    <span>📞</span>
+                                    <span v-text="record.phone_number" class="fst-italic ms-1"></span>
+                                </a>
                                 <template v-if="!isDefined({value: record.email}) && !isDefined({value: record.phone_number})">
                                     <span class="small text-muted fst-italic">Sin información de contacto</span>
                                 </template>

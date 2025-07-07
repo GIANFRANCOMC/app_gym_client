@@ -81,11 +81,11 @@
                                     <span>📧</span>
                                     <span v-text="record.email" class="fst-italic ms-1"></span>
                                 </a>
-                                <a :href="'tel:'+record.phone_number" class="d-flex align-items-center small" v-if="isDefined({value: record.phone_number})">
+                                <a :href="'tel:'+record.phone_number" class="d-inline-flex align-items-center small" v-if="isDefined({value: record.phone_number})">
                                     <span>📞</span>
                                     <span v-text="record.phone_number" class="fst-italic ms-1"></span>
                                 </a>
-                                <div class="d-flex flex-wrap mt-1">
+                                <div class="d-flex flex-wrap">
                                     <template v-if="isDefined({value: record.birthdate})">
                                         <div class="badge bg-light text-dark rounded-pill me-2 my-1 d-flex align-items-center">
                                             <span>🎂</span>
@@ -141,7 +141,7 @@
 
     <!-- Modals -->
     <div class="modal fade" :id="forms.entity.createUpdate.extras.modals.default.id" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.createUpdate.extras.modals.default.titles[isUpdate ? 'update' : 'store']"></h5>
@@ -155,8 +155,8 @@
                             isRequired
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.identity_document_type"
-                            xl="6"
-                            lg="6">
+                            xl="4"
+                            lg="4">
                             <template v-slot:input>
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.identity_document_type"
@@ -174,8 +174,8 @@
                             maxlength="15"
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.document_number"
-                            xl="6"
-                            lg="6">
+                            xl="4"
+                            lg="4">
                             <template v-slot:inputGroupAppend>
                                 <template v-if="['dni', 'ruc'].includes(forms.entity.createUpdate.data.identity_document_type?.data.code)">
                                     <button :class="['btn waves-effect', isUpdate ? 'btn-warning' : 'btn-primary']" type="button" @click="searchDocumentNumber({consult: forms.entity.createUpdate})" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar N° documento">
@@ -184,57 +184,6 @@
                                 </template>
                             </template>
                         </InputText>
-                        <InputText
-                            v-model="forms.entity.createUpdate.data.name"
-                            hasDiv
-                            title="Nombre"
-                            isRequired
-                            maxlength="100"
-                            hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.name"
-                            xl="12"
-                            lg="12"/>
-                        <InputText
-                            v-model="forms.entity.createUpdate.data.email"
-                            hasDiv
-                            title="📧 Correo electrónico"
-                            maxlength="100"
-                            hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.email"
-                            xl="8"
-                            lg="8"/>
-                        <InputText
-                            v-model="forms.entity.createUpdate.data.phone_number"
-                            hasDiv
-                            title="📞 Celular"
-                            maxlength="100"
-                            hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.phone_number"
-                            xl="4"
-                            lg="4"/>
-                        <InputSlot
-                            hasDiv
-                            title="Género"
-                            hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.gender"
-                            xl="4"
-                            lg="4">
-                            <template v-slot:input>
-                                <v-select
-                                    v-model="forms.entity.createUpdate.data.gender"
-                                    :options="genders"
-                                    :clearable="false"
-                                    :searchable="false"/>
-                            </template>
-                        </InputSlot>
-                        <InputDate
-                            v-model="forms.entity.createUpdate.data.birthdate"
-                            hasDiv
-                            title="Fecha de nacimiento"
-                            hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.birthdate"
-                            xl="4"
-                            lg="4"/>
                         <InputSlot
                             hasDiv
                             title="Estado"
@@ -251,6 +200,57 @@
                                     :searchable="false"/>
                             </template>
                         </InputSlot>
+                        <InputText
+                            v-model="forms.entity.createUpdate.data.name"
+                            hasDiv
+                            title="Nombre"
+                            isRequired
+                            maxlength="100"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.name"
+                            xl="6"
+                            lg="6"/>
+                        <InputText
+                            v-model="forms.entity.createUpdate.data.email"
+                            hasDiv
+                            title="📧 Correo electrónico"
+                            maxlength="100"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.email"
+                            xl="6"
+                            lg="6"/>
+                        <InputText
+                            v-model="forms.entity.createUpdate.data.phone_number"
+                            hasDiv
+                            title="📞 Celular"
+                            maxlength="15"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.phone_number"
+                            xl="3"
+                            lg="3"/>
+                        <InputSlot
+                            hasDiv
+                            title="Género"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.gender"
+                            xl="3"
+                            lg="3">
+                            <template v-slot:input>
+                                <v-select
+                                    v-model="forms.entity.createUpdate.data.gender"
+                                    :options="genders"
+                                    :clearable="false"
+                                    :searchable="false"/>
+                            </template>
+                        </InputSlot>
+                        <InputDate
+                            v-model="forms.entity.createUpdate.data.birthdate"
+                            hasDiv
+                            title="Fecha de nacimiento"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.birthdate"
+                            xl="3"
+                            lg="3"/>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -597,8 +597,8 @@ export default {
 
                 result.identity_document_type = [];
                 result.document_number        = [];
-                result.name                   = [];
                 result.status                 = [];
+                result.name                   = [];
 
                 const isDescriptive = ["descriptive"].includes(extras?.type);
 
@@ -616,16 +616,16 @@ export default {
 
                 }
 
-                if(!this.isDefined({value: form?.name})) {
+                if(!this.isDefined({value: form?.status})) {
 
-                    result.name.push(`${isDescriptive ? "Nombre:" : ""} ${this.config.forms.errors.labels.required}`);
+                    result.status.push(`${isDescriptive ? "Estado:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }
 
-                if(!this.isDefined({value: form?.status})) {
+                if(!this.isDefined({value: form?.name})) {
 
-                    result.status.push(`${isDescriptive ? "Estado:" : ""} ${this.config.forms.errors.labels.required}`);
+                    result.name.push(`${isDescriptive ? "Nombre:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }
