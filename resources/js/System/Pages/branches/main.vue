@@ -314,6 +314,7 @@ export default {
 
             // Alerts.swals({show: false});
             Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.default.id});
+            this.tooltips({show: true, time: 500});
 
         },
         async createUpdateEntity() {
@@ -422,6 +423,11 @@ export default {
         isDefined({value}) {
 
             return Utils.isDefined({value});
+
+        },
+        tooltips({show = true, time = 10}) {
+
+            Alerts.tooltips({show, time});
 
         }
     },

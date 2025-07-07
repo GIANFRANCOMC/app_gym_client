@@ -27,8 +27,8 @@ class StoreAssetRequest extends FormRequest {
 
         return [
             "internal_code" => "required|string|max:100",
-            "name"          => "required|string|max:100",
-            "description"   => "nullable|string|max:300",
+            "name"          => "required|string|max:200",
+            "description"   => "nullable|string|max:500",
             "status"        => "required|string"
         ];
 

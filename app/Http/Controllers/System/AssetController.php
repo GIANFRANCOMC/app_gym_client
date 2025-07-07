@@ -107,7 +107,7 @@ class AssetController extends Controller {
             $asset->internal_code = $request->internal_code;
             $asset->name          = $request->name;
             $asset->description   = $request->description ?? "";
-            $asset->status        = "active"; // $request->status;
+            $asset->status        = $request->status;
             $asset->created_at    = now();
             $asset->created_by    = $userAuth->id ?? null;
             $asset->save();
@@ -159,7 +159,7 @@ class AssetController extends Controller {
                 $asset->internal_code = $request->internal_code;
                 $asset->name          = $request->name;
                 $asset->description   = $request->description ?? "";
-                $asset->status        = "active"; // $request->status;
+                $asset->status        = $request->status;
                 $asset->updated_at    = now();
                 $asset->updated_by    = $userAuth->id ?? null;
                 $asset->save();

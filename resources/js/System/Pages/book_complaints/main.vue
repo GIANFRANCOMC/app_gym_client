@@ -469,6 +469,7 @@ export default {
 
             // Alerts.swals({show: false});
             Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.default.id});
+            this.tooltips({show: true, time: 500});
 
         },
         async createUpdateEntity() {
@@ -600,6 +601,11 @@ export default {
         legibleFormatDate({dateString = null, type = "datetime"}) {
 
             return Utils.legibleFormatDate({dateString, type});
+
+        },
+        tooltips({show = true, time = 10}) {
+
+            Alerts.tooltips({show, time});
 
         }
     },

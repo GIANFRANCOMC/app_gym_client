@@ -49,9 +49,10 @@
         <table class="table table-hover">
             <thead>
                 <tr class="text-center align-middle">
-                    <th class="bg-secondary text-white fw-semibold" style="width: 30%;">CÓDIGO INTERNO</th>
-                    <th class="bg-secondary text-white fw-semibold" style="width: 40%;">NOMBRE</th>
-                    <th class="bg-secondary text-white fw-semibold" style="width: 30%;">ACCIONES</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 25%;">CÓDIGO INTERNO</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 35%;">NOMBRE</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 20%;">ESTADO</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 20%;">ACCIONES</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0 bg-white">
@@ -67,6 +68,9 @@
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td v-text="record.internal_code" class="fw-bold"></td>
                             <td v-text="record.name" class="text-start"></td>
+                            <td>
+                                <span :class="['badge', 'fw-semibold', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-danger': ['inactive'].includes(record.status) }]" v-text="record.formatted_status"></span>
+                            </td>
                             <td>
                                 <InputSlot
                                     hasDiv
@@ -104,7 +108,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.createUpdate.extras.modals.default.titles[isDefined({value: forms.entity.createUpdate.data?.id}) ? 'update' : 'store']"></h5>
+                    <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.createUpdate.extras.modals.default.titles[isUpdate ? 'update' : 'store']"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -114,12 +118,13 @@
                             hasDiv
                             title="Código interno"
                             isRequired
+                            maxlength="15"
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.internal_code"
                             xl="5"
                             lg="5">
                             <template v-slot:inputGroupAppend>
-                                <button type="button" :class="['btn waves-effect', isDefined({value: forms.entity.createUpdate.data?.id}) ? 'btn-warning' : 'btn-primary']" @click="setGenerateCode({length: 7})" data-bs-toggle="tooltip" data-bs-placement="top" title="Generar aleatoriamente">
+                                <button type="button" :class="['btn waves-effect', isUpdate ? 'btn-warning' : 'btn-primary']" @click="setGenerateCode({length: 7})" data-bs-toggle="tooltip" data-bs-placement="top" title="Generar aleatoriamente">
                                     <i class="fa fa-rotate"></i>
                                 </button>
                             </template>
@@ -129,6 +134,7 @@
                             hasDiv
                             title="Nombre"
                             isRequired
+                            maxlength="100"
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.name"
                             xl="7"
@@ -137,15 +143,32 @@
                             v-model="forms.entity.createUpdate.data.description"
                             hasDiv
                             title="Descripción"
+                            maxlength="200"
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.description"
                             xl="12"
                             lg="12"/>
+                        <InputSlot
+                            hasDiv
+                            title="Estado"
+                            isRequired
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.status"
+                            xl="5"
+                            lg="5">
+                            <template v-slot:input>
+                                <v-select
+                                    v-model="forms.entity.createUpdate.data.status"
+                                    :options="statuses"
+                                    :clearable="false"
+                                    :searchable="false"/>
+                            </template>
+                        </InputSlot>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" :class="['btn waves-effect', isDefined({value: forms.entity.createUpdate.data?.id}) ? 'btn-warning' : 'btn-primary']" @click="createUpdateEntity()">
+                    <button type="button" :class="['btn waves-effect', isUpdate ? 'btn-warning' : 'btn-primary']" @click="createUpdateEntity()">
                         <i class="fa fa-save"></i>
                         <span class="ms-2">Guardar</span>
                     </button>
@@ -296,7 +319,7 @@ export default {
 
             if(this.isDefined({value: record})) {
 
-                let status = this.statuses.filter(e => e.code === record?.status)[0];
+                let status = this.statuses.find(e => e.code === record?.status);
 
                 this.forms.entity.createUpdate.data.id            = record?.id;
                 this.forms.entity.createUpdate.data.internal_code = record?.internal_code;
@@ -313,6 +336,7 @@ export default {
 
             // Alerts.swals({show: false});
             Alerts.modals({type: "show", id: this.forms.entity.createUpdate.extras.modals.default.id});
+            this.tooltips({show: true, time: 500});
 
         },
         async createUpdateEntity() {
@@ -324,7 +348,7 @@ export default {
 
             let form = Utils.cloneJson(this.forms.entity.createUpdate.data);
 
-            const validateForm = this.validateForm({functionName, form});
+            const validateForm = this.validateForm({functionName, form, extras: {type: "descriptive"}});
 
             if(validateForm?.bool) {
 
@@ -336,8 +360,9 @@ export default {
                 if(Requests.valid({result: createUpdate})) {
 
                     Alerts.modals({type: "hide", id: this.forms.entity.createUpdate.extras.modals.default.id});
-                    Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
-                    Alerts.swals({show: false});
+                    // Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
+                    // Alerts.swals({show: false});
+                    Alerts.generateAlert({type: "success", msgContent: createUpdate?.data?.msg});
 
                     this.clearForm({functionName});
                     this.listEntity({url: `${this.lists.entity.extras.route}?page=${this.lists.entity.records?.current_page ?? 1}`});
@@ -352,9 +377,10 @@ export default {
 
             }else {
 
-                this.formErrors({functionName, type: "set", errors: validateForm});
-                Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
-                Alerts.swals({show: false});
+                // this.formErrors({functionName, type: "set", errors: validateForm});
+                // Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
+                // Alerts.swals({show: false});
+                Alerts.generateAlert({messages: Utils.getErrors({errors: validateForm}), msgContent: `<div class="fw-semibold mb-2">${this.config.messages.errorValidate}</div>`});
 
             }
 
@@ -396,23 +422,25 @@ export default {
                 result.description   = [];
                 result.status        = [];
 
+                const isDescriptive = ["descriptive"].includes(extras?.type);
+
                 if(!this.isDefined({value: form?.internal_code})) {
 
-                    result.internal_code.push(this.config.forms.errors.labels.required);
+                    result.internal_code.push(`${isDescriptive ? "Código interno:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }
 
                 if(!this.isDefined({value: form?.name})) {
 
-                    result.name.push(this.config.forms.errors.labels.required);
+                    result.name.push(`${isDescriptive ? "Nombre:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }
 
                 if(!this.isDefined({value: form?.status})) {
 
-                    result.status.push(this.config.forms.errors.labels.required);
+                    result.status.push(`${isDescriptive ? "Estado:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }
@@ -458,6 +486,11 @@ export default {
         statuses: function() {
 
             return this.options?.assets?.statuses.map(e => ({code: e.code, label: e.label}));
+
+        },
+        isUpdate: function() {
+
+            return this.isDefined({value: this.forms.entity.createUpdate.data?.id});
 
         }
     },
