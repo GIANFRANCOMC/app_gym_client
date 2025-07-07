@@ -15,6 +15,8 @@ class CustomerController extends Controller {
 
     public function initParams(Request $request) {
 
+        $userAuth = Auth::user();
+
         $initParams = new stdClass();
 
         $config = new stdClass();
@@ -24,10 +26,10 @@ class CustomerController extends Controller {
         if(in_array($page, ["main"])) {
 
             $config->identityDocumentTypes = new stdClass();
-            $config->identityDocumentTypes->records = IdentityDocumentType::whereIn("id", [1, 2, 4])
-                                                                          ->get();
+            $config->identityDocumentTypes->records = IdentityDocumentType::getAll("customer", $userAuth->company_id);
 
             $config->customers = new stdClass();
+            $config->customers->genders  = Customer::getGenders();
             $config->customers->statuses = Customer::getStatuses();
 
         }
@@ -97,13 +99,12 @@ class CustomerController extends Controller {
         $customer = null;
 
         $customerExists = Customer::where("company_id", $userAuth->company_id)
-                                  ->where("identity_document_type_id", $request->identity_document_type_id)
                                   ->where("document_number", $request->document_number)
                                   ->exists();
 
         if($customerExists) {
 
-            return response()->json(["bool" => false, "msg" => "El cliente ingresado ya ha sido registrado."], 200);
+            return response()->json(["bool" => false, "msg" => "El número de documento ingresado ya ha sido registrado."], 200);
 
         }
 
@@ -116,6 +117,8 @@ class CustomerController extends Controller {
             $customer->name                      = $request->name;
             $customer->email                     = $request->email;
             $customer->phone_number              = $request->phone_number;
+            $customer->gender                    = $request->gender ?? "other";
+            $customer->birthdate                 = $request->birthdate;
             $customer->status                    = $request->status;
             $customer->created_at                = now();
             $customer->created_by                = $userAuth->id ?? null;
@@ -153,14 +156,13 @@ class CustomerController extends Controller {
         if(Utilities::isDefined($customer)) {
 
             $customerExists = Customer::where("company_id", $userAuth->company_id)
-                                      ->where("identity_document_type_id", $request->identity_document_type_id)
                                       ->where("document_number", $request->document_number)
                                       ->whereNot("id", $customer->id)
                                       ->exists();
 
             if($customerExists) {
 
-                return response()->json(["bool" => false, "msg" => "El cliente ingresado ya ha sido registrado."], 200);
+                return response()->json(["bool" => false, "msg" => "El número de documento ingresado ya ha sido registrado."], 200);
 
             }
 
@@ -171,6 +173,8 @@ class CustomerController extends Controller {
                 $customer->name                      = $request->name;
                 $customer->email                     = $request->email;
                 $customer->phone_number              = $request->phone_number;
+                $customer->gender                    = $request->gender ?? "other";
+                $customer->birthdate                 = $request->birthdate;
                 $customer->status                    = $request->status;
                 $customer->updated_at                = now();
                 $customer->updated_by                = $userAuth->id ?? null;

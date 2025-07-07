@@ -60,6 +60,12 @@ class IdentityDocumentType extends Model {
                                               ->whereIn("status", ["active"]);
 
                                    })
+                                   ->when(in_array($type, ["customer"]), function($query) {
+
+                                        $query->whereIn("code", ["doc.trib.no.dom.sin.ruc", "dni", "ruc"])
+                                              ->whereIn("status", ["active"]);
+
+                                   })
                                    ->when(in_array($type, ["book_complaint"]), function($query) {
 
                                         $query->whereIn("code", ["doc.trib.no.dom.sin.ruc", "dni", "ruc"])

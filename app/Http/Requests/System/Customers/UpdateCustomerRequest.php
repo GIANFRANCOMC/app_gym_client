@@ -31,6 +31,8 @@ class UpdateCustomerRequest extends FormRequest {
             "name"                      => "required|string|max:100",
             "email"                     => "nullable|email",
             "phone_number"              => "nullable|integer",
+            "gender"                    => "nullable|string",
+            "birthdate"                 => "nullable|date",
             "status"                    => "required|string"
         ];
 
