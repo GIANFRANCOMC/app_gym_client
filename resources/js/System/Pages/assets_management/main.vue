@@ -41,7 +41,7 @@
             <thead>
                 <tr class="text-center align-middle">
                     <th class="bg-secondary text-white fw-semibold" style="width: 5%;">#</th>
-                    <th class="bg-secondary text-white fw-semibold" style="width: 30%;">DETALLE</th>
+                    <th class="bg-secondary text-white fw-semibold" style="width: 30%;">ACTIVO</th>
                     <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 15%;">CANTIDAD</th>
                     <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 15%;">VALOR DE ADQUISICIÓN</th>
                     <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 15%;">FECHA DE ADQUISICIÓN</th>
@@ -62,23 +62,17 @@
                             <tr class="text-center">
                                 <td v-text="indexRecord + 1"></td>
                                 <td class="text-start">
-                                    <ul class="mb-1">
-                                        <li>
-                                            <span class="fw-bold text-nowrap colon-at-end">Código interno</span>
-                                            <span v-text="record?.asset_internal_code" class="ms-2"></span>
-                                        </li>
-                                        <li>
-                                            <span class="fw-bold colon-at-end">Nombre</span>
-                                            <span v-text="record?.asset_name" class="ms-2"></span>
-                                        </li>
-                                        <li>
-                                            <span class="fw-bold colon-at-end">Descripción</span>
-                                            <span v-text="isDefined({value: record?.asset_description}) ? record?.asset_description : 'N/A'" class="ms-2"></span>
-                                        </li>
-                                    </ul>
-                                    <span class="badge bg-danger" v-if="record.branch_asset_quantity <= 0">Sin existencias</span>
-                                    <span class="badge bg-warning" v-else-if="record.branch_asset_quantity < 5">Hay pocas existencias</span>
-                                    <span class="badge bg-success" v-else-if="record.branch_asset_quantity >= 5">Con existencias disponibles</span>
+                                    <div class="d-flex justify-content-start mb-1">
+                                        <span class="badge bg-danger" v-if="record.branch_asset_quantity <= 0">Sin existencias</span>
+                                        <span class="badge bg-warning" v-else-if="record.branch_asset_quantity < 5">Hay pocas existencias</span>
+                                        <span class="badge bg-success" v-else-if="record.branch_asset_quantity >= 5">Con existencias disponibles</span>
+                                    </div>
+                                    <span v-text="record.asset_name" class="text-dark fw-bold d-block"></span>
+                                    <span v-text="record.asset_internal_code" class="fst-italic d-block small"></span>
+                                    <div v-if="isDefined({value: record?.asset_description})" class="mt-1 fst-italic text-muted small">
+                                        <span class="colon-at-end">Descripción</span>
+                                        <span v-text="record?.asset_description" class="ms-1"></span>
+                                    </div>
                                 </td>
                                 <td>
                                     <InputNumber
@@ -104,9 +98,9 @@
                                 <td>
                                     <div class="d-flex align-items-center justify-content-start" v-for="status in statuses" :key="status.code">
                                         <div class="form-check">
-                                            <label class="py-1 cursor-pointer text-nowrap">
+                                            <label class="cursor-pointer text-nowrap">
                                                 <input v-model="record.branch_asset_status" class="form-check-input" type="radio" :value="status.code">
-                                                <span v-text="status?.label"></span>
+                                                <span v-text="status?.label" class="fw-semibold"></span>
                                             </label>
                                         </div>
                                     </div>
@@ -176,11 +170,6 @@ export default {
             forms: {
                 entity: {
                     createUpdate: {
-                        extras: {
-                            modals: {
-                                default: {}
-                            }
-                        },
                         data: {},
                         errors: {}
                     }
@@ -248,7 +237,7 @@ export default {
 
             let form = Utils.cloneJson({branch_id: this.lists.entity.filters.branch?.code, items});
 
-            const validateForm = this.validateForm({functionName, form});
+            const validateForm = this.validateForm({functionName, form, extras: {type: "descriptive"}});
 
             if(validateForm?.bool) {
 
@@ -256,8 +245,9 @@ export default {
 
                 if(Requests.valid({result: createUpdate})) {
 
-                    Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
-                    Alerts.swals({show: false});
+                    // Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
+                    // Alerts.swals({show: false});
+                    Alerts.generateAlert({type: "success", msgContent: createUpdate?.data?.msg});
 
                     // this.clearForm({functionName});
                     this.listEntity({url: `${this.lists.entity.extras.route}?page=${this.lists.entity.records?.current_page ?? 1}`});
@@ -274,6 +264,7 @@ export default {
 
                 // this.formErrors({functionName, type: "set", errors: validateForm});
                 // Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
+                // Alerts.swals({show: false});
                 Alerts.generateAlert({messages: validateForm?.msg, msgContent: `<div class="fw-semibold mb-2">${this.config.messages.errorValidate}</div>`});
 
             }
@@ -308,6 +299,8 @@ export default {
 
                 result.msg = [];
 
+                const isDescriptive = ["descriptive"].includes(extras?.type);
+
                 if(!this.isDefined({value: form?.branch_id})) {
 
                     result.msg.push(`<b>Sucursal:</b> ${this.config.forms.errors.labels.required}`);
@@ -326,14 +319,14 @@ export default {
 
                     const seq = parseInt(indexRecord) + 1;
 
-                    if(Number(record?.branch_asset_quantity ?? 0) < 0) {
+                    if(!Utils.isNumber({value: form?.branch_asset_quantity ?? 0})) {
 
                         result.msg.push(`<b>Activo #${seq}:</b> Cantidad / ${this.config.forms.errors.labels.min_equal_number_0}`);
                         result.bool = false;
 
                     }
 
-                    if(Number(record?.branch_asset_acquisition_value ?? 0) < 0) {
+                    if(!Utils.isNumber({value: form?.branch_asset_acquisition_value ?? 0})) {
 
                         result.msg.push(`<b>Activo #${seq}:</b> Valor de adquisición / ${this.config.forms.errors.labels.min_equal_number_0}`);
                         result.bool = false;
@@ -372,7 +365,7 @@ export default {
         },
         statuses: function() {
 
-            return this.options?.branchAssets?.statuses.map(e => ({code: e.code, label: e.label}));
+            return this.options?.branchAssets?.statuses.map(e => ({code: e.code, label: e.label, data: e}));
 
         }
     },

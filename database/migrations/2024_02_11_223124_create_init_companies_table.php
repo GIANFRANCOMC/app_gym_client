@@ -92,6 +92,7 @@ return new class extends Migration {
             $table->string("internal_code");
             $table->string("name");
             $table->text("description")->nullable();
+            $table->enum("management_type", ["unit", "stock"])->default("stock");
             $table->enum("status", ["active", "inactive"])->default("active");
 
             $table->timestamp("created_at")->useCurrent()->nullable();
@@ -206,6 +207,51 @@ return new class extends Migration {
             $table->foreign("currency_id")->references("id")->on("currencies")->onDelete("cascade");
         });
 
+        Schema::create("asset_assignments", function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger("user_id");
+            $table->unsignedBigInteger("branch_id");
+            $table->unsignedBigInteger("asset_id");
+            $table->unsignedBigInteger("currency_id");
+            $table->decimal("quantity", 10, 2)->nullable()->default(0);
+            $table->decimal("acquisition_value", 10, 2)->nullable()->default(0);
+            $table->date("acquisition_date")->nullable();
+            $table->text("note")->nullable();
+            $table->enum("status", ["active", "maintenance", "retired"])->default("active");
+
+            $table->timestamp("created_at")->useCurrent()->nullable();
+            $table->integer("created_by")->nullable();
+            $table->timestamp("updated_at")->nullable();
+            $table->integer("updated_by")->nullable();
+
+            $table->foreign("user_id")->references("id")->on("users")->onDelete("cascade");
+            $table->foreign("branch_id")->references("id")->on("branches")->onDelete("cascade");
+            $table->foreign("asset_id")->references("id")->on("assets")->onDelete("cascade");
+            $table->foreign("currency_id")->references("id")->on("currencies")->onDelete("cascade");
+        });
+
+        Schema::create("asset_assignment_logs", function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger("action_by");
+            $table->unsignedBigInteger("user_id");
+            $table->unsignedBigInteger("branch_id");
+            $table->unsignedBigInteger("asset_id");
+            $table->enum("action_type", ["assigned", "transferred", "returned", "retired"]);
+            $table->decimal("quantity", 10, 2);
+            $table->text("note")->nullable();
+            $table->timestamp("action_at")->useCurrent();
+
+            $table->timestamp("created_at")->useCurrent()->nullable();
+            $table->integer("created_by")->nullable();
+            $table->timestamp("updated_at")->nullable();
+            $table->integer("updated_by")->nullable();
+
+            $table->foreign("action_by")->references("id")->on("users")->onDelete("cascade");
+            $table->foreign("user_id")->references("id")->on("users")->onDelete("cascade");
+            $table->foreign("branch_id")->references("id")->on("branches")->onDelete("cascade");
+            $table->foreign("asset_id")->references("id")->on("assets")->onDelete("cascade");
+        });
+
         // Inserts
         DB::table("company_socials_media")->insert([
             ["company_id" => 1, "type" => "facebook", "link" => "https://www.facebook.com/GianfrancoMC"],
@@ -256,6 +302,8 @@ return new class extends Migration {
      */
     public function down(): void {
 
+        Schema::dropIfExists("asset_assignment_logs");
+        Schema::dropIfExists("asset_assignments");
         Schema::dropIfExists("branch_assets");
         Schema::dropIfExists("warehouse_items");
         Schema::dropIfExists("warehouses");
