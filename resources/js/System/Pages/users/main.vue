@@ -47,12 +47,17 @@
     </div>
     <div class="table-responsive">
         <table class="table table-hover">
+            <colgroup>
+                <col style="width: 20%;">
+                <col style="width: 40%;">
+                <col style="width: 20%;">
+                <col style="width: 20%;">
+            </colgroup>
             <thead>
                 <tr class="text-center align-middle">
-                    <th class="bg-secondary text-white fw-semibold" style="width: 20%;">NÚMERO DE DOCUMENTO</th>
-                    <th class="bg-secondary text-white fw-semibold" style="width: 40%;">NOMBRE</th>
-                    <th class="bg-secondary text-white fw-semibold" style="width: 20%;">ESTADO</th>
-                    <th class="bg-secondary text-white fw-semibold" style="width: 20%;">ACCIONES</th>
+                    <th class="bg-secondary text-white fw-semibold" colspan="2">COLABORADOR</th>
+                    <th class="bg-secondary text-white fw-semibold">ESTADO</th>
+                    <th class="bg-secondary text-white fw-semibold">ACCIONES</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0 bg-white">
@@ -67,27 +72,32 @@
                     <template v-if="lists.entity.records.total > 0">
                         <tr v-for="record in lists.entity.records.data" :key="record.id" class="text-center">
                             <td class="text-start">
+                                <div class="d-flex justify-content-start flex-wrap mb-1">
+                                    <span v-text="record?.role?.name" class="small text-muted fst-italic fw-bold text-uppercase"></span>
+                                </div>
                                 <span v-text="record.document_number" class="text-dark d-block"></span>
                                 <span v-text="record.identity_document_type?.name" class="fst-italic d-block text-muted small"></span>
                             </td>
                             <td class="text-start">
-                                <div class="d-flex justify-content-center flex-wrap mb-1">
-                                    <span v-text="record?.role?.name" class="small text-muted fst-italic fw-semibold text-uppercase"></span>
-                                </div>
                                 <span v-text="record.name" class="fw-bold d-block"></span>
                                 <a :href="'mailto:'+record.email" class="d-inline-flex align-items-center small" v-if="isDefined({value: record.email})">
                                     <span>📧</span>
                                     <span v-text="record.email" class="fst-italic ms-1"></span>
                                 </a>
-                                <div class="d-flex flex-wrap mt-1">
+                                <br/>
+                                <a :href="'tel:'+record.phone_number" class="d-inline-flex align-items-center small" v-if="isDefined({value: record.phone_number})">
+                                    <span>📞</span>
+                                    <span v-text="record.phone_number" class="fst-italic ms-1"></span>
+                                </a>
+                                <div class="d-flex flex-wrap">
                                     <template v-if="isDefined({value: record.birthdate})">
-                                        <div class="badge bg-light text-dark rounded-pill me-2 my-1 d-inline-flex align-items-center">
+                                        <div class="badge bg-light text-dark rounded-pill me-2 my-1 d-flex align-items-center">
                                             <span>🎂</span>
                                             <span v-text="legibleFormatDate({dateString: record.birthdate, type: 'date'})" class="fst-italic ms-1"></span>
                                         </div>
                                     </template>
                                     <template v-if="isDefined({value: record.gender})">
-                                        <div :class="['badge text-dark rounded-pill me-2 my-1 d-inline-flex align-items-center', {'bg-label-info': ['male'].includes(record.gender), 'bg-label-danger': ['female'].includes(record.gender), 'bg-light': ['other'].includes(record.gender)}]">
+                                        <div :class="['badge text-dark rounded-pill me-2 my-1 d-flex align-items-center', {'bg-label-info': ['male'].includes(record.gender), 'bg-label-danger': ['female'].includes(record.gender), 'bg-light': ['other'].includes(record.gender)}]">
                                             <span>🚻</span>
                                             <span v-text="record.formatted_gender" class="fst-italic ms-1"></span>
                                         </div>
@@ -131,7 +141,7 @@
 
     <!-- Modals -->
     <div class="modal fade" :id="forms.entity.createUpdate.extras.modals.default.id" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.createUpdate.extras.modals.default.titles[isUpdate ? 'update' : 'store']"></h5>
@@ -164,8 +174,8 @@
                             isRequired
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.identity_document_type"
-                            xl="6"
-                            lg="6">
+                            xl="4"
+                            lg="4">
                             <template v-slot:input>
                                 <v-select
                                     v-model="forms.entity.createUpdate.data.identity_document_type"
@@ -183,8 +193,8 @@
                             maxlength="15"
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.document_number"
-                            xl="6"
-                            lg="6">
+                            xl="4"
+                            lg="4">
                             <template v-slot:inputGroupAppend>
                                 <template v-if="['dni'].includes(forms.entity.createUpdate.data.identity_document_type?.data.code)">
                                     <button :class="['btn waves-effect', isUpdate ? 'btn-warning' : 'btn-primary']" type="button" @click="searchDocumentNumber({consult: forms.entity.createUpdate})" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar N° documento">
@@ -193,49 +203,6 @@
                                 </template>
                             </template>
                         </InputText>
-                        <InputText
-                            v-model="forms.entity.createUpdate.data.name"
-                            hasDiv
-                            title="Nombre"
-                            isRequired
-                            maxlength="100"
-                            hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.name"
-                            xl="12"
-                            lg="12"/>
-                        <InputText
-                            v-model="forms.entity.createUpdate.data.email"
-                            hasDiv
-                            title="📧 Correo electrónico"
-                            isRequired
-                            maxlength="100"
-                            hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.email"
-                            xl="8"
-                            lg="8"/>
-                        <InputSlot
-                            hasDiv
-                            title="Género"
-                            hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.gender"
-                            xl="4"
-                            lg="4">
-                            <template v-slot:input>
-                                <v-select
-                                    v-model="forms.entity.createUpdate.data.gender"
-                                    :options="genders"
-                                    :clearable="false"
-                                    :searchable="false"/>
-                            </template>
-                        </InputSlot>
-                        <InputDate
-                            v-model="forms.entity.createUpdate.data.birthdate"
-                            hasDiv
-                            title="Fecha de nacimiento"
-                            hasTextBottom
-                            :textBottomInfo="forms.entity.createUpdate.errors?.birthdate"
-                            xl="8"
-                            lg="8"/>
                         <InputSlot
                             hasDiv
                             title="Estado"
@@ -253,15 +220,67 @@
                             </template>
                         </InputSlot>
                         <InputText
-                            v-if="!isUpdate"
+                            v-model="forms.entity.createUpdate.data.name"
+                            hasDiv
+                            title="Nombre"
+                            isRequired
+                            maxlength="100"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.name"
+                            xl="6"
+                            lg="6"/>
+                        <InputText
+                            v-model="forms.entity.createUpdate.data.email"
+                            hasDiv
+                            title="📧 Correo electrónico"
+                            isRequired
+                            maxlength="100"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.email"
+                            xl="6"
+                            lg="6"/>
+                        <InputText
+                            v-model="forms.entity.createUpdate.data.phone_number"
+                            hasDiv
+                            title="📞 Celular"
+                            maxlength="15"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.phone_number"
+                            xl="3"
+                            lg="3"/>
+                        <InputSlot
+                            hasDiv
+                            title="Género"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.gender"
+                            xl="3"
+                            lg="3">
+                            <template v-slot:input>
+                                <v-select
+                                    v-model="forms.entity.createUpdate.data.gender"
+                                    :options="genders"
+                                    :clearable="false"
+                                    :searchable="false"/>
+                            </template>
+                        </InputSlot>
+                        <InputDate
+                            v-model="forms.entity.createUpdate.data.birthdate"
+                            hasDiv
+                            title="Fecha de nacimiento"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.createUpdate.errors?.birthdate"
+                            xl="3"
+                            lg="3"/>
+                        <InputText
                             v-model="forms.entity.createUpdate.data.password"
                             hasDiv
                             :title="isUpdate ? '🔒 Cambiar contraseña' : '🔒 Contraseña'"
                             :isRequired="!isUpdate"
+                            maxlength="100"
                             hasTextBottom
                             :textBottomInfo="forms.entity.createUpdate.errors?.password"
-                            xl="8"
-                            lg="8"/>
+                            xl="3"
+                            lg="3"/>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -341,6 +360,7 @@ export default {
                             document_number: "",
                             name: "",
                             email: "",
+                            phone_number: "",
                             gender: "",
                             birthdate: "",
                             status: null,
@@ -423,6 +443,7 @@ export default {
                 this.forms.entity.createUpdate.data.document_number        = record?.document_number;
                 this.forms.entity.createUpdate.data.name                   = record?.name;
                 this.forms.entity.createUpdate.data.email                  = record?.email;
+                this.forms.entity.createUpdate.data.phone_number           = record?.phone_number;
                 this.forms.entity.createUpdate.data.gender                 = gender;
                 this.forms.entity.createUpdate.data.birthdate              = record?.birthdate;
                 this.forms.entity.createUpdate.data.password               = "";
@@ -504,6 +525,7 @@ export default {
                     this.forms.entity.createUpdate.data.document_number        = "";
                     this.forms.entity.createUpdate.data.name                   = "";
                     this.forms.entity.createUpdate.data.email                  = "";
+                    this.forms.entity.createUpdate.data.phone_number           = "";
                     this.forms.entity.createUpdate.data.gender                 = null;
                     this.forms.entity.createUpdate.data.birthdate              = "";
                     this.forms.entity.createUpdate.data.status                 = null;
@@ -532,9 +554,9 @@ export default {
                 result.role                   = [];
                 result.identity_document_type = [];
                 result.document_number        = [];
+                result.status                 = [];
                 result.name                   = [];
                 result.email                  = [];
-                result.status                 = [];
                 result.password               = [];
 
                 const isDescriptive = ["descriptive"].includes(extras?.type);
@@ -560,6 +582,13 @@ export default {
 
                 }
 
+                if(!this.isDefined({value: form?.status})) {
+
+                    result.status.push(`${isDescriptive ? "Estado:" : ""} ${this.config.forms.errors.labels.required}`);
+                    result.bool = false;
+
+                }
+
                 if(!this.isDefined({value: form?.name})) {
 
                     result.name.push(`${isDescriptive ? "Nombre:" : ""} ${this.config.forms.errors.labels.required}`);
@@ -570,13 +599,6 @@ export default {
                 if(!this.isDefined({value: form?.email})) {
 
                     result.email.push(`${isDescriptive ? "Correo electrónico:" : ""} ${this.config.forms.errors.labels.required}`);
-                    result.bool = false;
-
-                }
-
-                if(!this.isDefined({value: form?.status})) {
-
-                    result.status.push(`${isDescriptive ? "Estado:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }
@@ -661,7 +683,8 @@ export default {
                 {code: "all", label: "Todos"},
                 {code: "document_number", label: "Número de documento"},
                 {code: "name", label: "Nombre"},
-                {code: "email", label: "Correo electrónico"}
+                {code: "email", label: "Correo electrónico"},
+                {code: "phone_number", label: "Celular"}
             ];
 
         },

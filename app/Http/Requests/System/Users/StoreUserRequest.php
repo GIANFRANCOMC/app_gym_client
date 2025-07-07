@@ -29,11 +29,12 @@ class StoreUserRequest extends FormRequest {
             "role_id"                   => "required|integer",
             "identity_document_type_id" => "required|integer",
             "document_number"           => "required|string|max:25",
+            "status"                    => "required|string",
             "name"                      => "required|string|max:200",
-            "email"                     => "required|email",
+            "email"                     => "required|email|max:200",
+            "phone_number"              => "nullable|integer",
             "gender"                    => "nullable|string",
             "birthdate"                 => "nullable|date",
-            "status"                    => "required|string",
             "password"                  => "required|string|max:200"
         ];
 

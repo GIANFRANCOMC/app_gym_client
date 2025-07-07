@@ -58,11 +58,12 @@ class UserController extends Controller {
 
                                 $query->where("document_number", "like", $filter)
                                       ->orWhere("name", "like", $filter)
-                                      ->orWhere("email", "like", $filter);
+                                      ->orWhere("email", "like", $filter)
+                                      ->orWhere("phone_number", "like", $filter);
 
                             });
 
-                        }else if(in_array($request->filter_by, ["document_number", "name", "email"])) {
+                        }else if(in_array($request->filter_by, ["document_number", "name", "email", "phone_number"])) {
 
                             $query->where(function($query) use($request, $filter) {
 
@@ -129,6 +130,7 @@ class UserController extends Controller {
             $user->name                      = $request->name;
             $user->email                     = $request->email;
             $user->password                  = $request->password;
+            $user->phone_number              = $request->phone_number;
             $user->gender                    = $request->gender ?? "other";
             $user->birthdate                 = $request->birthdate;
             $user->status                    = $request->status;
@@ -195,6 +197,7 @@ class UserController extends Controller {
                 $user->document_number           = $request->document_number;
                 $user->name                      = $request->name;
                 $user->email                     = $request->email;
+                $user->phone_number              = $request->phone_number;
                 $user->gender                    = $request->gender ?? "other";
                 $user->birthdate                 = $request->birthdate;
                 $user->status                    = $request->status;
