@@ -9,7 +9,10 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\Products\{StoreProductRequest, UpdateProductRequest};
-use App\Models\System\{Branch, Category, CategoryItem, Currency, Item, WarehouseItem};
+use App\Models\System\Catalogs\{CategoryItem, Item};
+use App\Models\System\General\{Category, Currency};
+use App\Models\System\Organizations\{Branch};
+use App\Models\System\Warehouses\{WarehouseItem};
 
 class ProductController extends Controller {
 

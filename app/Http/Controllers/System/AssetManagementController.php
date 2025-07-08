@@ -8,7 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
-use App\Models\System\{Asset, Branch, BranchAsset};
+use App\Models\System\Assets\{Asset, BranchAsset};
+use App\Models\System\Organizations\{Branch};
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class AssetManagementController extends Controller {

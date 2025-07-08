@@ -9,7 +9,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB, Storage};
 use stdClass;
 
-use App\Models\System\{Branch, Company, Customer, Item, SaleBody, SaleHeader, User};
+use App\Models\System\Auth\{User};
+use App\Models\System\Catalogs\{Item};
+use App\Models\System\Customers\{Customer};
+use App\Models\System\Organizations\{Branch, Company};
+use App\Models\System\Sales\{SaleHeader};
+
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Carbon\Exceptions\InvalidFormatException;

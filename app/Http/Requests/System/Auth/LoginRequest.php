@@ -2,12 +2,13 @@
 
 namespace App\Http\Requests\System\Auth;
 
-use App\Models\System\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\{Auth, Hash, RateLimiter};
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+
+use App\Models\System\Auth\{User};
 
 class LoginRequest extends FormRequest {
 

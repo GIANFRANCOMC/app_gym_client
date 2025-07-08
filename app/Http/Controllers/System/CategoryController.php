@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\Categories\{StoreCategoryRequest, UpdateCategoryRequest};
-use App\Models\System\{Category};
+use App\Models\System\General\{Category};
 
 class CategoryController extends Controller {
 

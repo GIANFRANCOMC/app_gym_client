@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\Assets\{StoreAssetRequest, UpdateAssetRequest};
-use App\Models\System\{Asset};
+use App\Models\System\Assets\{Asset};
 
 class AssetController extends Controller {
 

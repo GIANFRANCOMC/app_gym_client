@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\Subscriptions\{StoreSubscriptionRequest, UpdateSubscriptionRequest};
-use App\Models\System\{Category, CategoryItem, Currency, Item};
+use App\Models\System\Catalogs\{CategoryItem, Item};
+use App\Models\System\General\{Category, Currency};
 
 class SubscriptionController extends Controller {
 

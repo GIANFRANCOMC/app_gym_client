@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 // use App\Http\Requests\System\TrackingNotifications\{CancelTrackingNotificationRequest, StoreTrackingNotificationRequest, UpdateTrackingNotificationRequest};
-use App\Models\System\{SubscriptionEmail};
+use App\Models\System\Customers\{SubscriptionEmail};
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class TrackingNotificationController extends Controller {

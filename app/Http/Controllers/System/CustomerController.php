@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\Customers\{StoreCustomerRequest, UpdateCustomerRequest};
-use App\Models\System\{Customer, IdentityDocumentType, Subscription};
+use App\Models\System\Customers\{Customer, Subscription};
+use App\Models\System\General\{IdentityDocumentType};
 
 class CustomerController extends Controller {
 

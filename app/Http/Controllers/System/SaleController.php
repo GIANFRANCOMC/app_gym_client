@@ -9,7 +9,12 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\Sales\{CancelSaleRequest, StoreSaleRequest, UpdateSaleRequest};
-use App\Models\System\{Branch, Currency, Customer, IdentityDocumentType, Item, SaleBody, SaleHeader, Subscription, Warehouse, WarehouseItem};
+use App\Models\System\Catalogs\{Item};
+use App\Models\System\Customers\{Customer, Subscription};
+use App\Models\System\General\{Currency, IdentityDocumentType};
+use App\Models\System\Organizations\{Branch};
+use App\Models\System\Sales\{SaleBody, SaleHeader};
+use App\Models\System\Warehouses\{Warehouse, WarehouseItem};
 
 class SaleController extends Controller {
 

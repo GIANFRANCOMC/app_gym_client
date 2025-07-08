@@ -2,19 +2,16 @@
 
 namespace App\Http\Controllers\System;
 
-use App\Exports\{BranchExport, CustomerExport, ItemExport, SaleExport, UserExport};
 use App\Helpers\System\Utilities;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB, Mail};
 use stdClass;
 
-use App\Models\System\{Branch, Company, Customer, Item, SaleBody, SaleHeader, SubscriptionEmail, User};
-use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\System\Customers\{SubscriptionEmail};
+
 use Carbon\Carbon;
-use Carbon\Exceptions\InvalidFormatException;
 use Exception;
-use Maatwebsite\Excel\Facades\Excel;
 
 class NotificationController extends Controller {
 

@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Helpers\System\Utilities;
-use App\Models\System\{Attendance, Customer, SaleHeader, Subscription};
 use Carbon\Carbon;
+
+use App\Models\System\Customers\{Attendance, Customer, Subscription};
+use App\Models\System\Sales\{SaleHeader};
 
 class TrackingCustomerService {
 

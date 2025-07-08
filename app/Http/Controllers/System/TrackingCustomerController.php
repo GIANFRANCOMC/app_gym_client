@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\TrackingAttendances\{CancelTrackingAttendanceRequest};
-use App\Models\System\{Attendance, Branch, Customer, Subscription};
+use App\Models\System\Customers\{Attendance, Customer};
 use App\Services\TrackingCustomerService;
 use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;

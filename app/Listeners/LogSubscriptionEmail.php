@@ -4,11 +4,11 @@ namespace App\Listeners;
 
 use App\Events\SubscriptionExpired;
 use App\Helpers\System\Utilities;
-use App\Models\System\Subscription;
-use App\Models\System\SubscriptionEmail;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use stdClass;
+
+use App\Models\System\Customers\{Subscription, SubscriptionEmail};
 
 class LogSubscriptionEmail {
 

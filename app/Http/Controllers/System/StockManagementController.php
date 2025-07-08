@@ -8,7 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
-use App\Models\System\{Item, Warehouse, WarehouseItem};
+use App\Models\System\Catalogs\{Item};
+use App\Models\System\Warehouses\{Warehouse, WarehouseItem};
 
 class StockManagementController extends Controller {
 

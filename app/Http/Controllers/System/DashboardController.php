@@ -4,12 +4,12 @@ namespace App\Http\Controllers\System;
 
 use App\Helpers\System\Utilities;
 use App\Http\Controllers\Controller;
-use App\Models\System\Branch;
-use App\Models\System\SaleHeader;
-use App\Models\System\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
+
+use App\Models\System\Organizations\{Branch};
+use App\Models\System\Sales\{SaleHeader};
 
 class DashboardController extends Controller {
 

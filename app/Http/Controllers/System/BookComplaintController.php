@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\BookComplaints\{StoreBookComplaintRequest, UpdateBookComplaintRequest};
-use App\Models\System\{Asset, BookComplaint, IdentityDocumentType};
+use App\Models\System\General\{IdentityDocumentType};
+use App\Models\System\Organizations\{BookComplaint};
 
 class BookComplaintController extends Controller {
 
@@ -98,13 +99,13 @@ class BookComplaintController extends Controller {
 
     }
 
-    public function show(Asset $record) {
+    public function show(BookComplaint $record) {
 
         //
 
     }
 
-    public function edit(Asset $record) {
+    public function edit(BookComplaint $record) {
 
         //
 
@@ -139,7 +140,7 @@ class BookComplaintController extends Controller {
 
     }
 
-    public function destroy(Asset $record) {
+    public function destroy(BookComplaint $record) {
 
         //
 

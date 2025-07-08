@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\Branches\{StoreBranchRequest, UpdateBranchRequest};
-use App\Models\System\{Branch, DocumentType, Serie, Warehouse};
+use App\Models\System\General\{DocumentType};
+use App\Models\System\Organizations\{Branch, Serie};
+use App\Models\System\Warehouses\{Warehouse};
 
 class BranchController extends Controller {
 
@@ -94,7 +96,7 @@ class BranchController extends Controller {
 
         DB::transaction(function() use($request, $userAuth, &$branch) {
 
-            $newSequential = Serie::getNewSequential();
+            $newSequential = Serie::getNewSequential($userAuth->company_id);
 
             $branch = new Branch();
             $branch->company_id = $userAuth->company_id;

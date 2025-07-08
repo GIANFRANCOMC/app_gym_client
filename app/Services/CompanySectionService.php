@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\System\Company;
 use Illuminate\Support\Facades\Cache;
+use App\Models\System\Organizations\{Company};
 
 class CompanySectionService {
 

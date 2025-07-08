@@ -3,9 +3,9 @@
 namespace App\Services;
 
 use App\Helpers\System\Utilities;
-
-use App\Models\System\{Attendance, Customer, Subscription};
 use Carbon\Carbon;
+
+use App\Models\System\Customers\{Attendance, Customer, Subscription};
 
 class AttendanceService {
 

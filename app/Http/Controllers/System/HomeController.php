@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
-use App\Models\System\{UserPreference};
+use App\Models\System\Auth\{UserPreference};
 
 class HomeController extends Controller {
 

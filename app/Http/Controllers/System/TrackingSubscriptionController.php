@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 use App\Http\Requests\System\TrackingSubscriptions\{CancelTrackingSubscriptionRequest, StoreTrackingSubscriptionRequest, UpdateTrackingSubscriptionRequest};
-use App\Models\System\{Branch, Customer, Subscription};
+use App\Models\System\Customers\{Customer, Subscription};
+use App\Models\System\Organizations\{Branch};
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class TrackingSubscriptionController extends Controller {

@@ -5,6 +5,8 @@ namespace App\Models\System\Organizations;
 use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\System\Warehouses\{Warehouse};
+
 class Branch extends Model {
 
     protected $table               = "branches";
@@ -79,6 +81,20 @@ class Branch extends Model {
     public function company() {
 
         return $this->belongsTo(Company::class, "company_id", "id");
+
+    }
+
+    public function series() {
+
+        return $this->hasMany(Serie::class, "branch_id", "id")
+                    ->whereIn("status", ["active"]);
+
+    }
+
+    public function warehouses() {
+
+        return $this->hasMany(Warehouse::class, "branch_id", "id")
+                    ->whereIn("status", ["active"]);
 
     }
 

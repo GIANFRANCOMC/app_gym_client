@@ -3,10 +3,11 @@
 namespace App\Console\Commands;
 
 use App\Events\SubscriptionExpired;
-use App\Models\System\Subscription;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+
+use App\Models\System\Customers\{Subscription};
 
 class CancelExpiredSubscriptions extends Command {
 
