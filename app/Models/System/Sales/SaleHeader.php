@@ -1,11 +1,16 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\System\Sales;
 
 use App\Helpers\System\Utilities;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 use Exception;
+
+use App\Models\System\Auth\{User};
+use App\Models\System\Customers\{Customer};
+use App\Models\System\General\{Currency};
+use App\Models\System\Organizations\{Serie};
 
 class SaleHeader extends Model {
 
@@ -100,7 +105,7 @@ class SaleHeader extends Model {
 
         $statuses = [
             ["code" => "active", "label" => "Activo"],
-            // ["code" => "inactive", "label" => "Inactivo"],
+            ["code" => "inactive", "label" => "Inactivo"],
             ["code" => "canceled", "label" => "Anulado"]
         ];
 

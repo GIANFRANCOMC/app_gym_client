@@ -11,6 +11,7 @@ return new class extends Migration {
      */
     public function up(): void {
 
+        // ✅
         Schema::create("sales_header", function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("serie_id");
@@ -36,6 +37,7 @@ return new class extends Migration {
             $table->foreign("currency_id")->references("id")->on("currencies")->onDelete("cascade");
         });
 
+        // ✅
         Schema::create("sales_body", function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("sale_header_id");

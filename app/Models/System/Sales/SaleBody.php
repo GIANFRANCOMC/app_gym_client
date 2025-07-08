@@ -1,10 +1,14 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\System\Sales;
 
 use App\Helpers\System\Utilities;
-use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Exception;
+
+use App\Models\System\Catalogs\{Item};
+use App\Models\System\Customers\{Customer};
+use App\Models\System\General\{Currency};
 
 class SaleBody extends Model {
 
