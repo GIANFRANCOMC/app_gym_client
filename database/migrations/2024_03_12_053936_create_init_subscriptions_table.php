@@ -11,6 +11,7 @@ return new class extends Migration {
      */
     public function up(): void {
 
+        // ✅
         Schema::create("subscriptions", function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("company_id");
@@ -44,6 +45,7 @@ return new class extends Migration {
             $table->foreign("customer_id")->references("id")->on("customers")->onDelete("cascade");
         });
 
+        // ✅
         Schema::create("attendances", function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("company_id");
@@ -68,6 +70,7 @@ return new class extends Migration {
             $table->foreign("customer_id")->references("id")->on("customers")->onDelete("cascade");
         });
 
+        // ✅
         Schema::create("subscription_emails", function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("company_id");

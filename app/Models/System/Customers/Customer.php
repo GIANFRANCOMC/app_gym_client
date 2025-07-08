@@ -1,12 +1,15 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\System\Customers;
 
 use App\Helpers\System\Utilities;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\{DB};
+
+use App\Models\System\General\{IdentityDocumentType};
+use App\Models\System\Organizations\{Branch, Company};
+use App\Models\System\Sales\{SaleHeader};
 
 class Customer extends Model {
 
@@ -114,11 +117,9 @@ class Customer extends Model {
 
     }
 
-    public static function getAll($type = "default") {
+    public static function getAll($type = "default", $company_id = null) {
 
-        $userAuth = Auth::user();
-
-        return Customer::where("company_id", $userAuth->company_id)
+        return Customer::where("company_id", $company_id)
                        ->when(in_array($type, ["sale"]), function($query) {
 
                             $query->whereIn("status", ["active"]);
@@ -151,10 +152,9 @@ class Customer extends Model {
 
     }
 
-    public function attendances() {
+    public function attendancesAll() {
 
-        return $this->hasMany(Attendance::class, "customer_id", "id")
-                    ->whereIn("status", ["active"]);
+        return $this->hasMany(Attendance::class, "customer_id", "id");
 
     }
 

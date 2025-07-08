@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\System\Customers;
 
 use App\Helpers\System\Utilities;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+
+use App\Models\System\Organizations\{Branch, Company};
+use App\Models\System\Sales\{SaleBody, SaleHeader};
 
 class Subscription extends Model {
 

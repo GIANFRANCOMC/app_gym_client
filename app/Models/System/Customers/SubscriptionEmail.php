@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\System\Customers;
 
 use App\Helpers\System\Utilities;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+
+use App\Models\System\Organizations\{Company};
 
 class SubscriptionEmail extends Model {
 

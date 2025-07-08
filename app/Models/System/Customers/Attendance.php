@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\System\Customers;
 
 use App\Helpers\System\Utilities;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
+
+use App\Models\System\Organizations\{Branch, Company};
 
 class Attendance extends Model {
 
@@ -27,6 +29,7 @@ class Attendance extends Model {
         "start_date",
         "end_date",
         "observation",
+        "motive",
         "type",
         "status",
         "created_at",
