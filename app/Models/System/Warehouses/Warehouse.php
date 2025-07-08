@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\System\Warehouses;
 
 use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
+
+use App\Models\System\Organizations\{Branch};
 
 class Warehouse extends Model {
 
@@ -47,14 +48,12 @@ class Warehouse extends Model {
 
     }
 
-    public static function getAll($type = "default") {
-
-        $userAuth = Auth::user();
+    public static function getAll($type = "default", $company_id) {
 
         return Warehouse::with("branch")
-                        ->whereHas("branch", function($query) use($userAuth) {
+                        ->whereHas("branch", function($query) use($company_id) {
 
-                            $query->where("company_id", $userAuth->company_id);
+                            $query->where("company_id", $company_id);
 
                         })
                         ->when(in_array($type, ["stock_management"]), function($query) {
@@ -70,19 +69,6 @@ class Warehouse extends Model {
     public function branch() {
 
         return $this->belongsTo(Branch::class, "branch_id", "id");
-
-    }
-
-    public function items() {
-
-        return $this->hasMany(WarehouseItem::class, "warehouse_id", "id")
-                    ->whereIn("status", ["active"]);
-
-    }
-
-    public function itemsAll() {
-
-        return $this->hasMany(WarehouseItem::class, "warehouse_id", "id");
 
     }
 

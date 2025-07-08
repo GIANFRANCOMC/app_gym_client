@@ -164,6 +164,7 @@ return new class extends Migration {
             $table->foreign("identity_document_type_id")->references("id")->on("identity_document_types")->onDelete("cascade");
         });
 
+        // ✅
         Schema::create("warehouses", function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("branch_id");
@@ -178,6 +179,7 @@ return new class extends Migration {
             $table->foreign("branch_id")->references("id")->on("branches")->onDelete("cascade");
         });
 
+        // ✅
         Schema::create("warehouse_items", function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("warehouse_id");
