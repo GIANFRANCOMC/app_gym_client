@@ -48,7 +48,7 @@ class Warehouse extends Model {
 
     }
 
-    public static function getAll($type = "default", $company_id) {
+    public static function getAll($type = "default", $company_id = null) {
 
         return Warehouse::with("branch")
                         ->whereHas("branch", function($query) use($company_id) {

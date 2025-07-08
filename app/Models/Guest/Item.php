@@ -114,9 +114,9 @@ class Item extends Model {
 
     }
 
-    public static function getAll($type = "default", $company) {
+    public static function getAll($type = "default", $company_id = null) {
 
-        return Item::where("company_id", $company->id)
+        return Item::where("company_id", $company_id)
                    ->when(in_array($type, ["home"]), function($query) {
 
                         $query->where("see_my_web", true)
