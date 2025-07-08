@@ -1,9 +1,13 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\System\General;
 
 use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
+
+use App\Models\System\Auth\{User};
+use App\Models\System\Customers\{Customer};
+use App\Models\System\Organizations\{Company};
 
 class IdentityDocumentType extends Model {
 
@@ -74,7 +78,7 @@ class IdentityDocumentType extends Model {
                                    })
                                    ->when(in_array($type, ["sale"]), function($query) {
 
-                                        $query->whereIn("id", ["1", "2", "4"])
+                                        $query->whereIn("code", ["doc.trib.no.dom.sin.ruc", "dni", "ruc"])
                                               ->whereIn("status", ["active"]);
 
                                    })

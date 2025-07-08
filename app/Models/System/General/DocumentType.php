@@ -1,13 +1,15 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\System\General;
 
 use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
 
-class Currency extends Model {
+use App\Models\System\Organizations\{Serie};
 
-    protected $table               = "currencies";
+class DocumentType extends Model {
+
+    protected $table               = "document_types";
     protected $primaryKey          = "id";
     public $incrementing           = true;
     public $timestamps             = true;
@@ -19,9 +21,7 @@ class Currency extends Model {
 
     protected $fillable = [
         "code",
-        "sign",
-        "singular_name",
-        "plural_name",
+        "name",
         "status",
         "created_at",
         "created_by",
@@ -49,30 +49,9 @@ class Currency extends Model {
     }
 
     // Relationships
-    public function branchAssets() {
+    public function series() {
 
-        return $this->hasMany(BranchAsset::class, "currency_id", "id")
-                    ->whereIn("status", ["active"]);
-
-    }
-
-    public function items() {
-
-        return $this->hasMany(Item::class, "currency_id", "id")
-                    ->whereIn("status", ["active"]);
-
-    }
-
-    public function salesBody() {
-
-        return $this->hasMany(SaleBody::class, "currency_id", "id")
-                    ->whereIn("status", ["active"]);
-
-    }
-
-    public function salesHeader() {
-
-        return $this->hasMany(SaleHeader::class, "currency_id", "id")
+        return $this->hasMany(Serie::class, "document_type_id", "id")
                     ->whereIn("status", ["active"]);
 
     }

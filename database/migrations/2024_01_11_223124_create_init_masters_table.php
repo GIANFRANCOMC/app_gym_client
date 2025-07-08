@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up(): void {
 
-        // Masters
+        // ✅
         Schema::create("identity_document_types", function(Blueprint $table) {
             $table->id();
             $table->string("code");
@@ -25,6 +25,7 @@ return new class extends Migration {
             $table->integer("updated_by")->nullable();
         });
 
+        // ✅
         Schema::create("document_types", function(Blueprint $table) {
             $table->id();
             $table->string("code");
@@ -37,6 +38,7 @@ return new class extends Migration {
             $table->integer("updated_by")->nullable();
         });
 
+        // ✅
         Schema::create("currencies", function(Blueprint $table) {
             $table->id();
             $table->string("code");
@@ -79,6 +81,7 @@ return new class extends Migration {
             $table->foreign("identity_document_type_id")->references("id")->on("identity_document_types")->onDelete("cascade");
         });
 
+        // ✅
         Schema::create("sections", function(Blueprint $table) {
             $table->id();
             $table->string("slug");
@@ -96,6 +99,7 @@ return new class extends Migration {
             $table->integer("updated_by")->nullable();
         });
 
+        // ✅
         Schema::create("sub_sections", function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("section_id");

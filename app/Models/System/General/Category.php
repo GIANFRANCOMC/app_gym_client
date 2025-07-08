@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\System\General;
 
 use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
+
+use App\Models\System\Catalogs\{CategoryItem};
+use App\Models\System\Organizations\{Company};
 
 class Category extends Model {
 
@@ -49,11 +51,9 @@ class Category extends Model {
 
     }
 
-    public static function getAll($type = "default") {
+    public static function getAll($type = "default", $company_id = null) {
 
-        $userAuth = Auth::user();
-
-        return Category::where("company_id", $userAuth->company_id)
+        return Category::where("company_id", $company_id)
                        ->when(in_array($type, ["product", "service", "subscription"]), function($query) {
 
                             $query->whereIn("status", ["active"])

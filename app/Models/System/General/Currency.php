@@ -1,13 +1,17 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\System\General;
 
 use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
 
-class DocumentType extends Model {
+use App\Models\System\Assets\{BranchAsset};
+use App\Models\System\Catalogs\{Item};
+use App\Models\System\Sales\{SaleBody, SaleHeader};
 
-    protected $table               = "document_types";
+class Currency extends Model {
+
+    protected $table               = "currencies";
     protected $primaryKey          = "id";
     public $incrementing           = true;
     public $timestamps             = true;
@@ -19,7 +23,9 @@ class DocumentType extends Model {
 
     protected $fillable = [
         "code",
-        "name",
+        "sign",
+        "singular_name",
+        "plural_name",
         "status",
         "created_at",
         "created_by",
@@ -47,9 +53,29 @@ class DocumentType extends Model {
     }
 
     // Relationships
-    public function series() {
+    public function branchAssetsAll() {
 
-        return $this->hasMany(Serie::class, "document_type_id", "id")
+        return $this->hasMany(BranchAsset::class, "currency_id", "id");
+
+    }
+
+    public function items() {
+
+        return $this->hasMany(Item::class, "currency_id", "id")
+                    ->whereIn("status", ["active"]);
+
+    }
+
+    public function salesBody() {
+
+        return $this->hasMany(SaleBody::class, "currency_id", "id")
+                    ->whereIn("status", ["active"]);
+
+    }
+
+    public function salesHeader() {
+
+        return $this->hasMany(SaleHeader::class, "currency_id", "id")
                     ->whereIn("status", ["active"]);
 
     }
