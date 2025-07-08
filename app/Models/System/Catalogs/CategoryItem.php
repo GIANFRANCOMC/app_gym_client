@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\System\Catalogs;
 
 use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
+
+use App\Models\System\General\{Category};
 
 class CategoryItem extends Model {
 

@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\System\Catalogs;
 
 use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Facades\Auth;
+
+use App\Models\System\General\{Currency};
+use App\Models\System\Organizations\{Company};
+use App\Models\System\Sales\{SaleBody};
+use App\Models\System\Warehouses\{WarehouseItem};
 
 class Item extends Model {
-
-    // use HasFactory;
 
     protected $table               = "items";
     protected $primaryKey          = "id";
@@ -117,11 +118,9 @@ class Item extends Model {
 
     }
 
-    public static function getAll($type = "default") {
+    public static function getAll($type = "default", $company_id = null) {
 
-        $userAuth = Auth::user();
-
-        return Item::where("company_id", $userAuth->company_id)
+        return Item::where("company_id", $company_id)
                    ->when(in_array($type, ["sale"]), function($query) {
 
                         $query->whereIn("status", ["active"])
