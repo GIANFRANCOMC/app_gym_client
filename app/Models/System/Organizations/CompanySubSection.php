@@ -1,13 +1,15 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\System\Organizations;
 
 use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
 
-class CompanySocialMedia extends Model {
+use App\Models\System\General\{SubSection};
 
-    protected $table               = "company_socials_media";
+class CompanySubSection extends Model {
+
+    protected $table               = "companies_sub_sections";
     protected $primaryKey          = "id";
     public $incrementing           = true;
     public $timestamps             = true;
@@ -19,8 +21,7 @@ class CompanySocialMedia extends Model {
 
     protected $fillable = [
         "company_id",
-        "type",
-        "link",
+        "sub_section_id",
         "status",
         "created_at",
         "created_by",
@@ -51,6 +52,12 @@ class CompanySocialMedia extends Model {
     public function company() {
 
         return $this->belongsTo(Company::class, "company_id", "id");
+
+    }
+
+    public function subSection() {
+
+        return $this->belongsTo(SubSection::class, "sub_section_id", "id");
 
     }
 

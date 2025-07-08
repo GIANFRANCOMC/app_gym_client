@@ -12,6 +12,7 @@ return new class extends Migration {
      */
     public function up(): void {
 
+        // ✅
         Schema::create("company_socials_media", function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("company_id");
@@ -27,6 +28,7 @@ return new class extends Migration {
             $table->foreign("company_id")->references("id")->on("companies")->onDelete("cascade");
         });
 
+        // ✅
         Schema::create("branches", function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("company_id");
@@ -42,6 +44,7 @@ return new class extends Migration {
             $table->foreign("company_id")->references("id")->on("companies")->onDelete("cascade");
         });
 
+        // ✅
         Schema::create("series", function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("branch_id");
@@ -60,6 +63,7 @@ return new class extends Migration {
             $table->foreign("document_type_id")->references("id")->on("document_types")->onDelete("cascade");
         });
 
+        // ✅
         Schema::create("items", function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("company_id");
@@ -86,6 +90,7 @@ return new class extends Migration {
             $table->foreign("currency_id")->references("id")->on("currencies")->onDelete("cascade");
         });
 
+        // ✅
         Schema::create("assets", function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("company_id");
@@ -103,6 +108,7 @@ return new class extends Migration {
             $table->foreign("company_id")->references("id")->on("companies")->onDelete("cascade");
         });
 
+        // ✅
         Schema::create("categories", function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("company_id");
@@ -119,6 +125,7 @@ return new class extends Migration {
             $table->foreign("company_id")->references("id")->on("companies")->onDelete("cascade");
         });
 
+        // ✅
         Schema::create("category_items", function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("category_id");
@@ -134,6 +141,7 @@ return new class extends Migration {
             $table->foreign("item_id")->references("id")->on("items")->onDelete("cascade");
         });
 
+        // ✅
         Schema::create("customers", function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("company_id");
@@ -186,6 +194,7 @@ return new class extends Migration {
             $table->foreign("item_id")->references("id")->on("items")->onDelete("cascade");
         });
 
+        // ✅
         Schema::create("branch_assets", function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("branch_id");
@@ -207,6 +216,7 @@ return new class extends Migration {
             $table->foreign("currency_id")->references("id")->on("currencies")->onDelete("cascade");
         });
 
+        // ✅
         Schema::create("asset_assignments", function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("user_id");
@@ -230,6 +240,7 @@ return new class extends Migration {
             $table->foreign("currency_id")->references("id")->on("currencies")->onDelete("cascade");
         });
 
+        // ✅
         Schema::create("asset_assignment_logs", function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("action_by");

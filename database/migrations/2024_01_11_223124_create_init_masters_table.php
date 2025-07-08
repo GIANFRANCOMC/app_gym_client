@@ -53,6 +53,7 @@ return new class extends Migration {
             $table->integer("updated_by")->nullable();
         });
 
+        // ✅
         Schema::create("companies", function(Blueprint $table) {
             $table->id();
             $table->string("slug")->unique();
@@ -120,6 +121,7 @@ return new class extends Migration {
             $table->foreign("section_id")->references("id")->on("sections")->onDelete("cascade");
         });
 
+        // ✅
         Schema::create("companies_sub_sections", function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("company_id");

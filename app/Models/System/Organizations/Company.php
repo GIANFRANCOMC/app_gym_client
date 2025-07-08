@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\System\Organizations;
 
 use App\Helpers\System\Utilities;
-use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Exception;
+
+use App\Models\System\General\{IdentityDocumentType, Section};
 
 class Company extends Model {
 
@@ -135,13 +137,6 @@ class Company extends Model {
 
     }
 
-    public function attendances() {
-
-        return $this->hasMany(Attendance::class, "company_id", "id")
-                    ->whereIn("status", ["active"]);
-
-    }
-
     public function branches() {
 
         return $this->hasMany(Branch::class, "company_id", "id")
@@ -152,20 +147,6 @@ class Company extends Model {
     public function companySubSections() {
 
         return $this->hasMany(CompanySubSection::class, "company_id", "id")
-                    ->whereIn("status", ["active"]);
-
-    }
-
-    public function customers() {
-
-        return $this->hasMany(Customer::class, "company_id", "id")
-                    ->whereIn("status", ["active"]);
-
-    }
-
-    public function items() {
-
-        return $this->hasMany(Item::class, "company_id", "id")
                     ->whereIn("status", ["active"]);
 
     }

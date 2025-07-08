@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\System\Organizations;
 
 use App\Helpers\System\Utilities;
-use Exception;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
+use Exception;
+
+use App\Models\System\General\{DocumentType};
 
 class Serie extends Model {
 
@@ -58,15 +59,13 @@ class Serie extends Model {
 
     }
 
-    public static function getNewSequential($user = null) {
-
-        $userAuth = $user ?? Auth::user();
+    public static function getNewSequential($company_id) {
 
         $newSequential = 0;
 
         try {
 
-            $maxSequential = Branch::where("company_id", $userAuth->company_id)
+            $maxSequential = Branch::where("company_id", $company_id)
                                    ->count();
 
             $newSequential = intval($maxSequential) + 1;
@@ -91,13 +90,6 @@ class Serie extends Model {
     public function documentType() {
 
         return $this->belongsTo(DocumentType::class, "document_type_id", "id");
-
-    }
-
-    public function salesHeader() {
-
-        return $this->hasMany(SaleHeader::class, "serie_id", "id")
-                    ->whereIn("status", ["active"]);
 
     }
 

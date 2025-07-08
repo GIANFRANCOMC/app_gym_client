@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\System\Organizations;
 
 use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
 
 class Branch extends Model {
 
@@ -48,11 +47,9 @@ class Branch extends Model {
 
     }
 
-    public static function getAll($type = "default") {
+    public static function getAll($type = "default", $company_id = null) {
 
-        $userAuth = Auth::user();
-
-        return Branch::where("company_id", $userAuth->company_id)
+        return Branch::where("company_id", $company_id)
                      ->when(in_array($type, ["sale"]), function($query) {
 
                         $query->whereIn("status", ["active"]);
@@ -82,46 +79,6 @@ class Branch extends Model {
     public function company() {
 
         return $this->belongsTo(Company::class, "company_id", "id");
-
-    }
-
-    public function assets() {
-
-        return $this->hasMany(BranchAsset::class, "branch_id", "id")
-                    ->whereIn("status", ["active"]);
-
-    }
-
-    public function assetsAll() {
-
-        return $this->hasMany(BranchAsset::class, "branch_id", "id");
-
-    }
-
-    public function attendances() {
-
-        return $this->hasMany(Attendance::class, "branch_id", "id")
-                    ->whereIn("status", ["active"]);
-
-    }
-
-    public function series() {
-
-        return $this->hasMany(Serie::class, "branch_id", "id")
-                    ->whereIn("status", ["active"]);
-
-    }
-
-    public function warehouses() {
-
-        return $this->hasMany(Warehouse::class, "branch_id", "id")
-                    ->whereIn("status", ["active"]);
-
-    }
-
-    public function warehousesAll() {
-
-        return $this->hasMany(Warehouse::class, "branch_id", "id");
 
     }
 
