@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\System\Auth;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
@@ -8,6 +8,10 @@ use App\Helpers\System\Utilities;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+
+use App\Models\System\General\{IdentityDocumentType};
+use App\Models\System\Organizations\{Company};
+use App\Models\System\Sales\{SaleHeader};
 
 class User extends Authenticatable {
 

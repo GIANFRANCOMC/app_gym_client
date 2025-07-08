@@ -131,6 +131,7 @@ return new class extends Migration {
             $table->foreign("sub_section_id")->references("id")->on("sub_sections")->onDelete("cascade");
         });
 
+        // ✅
         Schema::create("roles", function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("company_id");
@@ -146,6 +147,7 @@ return new class extends Migration {
             $table->foreign("company_id")->references("id")->on("companies")->onDelete("cascade");
         });
 
+        // ✅
         Schema::create("users", function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("company_id");
@@ -174,6 +176,7 @@ return new class extends Migration {
             $table->unique(["email", "company_id"]);
         });
 
+        // ✅
         Schema::create("user_preferences", function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("user_id");

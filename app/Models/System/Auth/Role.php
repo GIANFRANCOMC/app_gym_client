@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\System\Auth;
 
 use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
+
+use App\Models\System\Organizations\{Company};
 
 class Role extends Model {
 
