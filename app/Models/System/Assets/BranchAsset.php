@@ -1,9 +1,12 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\System\Assets;
 
 use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
+
+use App\Models\System\General\{Currency};
+use App\Models\System\Organizations\{Branch};
 
 class BranchAsset extends Model {
 
