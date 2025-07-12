@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\System\Assets;
+namespace App\Http\Requests\System\Assets\Assets;
 
 use App\Helpers\System\Utilities;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UpdateAssetRequest extends FormRequest {
+class StoreAssetRequest extends FormRequest {
 
     /**
      * Determine if the user is authorized to make this request.

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\System\Assets;
+namespace App\Http\Requests\System\Assets\AssetManagements;
 
 use App\Helpers\System\Utilities;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class StoreAssetRequest extends FormRequest {
+class UnassignAssetFromBranchRequest extends FormRequest {
 
     /**
      * Determine if the user is authorized to make this request.
@@ -26,10 +26,7 @@ class StoreAssetRequest extends FormRequest {
     public function rules(): array {
 
         return [
-            "internal_code" => "required|string|max:100",
-            "name"          => "required|string|max:200",
-            "description"   => "nullable|string|max:500",
-            "status"        => "required|string"
+            "branch_id" => "required|integer",
         ];
 
     }

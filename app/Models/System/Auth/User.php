@@ -121,6 +121,19 @@ class User extends Authenticatable {
 
     }
 
+    public static function getAll($type = "default", $company_id = null) {
+
+        return User::where("company_id", $company_id)
+                    ->when(in_array($type, ["asset_management"]), function($query) {
+
+                        $query->whereIn("status", ["active"]);
+
+                    })
+                    ->with(["identityDocumentType"])
+                    ->get();
+
+    }
+
     // Relationships
     public function company() {
 

@@ -29,98 +29,170 @@
                     <i class="fa fa-search"></i>
                     <span class="ms-2">Buscar</span>
                 </button>
-                <button type="button" class="btn btn-primary waves-effect" @click="createUpdateEntity({})" :disabled="lists.entity.extras.loading || !isDefined({value: lists.entity.filters.branch?.code})">
-                    <i class="fa fa-save"></i>
-                    <span class="ms-2">Guardar</span>
-                </button>
             </template>
         </InputSlot>
     </div>
-    <div class="table-responsive">
-        <table class="table table-hover">
-            <thead>
-                <tr class="text-center align-middle">
-                    <th class="bg-secondary text-white fw-semibold" style="width: 5%;">#</th>
-                    <th class="bg-secondary text-white fw-semibold" style="width: 30%;">ACTIVO</th>
-                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 15%;">CANTIDAD</th>
-                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 15%;">VALOR DE ADQUISICIÓN</th>
-                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 15%;">FECHA DE ADQUISICIÓN</th>
-                    <th class="bg-secondary text-white fw-semibold min-w-150px" style="width: 20%;">ESTADO</th>
-                </tr>
-            </thead>
-            <tbody class="table-border-bottom-0 bg-white">
-                <template v-if="lists.entity.extras.loading">
-                    <tr class="text-center">
-                        <td colspan="99" class="py-4">
-                            <Loader/>
-                        </td>
-                    </tr>
-                </template>
-                <template v-else>
-                    <template v-if="lists.entity.records.total > 0">
-                        <template v-for="(record, indexRecord) in lists.entity.records.data" :key="record.branch_asset_id">
-                            <tr class="text-center">
-                                <td v-text="indexRecord + 1"></td>
-                                <td class="text-start">
-                                    <div class="d-flex justify-content-start mb-1">
-                                        <span class="badge bg-danger" v-if="record.branch_asset_quantity <= 0">Sin existencias</span>
-                                        <span class="badge bg-warning" v-else-if="record.branch_asset_quantity < 5">Hay pocas existencias</span>
-                                        <span class="badge bg-success" v-else-if="record.branch_asset_quantity >= 5">Con existencias disponibles</span>
-                                    </div>
-                                    <span v-text="record.asset_name" class="text-dark fw-bold d-block"></span>
-                                    <span v-text="record.asset_internal_code" class="fst-italic d-block small"></span>
-                                    <div v-if="isDefined({value: record?.asset_description})" class="mt-1 fst-italic text-muted small">
-                                        <span class="colon-at-end">Descripción</span>
-                                        <span v-text="record?.asset_description" class="ms-1"></span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <InputNumber
-                                        v-model="record.branch_asset_quantity"/>
-                                </td>
-                                <td>
-                                    <InputNumber
-                                        v-model="record.branch_asset_acquisition_value">
-                                        <template v-slot:inputGroupPrepend>
-                                            <button v-if="isDefined({value: record?.currencies_sign})" class="btn btn-primary waves-effect px-2" type="button">
-                                                <small v-text="record?.currencies_sign"></small>
-                                            </button>
-                                            <button v-else class="btn btn-secondary waves-effect px-2" type="button">
-                                                <small>Nuevo</small>
-                                            </button>
-                                        </template>
-                                    </InputNumber>
-                                </td>
-                                <td>
-                                    <InputDate
-                                        v-model="record.branch_asset_acquisition_date"/>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center justify-content-start" v-for="status in statuses" :key="status.code">
-                                        <div class="form-check">
-                                            <label class="cursor-pointer text-nowrap">
-                                                <input v-model="record.branch_asset_status" class="form-check-input" type="radio" :value="status.code">
-                                                <span v-text="status?.label" class="fw-semibold"></span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </template>
-                    </template>
-                    <template v-else>
-                        <tr>
-                            <td class="text-center" colspan="99">
-                                <WithoutData type="image"/>
-                            </td>
-                        </tr>
-                    </template>
-                </template>
-            </tbody>
-        </table>
+    <div class="row g-3" v-if="isDefined({value: lists.entity.filters.branch?.code})">
+        <template v-if="!lists.entity.extras.loading">
+            <div class="col-xl-5 col-lg-5 col-md-12 col-sm-12">
+                <h5 class="fw-bold mb-2 text-uppercase ps-1">Activos disponibles</h5>
+                <div class="list-group">
+                    <div v-for="record in availableAssets" :key="record.code" class="list-group-item bg-white">
+                        <div class="d-flex justify-content-between align-items-center gap-2 gap-md-3">
+                            <div>
+                                <span v-text="record.internal_code" class="fw-bold d-block"></span>
+                                <span v-text="record.name" class="d-block"></span>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-success" @click="assignAssetToBranch(record)">Agregar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-7 col-lg-7 col-md-12 col-sm-12">
+                <h5 class="fw-bold mb-2 text-uppercase ps-1">Activos asignados a la sucursal</h5>
+                <div class="list-group">
+                    <div v-for="record in lists.entity.records.data" :key="record.id" class="list-group-item bg-white">
+                        <div class="d-flex justify-content-between align-items-center gap-2 gap-md-3">
+                            <div>
+                                <span v-text="record.asset?.internal_code" class="fw-bold d-block"></span>
+                                <span v-text="record.asset?.name" class="d-block mb-1"></span>
+                                <span :class="['badge', 'fw-semibold', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-primary': ['maintenance'].includes(record.status), 'bg-label-danger': ['retired'].includes(record.status) }]" v-text="record.formatted_status"></span>
+                            </div>
+                            <div class="d-flex justify-content-end align-items-center flex-wrap gap-2 gap-md-3">
+                                <button class="btn btn-sm btn-warning" @click="modalAssign(record)" v-if="['active', 'maintenance'].includes(record.status)">Editar</button>
+                                <button class="btn btn-sm btn-primary" @click="modalAssignToUser(record)" v-if="['active', 'maintenance'].includes(record.status)">Gestionar asignación</button>
+                                <button class="btn btn-sm btn-danger" @click="unassignAssetFromBranch(record)" v-if="['active', 'maintenance'].includes(record.status)">Quitar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
     </div>
-    <div class="d-flex justify-content-center d-none" v-if="!lists.entity.extras.loading && lists.entity.records?.total > 0">
-        <Paginator :links="lists.entity.records.links" @clickPage="listEntity"/>
+
+    <!-- Modals -->
+    <div class="modal fade" :id="forms.entity.assign.extras.modals.default.id" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.assign.extras.modals.default.titles[isAssign ? 'update' : 'store']"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                            <label class="fw-bold colon-at-end">Activo</label>
+                            <div>
+                                <span v-text="forms.entity.assign.data?.asset?.name"></span>
+                                (<span v-text="forms.entity.assign.data?.asset?.internal_code" class="fw-bold"></span>)
+                            </div>
+                        </div>
+                        <InputNumber
+                            v-model="forms.entity.assign.data.quantity"
+                            hasDiv
+                            title="Cantidad"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.assign.errors?.quantity"
+                            xl="4"
+                            lg="4"/>
+                        <InputNumber
+                            v-model="forms.entity.assign.data.acquisition_value"
+                            hasDiv
+                            title="Valor de adquisición"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.assign.errors?.acquisition_value"
+                            xl="4"
+                            lg="4"/>
+                        <InputDate
+                            v-model="forms.entity.assign.data.acquisition_date"
+                            hasDiv
+                            title="Fecha de adquisición"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.assign.errors?.acquisition_date"
+                            xl="4"
+                            lg="4"/>
+                        <InputText
+                            v-model="forms.entity.assign.data.note"
+                            hasDiv
+                            title="Nota"
+                            isRequired
+                            maxlength="100"
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.assign.errors?.note"
+                            xl="8"
+                            lg="8"/>
+                        <InputSlot
+                            hasDiv
+                            title="Estado"
+                            isRequired
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.assign.errors?.status"
+                            xl="4"
+                            lg="4">
+                            <template v-slot:input>
+                                <v-select
+                                    v-model="forms.entity.assign.data.status"
+                                    :options="statuses"
+                                    :clearable="false"
+                                    :searchable="false"/>
+                            </template>
+                        </InputSlot>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" :class="['btn waves-effect', isAssign ? 'btn-warning' : 'btn-primary']" @click="assign()">
+                        <i class="fa fa-save"></i>
+                        <span class="ms-2">Guardar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" :id="forms.entity.assignToUser.extras.modals.default.id" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.assignToUser.extras.modals.default.titles.default"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                            <label class="fw-bold colon-at-end">Activo</label>
+                            <div>
+                                <span v-text="forms.entity.assignToUser.data?.asset?.name"></span>
+                                (<span v-text="forms.entity.assignToUser.data?.asset?.internal_code" class="fw-bold"></span>)
+                            </div>
+                        </div>
+                        <InputSlot
+                            hasDiv
+                            title="Colaborador"
+                            isRequired
+                            hasTextBottom
+                            :textBottomInfo="forms.entity.assignToUser.errors?.user"
+                            xl="12"
+                            lg="12">
+                            <template v-slot:input>
+                                <v-select
+                                    v-model="forms.entity.assignToUser.data.user"
+                                    :options="users"
+                                    :clearable="true"
+                                    :searchable="true"/>
+                            </template>
+                        </InputSlot>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" :class="['btn waves-effect', 'btn-primary']" @click="assignToUser()">
+                        <i class="fa fa-save"></i>
+                        <span class="ms-2">Guardar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -172,6 +244,35 @@ export default {
                     createUpdate: {
                         data: {},
                         errors: {}
+                    },
+                    assign: {
+                        extras: {
+                            modals: {
+                                default: {
+                                    id: Utils.uuid(),
+                                    titles: {
+                                        store: "Agregar",
+                                        update: "Editar"
+                                    }
+                                }
+                            }
+                        },
+                        data: {},
+                        errors: {}
+                    },
+                    assignToUser: {
+                        extras: {
+                            modals: {
+                                default: {
+                                    id: Utils.uuid(),
+                                    titles: {
+                                        default: "Gestionar asignación"
+                                    }
+                                }
+                            }
+                        },
+                        data: {},
+                        errors: {}
                     }
                 }
             },
@@ -197,8 +298,10 @@ export default {
 
             let initParams = await Requests.get({route: this.config.entity.routes.initParams, data: {page: "main"}, showAlert: true});
 
+            this.options.assets       = initParams.data?.config?.assets;
             this.options.branches     = initParams.data?.config?.branches;
             this.options.branchAssets = initParams.data?.config?.branchAssets;
+            this.options.users        = initParams.data?.config?.users;
 
             return Requests.valid({result: initParams});
 
@@ -226,36 +329,42 @@ export default {
 
         },
         // Forms
-        async createUpdateEntity() {
+        async assignAssetToBranch(record) {
 
-            const functionName = "createUpdateEntity";
+            const functionName = "assignAssetToBranch";
 
             Alerts.swals({});
             this.formErrors({functionName, type: "clear"});
 
-            const items = this.lists.entity.records.data;
-
-            let form = Utils.cloneJson({branch_id: this.lists.entity.filters.branch?.code, items});
+            let form = Utils.cloneJson({branch_id: this.lists.entity.filters.branch?.code, items: [{id: record.id}]});
 
             const validateForm = this.validateForm({functionName, form, extras: {type: "descriptive"}});
 
             if(validateForm?.bool) {
 
-                let createUpdate = await Requests.post({route: this.config.entity.routes.store, data: form});
+                form.items.forEach(item => {
 
-                if(Requests.valid({result: createUpdate})) {
+                    item.asset_id = item.id;
 
-                    // Alerts.toastrs({type: "success", subtitle: createUpdate?.data?.msg});
+                    delete item.id;
+
+                });
+
+                let assignAssetToBranch = await Requests.post({route: this.config.entity.routes.assignAssetToBranch, data: form});
+
+                if(Requests.valid({result: assignAssetToBranch})) {
+
+                    // Alerts.toastrs({type: "success", subtitle: assignAssetToBranch?.data?.msg});
                     // Alerts.swals({show: false});
-                    Alerts.generateAlert({type: "success", msgContent: createUpdate?.data?.msg});
+                    Alerts.generateAlert({type: "success", msgContent: assignAssetToBranch?.data?.msg});
 
                     // this.clearForm({functionName});
                     this.listEntity({url: `${this.lists.entity.extras.route}?page=${this.lists.entity.records?.current_page ?? 1}`});
 
                 }else {
 
-                    this.formErrors({functionName, type: "set", errors: createUpdate?.errors ?? []});
-                    Alerts.toastrs({type: "error", subtitle: createUpdate?.data?.msg});
+                    this.formErrors({functionName, type: "set", errors: assignAssetToBranch?.errors ?? []});
+                    Alerts.toastrs({type: "error", subtitle: assignAssetToBranch?.data?.msg});
                     Alerts.swals({show: false});
 
                 }
@@ -266,6 +375,214 @@ export default {
                 // Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
                 // Alerts.swals({show: false});
                 Alerts.generateAlert({messages: validateForm?.msg, msgContent: `<div class="fw-semibold mb-2">${this.config.messages.errorValidate}</div>`});
+
+            }
+
+        },
+        async unassignAssetFromBranch(record) {
+
+            const functionName = "unassignAssetFromBranch";
+
+            Alerts.swals({});
+            this.formErrors({functionName, type: "clear"});
+
+            let form = Utils.cloneJson({branch_id: this.lists.entity.filters.branch?.code, items: [{id: record.asset_id}]});
+
+            const validateForm = this.validateForm({functionName, form, extras: {type: "descriptive"}});
+
+            if(validateForm?.bool) {
+
+                form.items.forEach(item => {
+
+                    item.asset_id = item.id;
+
+                    delete item.id;
+
+                });
+
+                let unassignAssetFromBranch = await Requests.post({route: this.config.entity.routes.unassignAssetFromBranch, data: form});
+
+                if(Requests.valid({result: unassignAssetFromBranch})) {
+
+                    // Alerts.toastrs({type: "success", subtitle: unassignAssetFromBranch?.data?.msg});
+                    // Alerts.swals({show: false});
+                    Alerts.generateAlert({type: "success", msgContent: unassignAssetFromBranch?.data?.msg});
+
+                    // this.clearForm({functionName});
+                    this.listEntity({url: `${this.lists.entity.extras.route}?page=${this.lists.entity.records?.current_page ?? 1}`});
+
+                }else {
+
+                    this.formErrors({functionName, type: "set", errors: unassignAssetFromBranch?.errors ?? []});
+                    Alerts.toastrs({type: "error", subtitle: unassignAssetFromBranch?.data?.msg});
+                    Alerts.swals({show: false});
+
+                }
+
+            }else {
+
+                // this.formErrors({functionName, type: "set", errors: validateForm});
+                // Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
+                // Alerts.swals({show: false});
+                Alerts.generateAlert({messages: validateForm?.msg, msgContent: `<div class="fw-semibold mb-2">${this.config.messages.errorValidate}</div>`});
+
+            }
+
+        },
+        modalAssign(record) {
+
+            const functionName = "modalAssign";
+
+            // Alerts.swals({});
+            this.clearForm({functionName});
+            this.formErrors({functionName, type: "clear"});
+
+            if(this.isDefined({value: record})) {
+
+                let status = this.statuses.find(e => e.code === record?.status);
+
+                this.forms.entity.assign.data = {...record, status};
+
+            }else {
+
+                //
+
+            }
+
+            // Alerts.swals({show: false});
+            Alerts.modals({type: "show", id: this.forms.entity.assign.extras.modals.default.id});
+            this.tooltips({show: true, time: 500});
+
+        },
+        async assign() {
+
+            const functionName = "assign";
+
+            Alerts.swals({});
+            this.formErrors({functionName, type: "clear"});
+
+            let form = Utils.cloneJson(this.forms.entity.assign.data);
+
+            const validateForm = this.validateForm({functionName, form, extras: {type: "descriptive"}});
+
+            if(validateForm?.bool) {
+
+                form.status = form?.status?.code;
+
+                delete form.asset;
+                delete form.formatted_status;
+                delete form.created_at;
+                delete form.created_by;
+                delete form.updated_at;
+                delete form.updated_by;
+
+                let assign = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.assign, data: form, id: form.id}) :
+                                                                       Requests.post({route: this.config.entity.routes.assign, data: form}));
+
+                if(Requests.valid({result: assign})) {
+
+                    Alerts.modals({type: "hide", id: this.forms.entity.assign.extras.modals.default.id});
+                    // Alerts.toastrs({type: "success", subtitle: assign?.data?.msg});
+                    // Alerts.swals({show: false});
+                    Alerts.generateAlert({type: "success", msgContent: assign?.data?.msg});
+
+                    this.clearForm({functionName});
+                    this.listEntity({url: `${this.lists.entity.extras.route}?page=${this.lists.entity.records?.current_page ?? 1}`});
+
+                }else {
+
+                    this.formErrors({functionName, type: "set", errors: assign?.errors ?? []});
+                    Alerts.toastrs({type: "error", subtitle: assign?.data?.msg});
+                    Alerts.swals({show: false});
+
+                }
+
+            }else {
+
+                // this.formErrors({functionName, type: "set", errors: validateForm});
+                // Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
+                // Alerts.swals({show: false});
+                Alerts.generateAlert({messages: Utils.getErrors({errors: validateForm}), msgContent: `<div class="fw-semibold mb-2">${this.config.messages.errorValidate}</div>`});
+
+            }
+
+        },
+        modalAssignToUser(record) {
+
+            const functionName = "modalAssignToUser";
+
+            // Alerts.swals({});
+            this.clearForm({functionName});
+            this.formErrors({functionName, type: "clear"});
+
+            if(this.isDefined({value: record})) {
+
+                let status = this.statuses.find(e => e.code === record?.status);
+
+                this.forms.entity.assignToUser.data = {...record, status};
+
+            }else {
+
+                //
+
+            }
+
+            // Alerts.swals({show: false});
+            Alerts.modals({type: "show", id: this.forms.entity.assignToUser.extras.modals.default.id});
+            this.tooltips({show: true, time: 500});
+
+        },
+        async assignToUser() {
+
+            const functionName = "assignToUser";
+
+            Alerts.swals({});
+            this.formErrors({functionName, type: "clear"});
+
+            let form = Utils.cloneJson(this.forms.entity.assignToUser.data);
+
+            const validateForm = this.validateForm({functionName, form, extras: {type: "descriptive"}});
+
+            if(validateForm?.bool) {
+
+                form.user_id = form.user?.code;
+                form.status  = form?.status?.code;
+
+                delete form.asset;
+                delete form.user;
+                delete form.formatted_status;
+                delete form.created_at;
+                delete form.created_by;
+                delete form.updated_at;
+                delete form.updated_by;
+
+                let assignToUser = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.assignToUser, data: form, id: form.id}) :
+                                                                             Requests.post({route: this.config.entity.routes.assignToUser, data: form}));
+
+                if(Requests.valid({result: assignToUser})) {
+
+                    Alerts.modals({type: "hide", id: this.forms.entity.assignToUser.extras.modals.default.id});
+                    // Alerts.toastrs({type: "success", subtitle: assignToUser?.data?.msg});
+                    // Alerts.swals({show: false});
+                    Alerts.generateAlert({type: "success", msgContent: assignToUser?.data?.msg});
+
+                    this.clearForm({functionName});
+                    this.listEntity({url: `${this.lists.entity.extras.route}?page=${this.lists.entity.records?.current_page ?? 1}`});
+
+                }else {
+
+                    this.formErrors({functionName, type: "set", errors: assignToUser?.errors ?? []});
+                    Alerts.toastrs({type: "error", subtitle: assignToUser?.data?.msg});
+                    Alerts.swals({show: false});
+
+                }
+
+            }else {
+
+                // this.formErrors({functionName, type: "set", errors: validateForm});
+                // Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
+                // Alerts.swals({show: false});
+                Alerts.generateAlert({messages: Utils.getErrors({errors: validateForm}), msgContent: `<div class="fw-semibold mb-2">${this.config.messages.errorValidate}</div>`});
 
             }
 
@@ -295,43 +612,16 @@ export default {
                 bool: true
             };
 
-            if(["createUpdateEntity"].includes(functionName)) {
+            if(["assignToUser"].includes(functionName)) {
 
                 result.msg = [];
 
                 const isDescriptive = ["descriptive"].includes(extras?.type);
 
-                if(!this.isDefined({value: form?.branch_id})) {
+                if(!this.isDefined({value: form?.user})) {
 
-                    result.msg.push(`<b>Sucursal:</b> ${this.config.forms.errors.labels.required}`);
+                    result.msg.push(`${isDescriptive ? "Colaborador:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
-
-                }
-
-                if((form.items).length === 0) {
-
-                    result.msg.push(`<b>Registros:</b> ${this.config.forms.errors.labels.required}`);
-                    result.bool = false;
-
-                }
-
-                for(const [indexRecord, record] of Object.entries(form.items)) {
-
-                    const seq = parseInt(indexRecord) + 1;
-
-                    if(!Utils.isNumber({value: form?.branch_asset_quantity ?? 0})) {
-
-                        result.msg.push(`<b>Activo #${seq}:</b> Cantidad / ${this.config.forms.errors.labels.min_equal_number_0}`);
-                        result.bool = false;
-
-                    }
-
-                    if(!Utils.isNumber({value: form?.branch_asset_acquisition_value ?? 0})) {
-
-                        result.msg.push(`<b>Activo #${seq}:</b> Valor de adquisición / ${this.config.forms.errors.labels.min_equal_number_0}`);
-                        result.bool = false;
-
-                    }
 
                 }
 
@@ -358,14 +648,34 @@ export default {
             return [{title: "Infraestructura"}, this.config.entity.page];
 
         },
+        assets: function() {
+
+            return this.options?.assets?.records.map(e => ({code: e.id, label: e.name, data: e}));
+
+        },
+        availableAssets: function() {
+
+            return this.options?.assets?.records;
+
+        },
         branches: function() {
 
-            return this.options?.branches?.records.map(e => ({code: e.id, label: e.name}));
+            return this.options?.branches?.records.map(e => ({code: e.id, label: e.name, data: e}));
+
+        },
+        users: function() {
+
+            return this.options?.users?.records.map(e => ({code: e.id, label: e.name, data: e}));
 
         },
         statuses: function() {
 
-            return this.options?.branchAssets?.statuses.map(e => ({code: e.code, label: e.label, data: e}));
+            return this.options?.branchAssets?.statuses.map(e => ({code: e.code, label: e.label}));
+
+        },
+        isAssign: function() {
+
+            return this.isDefined({value: this.forms.entity.assign.data?.id});
 
         }
     },

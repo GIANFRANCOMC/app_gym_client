@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
-use App\Http\Requests\System\Assets\{StoreAssetRequest, UpdateAssetRequest};
+use App\Http\Requests\System\Assets\Assets\{StoreAssetRequest, UpdateAssetRequest};
 use App\Models\System\Assets\{Asset};
 
 class AssetController extends Controller {

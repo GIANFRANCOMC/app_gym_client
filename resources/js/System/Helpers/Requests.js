@@ -217,7 +217,7 @@ export function generateRoutes({entity, requestRoute}) {
 
     }else if(["tracking_attendances"].includes(entity)) {
 
-        routes.cancel = `${requestRoute}/${entity}/cancel`;
+        routes.cancel    = `${requestRoute}/${entity}/cancel`;
         routes.qrCamera  = `${requestRoute}/${entity}/qrCamera`;
         routes.qrScanner = `${requestRoute}/${entity}/qrScanner`;
 
@@ -228,6 +228,13 @@ export function generateRoutes({entity, requestRoute}) {
     }else if(["customers"].includes(entity)) {
 
         routes.getSubscriptions = `${requestRoute}/${entity}/getSubscriptions`;
+
+    }else if(["assets_management"].includes(entity)) {
+
+        routes.assignAssetToBranch     = `${requestRoute}/${entity}/assignAssetToBranch`;
+        routes.unassignAssetFromBranch = `${requestRoute}/${entity}/unassignAssetFromBranch`;
+        routes.assign                  = `${requestRoute}/${entity}/assign`;
+        routes.assignToUser            = `${requestRoute}/${entity}/assignToUser`;
 
     }else if(["reports"].includes(entity)) {
 

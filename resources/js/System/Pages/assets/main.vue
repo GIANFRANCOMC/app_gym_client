@@ -124,7 +124,7 @@
                             xl="5"
                             lg="5">
                             <template v-slot:inputGroupAppend>
-                                <button type="button" :class="['btn waves-effect', isUpdate ? 'btn-warning' : 'btn-primary']" @click="setGenerateCode({length: 7})" data-bs-toggle="tooltip" data-bs-placement="top" title="Generar aleatoriamente">
+                                <button type="button" v-if="!isUpdate" :class="['btn waves-effect', isUpdate ? 'btn-warning' : 'btn-primary']" @click="setGenerateCode({length: 7})" data-bs-toggle="tooltip" data-bs-placement="top" title="Generar aleatoriamente">
                                     <i class="fa fa-rotate"></i>
                                 </button>
                             </template>

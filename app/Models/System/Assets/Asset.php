@@ -69,6 +69,18 @@ class Asset extends Model {
 
     }
 
+    public static function getAll($type = "default", $company_id = null) {
+
+        return Asset::where("company_id", $company_id)
+                    ->when(in_array($type, ["asset_management"]), function($query) {
+
+                        $query->whereIn("status", ["active"]);
+
+                    })
+                    ->get();
+
+    }
+
     // Relationships
     public function company() {
 

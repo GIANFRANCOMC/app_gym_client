@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\System\{AssetManagementController};
+use App\Http\Controllers\System\Assets\{AssetManagementController};
 use Illuminate\Support\Facades\Route;
 
 $entity = "assets_management";
@@ -13,3 +13,8 @@ Route::post('',           [AssetManagementController::class, 'store'])->name("$e
 Route::get('/{id}/edit',  [AssetManagementController::class, 'edit'])->name("$entity.edit");
 Route::get('/{id}',       [AssetManagementController::class, 'show'])->name("$entity.show");
 Route::patch('/{id}',     [AssetManagementController::class, 'update'])->name("$entity.update");
+
+Route::post('assignAssetToBranch',     [AssetManagementController::class, 'assignAssetToBranch'])->name("$entity.assignAssetToBranch");
+Route::post('unassignAssetFromBranch', [AssetManagementController::class, 'unassignAssetFromBranch'])->name("$entity.unassignAssetFromBranch");
+Route::patch('assign/{id}',            [AssetManagementController::class, 'assign'])->name("$entity.assign");
+Route::patch('assignToUser/{id}',      [AssetManagementController::class, 'assignToUser'])->name("$entity.assignToUser");

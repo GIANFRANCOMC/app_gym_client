@@ -43,6 +43,8 @@ Route::middleware(["web"])
 
         Route::middleware(['auth', 'verified'])->group(function() use($systemRoute) {
 
+            Route::prefix('/assets_management')->group($systemRoute.'/Assets/AssetManagement.php');
+
             Route::prefix('/book_complaints')->group($systemRoute.'/BookComplaint.php');
             Route::prefix('/companies')->group($systemRoute.'/Company.php');
             Route::prefix('/products')->group($systemRoute.'/Product.php');
@@ -55,7 +57,6 @@ Route::middleware(["web"])
             Route::prefix('/customers')->group($systemRoute.'/Customer.php');
             Route::prefix('/stocks_management')->group($systemRoute.'/StockManagement.php');
             Route::prefix('/assets')->group($systemRoute.'/Asset.php');
-            Route::prefix('/assets_management')->group($systemRoute.'/AssetManagement.php');
             Route::prefix('/dashboard')->group($systemRoute.'/Dashboard.php');
             Route::prefix('/helpers')->group($systemRoute.'/Helper.php');
             Route::prefix('/home')->group($systemRoute.'/Home.php');
