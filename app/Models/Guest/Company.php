@@ -25,6 +25,7 @@ class Company extends Model {
         "document_number",
         "legal_name",
         "commercial_name",
+        "currency_id",
         "tagline",
         "description",
         "address",
@@ -65,6 +66,12 @@ class Company extends Model {
     public function identityDocumentType() {
 
         return $this->belongsTo(IdentityDocumentType::class, "identity_document_type_id", "id");
+
+    }
+
+    public function currency() {
+
+        return $this->belongsTo(Currency::class, "currency_id", "id");
 
     }
 

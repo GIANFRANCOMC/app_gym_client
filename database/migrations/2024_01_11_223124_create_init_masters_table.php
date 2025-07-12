@@ -62,6 +62,7 @@ return new class extends Migration {
             $table->string("document_number");
             $table->string("legal_name");
             $table->string("commercial_name");
+            $table->unsignedBigInteger("currency_id");
             $table->string("tagline")->nullable();
             $table->string("description", 500)->nullable();
             $table->string("address")->nullable();
@@ -80,6 +81,7 @@ return new class extends Migration {
             $table->integer("updated_by")->nullable();
 
             $table->foreign("identity_document_type_id")->references("id")->on("identity_document_types")->onDelete("cascade");
+            $table->foreign("currency_id")->references("id")->on("currencies")->onDelete("cascade");
         });
 
         // ✅
@@ -217,7 +219,19 @@ return new class extends Migration {
         ]);
 
         DB::table("companies")->insert([
-            ["id" => 1, "slug" => "pagape", "internal_code" => Utilities::generateCode(7), "identity_document_type_id" => 1, "document_number" => "999999999", "legal_name" => "TU EMPRESA S.A.", "commercial_name" => "TU EMPRESA", "address" => "", "telephone" => "", "email" => ""]
+            [
+                "id" => 1,
+                "slug" => "pagape",
+                "internal_code" => Utilities::generateCode(7),
+                "identity_document_type_id" => 1,
+                "document_number" => "999999999",
+                "legal_name" => "TU EMPRESA S.A.",
+                "commercial_name" => "TU EMPRESA",
+                "currency_id" => 1,
+                "address" => "",
+                "telephone" => "",
+                "email" => ""
+            ]
         ]);
 
         DB::table("sections")->insert([

@@ -6,7 +6,7 @@ use App\Helpers\System\Utilities;
 use Illuminate\Database\Eloquent\Model;
 use Exception;
 
-use App\Models\System\General\{IdentityDocumentType, Section};
+use App\Models\System\General\{Currency, IdentityDocumentType, Section};
 
 class Company extends Model {
 
@@ -27,6 +27,7 @@ class Company extends Model {
         "document_number",
         "legal_name",
         "commercial_name",
+        "currency_id",
         "tagline",
         "description",
         "address",
@@ -134,6 +135,12 @@ class Company extends Model {
     public function identityDocumentType() {
 
         return $this->belongsTo(IdentityDocumentType::class, "identity_document_type_id", "id");
+
+    }
+
+    public function currency() {
+
+        return $this->belongsTo(Currency::class, "currency_id", "id");
 
     }
 

@@ -216,6 +216,7 @@ return new class extends Migration {
             $table->foreign("branch_id")->references("id")->on("branches")->onDelete("cascade");
             $table->foreign("asset_id")->references("id")->on("assets")->onDelete("cascade");
             $table->foreign("currency_id")->references("id")->on("currencies")->onDelete("cascade");
+            $table->unique(["branch_id", "asset_id"]);
         });
 
         // ✅

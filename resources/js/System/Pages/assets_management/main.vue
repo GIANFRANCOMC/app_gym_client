@@ -34,9 +34,9 @@
     </div>
     <div class="row g-3" v-if="isDefined({value: lists.entity.filters.branch?.code})">
         <template v-if="!lists.entity.extras.loading">
-            <div class="col-xl-5 col-lg-5 col-md-12 col-sm-12">
+            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                 <h5 class="fw-bold mb-2 text-uppercase ps-1">Activos disponibles</h5>
-                <div class="list-group">
+                <div class="list-group" v-if="availableAssets.length > 0">
                     <div v-for="record in availableAssets" :key="record.code" class="list-group-item bg-white">
                         <div class="d-flex justify-content-between align-items-center gap-2 gap-md-3">
                             <div>
@@ -47,10 +47,13 @@
                         </div>
                     </div>
                 </div>
+                <div v-else class="text-center">
+                    <WithoutData type="image"/>
+                </div>
             </div>
-            <div class="col-xl-7 col-lg-7 col-md-12 col-sm-12">
+            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                 <h5 class="fw-bold mb-2 text-uppercase ps-1">Activos asignados a la sucursal</h5>
-                <div class="list-group">
+                <div class="list-group" v-if="lists.entity.records.total > 0">
                     <div v-for="record in lists.entity.records.data" :key="record.id" class="list-group-item bg-white">
                         <div class="d-flex justify-content-between align-items-center gap-2 gap-md-3">
                             <div>
@@ -65,6 +68,9 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div v-else class="text-center">
+                    <WithoutData type="image"/>
                 </div>
             </div>
         </template>
@@ -115,7 +121,6 @@
                             v-model="forms.entity.assign.data.note"
                             hasDiv
                             title="Nota"
-                            isRequired
                             maxlength="100"
                             hasTextBottom
                             :textBottomInfo="forms.entity.assign.errors?.note"
@@ -166,9 +171,38 @@
                                 (<span v-text="forms.entity.assignToUser.data?.asset?.internal_code" class="fw-bold"></span>)
                             </div>
                         </div>
+                        <div>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover">
+                                    <thead>
+                                        <tr class="text-center align-middle">
+                                            <th class="bg-secondary text-white fw-semibold text-nowrap col-1">#</th>
+                                            <th class="bg-secondary text-white fw-semibold text-nowrap col-2">COLABORADOR ASIGNADO</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="table-border-bottom-0 bg-white">
+                                        <template v-if="(forms.entity.assignToUser?.data?.assignments ?? []).length > 0">
+                                            <template v-for="(record, keyRecord) in forms.entity.assignToUser?.data?.assignments" :key="record.id">
+                                                <tr class="text-center">
+                                                    <td v-text="keyRecord + 1"></td>
+                                                    <td v-text="record?.user?.name" class="text-start fw-bold"></td>
+                                                </tr>
+                                            </template>
+                                        </template>
+                                        <template v-else>
+                                            <tr>
+                                                <td class="text-center" colspan="99">
+                                                    <WithoutData type="text"/>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                         <InputSlot
                             hasDiv
-                            title="Colaborador"
+                            title="Cambiar colaborador asignado"
                             isRequired
                             hasTextBottom
                             :textBottomInfo="forms.entity.assignToUser.errors?.user"
@@ -507,19 +541,24 @@ export default {
             }
 
         },
-        modalAssignToUser(record) {
+        async modalAssignToUser(record) {
 
             const functionName = "modalAssignToUser";
 
-            // Alerts.swals({});
+            Alerts.swals({});
             this.clearForm({functionName});
             this.formErrors({functionName, type: "clear"});
 
             if(this.isDefined({value: record})) {
 
+                const filterJson = {branch_id: record?.branch_id, asset_id: record?.asset_id};
+
+                let getAssetAssignments = (await Requests.get({route: this.config.entity.routes.getAssetAssignments, data: filterJson}));
+                let assignments = Requests.valid({result: getAssetAssignments}) ? getAssetAssignments?.data?.list : [];
+
                 let status = this.statuses.find(e => e.code === record?.status);
 
-                this.forms.entity.assignToUser.data = {...record, status};
+                this.forms.entity.assignToUser.data = {...record, status, assignments};
 
             }else {
 
@@ -527,8 +566,8 @@ export default {
 
             }
 
-            // Alerts.swals({show: false});
-            Alerts.modals({type: "show", id: this.forms.entity.assignToUser.extras.modals.default.id});
+            Alerts.swals({show: false});
+            Alerts.modals({type: "show", id: this.forms.entity.assignToUser.extras.modals.default.id, timeout: 300});
             this.tooltips({show: true, time: 500});
 
         },
@@ -612,11 +651,106 @@ export default {
                 bool: true
             };
 
-            if(["assignToUser"].includes(functionName)) {
+            if(["assignAssetToBranch"].includes(functionName)) {
 
                 result.msg = [];
 
                 const isDescriptive = ["descriptive"].includes(extras?.type);
+
+                if(!this.isDefined({value: form?.branch_id})) {
+
+                    result.msg.push(`${isDescriptive ? "Sucursal:" : ""} ${this.config.forms.errors.labels.required}`);
+                    result.bool = false;
+
+                }
+
+                if(!this.isDefined({value: form?.items}) || (form.items).length === 0) {
+
+                    result.msg.push(`${isDescriptive ? "Activo:" : ""} ${this.config.forms.errors.labels.required}`);
+                    result.bool = false;
+
+                }
+
+            }else if(["unassignAssetFromBranch"].includes(functionName)) {
+
+                result.msg = [];
+
+                const isDescriptive = ["descriptive"].includes(extras?.type);
+
+                if(!this.isDefined({value: form?.branch_id})) {
+
+                    result.msg.push(`${isDescriptive ? "Sucursal:" : ""} ${this.config.forms.errors.labels.required}`);
+                    result.bool = false;
+
+                }
+
+                if(!this.isDefined({value: form?.items}) || (form.items).length === 0) {
+
+                    result.msg.push(`${isDescriptive ? "Activo:" : ""} ${this.config.forms.errors.labels.required}`);
+                    result.bool = false;
+
+                }
+
+            }else if(["assign"].includes(functionName)) {
+
+                result.msg = [];
+
+                const isDescriptive = ["descriptive"].includes(extras?.type);
+
+                if(!this.isDefined({value: form?.branch_id})) {
+
+                    result.msg.push(`${isDescriptive ? "Sucursal:" : ""} ${this.config.forms.errors.labels.required}`);
+                    result.bool = false;
+
+                }
+
+                if(!this.isDefined({value: form?.asset_id})) {
+
+                    result.msg.push(`${isDescriptive ? "Activo:" : ""} ${this.config.forms.errors.labels.required}`);
+                    result.bool = false;
+
+                }
+
+                if(Number(form?.quantity) < 0) {
+
+                    result.msg.push(`${isDescriptive ? "Cantidad:" : ""} ${this.config.forms.errors.functions.min.numeric(0)}`);
+                    result.bool = false;
+
+                }
+
+                if(Number(form?.acquisition_value) < 0) {
+
+                    result.msg.push(`${isDescriptive ? "Valor de adquisición:" : ""} ${this.config.forms.errors.functions.min.numeric(0)}`);
+                    result.bool = false;
+
+                }
+
+                if(!this.isDefined({value: form?.status})) {
+
+                    result.msg.push(`${isDescriptive ? "Estado:" : ""} ${this.config.forms.errors.labels.required}`);
+                    result.bool = false;
+
+                }
+
+            }else if(["assignToUser"].includes(functionName)) {
+
+                result.msg = [];
+
+                const isDescriptive = ["descriptive"].includes(extras?.type);
+
+                if(!this.isDefined({value: form?.branch_id})) {
+
+                    result.msg.push(`${isDescriptive ? "Sucursal:" : ""} ${this.config.forms.errors.labels.required}`);
+                    result.bool = false;
+
+                }
+
+                if(!this.isDefined({value: form?.asset_id})) {
+
+                    result.msg.push(`${isDescriptive ? "Activo:" : ""} ${this.config.forms.errors.labels.required}`);
+                    result.bool = false;
+
+                }
 
                 if(!this.isDefined({value: form?.user})) {
 

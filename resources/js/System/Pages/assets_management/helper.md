@@ -175,3 +175,75 @@ if(["createUpdateEntity"].includes(functionName)) {
         });
 
         return $list; */
+
+$userAuth = Auth::user();
+
+$branch = Branch::where("id", $request->branch_id)
+                ->where("company_id", $userAuth->company_id)
+                ->first();
+
+$branchItems = array_unique(array_column($request->items, "branch_id"));
+
+if(!Utilities::isDefined($branch)) {
+
+    return response()->json(["bool" => false, "msg" => "La sucursal seleccionada no se encuentra disponible."], 200);
+
+}else if(count($branchItems) != 1) {
+
+    return response()->json(["bool" => false, "msg" => "Hay más de una sucursal seleccionada."], 200);
+
+}else if(!in_array($branch->id, $branchItems)) {
+
+    return response()->json(["bool" => false, "msg" => "La sucursal seleccionada no coincide con los registros ingresados."], 200);
+
+}
+
+DB::transaction(function() use($request, $userAuth) {
+
+    foreach($request->items as $item) {
+
+        $branchAsset = null;
+
+        if(floatval($item["branch_asset_id"]) > 0) {
+
+            $branchAsset = BranchAsset::where("id", $item["branch_asset_id"])
+                                        ->first();
+
+        }
+
+        if(Utilities::isDefined($branchAsset)) {
+
+            $branchAsset->quantity          = Utilities::round(floatval($item["branch_asset_quantity"] ?? 0));
+            $branchAsset->acquisition_value = Utilities::round(floatval($item["branch_asset_acquisition_value"] ?? 0));
+            $branchAsset->acquisition_date  = $item["branch_asset_acquisition_date"] ?? null;
+            $branchAsset->note              = $item["branch_asset_note"] ?? "";
+            $branchAsset->status            = $item["branch_asset_status"] ?? "active";
+            $branchAsset->updated_at        = now();
+            $branchAsset->updated_by        = $userAuth->id ?? null;
+            $branchAsset->save();
+
+        }else {
+
+            $branchAsset = new BranchAsset();
+            $branchAsset->branch_id         = $item["branch_id"];
+            $branchAsset->asset_id          = $item["asset_id"];
+            $branchAsset->currency_id       = 1;
+            $branchAsset->quantity          = Utilities::round(floatval($item["branch_asset_quantity"] ?? 0));
+            $branchAsset->acquisition_value = Utilities::round(floatval($item["branch_asset_acquisition_value"] ?? 0));
+            $branchAsset->acquisition_date  = $item["branch_asset_acquisition_date"] ?? null;
+            $branchAsset->note              = $item["branch_asset_notes"] ?? "";
+            $branchAsset->status            = $item["branch_asset_status"] ?? "active";
+            $branchAsset->created_at        = now();
+            $branchAsset->created_by        = $userAuth->id ?? null;
+            $branchAsset->save();
+
+        }
+
+    }
+
+});
+
+$bool = true;
+$msg  = $bool ? "Gestión de activos actualizados correctamente." : "No se ha podido actualizar la gestión de activos.";
+
+return response()->json(["bool" => $bool, "msg" => $msg], 200);
