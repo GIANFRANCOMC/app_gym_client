@@ -43,7 +43,7 @@
                                 <span v-text="record.internal_code" class="fw-bold d-block"></span>
                                 <span v-text="record.name" class="d-block"></span>
                             </div>
-                            <button type="button" class="btn btn-sm btn-success" @click="assignAssetToBranch(record)">Agregar</button>
+                            <button type="button" class="btn btn-sm btn-success" @click="assignAssetToBranch(record)" v-if="hasAssetToBranch(record)">Agregar</button>
                         </div>
                     </div>
                 </div>
@@ -63,7 +63,7 @@
                             </div>
                             <div class="d-flex justify-content-end align-items-center flex-wrap gap-2 gap-md-3">
                                 <button class="btn btn-sm btn-warning" @click="modalAssign(record)" v-if="['active', 'maintenance'].includes(record.status)">Editar</button>
-                                <button class="btn btn-sm btn-primary" @click="modalAssignToUser(record)" v-if="['active', 'maintenance'].includes(record.status)">Gestionar asignación</button>
+                                <button class="btn btn-sm btn-primary" @click="modalAssignToUser(record)" v-if="record.quantity > 0 && ['active', 'maintenance'].includes(record.status)">Gestionar asignación</button>
                                 <button class="btn btn-sm btn-danger" @click="unassignAssetFromBranch(record)" v-if="['active', 'maintenance'].includes(record.status)">Quitar</button>
                             </div>
                         </div>
@@ -171,33 +171,18 @@
                                 (<span v-text="forms.entity.assignToUser.data?.asset?.internal_code" class="fw-bold"></span>)
                             </div>
                         </div>
-                        <div>
-                            <div class="table-responsive">
-                                <table class="table table-sm table-hover">
-                                    <thead>
-                                        <tr class="text-center align-middle">
-                                            <th class="bg-secondary text-white fw-semibold text-nowrap col-1">#</th>
-                                            <th class="bg-secondary text-white fw-semibold text-nowrap col-2">COLABORADOR ASIGNADO</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="table-border-bottom-0 bg-white">
-                                        <template v-if="(forms.entity.assignToUser?.data?.assignments ?? []).length > 0">
-                                            <template v-for="(record, keyRecord) in forms.entity.assignToUser?.data?.assignments" :key="record.id">
-                                                <tr class="text-center">
-                                                    <td v-text="keyRecord + 1"></td>
-                                                    <td v-text="record?.user?.name" class="text-start fw-bold"></td>
-                                                </tr>
-                                            </template>
-                                        </template>
-                                        <template v-else>
-                                            <tr>
-                                                <td class="text-center" colspan="99">
-                                                    <WithoutData type="text"/>
-                                                </td>
-                                            </tr>
-                                        </template>
-                                    </tbody>
-                                </table>
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                            <label class="fw-bold colon-at-end">Cantidad total</label>
+                            <div>
+                                <span v-text="forms.entity.assignToUser.data?.quantity"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-if="['stock'].includes(forms.entity.assignToUser.data?.asset?.management_type)">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                            <label class="fw-bold colon-at-end">Colaborador asignado</label>
+                            <div>
+                                <span v-text="forms.entity.assignToUser?.data?.assignments[0]?.user?.name"></span>
                             </div>
                         </div>
                         <InputSlot
@@ -216,6 +201,66 @@
                                     :searchable="true"/>
                             </template>
                         </InputSlot>
+                    </div>
+                    <div v-else-if="['unit'].includes(forms.entity.assignToUser.data?.asset?.management_type)" class="mt-2">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover">
+                                <thead>
+                                    <tr class="text-center align-middle">
+                                        <th class="bg-secondary text-white fw-semibold text-nowrap col-1">#</th>
+                                        <th class="bg-secondary text-white fw-semibold text-nowrap col-2">COLABORADOR<br/>ASIGNADO</th>
+                                        <th class="bg-secondary text-white fw-semibold text-nowrap col-1">CANTIDAD</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-border-bottom-0 bg-white">
+                                    <template v-if="(forms.entity.assignToUser?.data?.assignments ?? []).length > 0">
+                                        <template v-for="(record, keyRecord) in forms.entity.assignToUser?.data?.assignments" :key="record.id">
+                                            <template v-if="isNumber(record.id)">
+                                                <tr class="text-center">
+                                                    <td v-text="keyRecord + 1"></td>
+                                                    <td v-text="record?.user?.name" class="text-start fw-bold"></td>
+                                                </tr>
+                                            </template>
+                                            <template v-else>
+                                                <tr class="text-center">
+                                                    <td v-text="keyRecord + 1"></td>
+                                                    <td class="text-start">
+                                                        <InputSlot
+                                                            :hasDiv="false">
+                                                            <template v-slot:input>
+                                                                <v-select
+                                                                    v-model="record.user"
+                                                                    :options="users"
+                                                                    :clearable="false"
+                                                                    :searchable="true"/>
+                                                            </template>
+                                                        </InputSlot>
+                                                    </td>
+                                                    <td class="text-start">
+                                                        <InputNumber
+                                                            v-model="record.quantity"
+                                                            :hasDiv="false"/>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </template>
+                                    </template>
+                                    <template v-else>
+                                        <tr>
+                                            <td class="text-center" colspan="99">
+                                                <WithoutData type="text"/>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="d-flex justify-content-start align-items-center flex-grap mt-1">
+                            <a href="javascript:void(0)" @click="addAssignment({})" class="fw-bold">
+                                <i class="fa fa-plus-circle"></i>
+                                <span class="ms-1">Agregar asignación</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -363,6 +408,11 @@ export default {
 
         },
         // Forms
+        hasAssetToBranch(record) {
+
+            return !this.lists.entity.records.data.some(e => e.asset_id == record.id && ["active", "maintenance"].includes(e.status));
+
+        },
         async assignAssetToBranch(record) {
 
             const functionName = "assignAssetToBranch";
@@ -539,6 +589,12 @@ export default {
                 Alerts.generateAlert({messages: Utils.getErrors({errors: validateForm}), msgContent: `<div class="fw-semibold mb-2">${this.config.messages.errorValidate}</div>`});
 
             }
+
+        },
+        // Forms - To user
+        addAssignment() {
+
+            this.forms.entity.assignToUser.data.assignments.push({id: Utils.uuid(), user: {code: "", label: ""}, quantity: 0});
 
         },
         async modalAssignToUser(record) {
@@ -752,10 +808,58 @@ export default {
 
                 }
 
-                if(!this.isDefined({value: form?.user})) {
+                if(["stock"].includes(form?.asset?.management_type)) {
 
-                    result.msg.push(`${isDescriptive ? "Colaborador:" : ""} ${this.config.forms.errors.labels.required}`);
-                    result.bool = false;
+                    if(!this.isDefined({value: form?.user})) {
+
+                        result.msg.push(`${isDescriptive ? "Colaborador:" : ""} ${this.config.forms.errors.labels.required}`);
+                        result.bool = false;
+
+                    }
+
+                }else if(["unit"].includes(form?.asset?.management_type)) {
+
+                    let totalQuantity = form.assignments.reduce((acumulator, currentValue) => acumulator + Number(currentValue?.quantity), 0);
+
+                    if(totalQuantity == 0) {
+
+                        result.msg.push(`La suma de las cantidades asignadas debe ser mayor a 0.`);
+                        result.bool = false;
+
+                    }
+
+                    if(totalQuantity > Number(form.quantity)) {
+
+                        result.msg.push(`La suma de las cantidades asignadas debe ser menor o igual a la cantidad total.`);
+                        result.bool = false;
+
+                    }
+
+                    for(let [keyDetail, detail] of Object.entries(form?.assignments)) {
+
+                        let errorDetails = [];
+
+                        if(!this.isDefined({value: detail?.user?.code})) {
+
+                            errorDetails.push(`Colaborador: ${this.config.forms.errors.labels.required}`);
+                            result.bool = false;
+
+                        }
+
+                        if(Number(detail?.quantity) < 0) {
+
+                            errorDetails.push(`${isDescriptive ? "Cantidad:" : ""} ${this.config.forms.errors.functions.min.numeric(0)}`);
+                            result.bool = false;
+
+                        }
+
+                        if(errorDetails.length > 0) {
+
+                            result.msg.push(`<p class="mb-1">Asignación <b>#${parseInt(keyDetail) + 1}</b>:</p>${errorDetails.map(e => "<li>"+e+"</li>")}`);
+
+                        }
+
+                    }
 
                 }
 
@@ -773,6 +877,11 @@ export default {
         tooltips({show = true, time = 10}) {
 
             Alerts.tooltips({show, time});
+
+        },
+        isNumber({value, minValue = 0}) {
+
+            return Utils.isNumber({value, minValue});
 
         }
     },
