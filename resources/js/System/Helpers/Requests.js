@@ -235,7 +235,10 @@ export function generateRoutes({entity, requestRoute}) {
         routes.unassignAssetFromBranch = `${requestRoute}/${entity}/unassignAssetFromBranch`;
         routes.assign                  = `${requestRoute}/${entity}/assign`;
         routes.getAssetAssignments     = `${requestRoute}/${entity}/getAssetAssignments`;
+
+
         routes.assignToUser            = `${requestRoute}/${entity}/assignToUser`;
+        routes.unassignToUser          = `${requestRoute}/${entity}/unassignToUser`;
 
     }else if(["reports"].includes(entity)) {
 

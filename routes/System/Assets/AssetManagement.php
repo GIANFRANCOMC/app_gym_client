@@ -9,7 +9,10 @@ Route::post('/assignAssetToBranch',     [AssetManagementController::class, 'assi
 Route::post('/unassignAssetFromBranch', [AssetManagementController::class, 'unassignAssetFromBranch'])->name("$entity.unassignAssetFromBranch");
 Route::patch('/assign/{id}',            [AssetManagementController::class, 'assign'])->name("$entity.assign");
 Route::get('/getAssetAssignments',      [AssetManagementController::class, 'getAssetAssignments'])->name("$entity.getAssetAssignments");
+
+
 Route::patch('/assignToUser/{id}',      [AssetManagementController::class, 'assignToUser'])->name("$entity.assignToUser");
+Route::patch('/unassignToUser/{id}',      [AssetManagementController::class, 'unassignToUser'])->name("$entity.unassignToUser");
 
 Route::get('',            [AssetManagementController::class, 'index'])->name("$entity.index");
 Route::get('/initParams', [AssetManagementController::class, 'initParams'])->name("$entity.initParams");

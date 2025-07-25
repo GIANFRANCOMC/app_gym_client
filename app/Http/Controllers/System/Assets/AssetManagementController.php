@@ -37,6 +37,9 @@ class AssetManagementController extends Controller {
             $config->branchAssets = new stdClass();
             $config->branchAssets->statuses = BranchAsset::getStatuses();
 
+            $config->assetAssignments = new stdClass();
+            $config->assetAssignments->statuses = AssetAssignment::getStatuses();
+
             $config->users = new stdClass();
             $config->users->records = User::getAll("asset_management", $userAuth->company_id);
 
@@ -305,19 +308,204 @@ class AssetManagementController extends Controller {
 
         }
 
-        $list = AssetAssignment::where("branch_id", $request->branch_id)
-                               ->where("asset_id", $request->asset_id)
-                               ->with(["user"])
-                               ->get();
+        $assignments = AssetAssignment::where("branch_id", $request->branch_id)
+                                      ->where("asset_id", $request->asset_id)
+                                      ->whereIn("status", ["active", "maintenance"])
+                                      ->with(["user"])
+                                      ->get();
 
-        $bool = count($list) > 0;
+        $bool = count($assignments) > 0;
         $msg  = $bool ? "Información encontrada." : "Sin resultados.";
 
-        return response()->json(["bool" => $bool, "msg" => $msg, "list" => $list], 200);
+        return response()->json(["bool" => $bool, "msg" => $msg, "assignments" => $assignments], 200);
 
     }
 
+    /*
+     * Id = BranchAsset
+     * Assignments = Independent Ids
+     * */
     public function assignToUser(Request $request) {
+
+        $userAuth = Auth::user();
+
+        $information = [
+            "success" => [
+                "counter" => 0,
+                "data" => []
+            ],
+            "error" => [
+                "counter" => 0,
+                "data" => []
+            ]
+        ];
+
+        $branch = Branch::where("id", $request->branch_id)
+                        ->where("company_id", $userAuth->company_id)
+                        ->first();
+
+        if(!Utilities::isDefined($branch)) {
+
+            return response()->json(["bool" => false, "msg" => "La sucursal no ha sido encontrada."], 200);
+
+        }
+
+        $branchAsset = BranchAsset::where("id", $request->id)
+                                  ->where("branch_id", $branch->id)
+                                  ->where("asset_id", $request->asset_id)
+                                  ->whereIn("status", ["active", "maintenance"])
+                                  ->first();
+
+        if(!Utilities::isDefined($branchAsset)) {
+
+            return response()->json(["bool" => false, "msg" => "El activo asociado en la sucursal no ha sido encontrado."], 200);
+
+        }
+
+        $assetQuantity = floatval($branchAsset->quantity);
+        $totalQuantity = array_reduce($request->assignments, function($acumulator, $currentValue) { return $acumulator + floatval($currentValue["quantity"]); }, 0);
+
+        if($totalQuantity > $assetQuantity) {
+
+            return response()->json(["bool" => false, "msg" => "La suma de las cantidades asignadas debe ser menor o igual a la cantidad total del activo."], 200);
+
+        }
+
+        DB::transaction(function() use($request, $userAuth, $branchAsset, &$information) {
+
+            foreach($request->assignments as $assignment) {
+
+                $data = [
+                    "user_id" => $assignment["user_id"],
+                    "branch_id" => $branchAsset->branch_id,
+                    "asset_id" => $branchAsset->asset_id,
+                    "currency_id" => $branchAsset->currency_id,
+                    "quantity" => $assignment["quantity"] ?? 0,
+                    "acquisition_value" => 0,
+                    "acquisition_date" => null,
+                    "note" => null,
+                    "status" => "active",
+                    "updated_at" => now(),
+                    "updated_by" => $userAuth->id
+                ];
+
+                if(is_numeric($assignment["id"])) {
+
+                    $assetAssignment = "check";
+
+                }else {
+
+                    $data["created_at"] = now();
+                    $data["created_by"] = $userAuth->id;
+
+                    $assetAssignment = AssetAssignment::create($data);
+
+                }
+
+                if(Utilities::isDefined($assetAssignment)) {
+
+                    $information["success"]["counter"]++;
+                    $information["success"]["data"]["asset_id"] = $data["asset_id"];
+
+                }else {
+
+                    $information["error"]["counter"]++;
+                    $information["error"]["data"]["asset_id"] = $data["asset_id"];
+
+                }
+
+            }
+
+        });
+
+        $bool = $information["success"]["counter"] > 0;
+        $msg  = $bool ? "Activo asignado a los colaboradores correctamente." : "No se ha podido asignar el activo a los colaboradores.";
+
+        return response()->json(["bool" => $bool, "msg" => $msg, "information" => $information], 200);
+
+    }
+
+    /*
+     * Id = BranchAsset
+     * Assignments = Independent Ids
+     * */
+    public function unassignToUser(Request $request) {
+
+        $userAuth = Auth::user();
+
+        $information = [
+            "success" => [
+                "counter" => 0,
+                "data" => []
+            ],
+            "error" => [
+                "counter" => 0,
+                "data" => []
+            ]
+        ];
+
+        $branch = Branch::where("id", $request->branch_id)
+                        ->where("company_id", $userAuth->company_id)
+                        ->first();
+
+        if(!Utilities::isDefined($branch)) {
+
+            return response()->json(["bool" => false, "msg" => "La sucursal no ha sido encontrada."], 200);
+
+        }
+
+        $branchAsset = BranchAsset::where("id", $request->id)
+                                  ->where("branch_id", $branch->id)
+                                  ->where("asset_id", $request->asset_id)
+                                  ->whereIn("status", ["active", "maintenance"])
+                                  ->first();
+
+        if(!Utilities::isDefined($branchAsset)) {
+
+            return response()->json(["bool" => false, "msg" => "El activo asociado en la sucursal no ha sido encontrado."], 200);
+
+        }
+
+        DB::transaction(function() use($request, $userAuth, $branchAsset, &$information) {
+
+            foreach($request->assignments as $assignment) {
+
+                $assetAssignment = AssetAssignment::where("id", $assignment["id"])
+                                                  ->where("user_id", $assignment["user_id"])
+                                                  ->where("branch_id", $branchAsset->branch_id)
+                                                  ->where("asset_id", $branchAsset->asset_id)
+                                                  ->whereIn("status", ["active", "maintenance"])
+                                                  ->first();
+
+                if(Utilities::isDefined($assetAssignment)) {
+
+                    $assetAssignment->status     = "retired";
+                    $assetAssignment->updated_at = now();
+                    $assetAssignment->updated_by = $userAuth->id ?? null;
+                    $assetAssignment->save();
+
+                    $information["success"]["counter"]++;
+                    $information["success"]["data"]["asset_id"] = $assignment["asset_id"];
+
+                }else {
+
+                    $information["error"]["counter"]++;
+                    $information["error"]["data"]["asset_id"] = $assignment["asset_id"];
+
+                }
+
+            }
+
+        });
+
+        $bool = $information["success"]["counter"] > 0;
+        $msg  = $bool ? "Activo desasignado de los colaboradores correctamente." : "No se ha podido desasignar el activo de los colaboradores.";
+
+        return response()->json(["bool" => $bool, "msg" => $msg, "information" => $information], 200);
+
+    }
+
+    /* public function assignToUser(Request $request) {
 
         $userAuth = Auth::user();
 
@@ -384,6 +572,6 @@ class AssetManagementController extends Controller {
 
         return response()->json(["bool" => $bool, "msg" => $msg, "assetAssignment" => $assetAssignment], 200);
 
-    }
+    } */
 
 }

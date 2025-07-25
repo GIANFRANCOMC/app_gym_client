@@ -42,6 +42,7 @@
                             <div>
                                 <span v-text="record.internal_code" class="fw-bold d-block"></span>
                                 <span v-text="record.name" class="d-block"></span>
+                                <span v-text="record.formatted_management_type" class="d-block text-primary fw-semibold"></span>
                             </div>
                             <button type="button" class="btn btn-sm btn-success" @click="assignAssetToBranch(record)" v-if="hasAssetToBranch(record)">Agregar</button>
                         </div>
@@ -59,11 +60,13 @@
                             <div>
                                 <span v-text="record.asset?.internal_code" class="fw-bold d-block"></span>
                                 <span v-text="record.asset?.name" class="d-block mb-1"></span>
+                                <span v-text="record?.quantity" class="d-block mb-1"></span>
+                                <span v-text="record.asset?.formatted_management_type" class="d-block text-primary fw-semibold mb-1"></span>
                                 <span :class="['badge', 'fw-semibold', 'text-capitalize', { 'bg-label-success': ['active'].includes(record.status), 'bg-label-primary': ['maintenance'].includes(record.status), 'bg-label-danger': ['retired'].includes(record.status) }]" v-text="record.formatted_status"></span>
                             </div>
                             <div class="d-flex justify-content-end align-items-center flex-wrap gap-2 gap-md-3">
                                 <button class="btn btn-sm btn-warning" @click="modalAssign(record)" v-if="['active', 'maintenance'].includes(record.status)">Editar</button>
-                                <button class="btn btn-sm btn-primary" @click="modalAssignToUser(record)" v-if="record.quantity > 0 && ['active', 'maintenance'].includes(record.status)">Gestionar asignación</button>
+                                <button class="btn btn-sm btn-primary" @click="modalAssignToUser({record})" v-if="record.quantity > 0 && ['active', 'maintenance'].includes(record.status)">Gestionar asignación</button>
                                 <button class="btn btn-sm btn-danger" @click="unassignAssetFromBranch(record)" v-if="['active', 'maintenance'].includes(record.status)">Quitar</button>
                             </div>
                         </div>
@@ -156,7 +159,7 @@
     </div>
 
     <div class="modal fade" :id="forms.entity.assignToUser.extras.modals.default.id" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title text-uppercase fw-bold" v-text="forms.entity.assignToUser.extras.modals.default.titles.default"></h5>
@@ -167,18 +170,18 @@
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                             <label class="fw-bold colon-at-end">Activo</label>
                             <div>
-                                <span v-text="forms.entity.assignToUser.data?.asset?.name"></span>
-                                (<span v-text="forms.entity.assignToUser.data?.asset?.internal_code" class="fw-bold"></span>)
+                                <span v-text="forms.entity.assignToUser.data?.branchAsset?.asset?.name"></span>
+                                (<span v-text="forms.entity.assignToUser.data?.branchAsset?.asset?.internal_code" class="fw-bold"></span>)
                             </div>
                         </div>
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                             <label class="fw-bold colon-at-end">Cantidad total</label>
                             <div>
-                                <span v-text="forms.entity.assignToUser.data?.quantity"></span>
+                                <span v-text="forms.entity.assignToUser.data?.branchAsset?.quantity"></span>
                             </div>
                         </div>
                     </div>
-                    <div v-if="['stock'].includes(forms.entity.assignToUser.data?.asset?.management_type)">
+                    <div v-if="false && ['stock'].includes(forms.entity.assignToUser.data?.branchAsset?.asset?.management_type)">
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                             <label class="fw-bold colon-at-end">Colaborador asignado</label>
                             <div>
@@ -202,23 +205,44 @@
                             </template>
                         </InputSlot>
                     </div>
-                    <div v-else-if="['unit'].includes(forms.entity.assignToUser.data?.asset?.management_type)" class="mt-2">
+                    <div v-else-if="['unit'].includes(forms.entity.assignToUser.data?.branchAsset?.asset?.management_type)" class="mt-2">
                         <div class="table-responsive">
                             <table class="table table-sm table-hover">
                                 <thead>
                                     <tr class="text-center align-middle">
-                                        <th class="bg-secondary text-white fw-semibold text-nowrap col-1">#</th>
-                                        <th class="bg-secondary text-white fw-semibold text-nowrap col-2">COLABORADOR<br/>ASIGNADO</th>
-                                        <th class="bg-secondary text-white fw-semibold text-nowrap col-1">CANTIDAD</th>
+                                        <th class="bg-secondary text-white fw-semibold" style="width: 10%;">#</th>
+                                        <th class="bg-secondary text-white fw-semibold" style="width: 40%;">COLABORADOR<br/>ASIGNADO</th>
+                                        <th class="bg-secondary text-white fw-semibold" style="width: 20%;">CANTIDAD</th>
+                                        <th class="bg-secondary text-white fw-semibold" style="width: 30%;">ESTADO</th>
+                                        <th class="bg-secondary text-white fw-semibold" style="width: 15%;"></th>
                                     </tr>
                                 </thead>
                                 <tbody class="table-border-bottom-0 bg-white">
                                     <template v-if="(forms.entity.assignToUser?.data?.assignments ?? []).length > 0">
                                         <template v-for="(record, keyRecord) in forms.entity.assignToUser?.data?.assignments" :key="record.id">
-                                            <template v-if="isNumber(record.id)">
+                                            <template v-if="isNumber({value: record.id})">
                                                 <tr class="text-center">
                                                     <td v-text="keyRecord + 1"></td>
                                                     <td v-text="record?.user?.name" class="text-start fw-bold"></td>
+                                                    <td class="text-start">
+                                                        <span v-text="record?.quantity" class="ps-2"></span>
+                                                    </td>
+                                                    <td class="text-start">
+                                                        <div class="d-flex justify-content-start align-items-center flex-wrap gap-2">
+                                                            <template v-for="(option, keyOption) in assignmentStatuses" :key="keyOption">
+                                                                <label class="d-flex justify-content-start align-items-center flex-nowrap">
+                                                                    <input type="radio" v-model="record.status"/>
+                                                                    <small v-text="option.label" class="ms-1 fw-semibold"></small>
+                                                                </label>
+                                                            </template>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-danger btn-xs waves-effect" type="button" @click="unassignToUser({record, keyRecord})">
+                                                            <i class="fa fa-times"></i>
+                                                            <span class="ms-1">Eliminar</span>
+                                                        </button>
+                                                    </td>
                                                 </tr>
                                             </template>
                                             <template v-else>
@@ -241,9 +265,41 @@
                                                             v-model="record.quantity"
                                                             :hasDiv="false"/>
                                                     </td>
+                                                    <td class="text-start">
+                                                        <div class="d-flex justify-content-start align-items-center flex-wrap gap-2">
+                                                            <template v-for="(option, keyOption) in assignmentStatuses" :key="keyOption">
+                                                                <label class="d-flex justify-content-start align-items-center flex-nowrap">
+                                                                    <input type="radio" v-model="record.status"/>
+                                                                    <small v-text="option.label" class="ms-1 fw-semibold"></small>
+                                                                </label>
+                                                            </template>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-danger btn-xs waves-effect" type="button" @click="unassignToUser({record, keyRecord})">
+                                                            <i class="fa fa-times"></i>
+                                                            <span class="ms-1">Eliminar</span>
+                                                        </button>
+                                                    </td>
                                                 </tr>
                                             </template>
                                         </template>
+                                        <tr class="fs-5">
+                                            <td colspan="2" class="fw-bold text-end">TOTAL :</td>
+                                            <td colspan="3" class="fw-bold text-start">
+                                                <span class="text-break">
+                                                    <span v-text="separatorNumber(assignmentsSum)" class="ms-2"></span>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr class="fs-5">
+                                            <td colspan="2" class="fw-bold text-end text-secondary">PENDIENTE :</td>
+                                            <td colspan="3" class="fw-bold text-start text-secondary">
+                                                <span class="text-break">
+                                                    <span v-text="separatorNumber(assignmentsPending)" class="ms-2"></span>
+                                                </span>
+                                            </td>
+                                        </tr>
                                     </template>
                                     <template v-else>
                                         <tr>
@@ -255,7 +311,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="d-flex justify-content-start align-items-center flex-grap mt-1">
+                        <div class="d-flex justify-content-start align-items-center flex-grap mt-2">
                             <a href="javascript:void(0)" @click="addAssignment({})" class="fw-bold">
                                 <i class="fa fa-plus-circle"></i>
                                 <span class="ms-1">Agregar asignación</span>
@@ -350,7 +406,10 @@ export default {
                                 }
                             }
                         },
-                        data: {},
+                        data: {
+                            branchAsset: null,
+                            assignments: []
+                        },
                         errors: {}
                     }
                 }
@@ -377,6 +436,7 @@ export default {
 
             let initParams = await Requests.get({route: this.config.entity.routes.initParams, data: {page: "main"}, showAlert: true});
 
+            this.options.assetAssignments = initParams.data?.config?.assetAssignments;
             this.options.assets       = initParams.data?.config?.assets;
             this.options.branches     = initParams.data?.config?.branches;
             this.options.branchAssets = initParams.data?.config?.branchAssets;
@@ -591,13 +651,11 @@ export default {
             }
 
         },
+
+
+
         // Forms - To user
-        addAssignment() {
-
-            this.forms.entity.assignToUser.data.assignments.push({id: Utils.uuid(), user: {code: "", label: ""}, quantity: 0});
-
-        },
-        async modalAssignToUser(record) {
+        async modalAssignToUser({record = null}) {
 
             const functionName = "modalAssignToUser";
 
@@ -609,22 +667,27 @@ export default {
 
                 const filterJson = {branch_id: record?.branch_id, asset_id: record?.asset_id};
 
-                let getAssetAssignments = (await Requests.get({route: this.config.entity.routes.getAssetAssignments, data: filterJson}));
-                let assignments = Requests.valid({result: getAssetAssignments}) ? getAssetAssignments?.data?.list : [];
+                const getAssetAssignments = await Requests.get({route: this.config.entity.routes.getAssetAssignments, data: filterJson});
+                const assignments = Requests.valid({result: getAssetAssignments}) ? getAssetAssignments?.data?.assignments : [];
 
                 let status = this.statuses.find(e => e.code === record?.status);
 
-                this.forms.entity.assignToUser.data = {...record, status, assignments};
+                this.forms.entity.assignToUser.data = {branchAsset: {...record, status}, assignments};
 
             }else {
 
-                //
+                return;
 
             }
 
             Alerts.swals({show: false});
             Alerts.modals({type: "show", id: this.forms.entity.assignToUser.extras.modals.default.id, timeout: 300});
             this.tooltips({show: true, time: 500});
+
+        },
+        addAssignment() {
+
+            this.forms.entity.assignToUser.data.assignments.push({id: Utils.uuid(), user: {code: "", label: ""}, quantity: 0});
 
         },
         async assignToUser() {
@@ -640,19 +703,25 @@ export default {
 
             if(validateForm?.bool) {
 
-                form.user_id = form.user?.code;
-                form.status  = form?.status?.code;
+                form.assignments.forEach(record => {
 
-                delete form.asset;
-                delete form.user;
-                delete form.formatted_status;
-                delete form.created_at;
-                delete form.created_by;
-                delete form.updated_at;
-                delete form.updated_by;
+                    if(!this.isNumber({value: record.id})) {
 
-                let assignToUser = await (this.isDefined({value: form.id}) ? Requests.patch({route: this.config.entity.routes.assignToUser, data: form, id: form.id}) :
-                                                                             Requests.post({route: this.config.entity.routes.assignToUser, data: form}));
+                        record.user_id = record?.user?.code;
+
+                    }
+
+                    delete record.user;
+
+                });
+
+                form.id        = form.branchAsset.id;
+                form.branch_id = form.branchAsset.branch_id;
+                form.asset_id  = form.branchAsset.asset_id;
+
+                delete form.branchAsset;
+
+                let assignToUser = await Requests.patch({route: this.config.entity.routes.assignToUser, data: form, id: form.id});
 
                 if(Requests.valid({result: assignToUser})) {
 
@@ -677,9 +746,97 @@ export default {
                 // this.formErrors({functionName, type: "set", errors: validateForm});
                 // Alerts.toastrs({type: "error", subtitle: this.config.messages.errorValidate});
                 // Alerts.swals({show: false});
-                Alerts.generateAlert({messages: Utils.getErrors({errors: validateForm}), msgContent: `<div class="fw-semibold mb-2">${this.config.messages.errorValidate}</div>`});
+                Alerts.generateAlert({messages: validateForm?.msg, msgContent: `<div class="fw-semibold mb-2">${this.config.messages.errorValidate}</div>`});
 
             }
+
+        },
+        async unassignToUser({record, keyRecord}) {
+
+            let el = this;
+
+            Swal.fire({
+                html: `<span>¿Desea eliminar la asignación?</span>`,
+                icon: "warning",
+                allowOutsideClick: false,
+                showCancelButton: true,
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "Cancelar",
+                customClass: {
+                    confirmButton: "btn btn-danger waves-effect",
+                    cancelButton: "btn btn-secondary waves-effect ms-3"
+                }
+            })
+            .then(async function(result) {
+
+                if(result.isConfirmed) {
+
+                    if(el.isNumber({value: record.id})) {
+
+                        const functionName = "unassignToUser";
+
+                        Alerts.swals({});
+                        el.formErrors({functionName, type: "clear"});
+
+                        const branchAssetId = el.forms.entity.assignToUser.data.branchAsset.id;
+
+                        let form = Utils.cloneJson({assignments: [{
+                            id: record.id,
+                            branch_asset_id: branchAssetId,
+                            user_id: record.user_id,
+                            branch_id: record.branch_id,
+                            asset_id: record.asset_id
+                        }]});
+
+                        const validateForm = el.validateForm({functionName, form, extras: {type: "descriptive"}});
+
+                        if(validateForm?.bool) {
+
+                            form.id        = branchAssetId;
+                            form.branch_id = record.branch_id;
+                            form.asset_id  = record.asset_id;
+
+                            let unassignToUser = await Requests.patch({route: el.config.entity.routes.unassignToUser, data: form, id: form.id});
+
+                            if(Requests.valid({result: unassignToUser})) {
+
+                                // Alerts.toastrs({type: "success", subtitle: unassignToUser?.data?.msg});
+                                // Alerts.swals({show: false});
+                                Alerts.generateAlert({type: "success", msgContent: unassignToUser?.data?.msg});
+
+                                el.clearForm({functionName});
+                                el.forms.entity.assignToUser.data.assignments.splice(keyRecord, 1);
+
+                            }else {
+
+                                el.formErrors({functionName, type: "set", errors: unassignToUser?.errors ?? []});
+                                Alerts.toastrs({type: "error", subtitle: unassignToUser?.data?.msg});
+                                Alerts.swals({show: false});
+
+                            }
+
+                        }else {
+
+                            // el.formErrors({functionName, type: "set", errors: validateForm});
+                            // Alerts.toastrs({type: "error", subtitle: el.config.messages.errorValidate});
+                            // Alerts.swals({show: false});
+                            Alerts.generateAlert({messages: validateForm?.msg, msgContent: `<div class="fw-semibold mb-2">${el.config.messages.errorValidate}</div>`});
+
+                        }
+
+                    }else {
+
+                        el.forms.entity.assignToUser.data.assignments.splice(keyRecord, 1);
+
+                    }
+
+                }else if(result.isDismissed) {
+
+                    //
+
+                }
+
+            });
 
         },
         // Forms utils
@@ -689,6 +846,10 @@ export default {
                 case "createUpdateEntity":
                     //
                     break;
+                case "modalAssignToUser":
+                    this.forms.entity.assignToUser.data.branchAsset = null;
+                    this.forms.entity.assignToUser.data.assignments = [];
+                    break;
             }
 
         },
@@ -697,6 +858,10 @@ export default {
             if(["createUpdateEntity"].includes(functionName)) {
 
                 this.forms.entity.createUpdate.errors = ["set"].includes(type) ? errors : [];
+
+            }else if(["modalAssignToUser", "assignToUser"].includes(functionName)) {
+
+                this.forms.entity.assignToUser.errors = ["set"].includes(type) ? errors : [];
 
             }
 
@@ -794,21 +959,21 @@ export default {
 
                 const isDescriptive = ["descriptive"].includes(extras?.type);
 
-                if(!this.isDefined({value: form?.branch_id})) {
+                if(!this.isDefined({value: form?.branchAsset?.branch_id})) {
 
                     result.msg.push(`${isDescriptive ? "Sucursal:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }
 
-                if(!this.isDefined({value: form?.asset_id})) {
+                if(!this.isDefined({value: form?.branchAsset?.asset_id})) {
 
                     result.msg.push(`${isDescriptive ? "Activo:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }
 
-                if(["stock"].includes(form?.asset?.management_type)) {
+                if(false && ["stock"].includes(form?.branchAsset?.asset?.management_type)) {
 
                     if(!this.isDefined({value: form?.user})) {
 
@@ -817,7 +982,7 @@ export default {
 
                     }
 
-                }else if(["unit"].includes(form?.asset?.management_type)) {
+                }else if(["unit"].includes(form?.branchAsset?.asset?.management_type)) {
 
                     let totalQuantity = form.assignments.reduce((acumulator, currentValue) => acumulator + Number(currentValue?.quantity), 0);
 
@@ -828,9 +993,9 @@ export default {
 
                     }
 
-                    if(totalQuantity > Number(form.quantity)) {
+                    if(totalQuantity > Number(form?.branchAsset?.quantity)) {
 
-                        result.msg.push(`La suma de las cantidades asignadas debe ser menor o igual a la cantidad total.`);
+                        result.msg.push(`La suma de las cantidades asignadas debe ser menor o igual a la cantidad total del activo.`);
                         result.bool = false;
 
                     }
@@ -839,23 +1004,23 @@ export default {
 
                         let errorDetails = [];
 
-                        if(!this.isDefined({value: detail?.user?.code})) {
+                        if(!this.isDefined({value: detail?.user?.code}) && !this.isDefined({value: detail?.user?.id})) {
 
                             errorDetails.push(`Colaborador: ${this.config.forms.errors.labels.required}`);
                             result.bool = false;
 
                         }
 
-                        if(Number(detail?.quantity) < 0) {
+                        if(!(Number(detail?.quantity) > 0.1)) {
 
-                            errorDetails.push(`${isDescriptive ? "Cantidad:" : ""} ${this.config.forms.errors.functions.min.numeric(0)}`);
+                            errorDetails.push(`${isDescriptive ? "Cantidad:" : ""} ${this.config.forms.errors.functions.min.numeric(0.1)}`);
                             result.bool = false;
 
                         }
 
                         if(errorDetails.length > 0) {
 
-                            result.msg.push(`<p class="mb-1">Asignación <b>#${parseInt(keyDetail) + 1}</b>:</p>${errorDetails.map(e => "<li>"+e+"</li>")}`);
+                            result.msg.push(`<p class="mb-1">Asignación <b>#${parseInt(keyDetail) + 1}</b>:</p>${errorDetails.map(e => "<li>"+e+"</li>").join("")}`);
 
                         }
 
@@ -874,14 +1039,24 @@ export default {
             return Utils.isDefined({value});
 
         },
-        tooltips({show = true, time = 10}) {
-
-            Alerts.tooltips({show, time});
-
-        },
         isNumber({value, minValue = 0}) {
 
             return Utils.isNumber({value, minValue});
+
+        },
+        fixedNumber(value, decimals = null) {
+
+            return Utils.fixedNumber(value, decimals);
+
+        },
+        separatorNumber(value) {
+
+            return Utils.separatorNumber(value);
+
+        },
+        tooltips({show = true, time = 10}) {
+
+            Alerts.tooltips({show, time});
 
         }
     },
@@ -916,11 +1091,36 @@ export default {
             return this.options?.branchAssets?.statuses.map(e => ({code: e.code, label: e.label}));
 
         },
+        assignmentStatuses: function() {
+
+            return this.options?.assetAssignments?.statuses.map(e => ({code: e.code, label: e.label}));
+
+        },
         isAssign: function() {
 
             return this.isDefined({value: this.forms.entity.assign.data?.id});
 
-        }
+        },
+        assignmentsSum: function() {
+
+            let total = 0;
+
+            for(let detail of this.forms.entity.assignToUser.data.assignments) {
+
+                total += Number(detail?.quantity);
+
+            }
+
+            return this.fixedNumber(total);
+
+        },
+        assignmentsPending: function() {
+
+            let calculate = Number(this.forms.entity.assignToUser.data?.branchAsset?.quantity ?? 0) - Number(this.assignmentsSum);
+
+            return this.fixedNumber(calculate > 0 ? calculate : 0);
+
+        },
     },
     watch: {
         "lists.entity.filters.branch": function(newValue, oldValue) {
