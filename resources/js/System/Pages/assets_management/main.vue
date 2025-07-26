@@ -58,6 +58,7 @@
                     <div v-for="record in lists.entity.records.data" :key="record.id" class="list-group-item bg-white">
                         <div class="d-flex justify-content-between align-items-center gap-2 gap-md-3">
                             <div>
+                                <span v-text="record.quantity" class="fw-bold d-block"></span>
                                 <span v-text="record.asset?.internal_code" class="fw-bold d-block"></span>
                                 <span v-text="record.asset?.name" class="d-block mb-1"></span>
                                 <span v-text="record.asset?.formatted_management_type" class="d-block text-primary fw-semibold mb-1"></span>
@@ -924,24 +925,32 @@ export default {
 
                 if(!this.isDefined({value: form?.branch_assets}) || (form.branch_assets).length === 0) {
 
-                    result.msg.push(`${isDescriptive ? "Activo:" : ""} ${this.config.forms.errors.labels.required}`);
+                    result.msg.push(`${isDescriptive ? "Activos:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }else {
 
                     for(let [keyDetail, detail] of Object.entries(form?.branch_assets)) {
 
+                        let errorDetails = [];
+
                         if(!this.isDefined({value: detail?.asset_id})) {
 
-                            result.msg.push(`${isDescriptive ? "Activo:" : ""} ${this.config.forms.errors.labels.required}`);
+                            errorDetails.push(`${isDescriptive ? "Activo:" : ""} ${this.config.forms.errors.labels.required}`);
                             result.bool = false;
 
                         }
 
                         if(!(Number(detail?.quantity) > 0.1)) {
 
-                            result.msg.push(`${isDescriptive ? "Cantidad:" : ""} ${this.config.forms.errors.functions.min.numeric(0.1)}`);
+                            errorDetails.push(`${isDescriptive ? "Cantidad:" : ""} ${this.config.forms.errors.functions.min.numeric(0.1)}`);
                             result.bool = false;
+
+                        }
+
+                        if(errorDetails.length > 0) {
+
+                            result.msg.push(`<p class="mb-1">Detalle <b>#${parseInt(keyDetail) + 1}</b>:</p>${errorDetails.map(e => "<li>"+e+"</li>").join("")}`);
 
                         }
 
@@ -964,24 +973,32 @@ export default {
 
                 if(!this.isDefined({value: form?.branch_assets}) || (form.branch_assets).length === 0) {
 
-                    result.msg.push(`${isDescriptive ? "Activo:" : ""} ${this.config.forms.errors.labels.required}`);
+                    result.msg.push(`${isDescriptive ? "Activos:" : ""} ${this.config.forms.errors.labels.required}`);
                     result.bool = false;
 
                 }else {
 
                     for(let [keyDetail, detail] of Object.entries(form?.branch_assets)) {
 
+                        let errorDetails = [];
+
                         if(!this.isDefined({value: detail?.id})) {
 
-                            result.msg.push(`${isDescriptive ? "Registro:" : ""} ${this.config.forms.errors.labels.required}`);
+                            errorDetails.push(`${isDescriptive ? "Registro:" : ""} ${this.config.forms.errors.labels.required}`);
                             result.bool = false;
 
                         }
 
                         if(!this.isDefined({value: detail?.asset_id})) {
 
-                            result.msg.push(`${isDescriptive ? "Activo:" : ""} ${this.config.forms.errors.labels.required}`);
+                            errorDetails.push(`${isDescriptive ? "Activo:" : ""} ${this.config.forms.errors.labels.required}`);
                             result.bool = false;
+
+                        }
+
+                        if(errorDetails.length > 0) {
+
+                            result.msg.push(`<p class="mb-1">Detalle <b>#${parseInt(keyDetail) + 1}</b>:</p>${errorDetails.map(e => "<li>"+e+"</li>").join("")}`);
 
                         }
 
