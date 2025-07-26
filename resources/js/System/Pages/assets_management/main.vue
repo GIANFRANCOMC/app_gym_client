@@ -58,7 +58,6 @@
                     <div v-for="record in lists.entity.records.data" :key="record.id" class="list-group-item bg-white">
                         <div class="d-flex justify-content-between align-items-center gap-2 gap-md-3">
                             <div>
-                                <span v-text="record.quantity" class="fw-bold d-block"></span>
                                 <span v-text="record.asset?.internal_code" class="fw-bold d-block"></span>
                                 <span v-text="record.asset?.name" class="d-block mb-1"></span>
                                 <span v-text="record.asset?.formatted_management_type" class="d-block text-primary fw-semibold mb-1"></span>
