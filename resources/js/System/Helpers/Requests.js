@@ -233,10 +233,8 @@ export function generateRoutes({entity, requestRoute}) {
 
         routes.assignAssetToBranch     = `${requestRoute}/${entity}/assignAssetToBranch`;
         routes.unassignAssetFromBranch = `${requestRoute}/${entity}/unassignAssetFromBranch`;
-        routes.assign                  = `${requestRoute}/${entity}/assign`;
         routes.getAssetAssignments     = `${requestRoute}/${entity}/getAssetAssignments`;
-
-
+        routes.assetInBranch           = `${requestRoute}/${entity}/assetInBranch`;
         routes.assignToUser            = `${requestRoute}/${entity}/assignToUser`;
         routes.unassignToUser          = `${requestRoute}/${entity}/unassignToUser`;
 
